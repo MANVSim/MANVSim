@@ -52,3 +52,7 @@
 |(REST-) API |`~`    |`~`          |`~`          |`~`            |`+`           |`~`               |
 |WebSockets  |`+`    |`+`          |`-`          |`-`            |`~`           |`-`               |
 |Event-based |`~`/`-`|`+`          |`+`          |`+`            |`-`           |`+`               |
+
+## Conclusion
+
+REST-API (potentially amended by WebSockets)
