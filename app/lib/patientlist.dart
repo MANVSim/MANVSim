@@ -60,7 +60,8 @@ class _PatientListPageState extends State<PatientListPage> {
               future: patientList,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return ListView.builder(
+                  return ListView.separated(
+                    separatorBuilder: (BuildContext, int index) => const Divider(),
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       final patient = snapshot.data![index];
