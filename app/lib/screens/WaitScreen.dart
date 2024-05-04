@@ -33,9 +33,16 @@ class WaitScreen extends StatelessWidget {
               size: 32,
             ),
             const SizedBox(height: 32),
-            const Text("waiting for the simulation to start")
+            const Text("waiting for the simulation to start"),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.skip_next),
+              onPressed: () {},
+              label: const Text('skip'),
+            ),
           ],
         ),
+
       ),
     );
   }
