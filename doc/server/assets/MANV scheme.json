@@ -288,7 +288,7 @@
           "values": []
         },
         {
-          "name": "time",
+          "name": "duration",
           "type": "TIME",
           "default": "",
           "check": "",
@@ -326,13 +326,13 @@
           "id": 0
         },
         {
-          "name": "time",
-          "type": "TIME",
+          "name": "start_time",
+          "type": "TIMESTAMP",
           "default": "",
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": false,
+          "notNull": true,
           "increment": false,
           "comment": "",
           "id": 1,
@@ -346,7 +346,7 @@
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": false,
+          "notNull": true,
           "increment": false,
           "comment": "",
           "id": 2,
@@ -359,7 +359,7 @@
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": false,
+          "notNull": true,
           "increment": false,
           "comment": "",
           "id": 3
@@ -371,7 +371,7 @@
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": false,
+          "notNull": true,
           "increment": false,
           "comment": "",
           "id": 4
@@ -625,6 +625,152 @@
       "indices": [],
       "color": "#175e7a",
       "key": 1714663301667
+    },
+    {
+      "id": 10,
+      "name": "ressource",
+      "x": 675.924795254374,
+      "y": 1023.2400205993736,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": 0
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 1,
+          "size": 255
+        },
+        {
+          "name": "location_id",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 2
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "color": "#175e7a",
+      "key": 1714907529551
+    },
+    {
+      "id": 11,
+      "name": "location",
+      "x": 229.5753521595367,
+      "y": 1029.4080634430434,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": 0
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 1,
+          "size": 255
+        },
+        {
+          "name": "location_id",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 2
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "color": "#175e7a",
+      "key": 1714907554911
+    },
+    {
+      "id": 12,
+      "name": "ressources_needed",
+      "x": 1036.5246897835793,
+      "y": 884.1404212903348,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": 0
+        },
+        {
+          "name": "action_id",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 1
+        },
+        {
+          "name": "ressource_id",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 2
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "color": "#175e7a",
+      "key": 1714907754667
     }
   ],
   "relationships": [
@@ -726,10 +872,54 @@
       "deleteConstraint": "No action",
       "name": "auth_user_groups_id_fk",
       "id": 8
+    },
+    {
+      "startTableId": 11,
+      "startFieldId": 2,
+      "endTableId": 11,
+      "endFieldId": 0,
+      "cardinality": "One to many",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "location_location_id_fk",
+      "id": 9
+    },
+    {
+      "startTableId": 10,
+      "startFieldId": 2,
+      "endTableId": 11,
+      "endFieldId": 0,
+      "cardinality": "One to many",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "ressource_location_id_fk",
+      "id": 10
+    },
+    {
+      "startTableId": 12,
+      "startFieldId": 1,
+      "endTableId": 5,
+      "endFieldId": 0,
+      "cardinality": "One to many",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "ressources_needed_action_id_fk",
+      "id": 11
+    },
+    {
+      "startTableId": 12,
+      "startFieldId": 2,
+      "endTableId": 10,
+      "endFieldId": 0,
+      "cardinality": "One to many",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "ressources_needed_ressource_id_fk",
+      "id": 12
     }
   ],
   "notes": [],
   "subjectAreas": [],
   "types": [],
-  "title": "MANV_scheme"
+  "title": "MANV scheme"
 }
