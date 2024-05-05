@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'WaitScreen.dart';
+import 'wait_screen.dart';
 
 class NameScreen extends StatelessWidget {
   const NameScreen({super.key});

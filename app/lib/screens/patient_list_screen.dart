@@ -1,38 +1,16 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
-class Patient {
-  final int id;
-  String description;
+import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/services/patient_service.dart';
 
-  Patient({
-    required this.id,
-    required this.description
-  });
-
-  factory Patient.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {'id': int id, 'description': String description} =>
-          Patient(id: id, description: description),
-      _ => throw const FormatException('Failed to parse patient from JSON.')
-    };
-  }
-}
-
-Future<List<Patient>> fetchPatientList() async {
-  String json = demoJson;//await File("patients.json").readAsString();
-  List<dynamic> jsonList = jsonDecode(json);
-  return jsonList.map((patient) => Patient.fromJson(patient)).toList();
-}
-
-class PatientListPage extends StatefulWidget {
-  const PatientListPage({super.key});
+class PatientListScreen extends StatefulWidget {
+  const PatientListScreen({super.key});
 
   @override
-  State<PatientListPage> createState() => _PatientListPageState();
+  State<PatientListScreen> createState() => _PatientListScreenState();
 }
 
-class _PatientListPageState extends State<PatientListPage> {
+class _PatientListScreenState extends State<PatientListScreen> {
   late Future<List<Patient>> patientList;
 
   Future<void> _updatePatientList() async {
@@ -80,11 +58,3 @@ class _PatientListPageState extends State<PatientListPage> {
     );
   }
 }
-
-const String demoJson = """
-[
-  {"id": 1, "description": "Max Mustermann"},
-  {"id": 2, "description": "Bernd Beispiel"},
-  {"id": 3, "description": "Patient 3"},
-  {"id": 4, "description": "Bein fehlt"}
-]""";

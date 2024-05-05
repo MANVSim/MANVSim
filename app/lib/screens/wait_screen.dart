@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:manvsim/appframe.dart';
 
-import 'LoginScreen.dart';
+import 'login_screen.dart';
 
 
 class WaitScreen extends StatelessWidget {
@@ -37,7 +38,12 @@ class WaitScreen extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton.icon(
               icon: const Icon(Icons.skip_next),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AppFrame())
+                );
+              },
               label: const Text('skip'),
             ),
           ],

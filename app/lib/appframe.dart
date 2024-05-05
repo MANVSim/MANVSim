@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:manvsim/patientlist.dart';
+import 'package:manvsim/screens/patient_list_screen.dart';
 
 class AppFrame extends StatefulWidget {
   const AppFrame({super.key});
@@ -19,7 +19,7 @@ class _AppFrameState extends State<AppFrame> {
         page = Placeholder();
         break;
       case 1:
-        page = PatientListPage();
+        page = PatientListScreen();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
