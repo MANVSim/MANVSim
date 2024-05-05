@@ -1,0 +1,99 @@
+{
+  "Execution": {
+    "id": "int",
+    "scenario": {
+      "Scenario": {
+        "id": "int",
+        "name": "string",
+        "patients": [
+          {
+            "Patient": {
+              "id": "int",
+              "injuries": "string",
+              "activity_diagram": "string",
+              "performed_actions": [
+                {
+                  "PerformedAction": {
+                    "id": "int",
+                    "time": "int",
+                    "execution": "string",
+                    "patient": "Patient",
+                    "action": {
+                      "Action": {
+                        "id": "int",
+                        "name": "string",
+                        "result": "string",
+                        "picture": "string",
+                        "execution_time_sec": "int",
+                        "resource_types_needed": [
+                          {
+                            "ResourceType": {
+                              "id": "int",
+                              "name": "string",
+                              "picture": "string"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "resources_used": [
+                      {
+                        "Resource": {
+                          "id": "int",
+                          "location": {
+                            "Location": {
+                              "id": "int",
+                              "name": "string",
+                              "location": "Location",
+                              "location_type": {
+                                "LocationType": {
+                                  "id": "int",
+                                  "name": "string",
+                                  "picture": "string"
+                                }
+                              }
+                            }
+                          },
+                          "resource_type": {
+                            "ResourceType": {
+                              "id": "int",
+                              "name": "string",
+                              "picture": "string"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "starting_time": "int",
+    "players": [
+      {
+        "Player": {
+          "tan": "string",
+          "name": "string",
+          "location": {
+            "Location": {
+              "id": "int",
+              "name": "string",
+              "location": "Location",
+              "location_type": {
+                "LocationType": {
+                  "id": "int",
+                  "name": "string",
+                  "picture": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
