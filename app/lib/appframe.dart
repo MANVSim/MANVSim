@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:manvsim/screens/login_screen.dart';
+import 'package:manvsim/screens/notifications_screen.dart';
 import 'package:manvsim/screens/patient_list_screen.dart';
 
 class AppFrame extends StatefulWidget {
@@ -9,54 +11,57 @@ class AppFrame extends StatefulWidget {
 }
 
 class _AppFrameState extends State<AppFrame> {
-  var selectedIndex = 0;
+  int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    Widget page;
-    switch (selectedIndex) {
-      case 0:
-        page = Placeholder();
-        break;
-      case 1:
-        page = PatientListScreen();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
-    }
-
+    final ThemeData theme = Theme.of(context);
     return Scaffold(
-      body: Row(
-        children: [
-          SafeArea(
-            child: NavigationRail(
-              extended: false,
-              destinations: const [
-                NavigationRailDestination(
-                  icon: Icon(Icons.home),
-                  label: Text('Home'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.list),
-                  label: Text('Favorites'),
-                ),
-              ],
-              selectedIndex: selectedIndex,
-              onDestinationSelected: (value) {
-                setState(() {
-                  selectedIndex = value;
-                });
-              },
-            ),
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          if (index == 3) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (Route<dynamic> route) => false, // Removes all previous routes
+            );
+          } else {
+          setState(() {
+            currentPageIndex = index;
+          });
+          }
+        },
+        indicatorColor: Colors.amber,
+        selectedIndex: currentPageIndex,
+        destinations: const <Widget>[
+          NavigationDestination(
+            selectedIcon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
           ),
-          Expanded(
-            child: Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: page,
-            ),
+          NavigationDestination(
+              selectedIcon: Icon(Icons.list_outlined),
+              icon: Icon(Icons.list),
+              label: 'Patients'
+          ),
+          NavigationDestination(
+            icon: Badge(child: Icon(Icons.notifications_sharp)),
+            label: 'Notifications',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.logout),
+            label: 'Logout'
           ),
         ],
       ),
+      body: const <Widget>[
+        /// Home page
+        Placeholder(),
+        PatientListScreen(),
+        NotificationsScreen(),
+        /// Logout Placeholder Page
+        Placeholder()
+      ][currentPageIndex],
     );
   }
 }
