@@ -1,0 +1,4 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+INSERT INTO auth_user VALUES(1,'pbkdf2_sha256$720000$D4f5eTAS1u0LmtNeGwJK07$y6f+QFH4xtxscgBVHjpEXrQi9b+ZH6/sIYB8IH4/+9o=','2024-05-05 11:41:01.863989',1,'admin','','admin@example.com',1,1,'2024-05-05 11:40:12.630987','');
+COMMIT;
