@@ -42,16 +42,16 @@ CREATE TABLE IF NOT EXISTS "action" (
 	"name" TEXT,
 	"picture" BLOB,
 	"results" BLOB,
-	"time" TEXT,
+	"duration" TEXT,
 	PRIMARY KEY("id")	
 );
 
 CREATE TABLE IF NOT EXISTS "performed_actions" (
 	"id" INTEGER NOT NULL UNIQUE,
-	"time" TEXT,
-	"execution_id" TEXT,
-	"patient_id" INTEGER,
-	"action_id" INTEGER,
+	"start_time" TEXT NOT NULL,
+	"execution_id" TEXT NOT NULL,
+	"patient_id" INTEGER NOT NULL,
+	"action_id" INTEGER NOT NULL,
 	PRIMARY KEY("id"),
 	FOREIGN KEY ("execution_id") REFERENCES "execution"("tan")
 	ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -84,5 +84,32 @@ CREATE TABLE IF NOT EXISTS "auth_user_groups" (
 	"auth_group" INTEGER NOT NULL,
 	PRIMARY KEY("id"),
 	FOREIGN KEY ("user_id") REFERENCES "auth_user"("id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS "ressource" (
+	"id" INTEGER NOT NULL UNIQUE,
+	"name" TEXT NOT NULL,
+	"location_id" INTEGER,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("location_id") REFERENCES "location"("id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS "location" (
+	"id" INTEGER NOT NULL UNIQUE,
+	"name" TEXT NOT NULL,
+	"location_id" INTEGER,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("location_id") REFERENCES "location"("id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS "ressources_needed" (
+	"id" INTEGER NOT NULL UNIQUE,
+	"action_id" INTEGER NOT NULL,
+	"ressource_id" INTEGER NOT NULL,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("action_id") REFERENCES "action"("id")
 	ON UPDATE NO ACTION ON DELETE NO ACTION
 );
