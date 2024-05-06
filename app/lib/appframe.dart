@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:manvsim/screens/login_screen.dart';
 import 'package:manvsim/screens/notifications_screen.dart';
 import 'package:manvsim/screens/patient_list_screen.dart';
 import 'package:manvsim/screens/tan_screen.dart';
@@ -16,21 +15,12 @@ class _AppFrameState extends State<AppFrame> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
-          if (index == 3) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  (Route<dynamic> route) => false, // Removes all previous routes
-            );
-          } else {
           setState(() {
             currentPageIndex = index;
           });
-          }
         },
         indicatorColor: Colors.amber,
         selectedIndex: currentPageIndex,
@@ -49,19 +39,13 @@ class _AppFrameState extends State<AppFrame> {
             icon: Badge(child: Icon(Icons.notifications_sharp)),
             label: 'Notifications',
           ),
-          NavigationDestination(
-            icon: Icon(Icons.logout),
-            label: 'Logout'
-          ),
         ],
       ),
       body: const <Widget>[
         /// Home page
         TanScreen(),
         PatientListScreen(),
-        NotificationsScreen(),
-        /// Logout Placeholder Page
-        Placeholder()
+        NotificationsScreen()
       ][currentPageIndex],
     );
   }

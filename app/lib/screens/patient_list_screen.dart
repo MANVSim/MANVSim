@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/services/patient_service.dart';
+import 'package:manvsim/widgets/logout_button.dart';
 
 class PatientListScreen extends StatefulWidget {
   const PatientListScreen({super.key});
@@ -31,6 +32,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text("List of patients"),
+          actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(
           onRefresh: _updatePatientList,
@@ -39,7 +41,8 @@ class _PatientListScreenState extends State<PatientListScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return ListView.separated(
-                    separatorBuilder: (BuildContext, int index) => const Divider(),
+                    separatorBuilder: (BuildContext, int index) =>
+                        const Divider(),
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       final patient = snapshot.data![index];
@@ -54,7 +57,6 @@ class _PatientListScreenState extends State<PatientListScreen> {
                 }
                 return const CircularProgressIndicator();
               }),
-        )
-    );
+        ));
   }
 }

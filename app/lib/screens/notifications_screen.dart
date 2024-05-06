@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/services/patient_service.dart';
+import 'package:manvsim/widgets/logout_button.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -31,6 +32,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text('Notifications'),
+          actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(
           onRefresh: _updatePatientList,
@@ -55,7 +57,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               ],
             ),
           ),
-        )
-    );
+        ));
   }
 }

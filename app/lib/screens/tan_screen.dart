@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manvsim/widgets/logout_button.dart';
 
 class TanScreen extends StatelessWidget {
   const TanScreen({super.key});
@@ -9,6 +10,7 @@ class TanScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Home'),
+        actions: const <Widget>[LogoutButton()],
       ),
       body: Center(
         child: Padding(
