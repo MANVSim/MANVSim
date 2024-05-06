@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:manvsim/widgets/logout_button.dart';
 
-import 'WaitScreen.dart';
-
-class NameScreen extends StatelessWidget {
-  const NameScreen({super.key});
+class TanScreen extends StatelessWidget {
+  const TanScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Name Selection'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Home'),
+        actions: const <Widget>[LogoutButton()],
       ),
       body: Center(
         child: Padding(
@@ -19,21 +20,14 @@ class NameScreen extends StatelessWidget {
             children: [
               const TextField(
                 decoration: InputDecoration(
-                  labelText: 'Name',
+                  labelText: 'TAN',
                 ),
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const WaitScreen()),
-                        (Route<dynamic> route) =>
-                    false, // Removes all previous routes
-                  );
-                },
-                icon: const Icon(Icons.start),
-                label: const Text('Start'),
+                icon: const Icon(Icons.qr_code_scanner),
+                label: const Text('Scan QR Code'),
+                onPressed: () {},
               ),
             ],
           ),
