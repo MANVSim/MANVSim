@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/screens/login_screen.dart';
 import 'package:manvsim/screens/notifications_screen.dart';
 import 'package:manvsim/screens/patient_list_screen.dart';
+import 'package:manvsim/screens/tan_screen.dart';
 
 class AppFrame extends StatefulWidget {
   const AppFrame({super.key});
@@ -56,7 +57,7 @@ class _AppFrameState extends State<AppFrame> {
       ),
       body: const <Widget>[
         /// Home page
-        Placeholder(),
+        TanScreen(),
         PatientListScreen(),
         NotificationsScreen(),
         /// Logout Placeholder Page

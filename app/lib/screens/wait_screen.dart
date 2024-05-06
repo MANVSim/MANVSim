@@ -4,7 +4,6 @@ import 'package:manvsim/appframe.dart';
 
 import 'login_screen.dart';
 
-
 class WaitScreen extends StatelessWidget {
   const WaitScreen({super.key});
 
@@ -19,7 +18,7 @@ class WaitScreen extends StatelessWidget {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginScreen()),
-                    (Route<dynamic> route) => false, // Removes all previous routes
+                (Route<dynamic> route) => false, // Removes all previous routes
               );
             },
           ),
@@ -39,16 +38,16 @@ class WaitScreen extends StatelessWidget {
             ElevatedButton.icon(
               icon: const Icon(Icons.skip_next),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const AppFrame())
+                  MaterialPageRoute(builder: (context) => const AppFrame()),
+                  (Route<dynamic> route) => false, // Removes previous routes
                 );
               },
               label: const Text('skip'),
             ),
           ],
         ),
-
       ),
     );
   }
