@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     # My Apps #
-    "scenarios",
+    "web",
     "executions",
 
     # Django Default #
