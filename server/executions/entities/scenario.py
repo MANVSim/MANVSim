@@ -1,4 +1,4 @@
-from patient import Patient
+from executions.entities.patient import Patient
 
 
 class Scenario:

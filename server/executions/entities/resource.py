@@ -1,5 +1,5 @@
-from location import Location
-from resource_type import ResourceType
+from executions.entities.location import Location
+from executions.entities.resource_type import ResourceType
 
 
 class Resource:

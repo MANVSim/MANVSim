@@ -1,7 +1,7 @@
 from enum import Enum
 
-from player import Player
-from scenario import Scenario
+from executions.entities.player import Player
+from executions.entities.scenario import Scenario
 
 
 class Execution:

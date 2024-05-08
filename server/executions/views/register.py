@@ -5,6 +5,8 @@ from http import HTTPStatus
 
 from django.utils.datastructures import MultiValueDictKeyError
 
+from executions import run
+
 
 def hello_world(request):
     data = {"hello": "world"}
@@ -19,11 +21,9 @@ def register_player(request: HttpRequest):
 
     try:
         data = request.POST
-        tan = data["TAN"]
-        logging.debug(f"Player registered with data: {tan}")
-        # TODO
-        response.status_code = HTTPStatus.OK
-        return response
+        execution = run.get_execution_by_player_tan(data["TAN"])
+
+        return JsonResponse({"execution-status": execution.status.name})
 
     except MultiValueDictKeyError:
         response.status_code = HTTPStatus.BAD_REQUEST

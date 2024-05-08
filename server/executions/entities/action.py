@@ -1,4 +1,4 @@
-from resource_type import ResourceType
+from executions.entities.resource_type import ResourceType
 
 
 class Action:

@@ -1,5 +1,5 @@
-from location import Location
-from performed_action import PerformedAction
+from executions.entities.location import Location
+from executions.entities.performed_action import PerformedAction
 
 
 class Patient:
