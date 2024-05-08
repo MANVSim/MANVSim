@@ -8,7 +8,7 @@ import uuid
 
 # Dictionary storing the current available scenarios, whether they are PENDING, RUNNING or about to FINISH
 exec_dict = {
-    # "scn_uuid": "scn: scenario_dbo"
+    # "exec_uuid": "scn: scenario_dbo"
 }
 
 
