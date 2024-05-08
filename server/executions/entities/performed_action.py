@@ -1,7 +1,7 @@
 from action import Action
 from patient import Patient
 from player import Player
-from resource import Resource
+from server.executions.entities.resource import Resource
 
 
 class PerformedAction:
