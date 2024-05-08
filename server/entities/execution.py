@@ -8,8 +8,8 @@ class Execution:
 
     class Status(Enum):
         RUNNING = "running"
-        WAITING = "pending"
-        STOPPED = "finished"
+        PENDING = "pending"
+        FINISHED = "finished"
         UNKNOWN = "unknown"
 
     def __init__(self, id: int, scenario: Scenario, starting_time: int, players: list[Player], status: Status):
