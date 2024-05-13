@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/screens/patient_screen.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 
@@ -41,7 +42,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return ListView.separated(
-                    separatorBuilder: (BuildContext, int index) =>
+                    separatorBuilder: (buildContext, int index) =>
                         const Divider(),
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
@@ -49,6 +50,13 @@ class _PatientListScreenState extends State<PatientListScreen> {
                       return ListTile(
                         title: Text(patient.id.toString()),
                         subtitle: Text(patient.description),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PatientScreen(patient: patient)));
+                        },
                       );
                     },
                   );
