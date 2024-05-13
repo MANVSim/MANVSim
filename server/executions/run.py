@@ -42,15 +42,6 @@ def create_active_players(exec_id, players):
         active_player[player.tan] = str(exec_id)  # player_tan is unique due to database primary key
 
 
-# READ
-def get_execution_by_player_tan(tan):
-    try:
-        exec_id = active_player[tan]
-        return exec_dict[exec_id]
-    except KeyError:
-        print(f"ERROR: invalid tan or exec_id detected. No registered player/execution.")
-
-
 # DELETE
 def delete_execution(exec_id: str):
     try:

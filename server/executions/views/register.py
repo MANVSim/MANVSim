@@ -12,18 +12,25 @@ def hello_world(_):
 
 
 def register_player(request: HttpRequest):
+    """ Registers an active player based on the provided request parameters ('TAN') """
     response = HttpResponse()
     if request.method != "POST":
         response.status_code = HTTPStatus.BAD_REQUEST
+        response.write(content="Invalid request type on this endpoint. Use 'POST'.")
         return response
 
     try:
-        data = request.POST
-        execution = run.get_execution_by_player_tan(data["TAN"])
-
-        return JsonResponse({"execution-status": execution.status.name})
+        request_data = request.POST
+        exec_id = run.active_player[request_data["TAN"]]
+        return JsonResponse({"exec_id": exec_id})
 
     except MultiValueDictKeyError:
+        response.status_code = HTTPStatus.BAD_REQUEST
+        response.write(content="Request leads to a MultiValueDictKeyError. Please use 'TAN' as request parameter, "
+                               "to prevent further troubles.")
+        return response
+    except KeyError:
+        print(f"ERROR: invalid tan detected. Unable to resolve player.")
         response.status_code = HTTPStatus.BAD_REQUEST
         return response
 
@@ -36,6 +43,7 @@ def get_current_exec_status(request, exec_id: str):
     if request.method != "GET":
         response = HttpResponse()
         response.status_code = HTTPStatus.BAD_REQUEST
+        response.write(content="Invalid request type on this endpoint. Use 'POST'.")
         return response
 
     try:
@@ -61,7 +69,7 @@ def get_current_exec_status(request, exec_id: str):
     except KeyError:
         response = HttpResponse()
         response.status_code = HTTPStatus.BAD_REQUEST
-        response.write(content="Invalid execution id provided. Unable to retrieve execution data.")
+        response.write(content="Invalid execution id provided. Unable to resolve execution data.")
         return response
 
 
