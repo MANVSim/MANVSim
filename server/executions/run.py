@@ -7,31 +7,31 @@ along with scenario-state-changing methods. It uses DBO instances of the web-mod
 action of interest into a separate file (FIXME: docu update @Louis)
 """
 
-test = Execution(1337, Scenario(17, "Test", []), 42, [], Execution.Status.PENDING)
+test = Execution(1337, Scenario(17, "Test-Scenario", []), 42, [], Execution.Status.PENDING)
 
 # Dictionary storing the current available execution, whether they are PENDING, RUNNING or about to FINISH
 exec_dict = {
     # "exec_id": "exec: execution_dbo"
-    1337: test
+    "1337": test
 }
 
 # Dictionary storing all active players in an execution
 active_player = {
     # "TAN" : "exec_uuid"
-    "69": 1337
+    "69": "1337"
 }
 
 
 # CREATE
 def create_execution(execution: Execution):
-    exec_id = execution.id  # exec id is unique due to database primary key
+    exec_id = str(execution.id)  # exec id is unique due to database primary key
     exec_dict[exec_id] = execution
     create_active_players(exec_id, execution.players)
 
 
 def create_active_players(exec_id, players):
     for player in players:
-        active_player[player.tan] = exec_id  # player_tan is unique due to database primary key
+        active_player[player.tan] = str(exec_id)  # player_tan is unique due to database primary key
 
 
 # READ
@@ -44,7 +44,7 @@ def get_execution_by_player_tan(tan):
 
 
 # DELETE
-def delete_execution(exec_id):
+def delete_execution(exec_id: str):
     try:
         execution = exec_dict.pop(exec_id)
         delete_active_players(execution.players)
