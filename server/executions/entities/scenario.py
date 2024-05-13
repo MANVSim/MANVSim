@@ -1,6 +1,6 @@
 import json
 
-from server.executions.entities.patient import Patient
+from executions.entities.patient import Patient
 
 
 class Scenario:
