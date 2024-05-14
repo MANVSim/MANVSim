@@ -1,17 +1,16 @@
 import json
-from executions.entities.resource_type import ResourceType
 
 
 class Action:
 
     def __init__(self, id: int, name: str, result: str, picture_ref: str, duration_sec: int,
-                 resource_types_needed: list[ResourceType]):
+                 resources_needed: list[str]):
         self.id = id
         self.name = name
         self.result = result  # FIXME: Maybe replace by JSON datatype
         self.picture_ref = picture_ref  # Reference to picture
         self.duration_sec = duration_sec  # FIXME: Maybe replace by standardized time format
-        self.resource_types_needed = resource_types_needed
+        self.resources_needed = resources_needed
 
     def to_dict(self, shallow: bool = False):
         """
@@ -24,8 +23,7 @@ class Action:
             'result': self.result,
             'picture_ref': self.picture_ref,
             'duration_sec': self.duration_sec,
-            'resource_types_needed': [r_type.id if shallow else r_type.to_dict() for r_type in
-                                      self.resource_types_needed]
+            'resources_needed': self.resources_needed
         }
 
     def to_json(self, shallow: bool = False):
