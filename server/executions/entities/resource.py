@@ -1,16 +1,15 @@
 import json
 
 from server.executions.entities.location import Location
-from server.executions.entities.resource_type import ResourceType
 
 
 class Resource:
 
-    def __init__(self, id: int, location: Location, resource_type: ResourceType, quantity: int):
+    def __init__(self, id: int, location: Location, quantity: int, picture_ref: str):
         self.id = id
         self.location = location
-        self.resource_type = resource_type
         self.quantity = quantity
+        self.picture_ref = picture_ref
 
     def to_dict(self, shallow: bool = False):
         """
@@ -20,8 +19,8 @@ class Resource:
         return {
             'id': self.id,
             'location': self.location.id if shallow else self.location.to_dict(),
-            'resource_type': self.resource_type.id if shallow else self.resource_type.to_dict(),
-            'quantity': self.quantity
+            'quantity': self.quantity,
+            'picture_ref': self.picture_ref
         }
 
     def to_json(self, shallow: bool = False):

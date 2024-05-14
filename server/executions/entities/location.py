@@ -1,12 +1,16 @@
 import json
 
+from executions.entities.resource import Resource
+
 
 class Location:
 
-    def __init__(self, id: int, name: str, picture_ref: str, location: 'Location'):
+    def __init__(self, id: int, name: str, picture_ref: str, resources: list[Resource] = None,
+                 location: 'Location' = None):
         self.id = id
         self.name = name
         self.picture_ref = picture_ref  # Reference to picture
+        self.resources = resources
         self.location = location
 
     def to_dict(self, shallow: bool = False):
@@ -18,6 +22,7 @@ class Location:
             'id': self.id,
             'name': self.name,
             'picture_ref': self.picture_ref,
+            'resources': [resource.id if shallow else resource.to_dict() for resource in self.resources],
             'location': self.location.id if shallow else self.location.to_dict()
         }
 
