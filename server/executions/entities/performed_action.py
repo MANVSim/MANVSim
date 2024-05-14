@@ -1,7 +1,7 @@
 import json
 
-from server.executions.entities.action import Action
-from server.executions.entities.resource import Resource
+from executions.entities.action import Action
+from executions.entities.resource import Resource
 
 
 class PerformedAction:

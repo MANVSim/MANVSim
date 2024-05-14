@@ -1,7 +1,7 @@
 import json
 
-from server.executions.entities.location import Location
-from server.executions.entities.performed_action import PerformedAction
+from executions.entities.location import Location
+from executions.entities.performed_action import PerformedAction
 
 
 class Patient:

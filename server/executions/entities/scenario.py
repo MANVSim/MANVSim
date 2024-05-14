@@ -1,7 +1,7 @@
 import json
 
 from executions.entities.location import Location
-from server.executions.entities.patient import Patient
+from executions.entities.patient import Patient
 
 
 class Scenario:

@@ -1,6 +1,6 @@
 import json
 
-from server.executions.entities.location import Location
+from executions.entities.location import Location
 
 
 class Player:
