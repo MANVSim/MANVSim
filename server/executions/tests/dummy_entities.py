@@ -10,9 +10,9 @@ from executions.entities.scenario import Scenario
 
 # -- Create Empty Test Objects --
 
-def create_dummy_scenario(id: int = 0, name: str = "Dummy Scenario", locations: dict[int, Location] = None,
-                          patients: list[Patient] = None):
-    return Scenario(id=id, name=name, locations=locations, patients=patients)
+def create_dummy_scenario(id: int = 0, name: str = "Dummy Scenario", actions: list[Action] = None,
+                          locations: dict[int, Location] = None, patients: list[Patient] = None):
+    return Scenario(id=id, name=name, locations=locations, patients=patients, actions=actions)
 
 
 def create_dummy_execution(id: int = 0, scenario: Scenario = None, starting_time: int = 0, players: list[Player] = None,
