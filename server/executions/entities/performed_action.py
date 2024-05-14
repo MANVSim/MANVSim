@@ -1,12 +1,12 @@
 import json
 
-from server.executions.entities.action import Action
-from server.executions.entities.resource import Resource
+from executions.entities.action import Action
+from executions.entities.resource import Resource
 
 
 class PerformedAction:
 
-    def __init__(self, id: int, time: int, execution_id: str, action: Action, resources_used: list[Resource],
+    def __init__(self, id: int, time: int, execution_id: int, action: Action, resources_used: list[Resource],
                  player_tan: str):
         self.id = id
         self.time = time  # FIXME: Maybe replace by standardized time format

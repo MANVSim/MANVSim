@@ -1,13 +1,13 @@
 import json
 
-from server.executions.entities.location import Location
-from server.executions.entities.performed_action import PerformedAction
+from executions.entities.location import Location
+from executions.entities.performed_action import PerformedAction
 
 
 class Patient:
 
     def __init__(self, id: int, name: str, injuries: str, activity_diagram: str, location: Location,
-                 performed_actions: list[PerformedAction]):
+                 performed_actions: list[PerformedAction] = None):
         self.id = id
         self.name = name
         self.injuries = injuries  # FIXME: Maybe replace by JSON datatype
