@@ -47,15 +47,12 @@ def hello_world():
 
 @api.post("register")
 def register_player():
-    response = Response()
     try:
         exec_id = run.active_player[request.form["TAN"]]
         return jsonify({"exec_id": exec_id})
     except KeyError:
         print("ERROR: invalid tan detected. Unable to resolve player.")
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return response
-    pass
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api.get("security/csrf")
