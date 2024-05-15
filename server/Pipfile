@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 flask = "*"
+flask-api = "*"
+werkzeug = "2.3.8"
 
 [dev-packages]
 
