@@ -1,6 +1,21 @@
 from flask import Flask
-from web.api import api
+from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
+db = SQLAlchemy()
 
-app.register_blueprint(api, url_prefix="/api")
+
+def create_app():
+    """
+    Creat the app instance, register all URLs and the database to the app
+    """
+    # asynchronously import local packages
+    from web.api import api
+
+    app = Flask(__name__)
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
+
+    db.init_app(app)
+
+    app.register_blueprint(api, url_prefix="/api")
+
+    return app
