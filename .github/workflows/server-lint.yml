@@ -1,4 +1,4 @@
-name: Lint & Code Quality
+name: Server Lint & Code Quality
 on: push
 
 jobs:
@@ -17,13 +17,16 @@ jobs:
           python-version: "3.12"
 
       - name: Install pipenv
+        working-directory: server
         run: |
           python -m pip install --upgrade pipenv
 
       - name: Install dependencies
+        working-directory: server
         run: |
           pipenv install
 
       - name: Run linter
+        working-directory: server
         run: |
           pipenv run lint
