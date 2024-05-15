@@ -9,6 +9,7 @@ flask-api = "*"
 werkzeug = "2.3.8"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
+pylint = "*"
 
 [dev-packages]
 

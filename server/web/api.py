@@ -33,12 +33,10 @@ def get_current_exec_status(exec_id: str):
             }
             return jsonify(data)
     except KeyError:
-        response = Response()
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        response.write(
-            content="Invalid execution id provided. Unable to resolve execution data."
+        return Response(
+            response="Invalid execution id provided. Unable to resolve execution data.",
+            status=status.HTTP_400_BAD_REQUEST,
         )
-        return response
 
 
 @api.get("register/hello")
