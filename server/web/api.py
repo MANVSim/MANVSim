@@ -1,6 +1,6 @@
 from executions import run
 
-from flask import Blueprint, jsonify, request, Response
+from flask import Blueprint, request, Response
 from flask_api import status
 
 api = Blueprint("api", __name__)
@@ -15,7 +15,7 @@ def get_current_exec_status(exec_id: str):
     try:
         execution = run.exec_dict[exec_id]
         if execution.status == execution.Status.RUNNING:
-            data = {
+            return {
                 "exec_id": exec_id,
                 "status": execution.status.name,
                 "starting_time": execution.starting_time,
@@ -24,14 +24,12 @@ def get_current_exec_status(exec_id: str):
                     "scn_name": execution.scenario.name,
                 },
             }
-            return jsonify(data)
         else:
-            data = {
+            return {
                 "exec_id": exec_id,
                 "status": execution.status.name,
                 "starting_time": execution.starting_time,
             }
-            return jsonify(data)
     except KeyError:
         return Response(
             response="Invalid execution id provided. Unable to resolve execution data.",
@@ -41,15 +39,14 @@ def get_current_exec_status(exec_id: str):
 
 @api.get("register/hello")
 def hello_world():
-    data = {"hello": "world"}
-    return jsonify(data)
+    return {"hello": "world"}
 
 
 @api.post("register")
 def register_player():
     try:
         exec_id = run.active_player[request.form["TAN"]]
-        return jsonify({"exec_id": exec_id})
+        return {"exec_id": exec_id}
     except KeyError:
         print("ERROR: invalid tan detected. Unable to resolve player.")
         return Response(status=status.HTTP_400_BAD_REQUEST)
