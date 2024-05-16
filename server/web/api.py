@@ -53,8 +53,3 @@ def register_player():
     except KeyError:
         print("ERROR: invalid tan detected. Unable to resolve player.")
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
-@api.get("security/csrf")
-def csrf():
-    pass

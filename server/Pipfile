@@ -10,6 +10,7 @@ werkzeug = "2.3.8"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
 pylint = "*"
+flask-wtf = "*"
 
 [dev-packages]
 

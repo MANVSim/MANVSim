@@ -1,7 +1,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import CSRFProtect
 
 db = SQLAlchemy()
+csrf = CSRFProtect()
 
 
 def create_app():
@@ -15,6 +17,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
 
     db.init_app(app)
+    csrf.init_app(app)
 
     app.register_blueprint(api, url_prefix="/api")
 
