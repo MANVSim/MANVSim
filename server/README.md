@@ -73,3 +73,19 @@ make migration
 ```bash
 bash ./scripts/create-migration.sh
 ```
+
+### Frontend
+
+To actually see anything when opening the default URL, you first need to build the frontend:
+
+```bash
+make build-frontend
+```
+
+If you want to actively develop the frontend, you need to run a different command:
+
+```bash
+make start-frontend
+```
+
+Note: To get the actual output delivered via the flask webserver, you need to run `make build-frontend`.
