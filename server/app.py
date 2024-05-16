@@ -1,5 +1,5 @@
 import os
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 
@@ -26,8 +26,10 @@ def create_app():
     def serve(path):
         if path != "" and os.path.exists(app.static_folder + "/" + path):
             return send_from_directory(app.static_folder, path)
-        else:
+        elif path == "/" or path == "":
             return send_from_directory(app.static_folder, "index.html")
+        else:
+            return redirect("/")
 
     app.register_blueprint(api, url_prefix="/api")
 
