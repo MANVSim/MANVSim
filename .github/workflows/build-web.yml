@@ -26,3 +26,6 @@ jobs:
       - name: Build (typecheck) the project
         working-directory: web
         run: npm run build
+      - name: Lint the project
+        working-directory: web
+        run: npm run lint
