@@ -11,6 +11,7 @@ class WaitScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: const <Widget>[LogoutButton()],
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
         child: Column(
