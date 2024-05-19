@@ -43,22 +43,19 @@ class _PatientScreenState extends State<PatientScreen> {
             onRefresh: () {
               return _updateActions();
             },
-            child: Column(children: [
+            child: SingleChildScrollView(
+                child: Column(children: [
               const Placeholder(),
               FutureBuilder(
                   future: locations,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: ResourceDirectory(locations: snapshot.data!));
+                      return ResourceDirectory(locations: snapshot.data!);
                     } else if (snapshot.hasError) {
                       return Text('${snapshot.error}');
                     }
                     return const CircularProgressIndicator();
                   })
-            ])
-        )
-    );
+            ]))));
   }
 }

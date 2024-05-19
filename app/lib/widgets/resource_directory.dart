@@ -16,16 +16,20 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        shrinkWrap: true,
+        shrinkWrap: true, // nested scrolling
         physics: const ClampingScrollPhysics(),
         itemCount: widget.locations.length,
         itemBuilder: (context, index) {
           final location = widget.locations[index];
-          return ExpansionTile(
+          return Card(
+              child: ExpansionTile(
             title: Text(location.name),
+            controlAffinity: ListTileControlAffinity.leading,
+            shape: const Border(), // removes border on top and bottom
+            childrenPadding: const EdgeInsets.only(left: 8.0),
             children: [
               ListView.builder(
-                shrinkWrap: true,
+                shrinkWrap: true, // nested scrolling
                 physics: const ClampingScrollPhysics(),
                 itemCount: location.actions.length,
                 itemBuilder: (context, index) {
@@ -42,7 +46,7 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
               ),
               ResourceDirectory(locations: location.locations)
             ],
-          );
+          ));
         });
   }
 }

@@ -41,13 +41,13 @@ class _PatientListScreenState extends State<PatientListScreen> {
               future: patientList,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return ListView.separated(
-                    separatorBuilder: (buildContext, int index) =>
-                        const Divider(),
+                  return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       final patient = snapshot.data![index];
-                      return ListTile(
+                      return Card(
+                          child: ListTile(
+                        leading: const Icon(Icons.person), // or person_pin
                         title: Text(patient.id.toString()),
                         subtitle: Text(patient.description),
                         onTap: () {
@@ -57,7 +57,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                                   builder: (context) =>
                                       PatientScreen(patient: patient)));
                         },
-                      );
+                      ));
                     },
                   );
                 } else if (snapshot.hasError) {
