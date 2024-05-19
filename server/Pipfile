@@ -16,3 +16,6 @@ flask-wtf = "*"
 
 [requires]
 python_version = "3.12"
+
+[scripts]
+lint = "pylint *.py -E"
