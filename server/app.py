@@ -14,7 +14,7 @@ def create_app():
     # asynchronously import local packages
     from web.api import api
 
-    app = Flask(__name__, static_folder="manvsim-frontend/build")
+    app = Flask(__name__, static_folder="../web/build")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
 
     db.init_app(app)
