@@ -4,6 +4,7 @@ import 'package:manvsim/models/location.dart';
 
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/services/action_service.dart';
+import 'package:manvsim/widgets/patient_overview.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/resource_directory.dart';
 
@@ -36,7 +37,7 @@ class _PatientScreenState extends State<PatientScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.patient.description),
+          title: Text('Patient: ${widget.patient.id.toString()} '),
           actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(
@@ -45,7 +46,7 @@ class _PatientScreenState extends State<PatientScreen> {
             },
             child: SingleChildScrollView(
                 child: Column(children: [
-              const Placeholder(),
+              PatientOverview(patient: widget.patient),
               FutureBuilder(
                   future: locations,
                   builder: (context, snapshot) {

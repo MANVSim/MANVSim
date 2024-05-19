@@ -10,8 +10,8 @@ Future<List<Patient>> fetchPatientList() async {
 
 const String demoJson = """
 [
-  {"id": 1, "description": "Max Mustermann"},
-  {"id": 2, "description": "Bernd Beispiel"},
-  {"id": 3, "description": "Patient 3"},
-  {"id": 4, "description": "Bein fehlt"}
+  {"id": 1, "name": "Max Mustermann", "injuries": "Beinverletzung"},
+  {"id": 2, "name": "Bernd Beispiel", "injuries": "offene Blutung"},
+  {"id": 3, "name": "Patient 3", "injuries": "SHT"},
+  {"id": 4, "name": "Ronald Lyons", "injuries": "Bein fehlt"}
 ]""";

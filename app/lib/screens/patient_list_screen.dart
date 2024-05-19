@@ -48,8 +48,9 @@ class _PatientListScreenState extends State<PatientListScreen> {
                       return Card(
                           child: ListTile(
                         leading: const Icon(Icons.person), // or person_pin
-                        title: Text(patient.id.toString()),
-                        subtitle: Text(patient.description),
+                        title: Text(patient.name),
+                        subtitle: Text(patient.injuries),
+                        trailing: Text(patient.id.toString()),
                         onTap: () {
                           Navigator.push(
                               context,

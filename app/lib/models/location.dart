@@ -3,7 +3,7 @@ import 'package:manvsim/models/patient_action.dart';
 class Location {
   final int id;
   final String name;
-  List<PatientAction> actions;
+  List<PatientAction> actions; // TODO: change to resources
   List<Location> locations;
 
   Location(
