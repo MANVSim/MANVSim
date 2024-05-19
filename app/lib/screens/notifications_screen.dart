@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:manvsim/models/patient.dart';
-import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 
 class NotificationsScreen extends StatefulWidget {

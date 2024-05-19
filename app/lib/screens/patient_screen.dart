@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:manvsim/models/location.dart';
 
 import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
+import 'package:manvsim/widgets/resource_directory.dart';
 
 class PatientScreen extends StatefulWidget {
   final Patient patient;
@@ -14,6 +17,20 @@ class PatientScreen extends StatefulWidget {
 }
 
 class _PatientScreenState extends State<PatientScreen> {
+  late Future<List<Location>> locations;
+
+  Future<void> _updateActions() async {
+    setState(() {
+      locations = fetchActions();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    locations = fetchActions();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,42 +41,24 @@ class _PatientScreenState extends State<PatientScreen> {
         ),
         body: RefreshIndicator(
             onRefresh: () {
-              return Future(() => null);
+              return _updateActions();
             },
-            child: const Column(children: [
-              Placeholder(),
-              Column(
-                children: [
-                  const ExpansionTile(
-                    title: Text('Red backpack'),
-                    subtitle: Text('Everything you need quick access to'),
-                    children: <Widget>[
-                      ListTile(title: Text('Something directly in backpack')),
-                      const ExpansionTile(
-                        title: Text('Medication pack'),
-                        subtitle: Text('Medicine'),
-                        children: <Widget>[
-                          ListTile(title: Text('Pain killer')),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const ExpansionTile(
-                    title: Text('RTW'),
-                    subtitle: Text('Everything on the RTW'),
-                    children: <Widget>[
-                      ListTile(title: Text('EKG')),
-                      const ExpansionTile(
-                        title: Text('Medicine cabinet'),
-                        subtitle: Text('Medicine'),
-                        children: <Widget>[
-                          ListTile(title: Text('Strong pain killer')),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              )
-            ])));
+            child: Column(children: [
+              const Placeholder(),
+              FutureBuilder(
+                  future: locations,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: ResourceDirectory(locations: snapshot.data!));
+                    } else if (snapshot.hasError) {
+                      return Text('${snapshot.error}');
+                    }
+                    return const CircularProgressIndicator();
+                  })
+            ])
+        )
+    );
   }
 }
