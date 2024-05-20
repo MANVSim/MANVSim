@@ -4,9 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
+flask = "*"
+flask-api = "*"
+werkzeug = "2.3.8"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
+pylint = "*"
+flask-wtf = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.12"
+
+[scripts]
+lint = "pylint *.py -E"
