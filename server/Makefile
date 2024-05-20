@@ -14,9 +14,3 @@ migration:
 
 migrate:
 	bash scripts/perform-migration.sh
-
-start-frontend:
-	bash scripts/frontend.sh start
-
-build-frontend:
-	bash scripts/frontend.sh build
