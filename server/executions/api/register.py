@@ -1,9 +1,8 @@
 from executions import run
+from executions.api import api
 
-from flask import Blueprint, request, Response
+from flask import request, Response
 from flask_api import status
-
-api = Blueprint("api", __name__)
 
 
 @api.get("/exec/status/<exec_id>")

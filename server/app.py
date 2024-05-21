@@ -9,10 +9,10 @@ csrf = CSRFProtect()
 
 def create_app():
     """
-    Creat the app instance, register all URLs and the database to the app
+    Create the app instance, register all URLs and the database to the app
     """
     # asynchronously import local packages
-    from web.api import api
+    from executions.api import register
 
     app = Flask(__name__, static_folder="../web/dist")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
@@ -28,9 +28,11 @@ def create_app():
             return send_from_directory(app.static_folder, path)
         elif path == "/" or path == "":
             return send_from_directory(app.static_folder, "index.html")
+        elif path.startswith("/api"):
+            return "API Endpoint not found. Please refactor your request or contact the admin", 404
         else:
             return redirect("/")
 
-    app.register_blueprint(api, url_prefix="/api")
+    app.register_blueprint(register.api, url_prefix="/api")
 
     return app
