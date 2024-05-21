@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
-import 'package:manvsim/screens/action_screen.dart';
 
 class ResourceDirectory extends StatefulWidget {
   final List<Location> locations;
@@ -31,17 +30,14 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
               ListView.builder(
                 shrinkWrap: true, // nested scrolling
                 physics: const ClampingScrollPhysics(),
-                itemCount: location.actions.length,
+                itemCount: location.resource.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                      title: Text(location.actions[index].name),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ActionScreen(
-                                    action: location.actions[index])));
-                      });
+                  return Card(
+                      color: Colors.deepOrangeAccent,
+                      child: ListTile(
+                          leading: Text('${location.resource[index].quantity}'),
+                          title: Text(location.resource[index].name),
+                          onTap: () {}));
                 },
               ),
               ResourceDirectory(locations: location.locations)

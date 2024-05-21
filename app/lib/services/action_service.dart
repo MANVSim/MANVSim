@@ -1,39 +1,61 @@
 import 'dart:convert';
 
 import 'package:manvsim/models/location.dart';
+import 'package:manvsim/models/patient_action.dart';
 
-Future<List<Location>> fetchActions() async {
+Future<List<Location>> fetchLocations() async {
   String json = demoJson;
   List<dynamic> jsonList = jsonDecode(json);
   return jsonList.map((location) => Location.fromJson(location)).toList();
+}
+
+Future<List<PatientAction>> fetchActions() async {
+  await Future.delayed(Duration(seconds: 1)); // TODO
+  String json = demoActions;
+  List<dynamic> jsonList = jsonDecode(json);
+  return jsonList.map((action) => PatientAction.fromJson(action)).toList();
 }
 
 Future<String> fetchActionResult(int id) async {
   return "Successful result for $id";
 }
 
+const String demoActions = """
+[
+  {
+    "id": 1,
+    "name": "Pflaster",
+    "durationInSeconds": 10
+  },
+  {
+    "id": 2,
+    "name": "Klamotten aufschneiden",
+    "durationInSeconds": 10
+  }
+]""";
+
 const String demoJson = """
 [
   {
     "id": 1,
     "name": "Red backpack", 
-    "actions": [{
+    "resources": [{
       "id": 1,
       "name": "Scissors",
-      "durationInSeconds": 20
+      "quantity": 20
     },
     {
       "id": 40,
       "name": "Bandaid",
-      "durationInSeconds": 7
+      "quantity": 7
     }],
     "locations": [{
       "id": 2,
       "name": "Medication pack",
-      "actions": [{
+      "resources": [{
         "id": 2,
         "name": "Pain killer",
-        "durationInSeconds": 30
+        "quantity": 30
       }],
       "locations": []
       }]
@@ -41,18 +63,18 @@ const String demoJson = """
   {
     "id": 3,
     "name": "RTW", 
-    "actions": [{
+    "resources": [{
       "id": 3,
       "name": "EKG",
-      "durationInSeconds": 120
+      "quantity": 120
     }],
     "locations": [{
       "id": 4,
       "name": "Medicine cabinet",
-      "actions": [{
+      "resources": [{
         "id": 4,
         "name": "Strong pain killer",
-        "durationInSeconds": 50
+        "quantity": 50
       }],
       "locations": []
       }]
