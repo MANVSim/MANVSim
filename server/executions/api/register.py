@@ -1,8 +1,10 @@
+import app
 from executions import run
 from executions.api import api
 
-from flask import request, Response
+from flask import Response
 from flask_api import status
+from flask_wtf.csrf import generate_csrf
 
 
 @api.get("/exec/status/<exec_id>")
@@ -36,16 +38,20 @@ def get_current_exec_status(exec_id: str):
         )
 
 
-@api.get("register/hello")
+@api.get("/register/hello")
 def hello_world():
     return {"hello": "world"}
 
 
-@api.post("register")
-def register_player():
+@api.get("/register/<tan>")
+def register_player(tan: str):
     try:
-        exec_id = run.active_player[request.form["TAN"]]
-        return {"exec_id": exec_id}
+        exec_id = run.active_player[tan]
+        return {
+            "exec_id": exec_id,
+            "csrf_token": generate_csrf()
+        }
     except KeyError:
         print("ERROR: invalid tan detected. Unable to resolve player.")
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(response="Invalid TAN detected. Unable to resolve player.",
+                        status=status.HTTP_400_BAD_REQUEST)
