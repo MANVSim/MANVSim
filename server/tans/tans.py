@@ -1,9 +1,8 @@
 import random
+import string
 
 
-ALLOWED_CHARS = [chr(x) for x in range(ord("A"), ord("Z") + 1)] + [
-    str(x) for x in range(10)
-]
+ALLOWED_CHARS = string.ascii_uppercase + string.digits
 
 
 def possible_tans(length: int) -> int:
