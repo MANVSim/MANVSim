@@ -8,6 +8,10 @@ Future<List<Location>> fetchActions() async {
   return jsonList.map((location) => Location.fromJson(location)).toList();
 }
 
+Future<String> fetchActionResult(int id) async {
+  return "Successful result for $id";
+}
+
 const String demoJson = """
 [
   {
@@ -17,6 +21,11 @@ const String demoJson = """
       "id": 1,
       "name": "Scissors",
       "durationInSeconds": 20
+    },
+    {
+      "id": 40,
+      "name": "Bandaid",
+      "durationInSeconds": 7
     }],
     "locations": [{
       "id": 2,
