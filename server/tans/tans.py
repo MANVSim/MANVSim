@@ -86,10 +86,7 @@ def uniques(n: int, length: int = 5) -> list[Tan]:
         raise ValueError(
             f"Cannot generate {n} unique TANs of length {length}. Maximum possible TANs is {possible_tans(length)}."
         )
-    tans = []
+    tans = set()
     while len(tans) < n:
-        candidate = Tan(length)
-        # Make sure that the TANs are unique
-        if candidate not in tans:
-            tans.append(candidate)
-    return tans
+        tans.add(Tan(length))
+    return list(tans)
