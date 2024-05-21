@@ -6,6 +6,10 @@ ALLOWED_CHARS = [chr(x) for x in range(ord("A"), ord("Z") + 1)] + [
 ]
 
 
+def possible_tans(length: int) -> int:
+    return len(ALLOWED_CHARS) ** length
+
+
 class Tan:
     value: str = ""
 
@@ -74,7 +78,14 @@ def uniques(n: int, length: int = 5) -> list[Tan]:
 
     Returns:
     list[Tan]: The list of generated unique TANs.
+
+    Raises:
+    ValueError: If n is greater than the maximum possible TANs of the given length.
     """
+    if n > possible_tans(length):
+        raise ValueError(
+            f"Cannot generate {n} unique TANs of length {length}. Maximum possible TANs is {possible_tans(length)}."
+        )
     tans = []
     while len(tans) < n:
         candidate = Tan(length)
