@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:manvsim/models/patient.dart';
-import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -12,19 +10,6 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  late Future<List<Patient>> patientList;
-
-  Future<void> _updatePatientList() async {
-    setState(() {
-      patientList = fetchPatientList();
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    patientList = fetchPatientList();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +20,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(
-          onRefresh: _updatePatientList,
+          onRefresh: () => Future(() => null),
           child: const Padding(
             padding: EdgeInsets.all(8.0),
             child: Column(

@@ -19,14 +19,14 @@ test_b = Execution(1338, Scenario(18, "Test-Scenario-Running", [],{}), 42, [play
 exec_dict = {
     # "exec_id": "exec: execution_dbo"
     "1337": test_a,
-    "1338": test_b
+    "1338": test_b,
 }
 
 # Dictionary storing all active players in an execution
 active_player = {
     # "TAN" : "exec_uuid"
     "69": "1337",
-    "88": "1338"
+    "88": "1338",
 }
 
 

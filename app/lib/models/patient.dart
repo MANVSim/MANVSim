@@ -1,16 +1,14 @@
 class Patient {
   final int id;
-  String description;
+  final String name;
+  final String injuries;
 
-  Patient({
-    required this.id,
-    required this.description
-  });
+  Patient({required this.id, required this.name, required this.injuries});
 
   factory Patient.fromJson(Map<String, dynamic> json) {
     return switch (json) {
-      {'id': int id, 'description': String description} =>
-          Patient(id: id, description: description),
+      {'id': int id, 'name': String name, 'injuries': String injuries} =>
+        Patient(id: id, name: name, injuries: injuries),
       _ => throw const FormatException('Failed to parse patient from JSON.')
     };
   }

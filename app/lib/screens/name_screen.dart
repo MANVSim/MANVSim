@@ -10,6 +10,7 @@ class NameScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Name Selection'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
         child: Padding(

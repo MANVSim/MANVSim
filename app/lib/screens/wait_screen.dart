@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:manvsim/appframe.dart';
 import 'package:manvsim/widgets/logout_button.dart';
+import 'package:manvsim/widgets/timer_widget.dart';
 
 class WaitScreen extends StatelessWidget {
   const WaitScreen({super.key});
@@ -11,18 +11,25 @@ class WaitScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: const <Widget>[LogoutButton()],
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Waiting for simulation to start'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            LoadingAnimationWidget.threeRotatingDots(
-              color: Colors.black,
-              size: 32,
+            TimerWidget(
+              duration: 10,
+              onTimerComplete: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AppFrame()),
+                      (Route<dynamic> route) => false, // Removes previous routes
+                );
+              },
             ),
-            const SizedBox(height: 32),
-            const Text("waiting for the simulation to start"),
-            const SizedBox(height: 16),
+            const SizedBox(height: 64),
+
             ElevatedButton.icon(
               icon: const Icon(Icons.skip_next),
               onPressed: () {
