@@ -22,7 +22,7 @@ class Tan:
         if isinstance(length_or_value, int):
             self.value = "".join(random.choices(ALLOWED_CHARS, k=length_or_value))
         elif isinstance(length_or_value, str):
-            self.value = length_or_value
+            self.value = length_or_value.upper()
         else:
             raise TypeError(
                 f"Wrong type for Tan constructor. Expected int or str, got {type(length_or_value)}"
@@ -39,9 +39,9 @@ class Tan:
         bool: True if the TANs or strings are equal (ignoring case), False otherwise.
         """
         if isinstance(other, Tan):
-            return self.value.lower() == other.value.lower()
+            return self.value.upper() == other.value.upper()
         elif isinstance(other, str):
-            return self.value.lower() == other.lower()
+            return self.value.upper() == other.upper()
         else:
             return False
 
@@ -52,7 +52,7 @@ class Tan:
         Returns:
         str: The string representation of this TAN.
         """
-        return self.value
+        return self.value.upper()
 
     def __repr__(self):
         """
@@ -61,7 +61,7 @@ class Tan:
         Returns:
         str: The developer-friendly string representation of this TAN.
         """
-        return f"Tan({self.value!r})"
+        return f"Tan({self.value.upper()!r})"
 
 
 def uniques(n: int, length: int = 5) -> list[Tan]:
@@ -78,7 +78,7 @@ def uniques(n: int, length: int = 5) -> list[Tan]:
     tans = []
     while len(tans) < n:
         candidate = Tan(length)
-        # Make sure that the tans are unique
+        # Make sure that the TANs are unique
         if candidate not in tans:
             tans.append(candidate)
     return tans
