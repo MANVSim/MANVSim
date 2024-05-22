@@ -1,11 +1,14 @@
 import logging
 
 from executions import run
-from executions.api import api
 
 from flask import Response
 from flask_api import status
 from flask_wtf.csrf import generate_csrf
+
+from flask import Blueprint
+
+api = Blueprint("api-register", __name__)
 
 
 @api.get("/exec/status/<exec_id>")

@@ -1,8 +1,12 @@
 import logging
 import os
-from flask import Flask, send_from_directory, redirect
+from flask import Flask, send_from_directory, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
+from werkzeug.exceptions import BadRequestKeyError
+
+from executions import run
+from executions.entities.execution import Execution
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
@@ -15,7 +19,7 @@ def create_app():
     Create the app instance, register all URLs and the database to the app
     """
     # asynchronously import local packages
-    from executions.api import register
+    from executions.api import register, location
 
     app = Flask(__name__, static_folder="../web/dist")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
@@ -26,6 +30,22 @@ def create_app():
 
     db.init_app(app)
     csrf.init_app(app)
+
+    # define run request blocker
+    @app.before_request
+    def return_hold_if_not_running():
+        if "/api/run" in request.path:
+            logging.info("check api-run")
+            try:
+                exec_id = request.args["exec_id"]
+                execution = run.exec_dict[exec_id]
+                if execution.status != Execution.Status.RUNNING:
+                    return f"Execution {exec_id}:{execution.scenario.name} is not running", 404
+
+            except BadRequestKeyError:
+                return f" No request parameter 'exec_id' found.", 400
+            except KeyError:
+                return f"Invalid Execution ID sent. Unable to resolve running instance", 400
 
     # register paths required for serving frontend
     @app.route("/", defaults={"path": ""})
@@ -41,5 +61,7 @@ def create_app():
             return redirect("/")
 
     app.register_blueprint(register.api, url_prefix="/api")
+    app.register_blueprint(location.api, url_prefix="/api/run")
 
     return app
+
