@@ -2,6 +2,7 @@ class Resource {
   final int id;
   final String name;
   int quantity;
+  bool selected = false;
 
   Resource(
       {required this.id, required this.name, required this.quantity});

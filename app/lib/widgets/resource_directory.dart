@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
+import 'package:manvsim/models/resource.dart';
 
 class ResourceDirectory extends StatefulWidget {
   final List<Location> locations;
 
-  const ResourceDirectory({super.key, required this.locations});
+  // function to propagate toggling to parent
+  final Function(Resource resource) resourceToggle;
+
+  const ResourceDirectory(
+      {super.key, required this.locations, required this.resourceToggle});
 
   @override
   State<ResourceDirectory> createState() => _ResourceDirectoryState();
@@ -32,15 +37,25 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
                 physics: const ClampingScrollPhysics(),
                 itemCount: location.resource.length,
                 itemBuilder: (context, index) {
+                  Resource resource = location.resource[index];
                   return Card(
-                      color: Colors.deepOrangeAccent,
+                      color: resource.selected
+                          ? Colors.lightGreen
+                          : Colors.deepOrangeAccent,
                       child: ListTile(
-                          leading: Text('${location.resource[index].quantity}'),
-                          title: Text(location.resource[index].name),
-                          onTap: () {}));
+                          leading: Text('${resource.quantity}'),
+                          title: Text(resource.name),
+                          onTap: () {
+                            // TODO: maybe reset after changing patient or rework approach
+                            resource.selected = !resource.selected;
+                            widget.resourceToggle(resource);
+                          }));
                 },
               ),
-              ResourceDirectory(locations: location.locations)
+              ResourceDirectory(
+                locations: location.locations,
+                resourceToggle: widget.resourceToggle,
+              )
             ],
           ));
         });

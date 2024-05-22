@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/patient_action.dart';
+import 'package:manvsim/models/resource.dart';
 import 'package:manvsim/screens/action_screen.dart';
 import 'package:manvsim/widgets/resource_directory.dart';
 
@@ -17,26 +18,48 @@ class ActionSelection extends StatefulWidget {
 }
 
 class _ActionSelectionState extends State<ActionSelection> {
+  Set<Resource> selectedResources = {};
+
+  toggleResource(Resource resource) {
+    setState(() {
+      // Try to remove, else wasn't in set and add
+      if (!selectedResources.remove(resource)) {
+        selectedResources.add(resource);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      ResourceDirectory(locations: widget.locations),
+      ResourceDirectory(
+          locations: widget.locations, resourceToggle: toggleResource),
       const Text('Actions: '),
       ListView.builder(
         shrinkWrap: true, // nested scrolling
         physics: const ClampingScrollPhysics(),
-        itemCount: widget.actions.length,
+        itemCount: selectedActions.length,
         itemBuilder: (context, index) => Card(
             child: ListTile(
-                title: Text(widget.actions[index].name),
+                title: Text(selectedActions[index].name),
                 onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              ActionScreen(action: widget.actions[index])));
+                              ActionScreen(action: selectedActions[index])));
                 })),
       )
     ]);
+  }
+
+  List<PatientAction> get selectedActions {
+    if (selectedResources.isEmpty) {
+      return widget.actions;
+    }
+    return widget.actions
+        .where((action) => selectedResources.every(
+            (resource) => action.resourceNamesNeeded.contains(resource.name)))
+        .toList();
   }
 }
