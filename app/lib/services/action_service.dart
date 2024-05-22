@@ -25,12 +25,14 @@ const String demoActions = """
   {
     "id": 1,
     "name": "Pflaster",
-    "durationInSeconds": 10
+    "durationInSeconds": 10,
+    "resourceNamesNeeded": [""]
   },
   {
     "id": 2,
     "name": "Klamotten aufschneiden",
-    "durationInSeconds": 10
+    "durationInSeconds": 4,
+    "resourceNamesNeeded": [""]
   }
 ]""";
 
