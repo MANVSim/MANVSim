@@ -1,4 +1,5 @@
-import app
+import logging
+
 from executions import run
 from executions.api import api
 
@@ -52,6 +53,6 @@ def register_player(tan: str):
             "csrf_token": generate_csrf()
         }
     except KeyError:
-        print("ERROR: invalid tan detected. Unable to resolve player.")
+        logging.error("invalid tan detected. Unable to resolve player.")
         return Response(response="Invalid TAN detected. Unable to resolve player.",
                         status=status.HTTP_400_BAD_REQUEST)

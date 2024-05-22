@@ -1,3 +1,5 @@
+import logging
+
 from executions.entities.execution import Execution
 from executions.entities.player import Player
 from executions.entities.scenario import Scenario
@@ -48,7 +50,7 @@ def delete_execution(exec_id: str):
         execution = exec_dict.pop(exec_id)
         delete_active_players(execution.players)
     except KeyError:
-        print(f"ERROR: {exec_id} already removed")
+        logging.error(f"{exec_id} already removed")
 
 
 def delete_active_players(players):
@@ -56,4 +58,4 @@ def delete_active_players(players):
         try:
             active_player.pop(player.tan)
         except KeyError:
-            print(f"{player.tan} already removed")
+            logging.info(f"{player.tan} already removed")

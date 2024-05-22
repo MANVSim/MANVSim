@@ -1,3 +1,4 @@
+import logging
 import os
 from flask import Flask, send_from_directory, redirect
 from flask_sqlalchemy import SQLAlchemy
@@ -5,6 +6,8 @@ from flask_wtf.csrf import CSRFProtect
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
+
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 
 def create_app():

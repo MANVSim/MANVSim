@@ -1,3 +1,4 @@
+import logging
 import time
 
 from executions.entities.stategraphs.patientstate import PatientState
@@ -37,4 +38,4 @@ def test_to_json():
     assert state.start_time == state_dict["start_time"]
     assert state.timelimit == state_dict["timelimit"]
     assert state.after_time_state_uuid == state_dict["after_time_state_uuid"]
-    print(f"DEBUG: JSON:\n{state.to_json()}")
+    logging.debug(f"JSON:\n{state.to_json()}")

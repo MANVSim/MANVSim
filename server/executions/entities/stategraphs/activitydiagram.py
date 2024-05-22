@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 
 from executions.entities.stategraphs.patientstate import PatientState
@@ -6,7 +7,7 @@ from executions.entities.stategraphs.patientstate import PatientState
 
 class ActivityDiagram:
 
-    def __init__(self, root: PatientState = None, states=None):
+    def __init__(self, root: PatientState = None, states: list[PatientState] = None):
         if states is None:
             states = []
 
@@ -35,13 +36,13 @@ class ActivityDiagram:
 
         return True
 
-    def add_state(self, state: PatientState, force_update=False):
+    def add_state(self, state: PatientState, force_update: bool = False):
         """ An administration method to extend the activity diagram with another state. """
         if force_update or state.uuid not in self.states.keys():
             self.states[state.uuid] = state
             return True
         else:
-            print("WARNING: state_uuid already present. You might force-update the id if necessary.")
+            logging.warning("state_uuid already present. You might force-update the id if necessary.")
             return False
 
     def to_dict(self):

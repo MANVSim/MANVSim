@@ -1,14 +1,15 @@
 import json
+import logging
 import time
 import uuid
 
 
 class PatientState:
 
-    def __init__(self, state_uuid: str = str(uuid.uuid4()), treatments=None, start_time: int = -1,
+    def __init__(self, state_uuid: str = str(uuid.uuid4()), treatments: dict[str, str] = None, start_time: int = -1,
                  timelimit: int = -1, after_time_state_uuid=""):
         if treatments is None:
-            treatments: dict[str, str] = {}
+            treatments = {}
 
         self.uuid = state_uuid
         self.start_time = start_time
@@ -16,7 +17,7 @@ class PatientState:
         self.after_time_state_uuid = after_time_state_uuid
         self.treatments = treatments
 
-    def add_treatment(self, treatment: str, new_state_uuid: str, force_update=False):
+    def add_treatment(self, treatment: str, new_state_uuid: str, force_update: bool = False):
         """
             Inserts an additional treatment, that leads to a state change. If the treatment is already
             provided it keeps the old state unless the force_update flags allows an overwrite.
@@ -25,7 +26,7 @@ class PatientState:
             self.treatments[treatment] = new_state_uuid
             return True
         else:
-            print("Warning: treatment already exist. You might force-update the id if necessary.")
+            logging.warning("treatment already exist. You might force-update the id if necessary.")
             return False
 
     def start_timer(self):
@@ -34,7 +35,7 @@ class PatientState:
             self.start_time = round(time.time())
             return True
         else:
-            print("ERROR: unable to start error, due to missing run time.")
+            logging.error("unable to start error, due to missing run time.")
             return False
 
     def get_all_states(self):
