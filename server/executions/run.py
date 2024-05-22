@@ -1,3 +1,5 @@
+import logging
+
 from executions.entities.execution import Execution
 from executions.entities.player import Player
 from executions.entities.scenario import Scenario
@@ -12,20 +14,8 @@ action of interest into a separate file (FIXME: docu update @Louis)
 player_a = Player("69", "Finn Bartels", None, [])
 player_b = Player("88", "Fiete Arp", None, [])
 
-test_a = Execution(
-    1337,
-    Scenario(17, "Test-Scenario-Pending", [], [], dict()),
-    42,
-    [player_a],
-    Execution.Status.PENDING,
-)
-test_b = Execution(
-    1338,
-    Scenario(18, "Test-Scenario-Running", [], [], dict()),
-    42,
-    [player_b],
-    Execution.Status.RUNNING,
-)
+test_a = Execution(1337, Scenario(17, "Test-Scenario-Pending", [], [], {}), 42, [player_a], Execution.Status.PENDING)
+test_b = Execution(1338, Scenario(18, "Test-Scenario-Running", [],[], {}), 42, [player_b], Execution.Status.RUNNING)
 
 # Dictionary storing the current available execution, whether they are PENDING, RUNNING or about to FINISH
 exec_dict = {
@@ -51,9 +41,7 @@ def create_execution(execution: Execution):
 
 def create_active_players(exec_id, players):
     for player in players:
-        active_player[player.tan] = str(
-            exec_id
-        )  # player_tan is unique due to database primary key
+        active_player[player.tan] = str(exec_id)  # player_tan is unique due to database primary key
 
 
 # DELETE
@@ -62,7 +50,7 @@ def delete_execution(exec_id: str):
         execution = exec_dict.pop(exec_id)
         delete_active_players(execution.players)
     except KeyError:
-        print(f"ERROR: {exec_id} already removed")
+        logging.error(f"{exec_id} already removed")
 
 
 def delete_active_players(players):
@@ -70,4 +58,4 @@ def delete_active_players(players):
         try:
             active_player.pop(player.tan)
         except KeyError:
-            print(f"{player.tan} already removed")
+            logging.info(f"{player.tan} already removed")
