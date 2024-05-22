@@ -45,9 +45,20 @@ class Database:
 
     def execute(self, query: str) -> list[tuple]:
         """
-        Executes a given query and returns a list of results.
+        Executes a given query and returns a list of results. If the query fails, an exception is raised.
 
         Example: db.execute("SELECT * FROM example;")
         """
         self.cursor.execute(query)
         return self.cursor.fetchall()
+
+    def try_execute(self, query: str) -> list[tuple]:
+        """
+        Executes a given query and returns a list of results. If the query fails, an empty list is returned.
+
+        Example: db.execute("SELECT * FROM example;")
+        """
+        try:
+            return self.execute(query)
+        except sqlite3.Error:
+            return []

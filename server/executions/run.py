@@ -15,7 +15,7 @@ player_a = Player("69", "Finn Bartels", None, [])
 player_b = Player("88", "Fiete Arp", None, [])
 
 test_a = Execution(1337, Scenario(17, "Test-Scenario-Pending", [], [], {}), 42, [player_a], Execution.Status.PENDING)
-test_b = Execution(1338, Scenario(18, "Test-Scenario-Running", [],[], {}), 42, [player_b], Execution.Status.RUNNING)
+test_b = Execution(1338, Scenario(18, "Test-Scenario-Running", [], [], {}), 42, [player_b], Execution.Status.RUNNING)
 
 # Dictionary storing the current available execution, whether they are PENDING, RUNNING or about to FINISH
 exec_dict = {
