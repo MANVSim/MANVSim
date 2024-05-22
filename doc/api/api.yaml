@@ -30,6 +30,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Patient'
+              example:
+                - id: 1
+                  name: Max Mustermann
+                  injuries: Beinverletzung
+                - id: 2
+                  name: Bernd Beispiel
+                  injuries: Offene Blutung
+                - id: 3
+                  name: Patient 3
+                  injuries: SHT
+                - id: 4
+                  name: Ronald Lyons
+                  injuries: Bein fehlt
 
   /{gameId}/{userTan}/patients/{patientId}:
     get:
@@ -57,6 +70,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Patient'
+              example:
+                id: 4
+                name: Ronald Lyons
+                injuries: Bein fehlt
         '404':
           description: Patient with patientId could not be found.
 
@@ -83,6 +100,38 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Location'
+              example:
+                - id: 1
+                  name: Roter Rucksack
+                  resources:
+                    - id: 1
+                      name: Schere
+                      quantity: 20
+                    - id: 40
+                      name: Pflaster
+                      quantity: 7
+                  locations:
+                    - id: 2
+                      name: Medikamententasche
+                      resources:
+                        - id: 2
+                          name: Schmerzmittel
+                          quantity: 30
+                      locations: [ ]
+                - id: 3
+                  name: RTW
+                  resources:
+                    - id: 3
+                      name: EKG
+                      quantity: 120
+                  locations:
+                    - id: 4
+                      name: Medizinschrank
+                      resources:
+                        - id: 4
+                          name: Starkes Schmerzmittel
+                          quantity: 50
+                      locations: [ ]
 
   /{gameId}/{userTan}/actions:
     get:
@@ -107,6 +156,22 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Action'
+              example:
+                - id: 1
+                  name: Pflaster anbringen
+                  durationInSeconds: 10
+                  resourceNamesNeeded:
+                    - Pflaster
+                - id: 2
+                  name: Klamotten aufschneiden
+                  durationInSeconds: 4
+                  resourceNamesNeeded:
+                    - Schere
+                - id: 3
+                  name: Schmerzmittel verabreichen
+                  durationInSeconds: 20
+                  resourceNamesNeeded:
+                    - Schmerzmittel
 
   /{gameId}/{userTan}/actions/{actionId}:
     post:
@@ -134,6 +199,7 @@ paths:
             application/json:
               schema:
                 type: integer
+              example: 5
 
   /{gameId}/{userTan}/actions/result/{performedActionId}:
     get:
@@ -161,6 +227,7 @@ paths:
             application/json:
               schema:
                 type: string
+              example: Die Maßnahme war erfolgreich.
 
 components:
   schemas:
