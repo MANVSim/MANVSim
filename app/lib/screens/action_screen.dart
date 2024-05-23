@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:manvsim/models/patient_action.dart';
+import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
+import 'package:manvsim/widgets/timer_widget.dart';
 
 class ActionScreen extends StatefulWidget {
   final PatientAction action;
@@ -16,27 +18,7 @@ class ActionScreen extends StatefulWidget {
 }
 
 class _ActionScreenState extends State<ActionScreen> {
-  late Timer timer;
-  late int countdownInSeconds;
-
-  @override
-  void initState() {
-    super.initState();
-    countdownInSeconds = widget.action.durationInSeconds;
-    startTimer();
-  }
-
-  void startTimer() {
-    timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
-      setState(() {
-        if (countdownInSeconds == 0) {
-          timer.cancel();
-        } else {
-          countdownInSeconds--;
-        }
-      });
-    });
-  }
+  late Future<String> result;
 
   @override
   Widget build(BuildContext context) {
@@ -51,29 +33,43 @@ class _ActionScreenState extends State<ActionScreen> {
             onRefresh: () {
               return Future(() => null);
             },
-            child: Column(children: [
-              Text(
-                formattedCountdown,
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .apply(fontSizeFactor: 2.0),
-              ),
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    minHeight: 10,
-                  )),
-              const Placeholder()
-            ])));
+            child: Center(
+                child: TimerWidget(
+              duration: widget.action.durationInSeconds,
+              onTimerComplete: showResultDialog,
+            ))));
   }
 
-  double get progress {
-    return (widget.action.durationInSeconds - countdownInSeconds) /
-        widget.action.durationInSeconds;
-  }
+  void showResultDialog() {
+    result = fetchActionResult(widget.action.id);
+    Future dialogFuture = showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text(widget.action.name),
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // close dialog
+              },
+              child: const Text('Ok'))
+        ],
+        content: FutureBuilder(
+            future: result,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(snapshot.data!);
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              }
 
-  String get formattedCountdown {
-    return '${countdownInSeconds ~/ 60}:${countdownInSeconds % 60}';
+              return const CircularProgressIndicator();
+            }),
+      ),
+    );
+    // close action_screen
+    dialogFuture.then((_res) {
+      Navigator.pop(context);
+    });
   }
 }

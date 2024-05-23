@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
 
 import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/services/action_service.dart';
+import 'package:manvsim/widgets/action_selection.dart';
 import 'package:manvsim/widgets/patient_overview.dart';
 import 'package:manvsim/widgets/logout_button.dart';
-import 'package:manvsim/widgets/resource_directory.dart';
 
 class PatientScreen extends StatefulWidget {
   final Patient patient;
@@ -18,18 +19,22 @@ class PatientScreen extends StatefulWidget {
 }
 
 class _PatientScreenState extends State<PatientScreen> {
-  late Future<List<Location>> locations;
+  late List<Location> locations;
+  late List<PatientAction> actions;
 
-  Future<void> _updateActions() async {
-    setState(() {
-      locations = fetchActions();
-    });
+  late Future<void> loading;
+
+  Future _updateActions() async {
+    return Future.wait([
+      fetchLocations().then((value) => locations = value),
+      fetchActions().then((value) => actions = value)
+    ]);
   }
 
   @override
   void initState() {
     super.initState();
-    locations = fetchActions();
+    loading = _updateActions();
   }
 
   @override
@@ -48,10 +53,13 @@ class _PatientScreenState extends State<PatientScreen> {
                 child: Column(children: [
               PatientOverview(patient: widget.patient),
               FutureBuilder(
-                  future: locations,
+                  future: loading,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return ResourceDirectory(locations: snapshot.data!);
+                      return ActionSelection(
+                        locations: locations,
+                        actions: actions,
+                      );
                     } else if (snapshot.hasError) {
                       return Text('${snapshot.error}');
                     }

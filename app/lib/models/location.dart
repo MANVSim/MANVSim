@@ -1,15 +1,15 @@
-import 'package:manvsim/models/patient_action.dart';
+import 'package:manvsim/models/resource.dart';
 
 class Location {
   final int id;
   final String name;
-  List<PatientAction> actions; // TODO: change to resources
+  List<Resource> resource;
   List<Location> locations;
 
   Location(
       {required this.id,
       required this.name,
-      required this.actions,
+      required this.resource,
       required this.locations});
 
   factory Location.fromJson(Map<String, dynamic> json) {
@@ -17,14 +17,14 @@ class Location {
       {
         'id': int id,
         'name': String name,
-        'actions': List<dynamic> actions,
+        'resources': List<dynamic> resources,
         'locations': List<dynamic> locations
       } =>
         Location(
             id: id,
             name: name,
-            actions: actions
-                .map((action) => PatientAction.fromJson(action))
+            resource: resources
+                .map((resource) => Resource.fromJson(resource))
                 .toList(),
             locations: locations
                 .map((location) => Location.fromJson(location))
