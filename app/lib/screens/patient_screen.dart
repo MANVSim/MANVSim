@@ -53,7 +53,7 @@ class _PatientScreenState extends State<PatientScreen> {
             },
             child: SingleChildScrollView(
                 child: Column(children: [
-              PatientOverview(patient: widget.patient),
+              Card(child: PatientOverview(patient: widget.patient)),
               FutureBuilder(
                   future: loading,
                   builder: (context, snapshot) {

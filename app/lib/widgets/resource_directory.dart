@@ -29,25 +29,23 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
               child: ExpansionTile(
             title: Text(location.name),
             controlAffinity: ListTileControlAffinity.leading,
-            shape: const Border(), // removes border on top and bottom
+            // removes border on top and bottom
+            shape: const Border(),
             childrenPadding: const EdgeInsets.only(left: 8.0),
             children: [
               ListView.builder(
                 shrinkWrap: true, // nested scrolling
                 physics: const ClampingScrollPhysics(),
-                itemCount: location.resource.length,
+                itemCount: location.resources.length,
                 itemBuilder: (context, index) {
-                  Resource resource = location.resource[index];
+                  Resource resource = location.resources[index];
                   return Card(
-                      color: resource.selected
-                          ? Colors.lightGreen
-                          : Colors.deepOrangeAccent,
+                      color:
+                          resource.selected ? Colors.lightGreen : Colors.grey,
                       child: ListTile(
                           leading: Text('${resource.quantity}'),
                           title: Text(resource.name),
                           onTap: () {
-                            // TODO: maybe reset after changing patient or rework approach
-                            resource.selected = !resource.selected;
                             widget.resourceToggle(resource);
                           }));
                 },

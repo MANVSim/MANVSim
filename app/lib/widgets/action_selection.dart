@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/patient_action.dart';
@@ -19,20 +18,30 @@ class ActionSelection extends StatefulWidget {
 }
 
 class _ActionSelectionState extends State<ActionSelection> {
-  Set<Resource> selectedResources = {};
+  late final Iterable<Resource> resources;
+  late final Iterable<PatientAction> possibleActions;
 
   toggleResource(Resource resource) {
     setState(() {
-      // Try to remove, else wasn't in set and add
-      if (!selectedResources.remove(resource)) {
-        selectedResources.add(resource);
-      }
+      resource.selected = !resource.selected;
     });
   }
 
   @override
+  void initState() {
+    resources = Location.flattenResourcesFromList(widget.locations);
+    // filter actions by available resources
+    possibleActions = widget.actions.where((action) =>
+        action.resourceNamesNeeded.every((resourceName) =>
+            resources.any((resource) => resource.name == resourceName)));
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var selectedActions = getSelectedActions();
     return Column(children: [
+      const Text('Resources: '),
       ResourceDirectory(
           locations: widget.locations, resourceToggle: toggleResource),
       Text(AppLocalizations.of(context)!.patientActions),
@@ -54,13 +63,18 @@ class _ActionSelectionState extends State<ActionSelection> {
     ]);
   }
 
-  List<PatientAction> get selectedActions {
+  List<PatientAction> getSelectedActions() {
+    var selectedResources = getSelectedResources();
     if (selectedResources.isEmpty) {
-      return widget.actions;
+      return possibleActions.toList();
     }
-    return widget.actions
+    return possibleActions
         .where((action) => selectedResources.every(
             (resource) => action.resourceNamesNeeded.contains(resource.name)))
         .toList();
+  }
+
+  Iterable<Resource> getSelectedResources() {
+    return resources.where((r) => r.selected);
   }
 }

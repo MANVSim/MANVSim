@@ -65,7 +65,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 }
-                return const CircularProgressIndicator();
+                return const Center(child: CircularProgressIndicator());
               }),
         ));
   }
