@@ -5,6 +5,7 @@ import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/models/resource.dart';
 import 'package:manvsim/screens/action_screen.dart';
 import 'package:manvsim/widgets/resource_directory.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ActionSelection extends StatefulWidget {
   final List<Location> locations;
@@ -34,7 +35,7 @@ class _ActionSelectionState extends State<ActionSelection> {
     return Column(children: [
       ResourceDirectory(
           locations: widget.locations, resourceToggle: toggleResource),
-      const Text('Actions: '),
+      Text(AppLocalizations.of(context)!.patientActions),
       ListView.builder(
         shrinkWrap: true, // nested scrolling
         physics: const ClampingScrollPhysics(),

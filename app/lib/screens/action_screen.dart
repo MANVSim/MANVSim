@@ -7,6 +7,7 @@ import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ActionScreen extends StatefulWidget {
   final PatientAction action;
@@ -52,7 +53,7 @@ class _ActionScreenState extends State<ActionScreen> {
               onPressed: () {
                 Navigator.pop(context); // close dialog
               },
-              child: const Text('Ok'))
+              child: Text(AppLocalizations.of(context)!.ok))
         ],
         content: FutureBuilder(
             future: result,

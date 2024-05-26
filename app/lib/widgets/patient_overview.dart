@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/patient.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PatientOverview extends StatefulWidget {
   final Patient patient;
@@ -20,11 +21,13 @@ class _PatientOverviewState extends State<PatientOverview> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Name: ${widget.patient.name}',
+              AppLocalizations.of(context)!.patientName(widget.patient.name),
               style:
                   DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
             ),
-            Text('Verletzungen: ${widget.patient.injuries}',
+            Text(
+                AppLocalizations.of(context)!
+                    .patientInjuries(widget.patient.injuries),
                 style: DefaultTextStyle.of(context)
                     .style
                     .apply(fontSizeFactor: 1.5))
