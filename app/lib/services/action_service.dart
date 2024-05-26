@@ -21,6 +21,10 @@ Future<String> fetchActionResult(int id) async {
   return "Successful result for $id";
 }
 
+Future<int> performAction(int id, List<int> resourceIds) async {
+  return 1;
+}
+
 const String demoActions = """
 [
   {
@@ -45,6 +49,14 @@ const String demoActions = """
     "durationInSeconds": 20,
     "resourceNamesNeeded": [
       "Schmerzmittel"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Sollte nicht zu sehen sein",
+    "durationInSeconds": 20,
+    "resourceNamesNeeded": [
+      "Unbekannte Resource"
     ]
   }
 ]""";

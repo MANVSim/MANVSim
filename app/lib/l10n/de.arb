@@ -46,7 +46,8 @@
       }
     }
   },
-  "patientActions": "Maßnahmen:",
+  "patientResources": "Resourcen: ",
+  "patientActions": "Maßnahmen: ",
 
   "notificationScreenName": "Benachrichtigungen",
 

@@ -34,8 +34,8 @@ class _PatientScreenState extends State<PatientScreen> {
 
   @override
   void initState() {
-    super.initState();
     loading = _updateActions();
+    super.initState();
   }
 
   @override
@@ -49,24 +49,25 @@ class _PatientScreenState extends State<PatientScreen> {
         ),
         body: RefreshIndicator(
             onRefresh: () {
-              return _updateActions();
+              return loading = _updateActions();
             },
             child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(children: [
-              Card(child: PatientOverview(patient: widget.patient)),
-              FutureBuilder(
-                  future: loading,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return ActionSelection(
-                        locations: locations,
-                        actions: actions,
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text('${snapshot.error}');
-                    }
-                    return const CircularProgressIndicator();
-                  })
-            ]))));
+                  Card(child: PatientOverview(patient: widget.patient)),
+                  FutureBuilder(
+                      future: loading,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ActionSelection(
+                            locations: locations,
+                            actions: actions,
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('${snapshot.error}');
+                        }
+                        return const CircularProgressIndicator();
+                      })
+                ]))));
   }
 }

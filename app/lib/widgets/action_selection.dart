@@ -41,7 +41,7 @@ class _ActionSelectionState extends State<ActionSelection> {
   Widget build(BuildContext context) {
     var selectedActions = getSelectedActions();
     return Column(children: [
-      const Text('Resources: '),
+      Text(AppLocalizations.of(context)!.patientResources),
       ResourceDirectory(
           locations: widget.locations, resourceToggle: toggleResource),
       Text(AppLocalizations.of(context)!.patientActions),
