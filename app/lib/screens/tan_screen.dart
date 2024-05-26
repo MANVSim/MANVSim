@@ -10,7 +10,7 @@ class TanScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Home'),
+        title: Text(AppLocalizations.of(context)!.homeScreenName),
         actions: const <Widget>[LogoutButton()],
       ),
       body: Center(

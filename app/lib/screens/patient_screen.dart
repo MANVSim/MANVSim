@@ -8,6 +8,7 @@ import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/action_selection.dart';
 import 'package:manvsim/widgets/patient_overview.dart';
 import 'package:manvsim/widgets/logout_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PatientScreen extends StatefulWidget {
   final Patient patient;
@@ -42,7 +43,8 @@ class _PatientScreenState extends State<PatientScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text('Patient: ${widget.patient.id.toString()} '),
+          title: Text(AppLocalizations.of(context)!
+              .patientScreenName(widget.patient.id)),
           actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(

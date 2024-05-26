@@ -10,16 +10,50 @@
   "loginServerUrl": "Server URL",
   "loginSubmit"  : "Anmelden",
 
-  "nameSceenName": "Namen festlegen",
+  "waitText": "Warten auf Start der Simulation",
+  "waitSkip": "Überspringen",
+
+  "nameScreenName": "Namen festlegen",
   "nameName": "Name",
   "nameSubmit": "Simulation beitreten",
 
-  "patientListScreenName": "Patienten Liste",
+  "patientListScreenName": "Patientenliste",
+
+  "patientScreenName": "Patient: {patientId}",
+  "@patientScreenName": {
+    "placeholders": {
+      "patientId": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "patientName": "Name: {patientName}",
+  "@patientName": {
+    "placeholders": {
+      "patientName": {
+        "type": "String",
+        "example": "Bob"
+      }
+    }
+  },
+  "patientInjuries": "Verletzungen: {patientInjuries}",
+  "@patientInjuries": {
+    "placeholders": {
+      "patientInjuries": {
+        "type": "String",
+        "example": "Schädelhirntrauma"
+      }
+    }
+  },
+  "patientActions": "Maßnahmen:",
 
   "notificationScreenName": "Benachrichtigungen",
 
   "homeScreenName": "Home",
   "homeTAN": "Patienten TAN",
 
-  "qrCodeScanButton"  : "QR Code scannen"
+  "qrCodeScanButton"  : "QR Code scannen",
+
+  "ok": "Ok"
 }

@@ -11,7 +11,7 @@ class NameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.nameSceenName),
+        title: Text(AppLocalizations.of(context)!.nameScreenName),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
