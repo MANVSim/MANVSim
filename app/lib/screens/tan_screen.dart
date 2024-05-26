@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/widgets/logout_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TanScreen extends StatelessWidget {
   const TanScreen({super.key});
@@ -18,15 +19,15 @@ class TanScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const TextField(
+              TextField(
                 decoration: InputDecoration(
-                  labelText: 'TAN',
+                  labelText: AppLocalizations.of(context)!.homeTAN,
                 ),
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 icon: const Icon(Icons.qr_code_scanner),
-                label: const Text('Scan QR Code'),
+                label: Text(AppLocalizations.of(context)!.qrCodeScanButton),
                 onPressed: () {},
               ),
             ],

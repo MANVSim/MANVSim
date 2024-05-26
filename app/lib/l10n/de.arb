@@ -1,0 +1,25 @@
+{
+  "@@locale": "de",
+
+  "frameHome": "Home",
+  "framePatients": "Patienten",
+  "frameNotifications": "Benachrichtigungen",
+
+  "loginScreenName": "Anmeldung",
+  "loginTAN"     : "TAN",
+  "loginServerUrl": "Server URL",
+  "loginSubmit"  : "Anmelden",
+
+  "nameSceenName": "Namen festlegen",
+  "nameName": "Name",
+  "nameSubmit": "Simulation beitreten",
+
+  "patientListScreenName": "Patienten Liste",
+
+  "notificationScreenName": "Benachrichtigungen",
+
+  "homeScreenName": "Home",
+  "homeTAN": "Patienten TAN",
+
+  "qrCodeScanButton"  : "QR Code scannen"
+}

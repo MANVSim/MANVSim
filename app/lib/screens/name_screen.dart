@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'wait_screen.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class NameScreen extends StatelessWidget {
   const NameScreen({super.key});
 
@@ -9,7 +11,7 @@ class NameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Name Selection'),
+        title: Text(AppLocalizations.of(context)!.nameSceenName),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
@@ -18,9 +20,9 @@ class NameScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const TextField(
+              TextField(
                 decoration: InputDecoration(
-                  labelText: 'Name',
+                  labelText: AppLocalizations.of(context)!.nameName,
                 ),
               ),
               const SizedBox(height: 16),
@@ -34,7 +36,7 @@ class NameScreen extends StatelessWidget {
                   );
                 },
                 icon: const Icon(Icons.start),
-                label: const Text('Start'),
+                label: Text(AppLocalizations.of(context)!.nameSubmit),
               ),
             ],
           ),
