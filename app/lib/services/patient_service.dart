@@ -9,6 +9,10 @@ Future<List<Patient>> fetchPatientList() async {
   return jsonList.map((patient) => Patient.fromJson(patient)).toList();
 }
 
+Future<Patient> fetchPatient(int id) async {
+  return fetchPatientList().then((patientList) => patientList[0]);
+}
+
 const String demoJson = """
 [
   {"id": 1, "name": "Max Mustermann", "injuries": "Beinverletzung"},

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:manvsim/models/patient.dart';
 
 import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/services/action_service.dart';
@@ -11,15 +12,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ActionScreen extends StatefulWidget {
   final PatientAction action;
+  final Patient patient;
 
-  const ActionScreen({super.key, required this.action});
+  const ActionScreen({super.key, required this.action, required this.patient});
 
   @override
   State<ActionScreen> createState() => _ActionScreenState();
 }
 
 class _ActionScreenState extends State<ActionScreen> {
-  late Future<String> result;
+  late Future<String> futureResult;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class _ActionScreenState extends State<ActionScreen> {
   }
 
   void showResultDialog() {
-    result = fetchActionResult(widget.action.id);
+    futureResult = fetchActionResult(widget.action.id);
     Future dialogFuture = showDialog(
       context: context,
       barrierDismissible: false,
@@ -56,7 +58,7 @@ class _ActionScreenState extends State<ActionScreen> {
               child: Text(AppLocalizations.of(context)!.ok))
         ],
         content: FutureBuilder(
-            future: result,
+            future: futureResult,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Text(snapshot.data!);
