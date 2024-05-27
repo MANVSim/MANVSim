@@ -7,6 +7,143 @@ info:
 
 paths:
 
+  /tan/login:
+    post:
+      summary: TAN Login
+      description: authenticates a user with a TAN and returns a JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tan:
+                  type: string
+                  description: User TAN
+                  example: "123456"
+      responses:
+        '200':
+          description: TAN valid
+          headers:
+            Authorization:
+              description: JWT-Token
+              schema:
+                type: string
+                example: "Bearer <JWT-Token>"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userCreationRequired:
+                    type: boolean
+                    description: indicates if name for the TAN was already set.
+                    example: false
+                  userName:
+                    type: string
+                    description: name for the TAN, if userCreationRequired is false. Otherwise null.
+                    example: "John Doe"
+                  userRole:
+                    type: string
+                    description: role of the user.
+                    example: "Notarzt"
+        '400':
+          description: Invalid TAN
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid TAN."
+
+  /tan/set-name:
+    post:
+      summary: Set username for the TAN
+      description: Sets the name for the TAN provided in JWT.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: username to be set.
+                  example: "John Doe"
+      responses:
+        '200':
+          description: successfully set username.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Name successfully set for TAN."
+        '400':
+          description: Invalid request. The name was already set.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid request. Name already set"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized."
+
+      security:
+        - bearerAuth: [ ]
+
+
+  /scenario/start-time:
+    get:
+      summary: Get start time of scenario and arrival time.
+      description: Get start time of scenario and time to arrive at the scene.
+      responses:
+        '200':
+          description: success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  scenarioStartTime:
+                    type: integer
+                    description: timestamp unix ms since epoch.
+                    example: 1672531200
+                  arrivalTime:
+                    type: integer
+                    description: timestamp unix ms since epoch.
+                    example: 1672531200
+
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized."
+
+      security:
+        - bearerAuth: []
   /{gameId}/patients:
     get:
       summary: Returns a list of patients.
@@ -43,6 +180,8 @@ paths:
                 - id: 4
                   name: Ronald Lyons
                   injuries: Bein fehlt
+      security:
+        - bearerAuth: [ ]
 
   /{gameId}/patients/{patientId}:
     get:
@@ -76,6 +215,87 @@ paths:
                 injuries: Bein fehlt
         '404':
           description: Patient with patientId could not be found.
+      security:
+        - bearerAuth: [ ]
+
+  /patients/{patientId}/open:
+    post:
+      summary: Opens a patient profile
+      description: Opens a patient profile. Other users can see who is currently treating the patient.
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+            description: patient id.
+            example: "patient123"
+      responses:
+        '200':
+          description: success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Patient profile successfully opened."
+
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized."
+        '404':
+          description: Patient with patientId could not be found.
+      security:
+        - bearerAuth: []
+
+  /patients/{patientId}/close:
+    post:
+      summary: closes a patient profile
+      description: Closes a patient profile. Other users can no longer see the username in the list of treating users.
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+            description: patient id.
+            example: "patient123"
+      responses:
+        '200':
+          description: success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Patient profile successfully closed."
+
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized."
+        '404':
+          description: Patient with patientId could not be found.
+      security:
+        - bearerAuth: []
+
 
   /{gameId}/locations:
     get:
@@ -132,6 +352,8 @@ paths:
                           name: Starkes Schmerzmittel
                           quantity: 50
                       locations: [ ]
+      security:
+        - bearerAuth: [ ]
 
   /{gameId}/actions:
     get:
@@ -172,7 +394,8 @@ paths:
                   durationInSeconds: 20
                   resourceNamesNeeded:
                     - Schmerzmittel
-
+      security:
+        - bearerAuth: [ ]
   /{gameId}/actions/{actionId}:
     post:
       summary: Performs an action.
@@ -208,7 +431,8 @@ paths:
               schema:
                 type: integer
               example: 5
-
+      security:
+        - bearerAuth: [ ]
   /{gameId}/actions/result/{performedActionId}:
     get:
       summary: Gets the result of a performed action.
@@ -236,8 +460,68 @@ paths:
               schema:
                 type: string
               example: Die Maßnahme war erfolgreich.
+      security:
+        - bearerAuth: [ ]
 
+  /notifications:
+    get:
+      summary: notification polling
+      description: Returns a list of notifications for the user after lastPollTime.
+      parameters:
+        - name: lastPollTime
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+            description: timestamp in ISO 8601 Format
+            example: "2023-01-01T12:00:00Z"
+      responses:
+        '200':
+          description: success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notifications:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        header:
+                          type: string
+                          description: header of the notification.
+                          example: "Example Notification"
+                        message:
+                          type: string
+                          description: The message itself.
+                          example: "Example Notifications content."
+                        timestamp:
+                          type: string
+                          format: date-time
+                          description: timestamp in ISO 8601 Format.
+                          example: "2023-01-01T12:30:00Z"
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized."
+      security:
+        - bearerAuth: []
 components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
 
     Patient:
@@ -249,6 +533,10 @@ components:
           type: string
         injuries:
           type: string
+        treatingUsers:
+          type: array
+          items:
+            type: string
 
     Location:
       type: object
@@ -289,3 +577,4 @@ components:
           type: array
           items:
             type: string
+
