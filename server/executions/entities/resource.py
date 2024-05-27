@@ -3,7 +3,7 @@ import json
 
 class Resource:
 
-    def __init__(self, id: int, name: str, quantity: int, picture_ref: str):
+    def __init__(self, id: int, name: str, quantity: int, picture_ref: str | None):
         self.id = id
         self.name = name
         self.quantity = quantity

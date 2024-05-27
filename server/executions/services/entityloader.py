@@ -7,6 +7,7 @@ from executions.entities.location import Location
 from executions.entities.patient import Patient
 from executions.entities.performed_action import PerformedAction
 from executions.entities.player import Player
+from executions.entities.resource import Resource
 from executions.entities.scenario import Scenario
 from utils.database import Database
 
@@ -79,8 +80,12 @@ def __load_scenario(scenario_id: int, db: Database) -> Scenario | None:
     if not patients:
         return None
 
-    # Locations are loaded on-demand as there is no mapping between scenario/execution and locations
+    # Locations are loaded on-demand as there is no mapping between scenario/execution and locations. Only exception are
+    # those locations created for patients during object initialization.
     locations = {}
+    for patient in patients:
+        patient_location = patient.location
+        locations[patient_location.id] = patient_location
 
     return Scenario(id=scenario_id, name=scenario_name, patients=patients, actions=actions, locations=locations)
 
@@ -127,3 +132,42 @@ def load_execution(tan: str) -> bool:
         # Activate execution (makes it accessible by API)
         run.activate_execution(execution)
         return True
+
+
+def __load_resources(location_id: int, db: Database) -> list[Resource]:
+    """ Creates a list of resources located at the given location. """
+    res = db.try_execute(f"SELECT * FROM resource WHERE location_id = {location_id}")
+
+    resources = []
+    for r_id, name, location_id in res:
+        existing_resource = list(filter(lambda r: r.id == r_id, resources))
+        if not existing_resource:
+            resources.append(Resource(id=r_id, name=name, quantity=1, picture_ref=None))
+        else:
+            existing_resource[0].quantity += 1
+
+    return resources
+
+
+def load_location(location_id: int) -> Location | None:
+    """
+    Loads the location with the given id from the database along with all referenced resources and nested locations.
+
+    Returns Location object or None (in case of an error).
+    """
+    with Database(DB_PATH) as db:
+        res = db.try_execute(f"SELECT * FROM location WHERE id = {location_id}")
+        if not res:
+            return None
+
+        loc_id, name, nested_loc_id = res[0]
+
+        resources = __load_resources(nested_loc_id, db)
+
+        nested_loc = None
+        if nested_loc_id:
+            nested_loc = load_location(nested_loc_id)
+            if not nested_loc:
+                return None
+
+        return Location(id=loc_id, name=name, picture_ref=None, resources=resources, location=nested_loc)
