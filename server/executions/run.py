@@ -14,8 +14,8 @@ action of interest into a separate file (FIXME: docu update @Louis)
 player_a = Player("69", "Finn Bartels", None, [])
 player_b = Player("88", "Fiete Arp", None, [])
 
-test_a = Execution(1337, Scenario(17, "Test-Scenario-Pending", [], [], {}), 42, [player_a], Execution.Status.PENDING)
-test_b = Execution(1338, Scenario(18, "Test-Scenario-Running", [], [], {}), 42, [player_b], Execution.Status.RUNNING)
+test_a = Execution("1337", Scenario(17, "Test-Scenario-Pending", [], [], {}), 42, [player_a], Execution.Status.PENDING)
+test_b = Execution("1338", Scenario(18, "Test-Scenario-Running", [], [], {}), 42, [player_b], Execution.Status.RUNNING)
 
 # Dictionary storing the current available execution, whether they are PENDING, RUNNING or about to FINISH
 exec_dict = {
@@ -33,27 +33,27 @@ active_player = {
 
 
 # CREATE
-def create_execution(execution: Execution):
+def activate_execution(execution: Execution):
     exec_id = str(execution.id)  # exec id is unique due to database primary key
     exec_dict[exec_id] = execution
-    create_active_players(exec_id, execution.players)
+    activate_players(exec_id, execution.players)
 
 
-def create_active_players(exec_id, players):
+def activate_players(exec_id, players):
     for player in players:
         active_player[player.tan] = str(exec_id)  # player_tan is unique due to database primary key
 
 
 # DELETE
-def delete_execution(exec_id: str):
+def deactivate_execution(exec_id: str):
     try:
         execution = exec_dict.pop(exec_id)
-        delete_active_players(execution.players)
+        deactivate_players(execution.players)
     except KeyError:
         logging.error(f"{exec_id} already removed")
 
 
-def delete_active_players(players):
+def deactivate_players(players):
     for player in players:
         try:
             active_player.pop(player.tan)

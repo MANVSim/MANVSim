@@ -11,11 +11,12 @@ from executions.entities.scenario import Scenario
 # -- Create Empty Test Objects --
 
 def create_dummy_scenario(id: int = 0, name: str = "Dummy Scenario", actions: list[Action] = None,
-                          locations: dict[int, Location] = None, patients: list[Patient] = None):
+                          locations: dict[str, Location] = None, patients: list[Patient] = None):
     return Scenario(id=id, name=name, locations=locations, patients=patients, actions=actions)
 
 
-def create_dummy_execution(id: int = 0, scenario: Scenario = None, starting_time: int = 0, players: list[Player] = None,
+def create_dummy_execution(id: str = "0", scenario: Scenario = None, starting_time: int = 0,
+                           players: list[Player] = None,
                            status: Execution.Status = Execution.Status.UNKNOWN):
     return Execution(id=id, scenario=scenario, starting_time=starting_time, players=players, status=status)
 
@@ -44,7 +45,7 @@ def create_dummy_performed_action(id: int = 0, time: int = 0, execution_id: int 
                            player_tan=player_tan)
 
 
-def create_dummy_location(id: int = 0, name: str = "Dummy Location", picture_ref: str = "dummy.png",
+def create_dummy_location(id: str = "0", name: str = "Dummy Location", picture_ref: str = "dummy.png",
                           resources: list[Resource] = None, location: 'Location' = None):
     return Location(id=id, name=name, picture_ref=picture_ref, resources=resources, location=location)
 
@@ -64,11 +65,12 @@ def create_test_execution():
     res_5 = Resource(id=5, name="Beatmungsgerät", quantity=1, picture_ref="dummy_beatmung.png")
 
     # Locations
-    loc_1 = Location(id=1, name="RTW", picture_ref="dummy_rtw.jpg", resources=[res_3])
-    loc_2 = Location(id=2, name="Roter Rucksack", picture_ref="dummy_rot.png", resources=[res_2, res_4], location=loc_1)
-    loc_3 = Location(id=3, name="Blauer Rucksack", picture_ref="dummy_blau.png", resources=[res_5], location=loc_1)
-    loc_4 = Location(id=4, name="EKG", picture_ref="dummy_ekg.png", resources=[res_1], location=loc_1)
-    loc_5 = Location(id=5, name="Holstein Stadion", picture_ref="dummy_location.png")
+    loc_1 = Location(id="1", name="RTW", picture_ref="dummy_rtw.jpg", resources=[res_3])
+    loc_2 = Location(id="2", name="Roter Rucksack", picture_ref="dummy_rot.png", resources=[res_2, res_4],
+                     location=loc_1)
+    loc_3 = Location(id="3", name="Blauer Rucksack", picture_ref="dummy_blau.png", resources=[res_5], location=loc_1)
+    loc_4 = Location(id="4", name="EKG", picture_ref="dummy_ekg.png", resources=[res_1], location=loc_1)
+    loc_5 = Location(id="5", name="Holstein Stadion", picture_ref="dummy_location.png")
 
     # Players
     player_1 = Player(tan="123ABC", name="Frank Huch", location=loc_1, accessible_locations=[loc_2, loc_3, loc_4])
@@ -95,17 +97,17 @@ def create_test_execution():
 
     # Scenario
     location_dict = {
-        1: loc_1,
-        2: loc_2,
-        3: loc_3,
-        4: loc_4,
-        5: loc_5
+        "1": loc_1,
+        "2": loc_2,
+        "3": loc_3,
+        "4": loc_4,
+        "5": loc_5
     }
     scenario = Scenario(id=1, name="Schlägerei", patients=[patient_1, patient_2],
                         actions=[action_1, action_2, action_3], locations=location_dict)
 
     # Execution
-    execution = Execution(id=1, scenario=scenario, starting_time=-1, players=[player_1, player_2],
+    execution = Execution(id="1", scenario=scenario, starting_time=-1, players=[player_1, player_2],
                           status=Execution.Status.PENDING)
 
     return execution

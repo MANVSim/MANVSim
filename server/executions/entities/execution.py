@@ -13,7 +13,7 @@ class Execution:
         FINISHED = "finished"
         UNKNOWN = "unknown"
 
-    def __init__(self, id: int, scenario: Scenario, starting_time: int, players: list[Player], status: Status):
+    def __init__(self, id: str, scenario: Scenario, starting_time: int, players: list[Player], status: Status):
         self.id = id
         self.scenario = scenario
         self.starting_time = starting_time  # FIXME: Maybe replace by standardized time format

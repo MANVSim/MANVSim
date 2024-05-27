@@ -5,7 +5,7 @@ from executions.entities.resource import Resource
 
 class Location:
 
-    def __init__(self, id: int, name: str, picture_ref: str, resources: list[Resource] = None,
+    def __init__(self, id: str, name: str, picture_ref: str | None, resources: list[Resource] = None,
                  location: 'Location' = None):
         self.id = id
         self.name = name

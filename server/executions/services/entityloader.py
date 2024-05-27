@@ -1,8 +1,11 @@
+import uuid
+
 from executions import run
 from executions.entities.action import Action
 from executions.entities.execution import Execution
 from executions.entities.location import Location
 from executions.entities.patient import Patient
+from executions.entities.performed_action import PerformedAction
 from executions.entities.player import Player
 from executions.entities.scenario import Scenario
 from utils.database import Database
@@ -10,9 +13,28 @@ from utils.database import Database
 DB_PATH = "../../instance/db.sqlite3"
 
 
-def __load_patients(scenario_id: int, db: Database) -> list[Patient] | None:
-    # TODO
-    pass
+def __load_patients(scenario_id: int, actions: list[Action], db: Database) -> list[Patient]:
+    """ Loads all patients associated with the given scenario from the database and returns them in a list. """
+    patient_ids = [r[1] for r in
+                   db.try_execute(f"SELECT patient_id FROM takes_part_in WHERE scenario_id = {scenario_id}")]
+    patient_data = db.try_execute(f"SELECT * FROM patients WHERE patient_id IN {patient_ids}")
+    patients = []
+    for patient in patient_data:
+        p_id, injuries, activity_diagram = patient
+        p_loc = Location(id=str(uuid.uuid4()), name=f"Patient with ID {p_id}", picture_ref=None, resources=[])
+        perf_acts_data = db.try_execute(f"SELECT * FROM performed_actions WHERE patient_id = {p_id}")
+        performed_actions = []
+        if perf_acts_data:
+            for perf_act in perf_acts_data:
+                pa_id, start_time, exec_id, p_id, action_id = perf_act
+                action = filter(lambda act: act.id == action_id, actions)[0] if filter(lambda act: act.id == action_id,
+                                                                                       actions) else None
+                performed_actions.append(PerformedAction(id=pa_id, time=start_time, execution_id=exec_id, action=action,
+                                                         resources_used=[], player_tan=""))
+        patients.append(Patient(id=p_id, name="", injuries=injuries, activity_diagram=activity_diagram, location=p_loc,
+                                performed_actions=performed_actions))
+
+    return patients
 
 
 def __load_actions(db: Database) -> list[Action] | None:
@@ -39,11 +61,6 @@ def __load_actions(db: Database) -> list[Action] | None:
     return actions
 
 
-def __load_locations(db: Database) -> dict[int, Location] | None:
-    # TODO
-    pass
-
-
 def __load_scenario(scenario_id: int, db: Database) -> Scenario | None:
     """ Loads the scenario with the given id from the database and returns it or None (in case of an error). """
     # Load scenario data
@@ -52,20 +69,18 @@ def __load_scenario(scenario_id: int, db: Database) -> Scenario | None:
         return None
     scenario_id, scenario_name = res[0]
 
-    # Load all patients in this scenario
-    patients = __load_patients(scenario_id, db)
-    if not patients:
-        return None
-
     # Load all actions
     actions = __load_actions(db)
     if not actions:
         return None
 
-    # Load all locations
-    locations = __load_locations(db)
-    if not locations:
+    # Load all patients in this scenario
+    patients = __load_patients(scenario_id, actions, db)
+    if not patients:
         return None
+
+    # Locations are loaded on-demand as there is no mapping between scenario/execution and locations
+    locations = {}
 
     return Scenario(id=scenario_id, name=scenario_name, patients=patients, actions=actions, locations=locations)
 
@@ -85,7 +100,7 @@ def __load_players(exec_tan: str, db: Database) -> list[Player] | None:
 
 def load_execution(tan: str) -> bool:
     """
-    Loads an Execution (Simulation) and all associated data into memory prepare it for execution.
+    Loads an Execution (Simulation) and all associated data into memory and activates it to make it ready for execution.
 
     Returns True for success, False otherwise.
     """
@@ -110,5 +125,5 @@ def load_execution(tan: str) -> bool:
         execution = Execution(id=exec_tan, scenario=scenario, starting_time=-1, players=players,
                               status=Execution.Status.PENDING)
         # Activate execution (makes it accessible by API)
-        run.create_execution(execution)
+        run.activate_execution(execution)
         return True

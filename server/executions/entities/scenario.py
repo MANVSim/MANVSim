@@ -8,7 +8,7 @@ from executions.entities.patient import Patient
 class Scenario:
 
     def __init__(self, id: int, name: str, patients: list[Patient], actions: list[Action],
-                 locations: dict[int, Location]):
+                 locations: dict[str, Location]):
         self.id = id
         self.name = name
         self.patients = patients
