@@ -1,6 +1,7 @@
 import logging
 import os
 from flask import Flask, send_from_directory, redirect, request
+from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.exceptions import BadRequestKeyError
@@ -27,9 +28,11 @@ def create_app():
         "APP_DEBUG_DO_NOT_USE_IN_PROD_20556f99182444688d9bc48cc456e99031cd39c391accd9ea2e1ff1b500405358c999c50eafe" +
         "8c6d8fe61a148850e658374d42592f81e411e652fb3ee6839e76"
     )  # FIXME
+    app.config["JWT_SECRET_KEY"] = "!ichsolltenichtinPROD!"
 
     db.init_app(app)
     csrf.init_app(app)
+    jwt = JWTManager(app)
 
     # define run request blocker
     @app.before_request
