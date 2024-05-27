@@ -2,7 +2,7 @@ from executions import run
 from executions.entities.execution import Execution
 
 execution_ids = run.exec_dict.keys()
-player_ids = run.active_player.keys()
+player_ids = run.registered_player.keys()
 
 
 def test_request_hello_world(client):

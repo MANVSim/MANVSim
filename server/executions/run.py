@@ -25,7 +25,7 @@ exec_dict = {
 }
 
 # Dictionary storing all active players in an execution
-active_player = {
+registered_player = {
     # "TAN" : "exec_uuid"
     "69": "1337",
     test_b.players[0].tan: str(test_b.id),
@@ -36,26 +36,26 @@ active_player = {
 def create_execution(execution: Execution):
     exec_id = str(execution.id)  # exec id is unique due to database primary key
     exec_dict[exec_id] = execution
-    create_active_players(exec_id, execution.players)
+    register_player(exec_id, execution.players)
 
 
-def create_active_players(exec_id, players):
+def register_player(exec_id, players):
     for player in players:
-        active_player[player.tan] = str(exec_id)  # player_tan is unique due to database primary key
+        registered_player[player.tan] = str(exec_id)  # player_tan is unique due to database primary key
 
 
 # DELETE
 def delete_execution(exec_id: str):
     try:
         execution = exec_dict.pop(exec_id)
-        delete_active_players(execution.players)
+        remove_player(execution.players)
     except KeyError:
         logging.error(f"{exec_id} already removed")
 
 
-def delete_active_players(players):
+def remove_player(players):
     for player in players:
         try:
-            active_player.pop(player.tan)
+            registered_player.pop(player.tan)
         except KeyError:
             logging.info(f"{player.tan} already removed")
