@@ -10,7 +10,7 @@ class Location:
         if resources is None:
             resources = []
         if locations is None:
-            locations = []
+            locations = set()
 
         self.id = id
         self.name = name

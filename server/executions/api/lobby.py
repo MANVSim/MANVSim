@@ -21,7 +21,7 @@ def login():
         exec_id = run.registered_player[tan]
         player = run.exec_dict[exec_id].get_player_by_tan(tan)
         expires = datetime.timedelta(hours=12)
-        additional_claims = {"exec_id": exec_id, "TAN": tan}
+        additional_claims = {"exec_id": exec_id}
         access_token = create_access_token(identity=tan, expires_delta=expires, additional_claims=additional_claims)
         userCreationRequired = player.name is None or player.name == ""
         return {

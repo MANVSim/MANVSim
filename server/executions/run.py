@@ -17,6 +17,11 @@ player_a = Player("69", "Finn Bartels", None, [])
 test_a = Execution(1337, Scenario(17, "Test-Scenario-Pending", [], [], {}), 42, [player_a], Execution.Status.PENDING)
 test_b = dummy_entities.create_test_execution()
 test_b.status = Execution.Status.RUNNING
+test_b.id = 2
+test_b.players[0].tan = "987ZYX"
+test_b.players[1].tan = "654WVU"
+
+
 # Dictionary storing the current available execution, whether they are PENDING, RUNNING or about to FINISH
 exec_dict = {
     # "exec_id": "exec: execution_dbo"
@@ -29,6 +34,7 @@ registered_player = {
     # "TAN" : "exec_uuid"
     "69": "1337",
     test_b.players[0].tan: str(test_b.id),
+    test_b.players[1].tan: str(test_b.id),
 }
 
 

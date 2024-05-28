@@ -11,7 +11,7 @@ def get_param_from_jwt(param):
 def get_execution_and_player():
     """ Returns the current execution instance as well as the player referenced by TAN"""
     exec_id = get_param_from_jwt("exec_id")
-    tan = get_param_from_jwt("TAN")
+    tan = get_param_from_jwt("sub")
     execution = run.exec_dict[exec_id]
     player = execution.get_player_by_tan(tan)
 

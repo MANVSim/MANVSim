@@ -1,3 +1,4 @@
+import jwt
 import pytest
 
 from app import create_app
@@ -9,7 +10,6 @@ If you’re using an application factory, define an app fixture to create and co
 You can add code before and after the yield to set up and tear down other resources, such as creating and clearing a 
 database.
 """
-
 
 @pytest.fixture()
 def app():
@@ -43,3 +43,22 @@ def client(app):
 @pytest.fixture()
 def runner(app):
     return app.test_cli_runner()
+
+
+def generate_token(app, valid_payload=True):
+    payload = {
+        "sub": "123ABC",
+        "exec_id": "1",
+    }
+    payload_invalid = {
+        "sub": "123ABC",
+        "exec_id": "-1",
+    }
+    if valid_payload:
+        return {
+            "Authorization": f"Bearer {jwt.encode(payload, app.config["JWT_SECRET_KEY"], algorithm="HS256")}"
+        }
+    else:
+        return {
+            "Authorization": f"Bearer {jwt.encode(payload_invalid, app.config["JWT_SECRET_KEY"], algorithm="HS256")}"
+        }
