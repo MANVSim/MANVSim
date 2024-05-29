@@ -3,6 +3,7 @@ import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 export default function ErrorPage() {
   const error = useRouteError();
   console.error(error);
+  // https://github.com/remix-run/react-router/discussions/9628#discussioncomment-7796431
   let errorDisplayed: string = "Unkown error"
   if (isRouteErrorResponse(error)) {
     errorDisplayed = `${error.status} ${error.statusText}`
