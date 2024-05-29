@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:manvsim/models/patient.dart';
 
 Future<List<Patient>> fetchPatientList() async {
-  String json = demoJson;//await File("patients.json").readAsString();
+  await Future.delayed(Duration(seconds: 1));
+  String json = demoJson;
   List<dynamic> jsonList = jsonDecode(json);
   return jsonList.map((patient) => Patient.fromJson(patient)).toList();
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:manvsim/widgets/logout_button.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
 
@@ -16,7 +18,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('Notifications'),
+          title: Text(AppLocalizations.of(context)!.notificationScreenName),
           actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(

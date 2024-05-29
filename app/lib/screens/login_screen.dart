@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'name_screen.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -9,7 +11,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: Text(AppLocalizations.of(context)!.loginScreenName),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
@@ -18,15 +20,15 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const TextField(
+              TextField(
                 decoration: InputDecoration(
-                  labelText: 'TAN',
+                  labelText: AppLocalizations.of(context)!.loginTAN,
                 ),
               ),
               const SizedBox(height: 16),
-              const TextField(
+              TextField(
                 decoration: InputDecoration(
-                  labelText: 'Server URL',
+                  labelText: AppLocalizations.of(context)!.loginServerUrl,
                 ),
               ),
               const SizedBox(height: 16),
@@ -36,7 +38,7 @@ class LoginScreen extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.qr_code_scanner),
-                      label: const Text('Scan QR Code'),
+                      label: Text(AppLocalizations.of(context)!.qrCodeScanButton),
                       onPressed: () {},
                     ),
                   ),
@@ -50,7 +52,7 @@ class LoginScreen extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => const NameScreen()));
                       },
-                      label: const Text('Login'),
+                      label: Text(AppLocalizations.of(context)!.loginSubmit),
                     ),
                   ),
                 ],

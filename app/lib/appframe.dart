@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/screens/notifications_screen.dart';
 import 'package:manvsim/screens/patient_list_screen.dart';
 import 'package:manvsim/screens/tan_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppFrame extends StatefulWidget {
   const AppFrame({super.key});
@@ -24,20 +25,20 @@ class _AppFrameState extends State<AppFrame> {
         },
         indicatorColor: Colors.amber,
         selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
+        destinations: <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
+            selectedIcon: const Icon(Icons.home),
+            icon: const Icon(Icons.home_outlined),
+            label: AppLocalizations.of(context)!.frameHome,
           ),
           NavigationDestination(
-              selectedIcon: Icon(Icons.list_outlined),
-              icon: Icon(Icons.list),
-              label: 'Patients'
+              selectedIcon: const Icon(Icons.list_outlined),
+              icon: const Icon(Icons.list),
+              label: AppLocalizations.of(context)!.framePatients
           ),
           NavigationDestination(
-            icon: Badge(child: Icon(Icons.notifications_sharp)),
-            label: 'Notifications',
+            icon: const Badge(child: Icon(Icons.notifications_sharp)),
+            label: AppLocalizations.of(context)!.frameNotifications,
           ),
         ],
       ),

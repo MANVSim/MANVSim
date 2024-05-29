@@ -12,6 +12,7 @@ flask-migrate = "*"
 pylint = "*"
 flask-wtf = "*"
 pytest = "*"
+flask-jwt-extended = "*"
 
 [dev-packages]
 
