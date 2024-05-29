@@ -64,16 +64,16 @@ def create_test_execution():
     res_5 = Resource(id=5, name="Beatmungsgerät", quantity=1, picture_ref="dummy_beatmung.png")
 
     # Locations
-    loc_1 = Location(id=1, name="RTW", picture_ref="dummy_rtw.jpg", resources=[res_3])
-    loc_2 = Location(id=2, name="Roter Rucksack", picture_ref="dummy_rot.png", resources=[res_2, res_4], location=loc_1)
-    loc_3 = Location(id=3, name="Blauer Rucksack", picture_ref="dummy_blau.png", resources=[res_5], location=loc_1)
-    loc_4 = Location(id=4, name="EKG", picture_ref="dummy_ekg.png", resources=[res_1], location=loc_1)
+    loc_2 = Location(id=2, name="Roter Rucksack", picture_ref="dummy_rot.png", resources=[res_2, res_4])
+    loc_3 = Location(id=3, name="Blauer Rucksack", picture_ref="dummy_blau.png", resources=[res_5])
+    loc_4 = Location(id=4, name="EKG", picture_ref="dummy_ekg.png", resources=[res_1])
     loc_5 = Location(id=5, name="Holstein Stadion", picture_ref="dummy_location.png")
+    loc_1 = Location(id=1, name="RTW", picture_ref="dummy_rtw.jpg", resources=[res_3], locations={loc_2, loc_3, loc_4})
 
     # Players
-    player_1 = Player(tan="123ABC", name="Frank Huch", location=loc_1, accessible_locations=[loc_2, loc_3, loc_4])
+    player_1 = Player(tan="123ABC", name="Frank Huch", location=loc_1, accessible_locations={loc_2, loc_3, loc_4})
     player_2 = Player(tan="456DEF", name="Prof. Dr. Reinhard von Hanxleden", location=loc_1,
-                      accessible_locations=[loc_2, loc_3, loc_4])
+                      accessible_locations={loc_2, loc_3, loc_4})
 
     # Actions
     action_1 = Action(id=1, name="EKG schreiben", picture_ref="placeholder.png", duration_sec=120, result="UNDEFINED",

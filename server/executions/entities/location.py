@@ -6,12 +6,26 @@ from executions.entities.resource import Resource
 class Location:
 
     def __init__(self, id: int, name: str, picture_ref: str, resources: list[Resource] = None,
-                 location: 'Location' = None):
+                 locations: set['Location'] = None):
+        if resources is None:
+            resources = []
+        if locations is None:
+            locations = set()
+
         self.id = id
         self.name = name
         self.picture_ref = picture_ref  # Reference to picture
         self.resources = resources
-        self.location = location
+        self.locations = locations
+
+    def get_location_by_id(self, id):
+        return next((location for location in self.locations if location.id == id), None)
+
+    def remove_location_by_id(self, id):
+        self.locations = {location for location in self.locations if location.id != id}
+
+    def remove_location_by_value(self, value):
+        self.locations = self.locations.remove(value)
 
     def to_dict(self, shallow: bool = False):
         """
@@ -23,7 +37,7 @@ class Location:
             'name': self.name,
             'picture_ref': self.picture_ref,
             'resources': [resource.id if shallow else resource.to_dict() for resource in self.resources],
-            'location': self.location.id if shallow else self.location.to_dict()
+            'location': [location.id if shallow else location.to_dict() for location in self.locations]
         }
 
     def to_json(self, shallow: bool = False):

@@ -20,6 +20,9 @@ class Execution:
         self.players = players
         self.status = status
 
+    def get_player_by_tan(self, player_tan):
+        return next((player for player in self.players if player.tan == player_tan), None)
+
     def to_dict(self, shallow: bool = False):
         """
         Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
