@@ -56,3 +56,17 @@ def register_player(tan: str):
         logging.error("invalid tan detected. Unable to resolve player.")
         return Response(response="Invalid TAN detected. Unable to resolve player.",
                         status=status.HTTP_400_BAD_REQUEST)
+@api.get("/templates")
+def get_templates():
+    return [{"id": 1, "name": "Busunfall", "players": 5}]
+
+
+@api.post("/scenario/start")
+def start_scenario():
+    # logging.debug(request)
+    return {}
+
+
+@api.get("/csrf")
+def get_csrf():
+    return {"csrf": generate_csrf()}
