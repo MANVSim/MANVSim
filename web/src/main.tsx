@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom'
 import Root from './routes/root'
 import ErrorPage from './error-page'
-import Scenario, { loader as templateLoader } from './routes/scenario'
+import Scenario, { loader as templateLoader, action as scenarioAction } from './routes/scenario'
 
 const router = createBrowserRouter([
   {
@@ -17,7 +17,8 @@ const router = createBrowserRouter([
       {
         path: "/scenario",
         element: <Scenario />,
-        loader: templateLoader
+        loader: templateLoader,
+        action: scenarioAction
       }
     ]
   },
