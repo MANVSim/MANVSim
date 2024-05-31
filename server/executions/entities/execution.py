@@ -13,15 +13,13 @@ class Execution:
         FINISHED = "finished"
         UNKNOWN = "unknown"
 
-    def __init__(self, id: int, scenario: Scenario, starting_time: int, players: list[Player], status: Status):
+    def __init__(self, id: int, scenario: Scenario, players: dict[str, Player], status: Status,
+                 starting_time: int | None = None):
         self.id = id
         self.scenario = scenario
-        self.starting_time = starting_time  # FIXME: Maybe replace by standardized time format
         self.players = players
         self.status = status
-
-    def get_player_by_tan(self, player_tan):
-        return next((player for player in self.players if player.tan == player_tan), None)
+        self.starting_time = starting_time
 
     def to_dict(self, shallow: bool = False):
         """
@@ -32,7 +30,7 @@ class Execution:
             'id': self.id,
             'scenario': self.scenario.id if shallow else self.scenario.to_dict(),
             'starting_time': self.starting_time,
-            'players': [player.tan if shallow else player.to_dict() for player in self.players],
+            'players': [player.tan if shallow else player.to_dict() for player in list(self.players.values())],
             'status': self.status.name
         }
 
