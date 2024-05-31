@@ -6,7 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.exceptions import BadRequestKeyError
 
-from executions import run, util
+from executions.api import location, patient
+from executions.utils import util
 from executions.entities.execution import Execution
 
 db = SQLAlchemy()
@@ -41,8 +42,7 @@ def create_app():
         @jwt_required()
         def check_for_exec_status():
             try:
-                exec_id = util.get_param_from_jwt("exec_id")
-                execution = run.exec_dict[exec_id]
+                execution, _ = util.get_execution_and_player()
                 if execution.status != Execution.Status.RUNNING:
                     return 204
 
@@ -68,8 +68,9 @@ def create_app():
             return redirect("/")
 
     app.register_blueprint(lobby.api, url_prefix="/api")
-    # app.register_blueprint(location.api, url_prefix="/api/run")
-    # app.register_blueprint(patient.api, url_prefix="/api/run")
+    app.register_blueprint(patient.api, url_prefix="/api/run")
+    app.register_blueprint(location.api, url_prefix="/api/run")
+    # app.register_blueprint(actions.api, url_prefix="/api/run")
 
     return app
 

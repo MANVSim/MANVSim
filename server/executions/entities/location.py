@@ -1,6 +1,8 @@
 import json
+from queue import Queue
 
 from executions.entities.resource import Resource
+from executions.utils.timeoutlock import TimeoutLock
 
 
 class Location:
@@ -18,14 +20,98 @@ class Location:
         self.resources = resources
         self.locations = locations
 
+        self.res_lock = TimeoutLock()
+        self.loc_lock = TimeoutLock()
+
     def get_location_by_id(self, id):
-        return next((location for location in self.locations if location.id == id), None)
+        """
+        Retrieves a location of the stored locations.
+        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        """
+        with self.loc_lock.acquire_timeout(timeout=3) as acquired:
+            if acquired:
+                return next((location for location in self.locations if location.id == id), None)
+            else:
+                raise TimeoutError
 
     def remove_location_by_id(self, id):
-        self.locations = {location for location in self.locations if location.id != id}
+        """
+        Removes a location of the stored locations.
+        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        """
+        with self.loc_lock.acquire_timeout(timeout=3) as acquired:
+            if acquired:
+                self.locations = {location for location in self.locations if location.id != id}
+            else:
+                raise TimeoutError
 
-    def remove_location_by_value(self, value):
-        self.locations = self.locations.remove(value)
+    # noinspection PyArgumentList
+    def add_locations(self, new_locations: set):
+        """
+        Unions a location-set of the stored locations.
+        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        """
+        with self.loc_lock.acquire_timeout(timeout=3) as acquired:
+            if acquired:
+                self.locations.union(new_locations)
+            else:
+                raise TimeoutError
+
+    # noinspection PyArgumentList
+    def remove_locations(self, old_locations: set):
+        """
+        Removes a set of locations of the stored locations.
+        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        """
+        with self.loc_lock.acquire_timeout(timeout=3) as acquired:
+            if acquired:
+                self.locations = self.locations - old_locations
+            else:
+                raise TimeoutError
+
+    # noinspection PyArgumentList
+    def add_resources(self, new_resources: list):
+        """
+        Adds a resource to the resource list.
+        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        """
+        with self.res_lock.acquire_timeout(timeout=3) as acquired:
+            if acquired:
+                self.resources += new_resources
+            else:
+                raise TimeoutError
+
+    # noinspection PyArgumentList
+    def remove_resources(self, old_resources: list):
+        """
+        Removes a resource list of the stored resource-list.
+        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        """
+        with self.res_lock.acquire_timeout(timeout=3) as acquired:
+            if acquired:
+                self.locations = [resource for resource in self.resources if resource not in old_resources]
+            else:
+                raise TimeoutError
+
+    def get_child_location_by_id(self, id):
+        """
+        Retrieves an "unknown" location of the locations array. "Unknown" means the requested location might be
+        located in a lower level.
+        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        """
+        q = Queue()
+        for loc in list(self.locations):
+            q.put((self, loc))
+
+        while q.not_empty:
+            parent, child = q.get()
+            if child.id == id:
+                return parent, child
+            else:
+                for child_loc in list(self.locations):
+                    q.put((child, child_loc))
+
+        return None, None
 
     def to_dict(self, shallow: bool = False):
         """
