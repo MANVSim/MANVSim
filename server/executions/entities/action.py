@@ -1,15 +1,18 @@
 import json
 
+from executions.entities.player import Player
+
 
 class Action:
 
-    def __init__(self, id: int, name: str, result: str, picture_ref: str, duration_sec: int,
+    def __init__(self, id: int, name: str, result: str, picture_ref: str, duration_sec: int, required_role: Player.Role,
                  resources_needed: list[str]):
         self.id = id
         self.name = name
         self.result = result  # FIXME: Maybe replace by JSON datatype
         self.picture_ref = picture_ref  # Reference to picture
-        self.duration_sec = duration_sec  # FIXME: Maybe replace by standardized time format
+        self.duration_sec = duration_sec
+        self.required_role = required_role
         self.resources_needed = resources_needed
 
     def to_dict(self, shallow: bool = False):
@@ -23,6 +26,7 @@ class Action:
             'result': self.result,
             'picture_ref': self.picture_ref,
             'duration_sec': self.duration_sec,
+            'required_role': self.required_role.name,
             'resources_needed': self.resources_needed
         }
 
