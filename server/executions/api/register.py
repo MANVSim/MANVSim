@@ -3,7 +3,7 @@ import logging
 from executions import run
 from executions.api import api
 
-from flask import Response
+from flask import Response, request
 from flask_api import status
 from flask_wtf.csrf import generate_csrf
 
