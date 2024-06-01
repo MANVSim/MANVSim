@@ -25,7 +25,6 @@ export async function getTemplates(): Promise<Template[]> {
 export async function getCsrfToken() {
   const response = await fetch("/api/csrf")
   const json = await response.json()
-  console.log(response)
   return json.csrf
 }
 
