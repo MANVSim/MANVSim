@@ -22,16 +22,6 @@ export async function getTemplates(): Promise<Template[]> {
   throw Error(`Could not load templates!`)
 }
 
-export async function startScenario(id: number) {
-  const response = await fetch("/api/scenario/start", { method: "POST", body: JSON.stringify({ id: id }) })
-  return response
-  if (response.ok) {
-    console.log(response)
-  } else {
-    console.error(response)
-  }
-}
-
 export async function getCsrfToken() {
   const response = await fetch("/api/csrf")
   const json = await response.json()
