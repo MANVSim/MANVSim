@@ -63,8 +63,12 @@ def get_templates():
 
 @api.post("/scenario/start")
 def start_scenario():
-    # logging.debug(request)
-    return {}
+    try:
+        id = request.form["id"]
+    except KeyError:
+        return {"error": "Missing id in request"}, 400
+    # TODO: Create actual execution
+    return {"id": 1}
 
 
 @api.get("/csrf")

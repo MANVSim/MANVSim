@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {
   createBrowserRouter,
+  redirect,
   RouterProvider,
 } from 'react-router-dom'
 import Root from './routes/root'
@@ -21,8 +22,15 @@ const router = createBrowserRouter([
         loader: async () => await getTemplates(),
         action: async ({ request }) => {
           const formData = await request.formData()
-          const data = Object.fromEntries(formData)
-          return fetch("/api/scenario/start", { method: "POST", body: JSON.stringify(data) })
+          const response = await fetch("/api/scenario/start", { method: "POST", body: formData })
+          const json = await response.json()
+          if (!response.ok) {
+            return {
+              message: `${response.status}: ${response.statusText} (${json.error})`
+            }
+          }
+          const executionId = json.id
+          return redirect(`/execution/${executionId}`)
         }
       }
     ]

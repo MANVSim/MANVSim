@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router"
+import { useActionData, useLoaderData } from "react-router"
 import { getCsrfToken, isTemplate } from "../api"
 import { Form } from "react-router-dom"
 import { useEffect, useState } from "react"
@@ -9,9 +9,11 @@ export default function Scenario() {
   useEffect(() => {
     getCsrfToken().then(token => setCsrfToken(token))
   }, [])
+  const fetchError = useActionData()
   return (
     <div>
       <h2>Vorlagen</h2>
+      {fetchError && <p>{fetchError.message}</p>}
       <p>Die folgenden Vorlagen sind verfügbar:</p>
       {
         Array.isArray(templates) && templates.every(isTemplate) ?
