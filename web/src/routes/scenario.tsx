@@ -1,18 +1,7 @@
 import { useLoaderData } from "react-router"
-import { getCsrfToken, getTemplates, isTemplate } from "../api"
+import { getCsrfToken, isTemplate } from "../api"
 import { Form } from "react-router-dom"
 import { useEffect, useState } from "react"
-
-export async function loader() {
-  const templates = await getTemplates()
-  return templates
-}
-
-export async function action({ request }) {
-  const formData = await request.formData();
-  console.log(formData) // TODO: WARUM LEER???
-  return fetch("/api/scenario/start", { method: "POST", body: JSON.stringify(formData) })
-}
 
 export default function Scenario() {
   const templates = useLoaderData()

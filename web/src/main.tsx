@@ -6,7 +6,8 @@ import {
 } from 'react-router-dom'
 import Root from './routes/root'
 import ErrorPage from './error-page'
-import Scenario, { loader as templateLoader, action as scenarioAction } from './routes/scenario'
+import Scenario from './routes/scenario'
+import { getTemplates } from './api'
 
 const router = createBrowserRouter([
   {
@@ -17,8 +18,15 @@ const router = createBrowserRouter([
       {
         path: "/scenario",
         element: <Scenario />,
-        loader: templateLoader,
-        action: scenarioAction
+        loader: async () => {
+          const templates = await getTemplates()
+          return templates
+        },
+        action: async ({ request }) => {
+          const formData = await request.formData()
+          console.log(formData) // TODO: WARUM LEER??
+          return fetch("/api/scenario/start", { method: "POST", body: JSON.stringify(formData) })
+        }
       }
     ]
   },
