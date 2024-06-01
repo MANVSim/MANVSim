@@ -21,8 +21,8 @@ const router = createBrowserRouter([
         loader: async () => await getTemplates(),
         action: async ({ request }) => {
           const formData = await request.formData()
-          console.log(formData) // TODO: WARUM LEER??
-          return fetch("/api/scenario/start", { method: "POST", body: JSON.stringify(formData) })
+          const data = Object.fromEntries(formData)
+          return fetch("/api/scenario/start", { method: "POST", body: JSON.stringify(data) })
         }
       }
     ]
