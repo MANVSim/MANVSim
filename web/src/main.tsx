@@ -18,10 +18,7 @@ const router = createBrowserRouter([
       {
         path: "/scenario",
         element: <Scenario />,
-        loader: async () => {
-          const templates = await getTemplates()
-          return templates
-        },
+        loader: async () => await getTemplates(),
         action: async ({ request }) => {
           const formData = await request.formData()
           console.log(formData) // TODO: WARUM LEER??
