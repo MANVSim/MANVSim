@@ -1,14 +1,9 @@
 import { useActionData, useLoaderData } from "react-router"
-import { getCsrfToken, isTemplate } from "../api"
+import { isTemplate } from "../api"
 import { Form } from "react-router-dom"
-import { useEffect, useState } from "react"
 
 export default function Scenario() {
-  const templates = useLoaderData()
-  const [csrfToken, setCsrfToken] = useState("")
-  useEffect(() => {
-    getCsrfToken().then(token => setCsrfToken(token))
-  }, [])
+  const { csrfToken, templates } = useLoaderData()
   const fetchError = useActionData()
   return (
     <div>

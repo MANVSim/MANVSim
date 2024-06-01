@@ -8,7 +8,7 @@ import {
 import Root from './routes/root'
 import ErrorPage from './error-page'
 import Scenario from './routes/scenario'
-import { getTemplates } from './api'
+import { getCsrfToken, getTemplates } from './api'
 
 const router = createBrowserRouter([
   {
@@ -19,7 +19,11 @@ const router = createBrowserRouter([
       {
         path: "/scenario",
         element: <Scenario />,
-        loader: async () => await getTemplates(),
+        loader: async () => {
+          const csrfToken = await getCsrfToken()
+          const templates = await getTemplates()
+          return { csrfToken: csrfToken, templates: templates }
+        },
         action: async ({ request }) => {
           const formData = await request.formData()
           const response = await fetch("/api/scenario/start", { method: "POST", body: formData })
