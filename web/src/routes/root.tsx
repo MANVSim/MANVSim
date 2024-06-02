@@ -8,7 +8,7 @@ export default function Root() {
       <div>
         <ul>
           <li><Link to={"/"}>Home</Link></li>
-          <li><Link to={"/scenario"}>Scenario</Link></li>
+          <li><Link to={"/scenario"}>Szenario</Link></li>
         </ul>
       </div>
       <div>
