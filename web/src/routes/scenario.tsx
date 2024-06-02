@@ -19,7 +19,7 @@ function isFetchError(obj: unknown): obj is FetchError {
   return !!(obj as FetchError)?.message
 }
 
-function TemplateEntry({ template, csrfToken }: { template: Template, csrfToken: string }) {
+function TemplateEntry({ template, csrfToken }: Readonly<{ template: Template, csrfToken: string }>) {
   const { id, players, name } = template
   return (
     <Form method="post">
