@@ -4,18 +4,35 @@ export interface Template {
   players: number
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isTemplate(obj: any): obj is Template {
-  return (
-    typeof obj.id === "number" &&
-    typeof obj.name === "string" &&
-    typeof obj.players === "number"
-  )
+export function isTemplate(obj: object): obj is Template {
+  const template = obj as Template
+  return !!template?.id && !!template?.name && !!template?.players
+}
+
+interface CsrfToken {
+  csrf: string
+}
+
+function isCsrfToken(obj: object): obj is CsrfToken {
+  return !!(obj as CsrfToken)?.csrf
+}
+
+
+async function tryFetch(url: string): Promise<Response> {
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`Could not fetch ${url}: ${response.status}: ${response.statusText}`)
+  }
+  return response
+}
+
+async function tryFetchJson(url: string): Promise<object> {
+  const response = await tryFetch(url)
+  return await response.json()
 }
 
 export async function getTemplates(): Promise<Template[]> {
-  const response = await fetch("/api/templates")
-  const templates = await response.json()
+  const templates = await tryFetchJson("/api/templates")
   if (Array.isArray(templates) && templates.every(isTemplate)) {
     return templates
   }
@@ -23,8 +40,10 @@ export async function getTemplates(): Promise<Template[]> {
 }
 
 export async function getCsrfToken() {
-  const response = await fetch("/api/csrf")
-  const json = await response.json()
+  const json = await tryFetchJson("/api/csrf")
+  if (!isCsrfToken(json)) {
+    throw new Error("Fetched json does not contain a CSRF Token!")
+  }
   return json.csrf
 }
 
