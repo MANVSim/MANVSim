@@ -16,7 +16,7 @@ interface FetchError {
 }
 
 function isFetchError(obj: unknown): obj is FetchError {
-  return !!obj?.message
+  return !!(obj as FetchError)?.message
 }
 
 function TemplateEntry({ template, csrfToken }: { template: Template, csrfToken: string }) {
