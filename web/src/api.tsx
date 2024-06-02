@@ -4,7 +4,7 @@ export interface Template {
   players: number
 }
 
-export function isTemplate(obj: object): obj is Template {
+function isTemplate(obj: object): obj is Template {
   const template = obj as Template
   return !!template?.id && !!template?.name && !!template?.players
 }

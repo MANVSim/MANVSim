@@ -1,5 +1,5 @@
 import { useActionData, useLoaderData } from "react-router"
-import { Template, isTemplate } from "../api"
+import { Template } from "../api"
 import { Form } from "react-router-dom"
 
 interface LoaderData {
