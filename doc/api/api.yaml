@@ -5,9 +5,12 @@ info:
   description: The specification for the API the app uses to communicate with the server.
   version: 0.1.0
 
+servers:
+  - url: /api/v1
+
 paths:
 
-  /tan/login:
+  /login:
     post:
       summary: TAN Login
       description: authenticates a user with a TAN and returns a JWT token
@@ -21,21 +24,23 @@ paths:
                 tan:
                   type: string
                   description: User TAN
-                  example: "123456"
+                  example: "987ZYX"
       responses:
         '200':
           description: TAN valid
-          headers:
-            Authorization:
-              description: JWT-Token
-              schema:
-                type: string
-                example: "Bearer <JWT-Token>"
           content:
             application/json:
               schema:
                 type: object
                 properties:
+                  jwtToken:
+                    type: string
+                    description: JWT-Token, maps game and player
+                    example: "<JWT-Token>"
+                  csrfToken:
+                    type: string
+                    description: CSRF Token to be used in future requests.
+                    example: "<CSRF-Token>"
                   userCreationRequired:
                     type: boolean
                     description: indicates if name for the TAN was already set.
@@ -53,16 +58,20 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Invalid TAN."
+                $ref: '#/components/schemas/Error'
 
-  /tan/set-name:
+
+  /player/set-name:
     post:
       summary: Set username for the TAN
       description: Sets the name for the TAN provided in JWT.
+      parameters:
+        - in: header
+          name: X-CSRFToken
+          required: true
+          schema:
+            type: string
+            example: "token"
       requestBody:
         required: true
         content:
@@ -86,25 +95,13 @@ paths:
                     type: string
                     example: "Name successfully set for TAN."
         '400':
-          description: Invalid request. The name was already set.
+          description: Invalid request.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Invalid request. Name already set"
+                $ref: '#/components/schemas/Error'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Unauthorized."
+          $ref: '#/components/responses/Unauthorized'
 
       security:
         - bearerAuth: [ ]
@@ -112,8 +109,8 @@ paths:
 
   /scenario/start-time:
     get:
-      summary: Get start time of scenario and arrival time.
-      description: Get start time of scenario and time to arrive at the scene.
+      summary: Get start time and arrival time of scenario.
+      description: Get start time of scenario and time to arrive/travel at the scene.
       responses:
         '200':
           description: success.
@@ -126,38 +123,20 @@ paths:
                     type: integer
                     description: timestamp unix ms since epoch.
                     example: 1672531200
-                  arrivalTime:
+                  travelTime:
                     type: integer
                     description: timestamp unix ms since epoch.
                     example: 1672531200
-
         '401':
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Unauthorized."
+          $ref: '#/components/responses/Unauthorized'
 
       security:
         - bearerAuth: []
-  /{gameId}/patients:
+
+
+  /patients/all:
     get:
       summary: Returns a list of patients.
-      parameters:
-        - name: gameId
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: userTan
-          in: query
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: A JSON array of patients
@@ -183,22 +162,12 @@ paths:
       security:
         - bearerAuth: [ ]
 
-  /{gameId}/patients/{patientId}:
+  /patients:
     get:
       summary: Returns a specified patient.
       parameters:
-        - name: gameId
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: userTan
-          in: query
-          required: true
-          schema:
-            type: string
         - name: patientId
-          in: path
+          in: query
           required: true
           schema:
             type: integer
@@ -213,57 +182,27 @@ paths:
                 id: 4
                 name: Ronald Lyons
                 injuries: Bein fehlt
+
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           description: Patient with patientId could not be found.
       security:
         - bearerAuth: [ ]
 
-  /patients/{patientId}/open:
+  /patients/leave:
     post:
-      summary: Opens a patient profile
-      description: Opens a patient profile. Other users can see who is currently treating the patient.
+      summary: Leaves a patient.
+      description: Closes a patient profile. Other users can no longer see the username in the list of treating users.
       parameters:
-        - name: patientId
-          in: path
+        - in: header
+          name: X-CSRFToken
           required: true
           schema:
             type: string
-            description: patient id.
-            example: "patient123"
-      responses:
-        '200':
-          description: success.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Patient profile successfully opened."
-
-        '401':
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Unauthorized."
-        '404':
-          description: Patient with patientId could not be found.
-      security:
-        - bearerAuth: []
-
-  /patients/{patientId}/close:
-    post:
-      summary: closes a patient profile
-      description: Closes a patient profile. Other users can no longer see the username in the list of treating users.
-      parameters:
+            example: "token"
         - name: patientId
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -282,35 +221,16 @@ paths:
                     example: "Patient profile successfully closed."
 
         '401':
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Unauthorized."
+          $ref: '#/components/responses/Unauthorized'
         '404':
           description: Patient with patientId could not be found.
       security:
         - bearerAuth: []
 
 
-  /{gameId}/locations:
+  /locations:
     get:
       summary: Returns a list of locations (available to the user).
-      parameters:
-        - name: gameId
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: userTan
-          in: query
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: A JSON array of locations
@@ -352,23 +272,14 @@ paths:
                           name: Starkes Schmerzmittel
                           quantity: 50
                       locations: [ ]
+        '401':
+          $ref: '#/components/responses/Unauthorized'
       security:
         - bearerAuth: [ ]
 
-  /{gameId}/actions:
+  /actions:
     get:
       summary: Returns a list of actions available to the user.
-      parameters:
-        - name: gameId
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: userTan
-          in: query
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: A JSON array of actions
@@ -394,24 +305,22 @@ paths:
                   durationInSeconds: 20
                   resourceNamesNeeded:
                     - Schmerzmittel
+        '401':
+          $ref: '#/components/responses/Unauthorized'
       security:
         - bearerAuth: [ ]
-  /{gameId}/actions/{actionId}:
+
     post:
       summary: Performs an action.
       parameters:
-        - name: gameId
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: userTan
-          in: query
+        - in: header
+          name: X-CSRFToken
           required: true
           schema:
             type: string
+            example: "token"
         - name: actionId
-          in: path
+          in: query
           required: true
           schema:
             type: integer
@@ -431,24 +340,17 @@ paths:
               schema:
                 type: integer
               example: 5
+        '401':
+          $ref: '#/components/responses/Unauthorized'
       security:
         - bearerAuth: [ ]
-  /{gameId}/actions/result/{performedActionId}:
+
+  /actions/result:
     get:
       summary: Gets the result of a performed action.
       parameters:
-        - name: gameId
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: userTan
-          in: query
-          required: true
-          schema:
-            type: string
         - name: performedActionId
-          in: path
+          in: query
           required: true
           schema:
             type: integer
@@ -460,6 +362,8 @@ paths:
               schema:
                 type: string
               example: Die Maßnahme war erfolgreich.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
       security:
         - bearerAuth: [ ]
 
@@ -503,17 +407,12 @@ paths:
                           description: timestamp in ISO 8601 Format.
                           example: "2023-01-01T12:30:00Z"
         '401':
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Unauthorized."
+          $ref: '#/components/responses/Unauthorized'
       security:
         - bearerAuth: []
+
+
+
 components:
 
   securitySchemes:
@@ -578,3 +477,17 @@ components:
           items:
             type: string
 
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Unauthorized."
+
+  responses:
+    Unauthorized:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
