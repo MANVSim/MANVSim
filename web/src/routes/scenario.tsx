@@ -19,6 +19,18 @@ function isFetchError(obj: unknown): obj is FetchError {
   return !!obj?.message
 }
 
+function TemplateEntry({ template, csrfToken }: { template: Template, csrfToken: string }) {
+  const { id, players, name } = template
+  return (
+    <Form method="post">
+      <span>{name} ({players} Spieler) </span>
+      <input type="hidden" name="csrf_token" value={csrfToken} />
+      <input type="hidden" name="id" value={id} />
+      <button type="submit">Starten</button>
+    </Form>
+  )
+}
+
 export default function Scenario() {
   const loaderData = useLoaderData()
   const fetchError = useActionData()
@@ -36,14 +48,7 @@ export default function Scenario() {
           templates.length ?
             <ul>
               {
-                templates.map(t => (
-                  <Form key={t.id} method="post">
-                    <span>{t.name} ({t.players} Spieler) </span>
-                    <input type="hidden" name="csrf_token" value={csrfToken} />
-                    <input type="hidden" name="id" value={t.id} />
-                    <button type="submit">Starten</button>
-                  </Form>
-                ))
+                templates.map((t: Template) => <TemplateEntry key={t.id} template={t} csrfToken={csrfToken} />)
               }
             </ul>
             :
