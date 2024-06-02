@@ -6,7 +6,7 @@ export interface Template {
 
 function isTemplate(obj: object): obj is Template {
   const template = obj as Template
-  return !!template?.id && !!template?.name && !!template?.players
+  return [template.id, template.name, template.players].every(x => x !== undefined)
 }
 
 interface CsrfToken {

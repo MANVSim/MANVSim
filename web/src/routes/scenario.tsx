@@ -1,6 +1,8 @@
 import { useActionData, useLoaderData } from "react-router"
 import { Template } from "../api"
 import { Form } from "react-router-dom"
+import Button from "react-bootstrap/Button"
+import { ListGroup } from "react-bootstrap"
 
 interface LoaderData {
   csrfToken: string,
@@ -22,12 +24,14 @@ function isFetchError(obj: unknown): obj is FetchError {
 function TemplateEntry({ template, csrfToken }: Readonly<{ template: Template, csrfToken: string }>) {
   const { id, players, name } = template
   return (
-    <Form method="post">
-      <span>{name} ({players} Spieler) </span>
-      <input type="hidden" name="csrf_token" value={csrfToken} />
-      <input type="hidden" name="id" value={id} />
-      <button type="submit">Starten</button>
-    </Form>
+    <ListGroup.Item>
+      <Form method="post">
+        {/* <span>{name} ({players} Spieler) </span> */}
+        <input type="hidden" name="csrf_token" value={csrfToken} />
+        <input type="hidden" name="id" value={id} />
+        <Button type="submit">{name} ({players} Spieler)</Button>
+      </Form>
+    </ListGroup.Item>
   )
 }
 
@@ -45,14 +49,14 @@ export default function Scenario() {
       <p>Die folgenden Vorlagen sind verfügbar:</p>
       {
         templates.length ?
-          <ul>
+          <ListGroup>
             {
               templates.map((t: Template) => <TemplateEntry key={t.id} template={t} csrfToken={csrfToken} />)
             }
-          </ul>
+          </ListGroup>
           :
           <p><i>Keine Vorlagen</i></p>
       }
-    </div>
+    </div >
   )
 }

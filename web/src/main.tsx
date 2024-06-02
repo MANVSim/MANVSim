@@ -11,6 +11,8 @@ import Scenario from './routes/scenario'
 import { getCsrfToken, getTemplates } from './api'
 import Index from './routes'
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const router = createBrowserRouter([
   {
     path: "/",
