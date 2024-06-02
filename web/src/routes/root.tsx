@@ -7,6 +7,7 @@ export default function Root() {
       <h1>MANVSim - Simulation eines Massenanfalls von Verletzten</h1>
       <div>
         <ul>
+          <li><Link to={"/"}>Home</Link></li>
           <li><Link to={"/scenario"}>Scenario</Link></li>
         </ul>
       </div>
