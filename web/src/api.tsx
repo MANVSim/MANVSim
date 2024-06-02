@@ -17,16 +17,16 @@ function isCsrfToken(obj: object): obj is CsrfToken {
   return !!(obj as CsrfToken)?.csrf
 }
 
-async function tryFetch(url: string): Promise<Response> {
-  const response = await fetch(url)
+async function tryFetch(url: string, body = {}): Promise<Response> {
+  const response = await fetch(url, body)
   if (!response.ok) {
     throw new Error(`Could not fetch ${url}: ${response.status}: ${response.statusText}`)
   }
   return response
 }
 
-async function tryFetchJson(url: string): Promise<object> {
-  const response = await tryFetch(url)
+async function tryFetchJson(url: string, body = {}): Promise<object> {
+  const response = await tryFetch(url, body)
   return await response.json()
 }
 
@@ -44,4 +44,20 @@ export async function getCsrfToken() {
     throw new Error("Fetched json does not contain a CSRF Token!")
   }
   return json.csrf
+}
+
+interface StartResponse {
+  id: number
+}
+
+function isStartResponse(obj: object): obj is StartResponse {
+  return (obj as StartResponse).id !== undefined
+}
+
+export async function startScenario(formData: FormData): Promise<StartResponse> {
+  const json = await tryFetchJson("/api/scenario/start", { method: "POST", body: formData })
+  if (!isStartResponse(json)) {
+    throw new Error("Unexpected response")
+  }
+  return json
 }

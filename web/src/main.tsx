@@ -8,7 +8,7 @@ import {
 import Root from './routes/root'
 import ErrorPage from './error-page'
 import Scenario from './routes/scenario'
-import { getCsrfToken, getTemplates } from './api'
+import { getCsrfToken, getTemplates, startScenario } from './api'
 import Index from './routes'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -33,15 +33,8 @@ const router = createBrowserRouter([
         },
         action: async ({ request }) => {
           const formData = await request.formData()
-          const response = await fetch("/api/scenario/start", { method: "POST", body: formData })
-          const json = await response.json()
-          if (!response.ok) {
-            return {
-              message: `${response.status}: ${response.statusText} (${json.error})`
-            }
-          }
-          const executionId = json.id
-          return redirect(`/execution/${executionId}`)
+          const result = await startScenario(formData)
+          return redirect(`/execution/${result.id}`)
         }
       }
     ]
