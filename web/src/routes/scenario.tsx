@@ -16,7 +16,7 @@ interface FetchError {
 }
 
 function isFetchError(obj: unknown): obj is FetchError {
-  return (obj as FetchError).message !== undefined
+  return !!obj?.message
 }
 
 export default function Scenario() {
