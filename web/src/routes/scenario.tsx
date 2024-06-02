@@ -1,14 +1,35 @@
 import { useActionData, useLoaderData } from "react-router"
-import { isTemplate } from "../api"
+import { Template, isTemplate } from "../api"
 import { Form } from "react-router-dom"
 
+interface LoaderData {
+  csrfToken: string,
+  templates: Template[]
+}
+
+function isLoaderData(obj: unknown): obj is LoaderData {
+  return (obj as LoaderData).templates !== undefined
+}
+
+interface FetchError {
+  message: string
+}
+
+function isFetchError(obj: unknown): obj is FetchError {
+  return (obj as FetchError).message !== undefined
+}
+
 export default function Scenario() {
-  const { csrfToken, templates } = useLoaderData()
+  const loaderData = useLoaderData()
   const fetchError = useActionData()
+  if (!isLoaderData(loaderData)) {
+    return <div>Loading...</div>
+  }
+  const { csrfToken, templates } = loaderData
   return (
     <div>
       <h2>Vorlagen</h2>
-      {fetchError && <p>{fetchError.message}</p>}
+      {isFetchError(fetchError) && <p>{fetchError.message}</p>}
       <p>Die folgenden Vorlagen sind verfügbar:</p>
       {
         Array.isArray(templates) && templates.every(isTemplate) ?
