@@ -21,14 +21,22 @@ class ActionScreen extends StatefulWidget {
 }
 
 class _ActionScreenState extends State<ActionScreen> {
+  late Future<int> futureActionId;
   late Future<String> futureResult;
+
+  @override
+  void initState() {
+    futureActionId = performAction(widget.action.id, []); // TODO
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.action.name),
+          title: Text(AppLocalizations.of(context)!
+              .actionScreenTitle(widget.patient.name, widget.action.name)),
           actions: const <Widget>[LogoutButton()],
           automaticallyImplyLeading: false,
         ),
@@ -37,42 +45,58 @@ class _ActionScreenState extends State<ActionScreen> {
               return Future(() => null);
             },
             child: Center(
-                child: TimerWidget(
-              duration: widget.action.durationInSeconds,
-              onTimerComplete: showResultDialog,
-            ))));
+                child: FutureBuilder<int>(
+                    future: futureActionId,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return TimerWidget(
+                          duration: widget.action.durationInSeconds,
+                          onTimerComplete: () =>
+                              showResultDialog(successContent(snapshot.data!)),
+                        );
+                      } else if (snapshot.hasError) {
+                        Timer.run(() => showResultDialog(failureContent()));
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    }))));
   }
 
-  void showResultDialog() {
-    futureResult = fetchActionResult(widget.action.id);
+  void showResultDialog(Widget content) {
     Future dialogFuture = showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: Text(widget.action.name),
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context); // close dialog
-              },
-              child: Text(AppLocalizations.of(context)!.ok))
-        ],
-        content: FutureBuilder(
-            future: futureResult,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(snapshot.data!);
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-
-              return const CircularProgressIndicator();
-            }),
-      ),
+          title: Text(AppLocalizations.of(context)!
+              .actionScreenTitle(widget.patient.name, widget.action.name)),
+          actions: [
+            ElevatedButton(
+                onPressed: () => Navigator.pop(context), // close dialog
+                child: Text(AppLocalizations.of(context)!.ok))
+          ],
+          content: content),
     );
     // close action_screen
-    dialogFuture.then((_res) {
+    dialogFuture.whenComplete(() {
       Navigator.pop(context);
     });
+  }
+
+  Widget successContent(int performedActionId) {
+    futureResult = fetchActionResult(performedActionId);
+    return FutureBuilder<String>(
+        future: futureResult,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Text(snapshot.data!);
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          }
+
+          return const CircularProgressIndicator();
+        });
+  }
+
+  Widget failureContent() {
+    return Text(AppLocalizations.of(context)!.actionFailure);
   }
 }

@@ -49,6 +49,24 @@
   "patientResources": "Resourcen: ",
   "patientActions": "Maßnahmen: ",
 
+  "actionScreenTitle": "{action} bei {patientName}",
+  "@actionScreenTitle": {
+    "placeholders": {
+      "patientName": {
+        "type": "String",
+        "example": "Bob"
+      },
+      "action": {
+        "type": "String",
+        "example": "Pflaster anbringen"
+      }
+    }
+  },
+
+  "actionNeededResources": "Benötigte Resourcen: ",
+  "actionPerform": "Durchführen",
+  "actionFailure": "Leider konnte diese Maßnahme nicht ausgeführt werden.\nGehe sicher, dass genügend Resourcen verfügbar sind und versuche es erneut.",
+
   "notificationScreenName": "Benachrichtigungen",
 
   "homeScreenName": "Home",

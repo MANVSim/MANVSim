@@ -17,11 +17,14 @@ Future<List<PatientAction>> fetchActions() async {
   return jsonList.map((action) => PatientAction.fromJson(action)).toList();
 }
 
-Future<String> fetchActionResult(int id) async {
-  return "Successful result for $id";
+Future<String> fetchActionResult(int performedActionId) async {
+  await Future.delayed(Duration(seconds: 1));
+  return "Successful result for $performedActionId";
 }
 
-Future<int> performAction(int id, List<int> resourceIds) async {
+Future<int> performAction(int actionId, List<int> resourceIds) async {
+  await Future.delayed(Duration(seconds: 1));
+  throw Error();
   return 1;
 }
 
