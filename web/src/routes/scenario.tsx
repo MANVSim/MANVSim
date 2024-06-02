@@ -44,19 +44,14 @@ export default function Scenario() {
       {isFetchError(fetchError) && <p>{fetchError.message}</p>}
       <p>Die folgenden Vorlagen sind verfügbar:</p>
       {
-        Array.isArray(templates) && templates.every(isTemplate) ?
-          templates.length ?
-            <ul>
-              {
-                templates.map((t: Template) => <TemplateEntry key={t.id} template={t} csrfToken={csrfToken} />)
-              }
-            </ul>
-            :
-            <p><i>Keine Vorlagen</i></p>
+        templates.length ?
+          <ul>
+            {
+              templates.map((t: Template) => <TemplateEntry key={t.id} template={t} csrfToken={csrfToken} />)
+            }
+          </ul>
           :
-          <div>
-            Fehler beim Laden
-          </div>
+          <p><i>Keine Vorlagen</i></p>
       }
     </div>
   )
