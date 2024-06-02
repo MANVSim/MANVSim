@@ -17,7 +17,6 @@ function isCsrfToken(obj: object): obj is CsrfToken {
   return !!(obj as CsrfToken)?.csrf
 }
 
-
 async function tryFetch(url: string): Promise<Response> {
   const response = await fetch(url)
   if (!response.ok) {
@@ -46,4 +45,3 @@ export async function getCsrfToken() {
   }
   return json.csrf
 }
-
