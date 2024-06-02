@@ -9,6 +9,7 @@ import Root from './routes/root'
 import ErrorPage from './error-page'
 import Scenario from './routes/scenario'
 import { getCsrfToken, getTemplates } from './api'
+import Index from './routes'
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
     element: <Root />,
     errorElement: <ErrorPage />,
     children: [
+      {
+        index: true,
+        element: <Index />
+      },
       {
         path: "/scenario",
         element: <Scenario />,
