@@ -1,30 +1,31 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/patient_action.dart';
 
 Future<List<Location>> fetchLocations() async {
-  await Future.delayed(Duration(seconds: 1));
+  await Future.delayed(const Duration(seconds: 1));
   String json = demoJson;
   List<dynamic> jsonList = jsonDecode(json);
   return jsonList.map((location) => Location.fromJson(location)).toList();
 }
 
 Future<List<PatientAction>> fetchActions() async {
-  await Future.delayed(Duration(seconds: 1));
+  await Future.delayed(const Duration(seconds: 1));
   String json = demoActions;
   List<dynamic> jsonList = jsonDecode(json);
   return jsonList.map((action) => PatientAction.fromJson(action)).toList();
 }
 
 Future<String> fetchActionResult(int performedActionId) async {
-  await Future.delayed(Duration(seconds: 1));
+  await Future.delayed(const Duration(seconds: 1));
   return "Successful result for $performedActionId";
 }
 
 Future<int> performAction(int actionId, List<int> resourceIds) async {
-  await Future.delayed(Duration(seconds: 1));
-  throw Error();
+  await Future.delayed(const Duration(seconds: 1));
+  if (Random().nextBool()) throw Error();
   return 1;
 }
 

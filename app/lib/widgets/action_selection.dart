@@ -3,8 +3,8 @@ import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/models/resource.dart';
-import 'package:manvsim/screens/action_screen.dart';
 import 'package:manvsim/services/action_service.dart';
+import 'package:manvsim/widgets/action_card.dart';
 import 'package:manvsim/widgets/resource_directory.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -72,21 +72,11 @@ class _ActionSelectionState extends State<ActionSelection> {
           if (snapshot.hasData) {
             var selectedActions = getSelectedActions();
             return ListView.builder(
-              shrinkWrap: true, // nested scrolling
-              physics: const ClampingScrollPhysics(),
-              itemCount: selectedActions.length,
-              itemBuilder: (context, index) => Card(
-                  child: ListTile(
-                      title: Text(selectedActions[index].name),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ActionScreen(
-                                    action: selectedActions[index],
-                                    patient: widget.patient)));
-                      })),
-            );
+                shrinkWrap: true, // nested scrolling
+                physics: const ClampingScrollPhysics(),
+                itemCount: selectedActions.length,
+                itemBuilder: (context, index) => ActionCard(
+                    action: selectedActions[index], patient: widget.patient));
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }

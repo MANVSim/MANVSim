@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/resource.dart';
