@@ -93,8 +93,8 @@
     {
       "id": 2,
       "name": "player",
-      "x": 1358,
-      "y": 182,
+      "x": 2115.3545365071245,
+      "y": 179.27570310608928,
       "fields": [
         {
           "name": "tan",
@@ -121,6 +121,18 @@
           "comment": "",
           "id": 1,
           "size": 255
+        },
+        {
+          "name": "location_id",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 2
         }
       ],
       "comment": "",
@@ -173,6 +185,18 @@
           "id": 2,
           "size": "",
           "values": []
+        },
+        {
+          "name": "location",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 3
         }
       ],
       "comment": "",
@@ -385,8 +409,8 @@
     {
       "id": 7,
       "name": "auth_user",
-      "x": 1875.2717715332685,
-      "y": 380.62671036330073,
+      "x": 1532.0103629005425,
+      "y": 800.1684320255206,
       "fields": [
         {
           "name": "id",
@@ -544,8 +568,8 @@
     {
       "id": 8,
       "name": "auth_group",
-      "x": 2172.98172964906,
-      "y": 381.6170205910132,
+      "x": 2374.579699798439,
+      "y": 891.0605397522802,
       "fields": [
         {
           "name": "id",
@@ -581,8 +605,8 @@
     {
       "id": 9,
       "name": "auth_user_groups",
-      "x": 2026.5570405836875,
-      "y": 104.70810510958222,
+      "x": 2042.9028219471504,
+      "y": 458.86670131794966,
       "fields": [
         {
           "name": "id",
@@ -629,8 +653,8 @@
     {
       "id": 10,
       "name": "ressource",
-      "x": 675.924795254374,
-      "y": 1023.2400205993736,
+      "x": 607.8173729066111,
+      "y": 895.1980665855792,
       "fields": [
         {
           "name": "id",
@@ -678,8 +702,8 @@
     {
       "id": 11,
       "name": "location",
-      "x": 229.5753521595367,
-      "y": 1029.4080634430434,
+      "x": 266.6280531484957,
+      "y": 1290.270491384208,
       "fields": [
         {
           "name": "id",
@@ -916,6 +940,28 @@
       "deleteConstraint": "No action",
       "name": "ressources_needed_ressource_id_fk",
       "id": 12
+    },
+    {
+      "startTableId": 3,
+      "startFieldId": 3,
+      "endTableId": 11,
+      "endFieldId": 0,
+      "cardinality": "One to one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "patients_location_fk",
+      "id": 13
+    },
+    {
+      "startTableId": 2,
+      "startFieldId": 2,
+      "endTableId": 11,
+      "endFieldId": 0,
+      "cardinality": "One to one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "player_location_id_fk",
+      "id": 14
     }
   ],
   "notes": [],
