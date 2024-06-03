@@ -44,12 +44,12 @@ def create_app():
             try:
                 execution, _ = util.get_execution_and_player()
                 if execution.status != Execution.Status.RUNNING:
-                    return 204
+                    return "No running execution detected", 204
 
             except BadRequestKeyError:
-                return f" No request parameter 'exec_id' found.", 400
+                return f"Incorrect JWT detected.", 400
             except KeyError:
-                return f"Invalid Execution ID sent. Unable to resolve running instance", 400
+                return f"Invalid execution id or player TAN sent. Unable to resolve running instance/player.", 400
 
         if "/api/run" in request.path:
             return check_for_exec_status()

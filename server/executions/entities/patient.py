@@ -8,6 +8,10 @@ class Patient:
 
     def __init__(self, id: int, name: str, injuries: str, activity_diagram: str, location: Location,
                  performed_actions: list[PerformedAction] = None):
+
+        if performed_actions is None:
+            performed_actions = []
+
         self.id = id
         self.name = name
         self.injuries = injuries  # FIXME: Maybe replace by JSON datatype

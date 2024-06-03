@@ -1,3 +1,5 @@
+import logging
+
 from flask import Blueprint, request, Response
 from flask_api import status
 from flask_jwt_extended import jwt_required
@@ -29,10 +31,10 @@ def get_patient():
 
         return {
             "player_location": player.location.to_dict(),
-            "patient": patient.to_json(shallow=False)
+            "patient": patient.to_dict(shallow=False)
         }
     except KeyError:
-        return Response(response="Invalid parameter or parameter set. Unable to resolve patient.",
+        return Response(response="Missing or invalid request parameter detected.",
                         status=status.HTTP_400_BAD_REQUEST)
 
 
