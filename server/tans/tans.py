@@ -66,6 +66,9 @@ class Tan:
         """
         return f"Tan({self.value.upper()!r})"
 
+    def __hash__(self) -> int:
+        return hash(self.value)
+
 
 def uniques(n: int, length: int = 5) -> list[Tan]:
     """
