@@ -5,6 +5,7 @@ from flask import Flask, send_from_directory, redirect, request
 from flask_jwt_extended import JWTManager, jwt_required
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
+from flask_cors import CORS
 from werkzeug.exceptions import BadRequestKeyError
 
 from execution.utils import util
@@ -37,6 +38,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     jwt = JWTManager(app)
     web.setup(app)      # FIXME deprecated package
     execution.web.setup.setup(app)
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     # define run request blocker
     @app.before_request
