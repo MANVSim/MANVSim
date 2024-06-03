@@ -6,6 +6,8 @@ from executions.utils.timeoutlock import TimeoutLock
 from vars import ACQUIRE_TIMEOUT
 
 
+# Suppresses "unexpected argument" warning for the lock.acquire_timeout() method. PyCharm does not recognize the
+# parameter in the related method definition.
 # noinspection PyArgumentList
 class Location:
 
