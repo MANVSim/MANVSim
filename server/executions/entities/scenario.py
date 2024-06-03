@@ -7,8 +7,8 @@ from executions.entities.patient import Patient
 
 class Scenario:
 
-    def __init__(self, id: int, name: str, patients: list[Patient], actions: list[Action],
-                 locations: dict[str, Location]):
+    def __init__(self, id: int, name: str, patients: dict[int, Patient], actions: dict[int, Action],
+                 locations: dict[int, Location]):
         self.id = id
         self.name = name
         self.patients = patients
@@ -23,9 +23,9 @@ class Scenario:
         return {
             'id': self.id,
             'name': self.name,
-            'patients': [patient.id if shallow else patient.to_dict() for patient in self.patients],
-            'locations': [location.id for location in list(self.locations.values())] if shallow else list(
-                self.locations.values())
+            'patients': [patient.id if shallow else patient.to_dict() for patient in list(self.patients.values())],
+            'actions': [action.id if shallow else action.to_dict() for action in list(self.actions.values())],
+            'locations': [location.id if shallow else location.to_dict() for location in list(self.locations.values())]
         }
 
     def to_json(self, shallow: bool = False):

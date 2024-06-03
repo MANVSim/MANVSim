@@ -1,5 +1,3 @@
-from flask_jwt_extended import create_access_token
-
 from executions import run
 from executions.entities.execution import Execution
 from executions.tests.conftest import generate_token
