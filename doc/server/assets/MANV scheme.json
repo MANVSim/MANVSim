@@ -93,8 +93,8 @@
     {
       "id": 2,
       "name": "player",
-      "x": 2115.3545365071245,
-      "y": 179.27570310608928,
+      "x": 1714.8708159197868,
+      "y": 179.27570310608934,
       "fields": [
         {
           "name": "tan",
@@ -255,8 +255,8 @@
     {
       "id": 5,
       "name": "action",
-      "x": 676.7731961863085,
-      "y": 637.5695523582896,
+      "x": 597.4896169837391,
+      "y": 509.49607826183126,
       "fields": [
         {
           "name": "id",
@@ -333,84 +333,9 @@
     },
     {
       "id": 6,
-      "name": "performed_actions",
-      "x": 1414.0660290625,
-      "y": 418.6750571874999,
-      "fields": [
-        {
-          "name": "id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": true,
-          "notNull": true,
-          "increment": true,
-          "comment": "",
-          "id": 0
-        },
-        {
-          "name": "start_time",
-          "type": "TIMESTAMP",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 1,
-          "size": "",
-          "values": []
-        },
-        {
-          "name": "execution_id",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 2,
-          "size": 255
-        },
-        {
-          "name": "patient_id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 3
-        },
-        {
-          "name": "action_id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 4
-        }
-      ],
-      "comment": "",
-      "indices": [],
-      "color": "#175e7a",
-      "key": 1713631891107
-    },
-    {
-      "id": 7,
       "name": "auth_user",
-      "x": 1532.0103629005425,
-      "y": 800.1684320255206,
+      "x": 1281.962151569362,
+      "y": 838.7937654831826,
       "fields": [
         {
           "name": "id",
@@ -566,10 +491,10 @@
       "key": 1714662834100
     },
     {
-      "id": 8,
+      "id": 7,
       "name": "auth_group",
-      "x": 2374.579699798439,
-      "y": 891.0605397522802,
+      "x": 1904.9769614447582,
+      "y": 862.5997677308451,
       "fields": [
         {
           "name": "id",
@@ -603,10 +528,10 @@
       "key": 1714663228060
     },
     {
-      "id": 9,
+      "id": 8,
       "name": "auth_user_groups",
-      "x": 2042.9028219471504,
-      "y": 458.86670131794966,
+      "x": 1609.8925047638863,
+      "y": 424.3071924347784,
       "fields": [
         {
           "name": "id",
@@ -651,7 +576,7 @@
       "key": 1714663301667
     },
     {
-      "id": 10,
+      "id": 9,
       "name": "ressource",
       "x": 607.8173729066111,
       "y": 895.1980665855792,
@@ -700,10 +625,10 @@
       "key": 1714907529551
     },
     {
-      "id": 11,
+      "id": 10,
       "name": "location",
-      "x": 266.6280531484957,
-      "y": 1290.270491384208,
+      "x": 331.68124634034757,
+      "y": 1286.2046668097173,
       "fields": [
         {
           "name": "id",
@@ -749,10 +674,10 @@
       "key": 1714907554911
     },
     {
-      "id": 12,
+      "id": 11,
       "name": "ressources_needed",
-      "x": 1036.5246897835793,
-      "y": 884.1404212903348,
+      "x": 879.9904436656859,
+      "y": 699.145403151006,
       "fields": [
         {
           "name": "id",
@@ -843,84 +768,51 @@
       "id": 3
     },
     {
-      "startTableId": 6,
-      "startFieldId": 2,
-      "endTableId": 1,
-      "endFieldId": 0,
-      "cardinality": "One to one",
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "performed_actions_execution_id_fk",
-      "id": 4
-    },
-    {
-      "startTableId": 6,
-      "startFieldId": 3,
-      "endTableId": 3,
-      "endFieldId": 0,
-      "cardinality": "One to one",
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "performed_actions_patient_id_fk",
-      "id": 5
-    },
-    {
-      "startTableId": 6,
-      "startFieldId": 4,
-      "endTableId": 5,
-      "endFieldId": 0,
-      "cardinality": "One to one",
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "performed_actions_action_id_fk",
-      "id": 6
-    },
-    {
-      "startTableId": 9,
+      "startTableId": 8,
       "startFieldId": 1,
-      "endTableId": 7,
+      "endTableId": 6,
       "endFieldId": 0,
       "cardinality": "One to one",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "auth_user_groups_user_id_fk",
-      "id": 7
+      "id": 4
     },
     {
-      "startTableId": 9,
+      "startTableId": 8,
       "startFieldId": 0,
-      "endTableId": 8,
+      "endTableId": 7,
       "endFieldId": 0,
       "cardinality": "One to many",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "auth_user_groups_id_fk",
-      "id": 8
+      "id": 5
     },
     {
-      "startTableId": 11,
+      "startTableId": 10,
       "startFieldId": 2,
-      "endTableId": 11,
+      "endTableId": 10,
       "endFieldId": 0,
       "cardinality": "One to many",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "location_location_id_fk",
-      "id": 9
+      "id": 6
     },
     {
-      "startTableId": 10,
+      "startTableId": 9,
       "startFieldId": 2,
-      "endTableId": 11,
+      "endTableId": 10,
       "endFieldId": 0,
       "cardinality": "One to many",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "ressource_location_id_fk",
-      "id": 10
+      "id": 7
     },
     {
-      "startTableId": 12,
+      "startTableId": 11,
       "startFieldId": 1,
       "endTableId": 5,
       "endFieldId": 0,
@@ -928,40 +820,40 @@
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "ressources_needed_action_id_fk",
-      "id": 11
+      "id": 8
     },
     {
-      "startTableId": 12,
+      "startTableId": 11,
       "startFieldId": 2,
-      "endTableId": 10,
+      "endTableId": 9,
       "endFieldId": 0,
       "cardinality": "One to many",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "ressources_needed_ressource_id_fk",
-      "id": 12
+      "id": 9
     },
     {
       "startTableId": 3,
       "startFieldId": 3,
-      "endTableId": 11,
+      "endTableId": 10,
       "endFieldId": 0,
       "cardinality": "One to one",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "patients_location_fk",
-      "id": 13
+      "id": 10
     },
     {
       "startTableId": 2,
       "startFieldId": 2,
-      "endTableId": 11,
+      "endTableId": 10,
       "endFieldId": 0,
       "cardinality": "One to one",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "player_location_id_fk",
-      "id": 14
+      "id": 11
     }
   ],
   "notes": [],
