@@ -3,8 +3,10 @@ from queue import Queue
 
 from executions.entities.resource import Resource
 from executions.utils.timeoutlock import TimeoutLock
+from vars import ACQUIRE_TIMEOUT
 
 
+# noinspection PyArgumentList
 class Location:
 
     def __init__(self, id: int, name: str, picture_ref: str, resources: list[Resource] = None,
@@ -28,7 +30,7 @@ class Location:
         Retrieves a location of the stored locations.
         If the list is blocked more than 3 seconds the methods raises a TimeoutError
         """
-        with self.loc_lock.acquire_timeout(timeout=3) as acquired:
+        with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
                 return next((location for location in self.locations if location.id == id), None)
             else:
@@ -39,55 +41,51 @@ class Location:
         Removes a location of the stored locations.
         If the list is blocked more than 3 seconds the methods raises a TimeoutError
         """
-        with self.loc_lock.acquire_timeout(timeout=3) as acquired:
+        with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
                 self.locations = {location for location in self.locations if location.id != id}
             else:
                 raise TimeoutError
 
-    # noinspection PyArgumentList
     def add_locations(self, new_locations: set):
         """
         Unions a location-set of the stored locations.
         If the list is blocked more than 3 seconds the methods raises a TimeoutError
         """
-        with self.loc_lock.acquire_timeout(timeout=3) as acquired:
+        with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
                 self.locations.union(new_locations)
             else:
                 raise TimeoutError
 
-    # noinspection PyArgumentList
     def remove_locations(self, old_locations: set):
         """
         Removes a set of locations of the stored locations.
         If the list is blocked more than 3 seconds the methods raises a TimeoutError
         """
-        with self.loc_lock.acquire_timeout(timeout=3) as acquired:
+        with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
                 self.locations = self.locations - old_locations
             else:
                 raise TimeoutError
 
-    # noinspection PyArgumentList
     def add_resources(self, new_resources: list):
         """
         Adds a resource to the resource list.
         If the list is blocked more than 3 seconds the methods raises a TimeoutError
         """
-        with self.res_lock.acquire_timeout(timeout=3) as acquired:
+        with self.res_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
                 self.resources += new_resources
             else:
                 raise TimeoutError
 
-    # noinspection PyArgumentList
     def remove_resources(self, old_resources: list):
         """
         Removes a resource list of the stored resource-list.
         If the list is blocked more than 3 seconds the methods raises a TimeoutError
         """
-        with self.res_lock.acquire_timeout(timeout=3) as acquired:
+        with self.res_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
                 self.locations = [resource for resource in self.resources if resource not in old_resources]
             else:
