@@ -47,11 +47,13 @@ export async function getCsrfToken() {
 }
 
 interface StartResponse {
-  id: number
+  id: number,
+  tans: string[]
 }
 
 function isStartResponse(obj: object): obj is StartResponse {
-  return (obj as StartResponse).id !== undefined
+  const t = obj as StartResponse
+  return t.id !== undefined && t.tans !== undefined
 }
 
 export async function startScenario(formData: FormData): Promise<StartResponse> {

@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {
   createBrowserRouter,
-  redirect,
   RouterProvider,
 } from 'react-router-dom'
 import Root from './routes/root'
@@ -34,7 +33,7 @@ const router = createBrowserRouter([
         action: async ({ request }) => {
           const formData = await request.formData()
           const result = await startScenario(formData)
-          return redirect(`/execution/${result.id}`)
+          return result
         }
       }
     ]
