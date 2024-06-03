@@ -1,4 +1,6 @@
 import logging
+from math import floor
+from random import random
 
 from executions import run
 from executions.api import api
@@ -6,6 +8,8 @@ from executions.api import api
 from flask import Response, request
 from flask_api import status
 from flask_wtf.csrf import generate_csrf
+
+from tans.tans import uniques
 
 
 @api.get("/exec/status/<exec_id>")
@@ -48,17 +52,21 @@ def hello_world():
 def register_player(tan: str):
     try:
         exec_id = run.active_player[tan]
-        return {
-            "exec_id": exec_id,
-            "csrf_token": generate_csrf()
-        }
+        return {"exec_id": exec_id, "csrf_token": generate_csrf()}
     except KeyError:
         logging.error("invalid tan detected. Unable to resolve player.")
-        return Response(response="Invalid TAN detected. Unable to resolve player.",
-                        status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            response="Invalid TAN detected. Unable to resolve player.",
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
 @api.get("/templates")
 def get_templates():
-    return [{"id": 1, "name": "Busunfall", "players": 5}]
+    return [
+        {"id": 10023, "name": "Busunfall", "players": 5},
+        {"id": 900323, "name": "Explosion im Wohnviertel", "players": 10},
+    ]
 
 
 @api.post("/scenario/start")
@@ -68,7 +76,7 @@ def start_scenario():
     except KeyError:
         return {"error": "Missing id in request"}, 400
     # TODO: Create actual execution
-    return {"id": 1}
+    return {"id": floor(random() * 1000), "tans": [str(x) for x in uniques(10)]}
 
 
 @api.get("/csrf")
