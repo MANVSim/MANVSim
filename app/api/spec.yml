@@ -1,0 +1,99 @@
+openapi: 3.0.1
+info:
+  title: TAN Login API
+  description: API for TAN login and player name setting.
+  version: 1.0.0
+paths:
+  /login:
+    post:
+      summary: Login
+      description: |
+        Performs a login for a requesting TAN. If the TAN is registered to a registered execution, a JWT Token is generated,
+        containing the related execution-id and player-TAN as identity.
+        The method returns:
+        - JWT Token
+        - CSRF Token (required for following POST request)
+        - Boolean if player has no name yet
+        - username
+        - user-role
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                TAN:
+                  type: string
+                  description: The TAN of the player.
+                  example: "123456"
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jwt_token:
+                    type: string
+                    description: JWT Token for the session.
+                  csrf_token:
+                    type: string
+                    description: CSRF Token required for following POST requests.
+                  userCreationRequired:
+                    type: boolean
+                    description: Boolean indicating if the player needs to create a username.
+                  userName:
+                    type: string
+                    description: The username of the player.
+                  userRole:
+                    type: string
+                    description: The role of the user.
+        '400':
+          description: Invalid TAN detected. Unable to resolve player.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Invalid TAN detected. Unable to resolve player."
+
+  /player/set-name:
+    post:
+      summary: Set Player Name
+      description: Changes the name of the requesting player.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The new name of the player.
+                  example: "JohnDoe"
+      responses:
+        '200':
+          description: Name successfully set.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Name successfully set."
+        '400':
+          description: Invalid form detected. Unable to resolve attribute 'name'.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Invalid form detected. Unable to resolve attribute 'name'."
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
