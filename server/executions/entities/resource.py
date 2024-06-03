@@ -1,5 +1,7 @@
 import json
 
+from executions.utils.timeoutlock import TimeoutLock
+
 
 class Resource:
 
@@ -8,6 +10,9 @@ class Resource:
         self.name = name
         self.quantity = quantity
         self.picture_ref = picture_ref
+
+        self.consumable = True
+        self.lock = TimeoutLock()
 
     def to_dict(self, shallow: bool = False):
         """
@@ -27,3 +32,22 @@ class Resource:
         only the object reference in form of a unique identifier is included.
         """
         return json.dumps(self.to_dict(shallow))
+
+
+def try_lock_all(resources: list['Resource']):
+    """
+    Tries to lock all provided resources. Returns boolean if successful, otherwise it releases all acquired
+    locks
+    """
+    success = True
+    blocked_resources = []
+    for res in resources:
+        if not res.lock.acquire(blocking=False):
+            success = False
+            break
+        else:
+            blocked_resources.append(res)
+    if not success:
+        [r.lock.release() for r in blocked_resources]
+
+    return success
