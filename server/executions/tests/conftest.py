@@ -3,13 +3,15 @@ import pytest
 
 from app import create_app
 from executions import run
-from executions.tests.dummy_entities import create_test_execution
+from executions.entities.execution import Execution
+from executions.tests.entities.dummy_entities import create_test_execution
 
 """
 If you’re using an application factory, define an app fixture to create and configure an app instance. 
 You can add code before and after the yield to set up and tear down other resources, such as creating and clearing a 
 database.
 """
+
 
 @pytest.fixture()
 def app():
@@ -19,18 +21,24 @@ def app():
     })
 
     # Set up
-    test_execution = create_test_execution()
+    test = create_test_execution()
+    test.status = Execution.Status.RUNNING
+    test.id = 2
+    test.players.pop("123ABC")
+    test.players.pop("456DEF")
+    test.players["987ZYX"].tan = "987ZYX"
+    test.players["654WVU"].tan = "654WVU"
     exec_before = len(run.exec_dict)
     player_before = len(run.registered_player)
-    run.create_execution(test_execution)
+    run.create_execution(test)
 
     assert len(run.exec_dict) == exec_before + 1
-    assert len(run.registered_player) == player_before + len(test_execution.players)
+    assert len(run.registered_player) == player_before + len(test.players)
 
     yield app
 
     # Clean up
-    run.delete_execution(str(test_execution.id))
+    run.delete_execution(str(test.id))
     assert len(run.exec_dict) == exec_before
     assert len(run.registered_player) == player_before
 
