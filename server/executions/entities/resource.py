@@ -36,8 +36,8 @@ class Resource:
 
 def try_lock_all(resources: list['Resource']):
     """
-    Tries to lock all provided resources. Returns boolean if successful, otherwise it releases all acquired
-    locks
+    Tries to lock all provided resources. If not successful, every lock will be released. Returns a boolean in every
+    case.
     """
     success = True
     blocked_resources = []
