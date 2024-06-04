@@ -37,9 +37,9 @@ def login():
         return {
             "jwt_token": access_token,
             "csrf_token": generate_csrf(),
-            "userCreationRequired": userCreationRequired,
-            "userName": "" if userCreationRequired else player.name,
-            "userRole": player.role.name
+            "user_creation_required": userCreationRequired,
+            "user_name": "" if userCreationRequired else player.name,
+            "user_role": player.role.name
         }
     except KeyError:
         return Response(response="Invalid TAN detected. Unable to resolve player.", status=status.HTTP_400_BAD_REQUEST)
