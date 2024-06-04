@@ -93,8 +93,8 @@
     {
       "id": 2,
       "name": "player",
-      "x": 1714.8708159197868,
-      "y": 179.27570310608934,
+      "x": 1196.1357599738797,
+      "y": 183.4035682727677,
       "fields": [
         {
           "name": "tan",
@@ -133,6 +133,44 @@
           "increment": false,
           "comment": "",
           "id": 2
+        },
+        {
+          "name": "role_id",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 3
+        },
+        {
+          "name": "alerted",
+          "type": "BOOLEAN",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 4,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "activation_delay_sec",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 5
         }
       ],
       "comment": "",
@@ -143,8 +181,8 @@
     {
       "id": 3,
       "name": "patients",
-      "x": 350.62119343749987,
-      "y": 525.552563125,
+      "x": 102.94928343680152,
+      "y": 603.9820012918879,
       "fields": [
         {
           "name": "id",
@@ -197,6 +235,19 @@
           "increment": false,
           "comment": "",
           "id": 3
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 4,
+          "size": 255
         }
       ],
       "comment": "",
@@ -312,8 +363,8 @@
           "values": []
         },
         {
-          "name": "duration",
-          "type": "TIME",
+          "name": "duration_secs",
+          "type": "INT",
           "default": "",
           "check": "",
           "primary": false,
@@ -324,6 +375,18 @@
           "id": 4,
           "size": "",
           "values": []
+        },
+        {
+          "name": "required_power",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 5
         }
       ],
       "comment": "",
@@ -333,250 +396,6 @@
     },
     {
       "id": 6,
-      "name": "auth_user",
-      "x": 1281.962151569362,
-      "y": 838.7937654831826,
-      "fields": [
-        {
-          "name": "id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": true,
-          "notNull": true,
-          "increment": true,
-          "comment": "",
-          "id": 0
-        },
-        {
-          "name": "username",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": true,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 1,
-          "size": 150
-        },
-        {
-          "name": "password",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 2,
-          "size": 128
-        },
-        {
-          "name": "email",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 3,
-          "size": 254
-        },
-        {
-          "name": "is_superuser",
-          "type": "BOOLEAN",
-          "default": "false",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 4,
-          "size": "",
-          "values": []
-        },
-        {
-          "name": "first_name",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 5,
-          "size": 150
-        },
-        {
-          "name": "last_name",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 6,
-          "size": 150
-        },
-        {
-          "name": "is_staff",
-          "type": "BOOLEAN",
-          "default": "false",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 7,
-          "size": "",
-          "values": []
-        },
-        {
-          "name": "is_active",
-          "type": "BOOLEAN",
-          "default": "true",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 8,
-          "size": "",
-          "values": []
-        },
-        {
-          "name": "date_joined",
-          "type": "DATETIME",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 9,
-          "size": "",
-          "values": []
-        },
-        {
-          "name": "last_login",
-          "type": "DATETIME",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": false,
-          "increment": false,
-          "comment": "",
-          "id": 10,
-          "size": "",
-          "values": []
-        }
-      ],
-      "comment": "",
-      "indices": [],
-      "color": "#175e7a",
-      "key": 1714662834100
-    },
-    {
-      "id": 7,
-      "name": "auth_group",
-      "x": 1904.9769614447582,
-      "y": 862.5997677308451,
-      "fields": [
-        {
-          "name": "id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": true,
-          "notNull": true,
-          "increment": true,
-          "comment": "",
-          "id": 0
-        },
-        {
-          "name": "name",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": true,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 1,
-          "size": 150
-        }
-      ],
-      "comment": "",
-      "indices": [],
-      "color": "#175e7a",
-      "key": 1714663228060
-    },
-    {
-      "id": 8,
-      "name": "auth_user_groups",
-      "x": 1609.8925047638863,
-      "y": 424.3071924347784,
-      "fields": [
-        {
-          "name": "id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": true,
-          "notNull": true,
-          "increment": true,
-          "comment": "",
-          "id": 0
-        },
-        {
-          "name": "user_id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 1
-        },
-        {
-          "name": "auth_group",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 2
-        }
-      ],
-      "comment": "",
-      "indices": [],
-      "color": "#175e7a",
-      "key": 1714663301667
-    },
-    {
-      "id": 9,
       "name": "ressource",
       "x": 607.8173729066111,
       "y": 895.1980665855792,
@@ -617,6 +436,31 @@
           "increment": false,
           "comment": "",
           "id": 2
+        },
+        {
+          "name": "picture_ref",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 3,
+          "size": 255
+        },
+        {
+          "name": "quantity",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 4
         }
       ],
       "comment": "",
@@ -625,10 +469,10 @@
       "key": 1714907529551
     },
     {
-      "id": 10,
+      "id": 7,
       "name": "location",
-      "x": 331.68124634034757,
-      "y": 1286.2046668097173,
+      "x": 800.881920286115,
+      "y": 1222.910734253983,
       "fields": [
         {
           "name": "id",
@@ -666,6 +510,19 @@
           "increment": false,
           "comment": "",
           "id": 2
+        },
+        {
+          "name": "picture_ref",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 3,
+          "size": 255
         }
       ],
       "comment": "",
@@ -674,7 +531,7 @@
       "key": 1714907554911
     },
     {
-      "id": 11,
+      "id": 8,
       "name": "ressources_needed",
       "x": 879.9904436656859,
       "y": 699.145403151006,
@@ -720,6 +577,68 @@
       "indices": [],
       "color": "#175e7a",
       "key": 1714907754667
+    },
+    {
+      "id": 9,
+      "name": "role",
+      "x": 1180.0101119470244,
+      "y": 529.6821065015015,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": 0
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 1,
+          "size": 255
+        },
+        {
+          "name": "short_name",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 2,
+          "size": 255
+        },
+        {
+          "name": "power",
+          "type": "INT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 3
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "color": "#175e7a",
+      "key": 1717526258334
     }
   ],
   "relationships": [
@@ -768,51 +687,29 @@
       "id": 3
     },
     {
-      "startTableId": 8,
-      "startFieldId": 1,
-      "endTableId": 6,
-      "endFieldId": 0,
-      "cardinality": "One to one",
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "auth_user_groups_user_id_fk",
-      "id": 4
-    },
-    {
-      "startTableId": 8,
-      "startFieldId": 0,
+      "startTableId": 7,
+      "startFieldId": 2,
       "endTableId": 7,
       "endFieldId": 0,
       "cardinality": "One to many",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
-      "name": "auth_user_groups_id_fk",
-      "id": 5
-    },
-    {
-      "startTableId": 10,
-      "startFieldId": 2,
-      "endTableId": 10,
-      "endFieldId": 0,
-      "cardinality": "One to many",
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
       "name": "location_location_id_fk",
-      "id": 6
+      "id": 4
     },
     {
-      "startTableId": 9,
+      "startTableId": 6,
       "startFieldId": 2,
-      "endTableId": 10,
+      "endTableId": 7,
       "endFieldId": 0,
       "cardinality": "One to many",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "ressource_location_id_fk",
-      "id": 7
+      "id": 5
     },
     {
-      "startTableId": 11,
+      "startTableId": 8,
       "startFieldId": 1,
       "endTableId": 5,
       "endFieldId": 0,
@@ -820,40 +717,51 @@
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "ressources_needed_action_id_fk",
-      "id": 8
+      "id": 6
     },
     {
-      "startTableId": 11,
+      "startTableId": 8,
       "startFieldId": 2,
-      "endTableId": 9,
+      "endTableId": 6,
       "endFieldId": 0,
       "cardinality": "One to many",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "ressources_needed_ressource_id_fk",
-      "id": 9
+      "id": 7
     },
     {
       "startTableId": 3,
       "startFieldId": 3,
-      "endTableId": 10,
+      "endTableId": 7,
       "endFieldId": 0,
       "cardinality": "One to one",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "patients_location_fk",
-      "id": 10
+      "id": 8
     },
     {
       "startTableId": 2,
       "startFieldId": 2,
-      "endTableId": 10,
+      "endTableId": 7,
       "endFieldId": 0,
       "cardinality": "One to one",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
       "name": "player_location_id_fk",
-      "id": 11
+      "id": 9
+    },
+    {
+      "startTableId": 2,
+      "startFieldId": 3,
+      "endTableId": 9,
+      "endFieldId": 0,
+      "cardinality": "One to one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "player_role_id_fk",
+      "id": 10
     }
   ],
   "notes": [],
