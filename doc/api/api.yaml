@@ -21,7 +21,7 @@ paths:
             schema:
               type: object
               properties:
-                tan:
+                TAN:
                   type: string
                   description: User TAN
                   example: "987ZYX"
@@ -166,10 +166,10 @@ paths:
                     $ref: '#/components/schemas/Location'
                   patient:
                     $ref: '#/components/schemas/Patient'
+        '400':
+          description: Missing or invalid request parameter detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '404':
-          description: Missing or invalid request parameter detected.
       security:
         - bearerAuth: [ ]
 
@@ -278,7 +278,7 @@ paths:
       security:
         - bearerAuth: [ ]
 
-  run/action/all:
+  /run/action/all:
     get:
       summary: Returns a list of actions available to the user.
       responses:
@@ -311,7 +311,7 @@ paths:
       security:
         - bearerAuth: [ ]
 
-  run/action/perform:
+  /run/action/perform:
     post:
       summary: Performs an action.
       parameters:
@@ -321,41 +321,62 @@ paths:
           schema:
             type: string
             example: "token"
-        - name: actionId
-          in: query
-          required: true
-          schema:
-            type: integer
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                type: integer
+              type: object
+              properties:
+                action_id:
+                  type: integer
+                  example: 1
+                patient_id:
+                  type: integer
+                  example: 2
+                resources: 
+                  type: array
+                  description: Each quantity required, needs to be an id in the array. Saying resource 0 is required 3 times, then id '0' needs to occur three 3 times in the array.
+                  items:
+                    type: integer
+                    example: 69
       responses:
         '200':
           description: The id of the resulting performed action.
           content:
             application/json:
               schema:
-                type: integer
-              example: 5
+                type: object
+                properties:
+                  performed_action_id:
+                    type: string
+                    example: bc8856e4-ce8c-45d3-b20d-39b693d5a35e
+              
+        '400':
+          description: Missing or invalid request parameter detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Resource not found. Update your current location-access.
+        '409':
+          description: Unable to access runtime object. A timeout-error occurred.
       security:
         - bearerAuth: [ ]
 
-  run/action/perform/result:
+  /run/action/perform/result:
     get:
       summary: Gets the result of a performed action.
       parameters:
-        - name: performedActionId
+        - name: performed_action_id
           in: query
           required: true
           schema:
-            type: integer
+            type: string
+        - name: patient_id
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: The result of the performed action.
@@ -363,7 +384,7 @@ paths:
             application/json:
               schema:
                 type: string
-              example: Die Maßnahme war erfolgreich.
+              example: Action successfully performed.
         '401':
           $ref: '#/components/responses/Unauthorized'
       security:
@@ -434,10 +455,6 @@ components:
           type: string
         injuries:
           type: string
-        treatingUsers:
-          type: array
-          items:
-            type: string
 
     Location:
       type: object
