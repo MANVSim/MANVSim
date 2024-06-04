@@ -20,7 +20,7 @@ def create_app():
     """
     Create the app instance, register all URLs and the database to the app
     """
-    import models
+    import models  # noqa: F401
 
     # asynchronously import local packages
     from executions.api import lobby

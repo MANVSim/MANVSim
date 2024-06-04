@@ -11,7 +11,7 @@ from app import db
 
 
 class Scenario(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(128), nullable=False)
 
 
@@ -21,14 +21,14 @@ class Execution(db.Model):
 
 
 class Location(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(255), nullable=False)
     picture_ref = db.Column(db.VARCHAR(255), nullable=False)
     location_id = db.Column(db.Integer, nullable=True)
 
 
 class Role(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(255), nullable=False)
     short_name = db.Column(db.VARCHAR(255), nullable=True)
     power = db.Column(db.Integer, nullable=False)
@@ -44,28 +44,29 @@ class Player(db.Model):
 
 
 class Patient(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.VARCHAR(255), nullable=False)
     injuries = db.Column(db.JSON(), nullable=False)
     activity_diagram = db.Column(db.JSON(), nullable=False)
-    location = db.Column(db.ForeignKey(Location.id), nullable=False)
+    location = db.Column(db.ForeignKey(Location.id), nullable=True)
 
 
 class TakesPartIn(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
     scenario_id = db.Column(db.ForeignKey(Scenario.id), nullable=False)
     patient_id = db.Column(db.ForeignKey(Patient.id), nullable=False)
 
 
-class Ressource(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+class Resource(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(255), nullable=False)
     picture_ref = db.Column(db.VARCHAR(255), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    location = db.Column(db.ForeignKey(Location.id))
+    location_id = db.Column(db.ForeignKey(Location.id))
 
 
 class Action(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(255), nullable=False)
     required_power = db.Column(db.Integer, nullable=False)
     picture_ref = db.Column(db.VARCHAR(255), nullable=False)
@@ -73,7 +74,7 @@ class Action(db.Model):
     duration_secs = db.Column(db.Integer, nullable=False)
 
 
-class RessourcesNeeded(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+class ResourcesNeeded(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     action_id = db.Column(db.ForeignKey(Action.id), nullable=False)
-    ressource_id = db.Column(db.ForeignKey(Ressource.id), nullable=False)
+    resource_id = db.Column(db.ForeignKey(Resource.id), nullable=False)
