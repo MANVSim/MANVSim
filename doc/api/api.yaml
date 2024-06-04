@@ -55,6 +55,10 @@ paths:
                     example: "Notarzt"
         '400':
           description: Invalid TAN detected. Unable to resolve player.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 
   /player/set-name:
@@ -105,14 +109,14 @@ paths:
                 properties:
                   scenario_start_time:
                     type: integer
-                    description: timestamp unix ms since epoch.
+                    description: Timestamp in ms since unix epoch.
                     example: 1672531200
                   travel_time:
                     type: integer
-                    description: timestamp unix ms since epoch. This parameter is only provided, iff a player is alerted.
+                    description: Timestamp in ms since unix epoch. This parameter is only provided, if a player is alerted.
                     example: 1672531200
         '204':
-          description: The execution has not been started yet
+          description: The execution has not been started yet.
         '400':
           description: Invalid execution id or TAN provided. Unable to resolve data.
         '401':
@@ -170,6 +174,8 @@ paths:
           description: Missing or invalid request parameter detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Patient with patientId could not be found.
       security:
         - bearerAuth: [ ]
 
@@ -191,17 +197,10 @@ paths:
             type: string
             description: patient id.
             example: "patient123"
+
       responses:
         '200':
-          description: success.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Patient profile successfully closed."
+          description: Patient profile successfully closed.
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -232,7 +231,7 @@ paths:
       security:
         - bearerAuth: [ ]
 
-  /run/location:
+  /run/location/arrive:
     get:
       summary: Simulates the arrival of a player at a certain location.
       responses:
@@ -334,7 +333,7 @@ paths:
                 patient_id:
                   type: integer
                   example: 2
-                resources: 
+                resources:
                   type: array
                   description: Each quantity required, needs to be an id in the array. Saying resource 0 is required 3 times, then id '0' needs to occur three 3 times in the array.
                   items:
@@ -351,7 +350,7 @@ paths:
                   performed_action_id:
                     type: string
                     example: bc8856e4-ce8c-45d3-b20d-39b693d5a35e
-              
+
         '400':
           description: Missing or invalid request parameter detected.
         '401':
@@ -383,8 +382,11 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-              example: Action successfully performed.
+                type:  object
+                properties:
+                  result:
+                    type: string
+                    example: "Action successfully performed."
         '401':
           $ref: '#/components/responses/Unauthorized'
       security:
@@ -455,6 +457,10 @@ components:
           type: string
         injuries:
           type: string
+        treatingUsers:
+          type: array
+          items:
+            type: string
 
     Location:
       type: object
@@ -509,8 +515,4 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              msg:
-                type: string
-                example: "<Some message about Auth>"
+            $ref: '#/components/schemas/Error'
