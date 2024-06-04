@@ -11,8 +11,8 @@ api = Blueprint("api-patient", __name__)
 @jwt_required()
 def get_patient():
     """
-    Assigns the requesting player to the patients location and makes the players inventory accessible. Further it
-    returns the updated player location and the patients' data.
+    Assigns the requesting player to the patients location and makes the players inventory accessible, iff the player
+    has no current location assigned. Further it returns the updated player location and the patients' data.
     """
     try:
         execution, player = util.get_execution_and_player()
@@ -20,7 +20,8 @@ def get_patient():
         scenario = execution.scenario
         patient = scenario.patients[patient_id]
 
-        # TODO aktives leaven oder inaktives leaven
+        if player.location is not None:
+            return f"Player already set to another location: {player.location.id}", 405
 
         # Assign player to patient location
         player.location = patient.location
@@ -32,8 +33,7 @@ def get_patient():
             "patient": patient.to_dict(shallow=False)
         }
     except KeyError:
-        return Response(response="Missing or invalid request parameter detected.",
-                        status=status.HTTP_400_BAD_REQUEST)
+        return "Missing or invalid request parameter detected.", 400
 
 
 @api.get("/patient/all")
@@ -46,4 +46,21 @@ def get_all_patient():
             "patients": [patient.to_dict() for patient in list(execution.scenario.patients.values())]
         }
     except KeyError:
-        return f"Missing or invalid request parameter detected.", 400
+        return "Missing or invalid request parameter detected.", 400
+
+
+@api.get("/patient/leave")
+@jwt_required()
+def leave_patient_location():
+    execution, player = util.get_execution_and_player()
+
+    try:
+        if player.location is None:
+            return "Player is not assigned to any patient/location", 405
+
+        player.location.leave_location(player.accessible_locations)
+
+    except KeyError:
+        return "Missing or invalid request parameter detected.", 400
+    except TimeoutError:
+        return "Unable to access runtime object. A timeout-error occurred.", 409

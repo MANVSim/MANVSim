@@ -113,6 +113,17 @@ class Location:
 
         return None, None
 
+    def leave_location(self, removed: set):
+        """
+        Removes provided location set from the location list. It raises a TimeoutError, if the related lock is not
+        accessible.
+        """
+        with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
+            if acquired:
+                self.locations -= removed
+            else:
+                raise TimeoutError
+
     def to_dict(self, shallow: bool = False):
         """
         Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
