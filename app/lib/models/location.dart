@@ -3,13 +3,13 @@ import 'package:manvsim/models/resource.dart';
 class Location {
   final int id;
   final String name;
-  List<Resource> resource;
+  List<Resource> resources;
   List<Location> locations;
 
   Location(
       {required this.id,
       required this.name,
-      required this.resource,
+      required this.resources,
       required this.locations});
 
   factory Location.fromJson(Map<String, dynamic> json) {
@@ -23,7 +23,7 @@ class Location {
         Location(
             id: id,
             name: name,
-            resource: resources
+            resources: resources
                 .map((resource) => Resource.fromJson(resource))
                 .toList(),
             locations: locations
@@ -31,5 +31,13 @@ class Location {
                 .toList()),
       _ => throw const FormatException('Failed to parse patient from JSON.')
     };
+  }
+
+  List<Resource> flattenResources() {
+    return resources + flattenResourcesFromList(locations);
+  }
+
+  static List<Resource> flattenResourcesFromList(List<Location> locations) {
+    return locations.map((l) => l.flattenResources()).expand((r) => r).toList();
   }
 }
