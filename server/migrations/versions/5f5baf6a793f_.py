@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: f5adb7c7401e
+Revision ID: 5f5baf6a793f
 Revises: 
-Create Date: 2024-06-03 13:04:11.196672
+Create Date: 2024-06-04 19:50:56.090751
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f5adb7c7401e'
+revision = '5f5baf6a793f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,6 +21,7 @@ def upgrade():
     op.create_table('action',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.VARCHAR(length=255), nullable=False),
+    sa.Column('required_power', sa.Integer(), nullable=False),
     sa.Column('picture_ref', sa.VARCHAR(length=255), nullable=False),
     sa.Column('results', sa.JSON(), nullable=False),
     sa.Column('duration_secs', sa.Integer(), nullable=False),
@@ -29,7 +30,15 @@ def upgrade():
     op.create_table('location',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.VARCHAR(length=255), nullable=False),
+    sa.Column('picture_ref', sa.VARCHAR(length=255), nullable=False),
     sa.Column('location_id', sa.Integer(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('role',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.VARCHAR(length=255), nullable=False),
+    sa.Column('short_name', sa.VARCHAR(length=255), nullable=True),
+    sa.Column('power', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('scenario',
@@ -54,6 +63,8 @@ def upgrade():
     op.create_table('ressource',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.VARCHAR(length=255), nullable=False),
+    sa.Column('picture_ref', sa.VARCHAR(length=255), nullable=False),
+    sa.Column('quantity', sa.Integer(), nullable=False),
     sa.Column('location', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['location'], ['location.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -62,8 +73,12 @@ def upgrade():
     sa.Column('tan', sa.VARCHAR(length=6), nullable=False),
     sa.Column('execution_id', sa.VARCHAR(length=255), nullable=False),
     sa.Column('location_id', sa.Integer(), nullable=False),
+    sa.Column('role_id', sa.Integer(), nullable=False),
+    sa.Column('alerted', sa.Boolean(), nullable=False),
+    sa.Column('activation_delay_sec', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['execution_id'], ['execution.tan'], ),
     sa.ForeignKeyConstraint(['location_id'], ['location.id'], ),
+    sa.ForeignKeyConstraint(['role_id'], ['role.id'], ),
     sa.PrimaryKeyConstraint('tan')
     )
     op.create_table('ressources_needed',
@@ -94,6 +109,7 @@ def downgrade():
     op.drop_table('patient')
     op.drop_table('execution')
     op.drop_table('scenario')
+    op.drop_table('role')
     op.drop_table('location')
     op.drop_table('action')
     # ### end Alembic commands ###

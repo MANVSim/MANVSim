@@ -23,13 +23,24 @@ class Execution(db.Model):
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.VARCHAR(255), nullable=False)
+    picture_ref = db.Column(db.VARCHAR(255), nullable=False)
     location_id = db.Column(db.Integer, nullable=True)
+
+
+class Role(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    name = db.Column(db.VARCHAR(255), nullable=False)
+    short_name = db.Column(db.VARCHAR(255), nullable=True)
+    power = db.Column(db.Integer, nullable=False)
 
 
 class Player(db.Model):
     tan = db.Column(db.VARCHAR(6), primary_key=True, nullable=False)
     execution_id = db.Column(db.ForeignKey(Execution.tan), nullable=False)
     location_id = db.Column(db.ForeignKey(Location.id), nullable=False)
+    role_id = db.Column(db.ForeignKey(Role.id), nullable=False)
+    alerted = db.Column(db.Boolean, nullable=False)
+    activation_delay_sec = db.Column(db.Integer, nullable=False)
 
 
 class Patient(db.Model):
@@ -48,12 +59,15 @@ class TakesPartIn(db.Model):
 class Ressource(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.VARCHAR(255), nullable=False)
+    picture_ref = db.Column(db.VARCHAR(255), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
     location = db.Column(db.ForeignKey(Location.id))
 
 
 class Action(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.VARCHAR(255), nullable=False)
+    required_power = db.Column(db.Integer, nullable=False)
     picture_ref = db.Column(db.VARCHAR(255), nullable=False)
     results = db.Column(db.JSON(), nullable=False)
     duration_secs = db.Column(db.Integer, nullable=False)
