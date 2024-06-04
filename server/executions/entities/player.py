@@ -21,8 +21,8 @@ class Player:
         NOTFALLSANITAETER = 300
         NOTARZT = 400
 
-    def __init__(self, tan: str, name: str, role: 'Player.Role', alerted: bool, activation_delay_sec: int,
-                 location: Location, accessible_locations: set[Location]):
+    def __init__(self, tan: str, name: str, alerted: bool, activation_delay_sec: int, location: Location,
+                 accessible_locations: set[Location], role: 'Player.Role' = Role.UNKNOWN):
         self.tan = tan
         self.name = name
         self.role = role

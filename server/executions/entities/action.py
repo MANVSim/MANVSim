@@ -5,8 +5,8 @@ from executions.entities.player import Player
 
 class Action:
 
-    def __init__(self, id: int, name: str, result: str, picture_ref: str, duration_sec: int, required_role: Player.Role,
-                 resources_needed: list[str]):
+    def __init__(self, id: int, name: str, result: str, picture_ref: str, duration_sec: int,
+                 resources_needed: list[str], required_role: Player.Role = Player.Role.UNKNOWN):
         self.id = id
         self.name = name
         self.result = result  # FIXME: Maybe replace by JSON datatype

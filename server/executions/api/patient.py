@@ -1,5 +1,3 @@
-import logging
-
 from flask import Blueprint, request, Response
 from flask_api import status
 from flask_jwt_extended import jwt_required
