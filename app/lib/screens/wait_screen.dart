@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/appframe.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WaitScreen extends StatelessWidget {
   const WaitScreen({super.key});
@@ -12,7 +13,7 @@ class WaitScreen extends StatelessWidget {
       appBar: AppBar(
         actions: const <Widget>[LogoutButton()],
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Waiting for simulation to start'),
+        title: Text(AppLocalizations.of(context)!.waitText),
       ),
       body: Center(
         child: Column(
@@ -39,7 +40,7 @@ class WaitScreen extends StatelessWidget {
                   (Route<dynamic> route) => false, // Removes previous routes
                 );
               },
-              label: const Text('skip'),
+              label: Text(AppLocalizations.of(context)!.waitSkip),
             ),
           ],
         ),

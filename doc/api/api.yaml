@@ -21,7 +21,7 @@ paths:
             schema:
               type: object
               properties:
-                tan:
+                TAN:
                   type: string
                   description: User TAN
                   example: "987ZYX"
@@ -33,28 +33,28 @@ paths:
               schema:
                 type: object
                 properties:
-                  jwtToken:
+                  jwt_token:
                     type: string
                     description: JWT-Token, maps game and player
                     example: "<JWT-Token>"
-                  csrfToken:
+                  csrf_token:
                     type: string
                     description: CSRF Token to be used in future requests.
                     example: "<CSRF-Token>"
-                  userCreationRequired:
+                  user_creation_required:
                     type: boolean
                     description: indicates if name for the TAN was already set.
                     example: false
-                  userName:
+                  user_name:
                     type: string
-                    description: name for the TAN, if userCreationRequired is false. Otherwise null.
+                    description: name for the TAN, if userCreationRequired is false. Otherwise empty.
                     example: "John Doe"
-                  userRole:
+                  user_role:
                     type: string
                     description: role of the user.
                     example: "Notarzt"
         '400':
-          description: Invalid TAN
+          description: Invalid TAN detected. Unable to resolve player.
           content:
             application/json:
               schema:
@@ -85,21 +85,9 @@ paths:
                   example: "John Doe"
       responses:
         '200':
-          description: successfully set username.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Name successfully set for TAN."
+          description: Name successfully set.
         '400':
-          description: Invalid request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          description: Invalid form detected. Unable to resolve attribute 'name'.
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -119,14 +107,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  scenarioStartTime:
+                  scenario_start_time:
                     type: integer
-                    description: timestamp unix ms since epoch.
+                    description: Timestamp in ms since unix epoch.
                     example: 1672531200
-                  travelTime:
+                  travel_time:
                     type: integer
-                    description: timestamp unix ms since epoch.
+                    description: Timestamp in ms since unix epoch. This parameter is only provided, if a player is alerted.
                     example: 1672531200
+        '204':
+          description: The execution has not been started yet.
+        '400':
+          description: Invalid execution id or TAN provided. Unable to resolve data.
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -134,55 +126,52 @@ paths:
         - bearerAuth: []
 
 
-  /patients/all:
+  /run/patient/all:
     get:
-      summary: Returns a list of patients.
+      summary: Returns a list of all patients.
       responses:
         '200':
           description: A JSON array of patients
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Patient'
-              example:
-                - id: 1
-                  name: Max Mustermann
-                  injuries: Beinverletzung
-                - id: 2
-                  name: Bernd Beispiel
-                  injuries: Offene Blutung
-                - id: 3
-                  name: Patient 3
-                  injuries: SHT
-                - id: 4
-                  name: Ronald Lyons
-                  injuries: Bein fehlt
+                type: object
+                properties:
+                  patients:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Patient'
+
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Invalid execution id or player TAN sent. Unable to resolve running instance/player. Occurs if an invalid JWT was sent.
       security:
         - bearerAuth: [ ]
 
-  /patients:
+  /run/patient:
     get:
       summary: Returns a specified patient.
       parameters:
-        - name: patientId
+        - name: patient_id
           in: query
           required: true
           schema:
             type: integer
       responses:
         '200':
-          description: A patient specified by patientId.
+          description: A patient specified by patientId. Additionally the response contains updated current location of the player.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Patient'
-              example:
-                id: 4
-                name: Ronald Lyons
-                injuries: Bein fehlt
-
+                type: object
+                properties:
+                  player_location:
+                    $ref: '#/components/schemas/Location'
+                  patient:
+                    $ref: '#/components/schemas/Patient'
+        '400':
+          description: Missing or invalid request parameter detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -190,7 +179,7 @@ paths:
       security:
         - bearerAuth: [ ]
 
-  /patients/leave:
+  /run/patients/leave:
     post:
       summary: Leaves a patient.
       description: Closes a patient profile. Other users can no longer see the username in the list of treating users.
@@ -208,18 +197,10 @@ paths:
             type: string
             description: patient id.
             example: "patient123"
+
       responses:
         '200':
-          description: success.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Patient profile successfully closed."
-
+          description: Patient profile successfully closed.
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -228,56 +209,75 @@ paths:
         - bearerAuth: []
 
 
-  /locations:
+  /run/location/all:
     get:
-      summary: Returns a list of locations (available to the user).
+      summary: Returns a list of locations.
       responses:
         '200':
           description: A JSON array of locations
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Location'
-              example:
-                - id: 1
-                  name: Roter Rucksack
-                  resources:
-                    - id: 1
-                      name: Schere
-                      quantity: 20
-                    - id: 40
-                      name: Pflaster
-                      quantity: 7
+                type: object
+                properties:
                   locations:
-                    - id: 2
-                      name: Medikamententasche
-                      resources:
-                        - id: 2
-                          name: Schmerzmittel
-                          quantity: 30
-                      locations: [ ]
-                - id: 3
-                  name: RTW
-                  resources:
-                    - id: 3
-                      name: EKG
-                      quantity: 120
-                  locations:
-                    - id: 4
-                      name: Medizinschrank
-                      resources:
-                        - id: 4
-                          name: Starkes Schmerzmittel
-                          quantity: 50
-                      locations: [ ]
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
+        '400':
+          description: Missing or invalid request parameter detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
       security:
         - bearerAuth: [ ]
 
-  /actions:
+  /run/location/arrive:
+    get:
+      summary: Simulates the arrival of a player at a certain location.
+      responses:
+        '200':
+          description: player-location changed. Returns the current location.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  player_location:
+                      $ref: '#/components/schemas/Location'
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Unable to access runtime object. A timeout-error occurred.
+      security:
+        - bearerAuth: [ ]
+
+  /run/location/take-from:
+    get:
+      summary: A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+      responses:
+        '200':
+          description: accessible locations (the inventory) are updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  player_location:
+                      $ref: '#/components/schemas/Location'
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Location not found. Update your current location-access.
+        '409':
+          description: Unable to access runtime object. A timeout-error occurred.
+      security:
+        - bearerAuth: [ ]
+
+  /run/action/all:
     get:
       summary: Returns a list of actions available to the user.
       responses:
@@ -310,6 +310,7 @@ paths:
       security:
         - bearerAuth: [ ]
 
+  /run/action/perform:
     post:
       summary: Performs an action.
       parameters:
@@ -319,49 +320,73 @@ paths:
           schema:
             type: string
             example: "token"
-        - name: actionId
-          in: query
-          required: true
-          schema:
-            type: integer
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                type: integer
+              type: object
+              properties:
+                action_id:
+                  type: integer
+                  example: 1
+                patient_id:
+                  type: integer
+                  example: 2
+                resources:
+                  type: array
+                  description: Each quantity required, needs to be an id in the array. Saying resource 0 is required 3 times, then id '0' needs to occur three 3 times in the array.
+                  items:
+                    type: integer
+                    example: 69
       responses:
         '200':
           description: The id of the resulting performed action.
           content:
             application/json:
               schema:
-                type: integer
-              example: 5
+                type: object
+                properties:
+                  performed_action_id:
+                    type: string
+                    example: bc8856e4-ce8c-45d3-b20d-39b693d5a35e
+
+        '400':
+          description: Missing or invalid request parameter detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Resource not found. Update your current location-access.
+        '409':
+          description: Unable to access runtime object. A timeout-error occurred.
       security:
         - bearerAuth: [ ]
 
-  /actions/result:
+  /run/action/perform/result:
     get:
       summary: Gets the result of a performed action.
       parameters:
-        - name: performedActionId
+        - name: performed_action_id
           in: query
           required: true
           schema:
-            type: integer
+            type: string
+        - name: patient_id
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: The result of the performed action.
           content:
             application/json:
               schema:
-                type: string
-              example: Die Maßnahme war erfolgreich.
+                type:  object
+                properties:
+                  result:
+                    type: string
+                    example: "Action successfully performed."
         '401':
           $ref: '#/components/responses/Unauthorized'
       security:
