@@ -7,7 +7,7 @@ from executions.utils import util
 api = Blueprint("api-patient", __name__)
 
 
-@api.get("/patient")
+@api.post("/patient/arrive")
 @jwt_required()
 def get_patient():
     """
@@ -36,14 +36,14 @@ def get_patient():
         return "Missing or invalid request parameter detected.", 400
 
 
-@api.get("/patient/all")
+@api.get("/patient/all-tans")
 @jwt_required()
 def get_all_patient():
     """ Returns all patients stored in the scenario. """
     try:
         execution, _ = util.get_execution_and_player()
         return {
-            "patients": [patient.to_dict() for patient in list(execution.scenario.patients.values())]
+            "tans": list(execution.scenario.patients.keys())
         }
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
