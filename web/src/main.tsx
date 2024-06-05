@@ -7,10 +7,12 @@ import {
 import Root from './routes/root'
 import ErrorPage from './error-page'
 import Scenario from './routes/scenario'
-import { getCsrfToken, getTemplates, startScenario } from './api'
+import { getAuthToken, getCsrfToken, getTemplates, startScenario } from './api'
 import Index from './routes'
-
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Login from './routes/login'
+import { CsrfProvider } from './components/csrf'
+
 
 const router = createBrowserRouter([
   {
@@ -35,13 +37,24 @@ const router = createBrowserRouter([
           const result = await startScenario(formData)
           return result
         }
-      }
+      },
     ]
   },
+  {
+    path: "/login",
+    element: <Login />,
+    action: async ({ request }) => {
+      const formData = await request.formData()
+      const token = await getAuthToken(formData)
+      return token
+    }
+  }
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <CsrfProvider>
+      <RouterProvider router={router} />
+    </CsrfProvider>
   </React.StrictMode>,
 )

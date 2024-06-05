@@ -63,3 +63,20 @@ export async function startScenario(formData: FormData): Promise<StartResponse> 
   }
   return json
 }
+
+interface LoginResponse {
+  token: string
+}
+
+function isLoginResponse(obj: object): obj is LoginResponse {
+  const t = obj as LoginResponse
+  return t.token !== undefined
+}
+
+export async function getAuthToken(formData: FormData): Promise<string> {
+  const json = await tryFetchJson("/api/login", { method: "POST", body: formData })
+  if (!isLoginResponse(json)) {
+    throw new Error("Response from server to login request failed")
+  }
+  return json.token
+}

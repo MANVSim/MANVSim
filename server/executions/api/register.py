@@ -79,6 +79,18 @@ def start_scenario():
     return {"id": floor(random() * 1000), "tans": [str(x) for x in uniques(10)]}
 
 
+@api.post("/login")
+def login():
+    try:
+        username = request.form["username"]
+        password = request.form["password"]
+    except KeyError:
+        return {
+            "error": "Missing username or password in request"
+        }, status.HTTP_400_BAD_REQUEST
+    return {"token": "randomtokenname"}
+
+
 @api.get("/csrf")
 def get_csrf():
     return {"csrf": generate_csrf()}

@@ -1,0 +1,12 @@
+.login-form {
+  max-width: 500px;
+}
+
+body,
+html {
+  height: 100%;
+}
+
+div#root {
+  height: 100%;
+}
