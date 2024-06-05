@@ -38,7 +38,7 @@ registered_player = {
 def create_execution(execution: Execution):
     exec_id = str(execution.id)  # exec id is unique due to database primary key
     exec_dict[exec_id] = execution
-    register_player(exec_id, execution.players)
+    register_player(exec_id, execution.players.values())
 
 
 def register_player(exec_id, players):
@@ -50,7 +50,7 @@ def register_player(exec_id, players):
 def delete_execution(exec_id: str):
     try:
         execution = exec_dict.pop(exec_id)
-        remove_player(execution.players)
+        remove_player(execution.players.values())
     except KeyError:
         logging.error(f"{exec_id} already removed")
 

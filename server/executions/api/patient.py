@@ -16,7 +16,7 @@ def get_patient():
     """
     try:
         execution, player = util.get_execution_and_player()
-        patient_id = int(request.args["patient_id"])
+        patient_id = int(request.form["patient_id"])
         scenario = execution.scenario
         patient = scenario.patients[patient_id]
 

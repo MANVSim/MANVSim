@@ -1,18 +1,67 @@
 import json
 
+from executions.utils import util
 from executions.utils.timeoutlock import TimeoutLock
+from vars import ACQUIRE_TIMEOUT
 
 
+# noinspection PyArgumentList
 class Resource:
 
     def __init__(self, id: int, name: str, quantity: int, picture_ref: str):
         self.id = id
         self.name = name
-        self.quantity = quantity
+        self.quantity = quantity  # quantity >= 10000 indicates infinite resource
         self.picture_ref = picture_ref
 
         self.consumable = True
         self.lock = TimeoutLock()
+        self.locked_until = 0
+
+    def decrease(self, duration):
+        """
+        Decreases the quantity of the resource. If the quantity equals zero and is marked as 'non-consumable'
+        additionally the locked-flag is set, when the resource is accessible again. If the locked-flag is outdated the
+        method reassigns the flag and simulates an increase&decrease-operation.
+        CAUTION: only use decrease if the resource is blocked beforehand.
+
+         - duration: amount of time the resource might be blocked
+        """
+        current_millis = util.get_current_millis()
+        if self.quantity >= 10000:
+            return True  # resource is infinite
+        elif self.quantity > 0:
+            # resource is available
+            self.quantity -= 1
+            self.locked_until = current_millis + duration if self.quantity == 0 else self.locked_until
+            return True
+        elif self.consumable:
+            # empty consumable
+            return False
+        elif self.locked_until > current_millis:
+            # resource is not available and will be restored
+            return False
+        else:
+            # resource is not available but should have been restocked by now
+            self.locked_until = current_millis + duration
+            return True
+
+    def increase(self, force=False):
+        """
+        Increases the quantity, in case the resource is a non-consumable. Using the force parameter, allows
+        (consumable) resources to increase the quantity without locking, for rollback reasons.
+        """
+        if force:
+            self.quantity += 1
+
+        with (self.lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT)) as acquired:
+            if acquired:
+                # resources can only be restored if they are non consumables and no other resource has claimed the
+                # resource in the meantime.
+                if not self.consumable and util.get_current_millis() > self.locked_until:
+                    self.quantity += 1
+            else:
+                raise TimeoutError
 
     def to_dict(self, shallow: bool = False):
         """
@@ -51,3 +100,9 @@ def try_lock_all(resources: list['Resource']):
         [r.lock.release() for r in blocked_resources]
 
     return success
+
+
+def release_all(resources: list['Resource']):
+    """ Releases all locks of the resources provided. """
+    for res in resources:
+        res.lock.release()

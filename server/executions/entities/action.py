@@ -11,7 +11,7 @@ class Action:
         self.name = name
         self.result = result  # FIXME: Maybe replace by JSON datatype
         self.picture_ref = picture_ref  # Reference to picture
-        self.duration_sec = duration_sec
+        self.duration_msec = duration_sec * 1000
         self.required_role = required_role
         self.resources_needed = resources_needed
 
@@ -25,7 +25,7 @@ class Action:
             'name': self.name,
             'result': self.result,
             'picture_ref': self.picture_ref,
-            'duration_sec': self.duration_sec,
+            'duration_sec': self.duration_msec,
             'required_role': self.required_role.name,
             'resources_needed': self.resources_needed
         }

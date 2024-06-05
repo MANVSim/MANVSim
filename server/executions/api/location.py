@@ -21,7 +21,8 @@ def get_all_toplevel_location():
         return f"Missing or invalid request parameter detected.", 400
 
 
-@api.get("/location/take-from")
+@api.post("/location/take-from")
+@jwt_required()
 def get_location_out_of_location():
     """
     Releases a sub location of the players current location. Afterward the location is an accessible location for the
@@ -29,7 +30,7 @@ def get_location_out_of_location():
     Required Request Param:
         required_loc_id:    location identifier that shall be added to the players inventory
     """
-    args: dict = request.args
+    args: dict = request.form
     try:
         execution, player = util.get_execution_and_player()
 
@@ -53,3 +54,17 @@ def get_location_out_of_location():
 
     except TimeoutError:
         return "Unable to access runtime object. A timeout-error occurred.", 409
+
+
+@api.post("/location/leave")
+@jwt_required()
+def leave_location():
+    """ Leaves a location. Required for the initial arrival. The players inventory will not be edited. """
+    _, player = util.get_execution_and_player()
+
+    if player.location is None:
+        return "Player is not assigned to any patient/location", 405
+
+    player.location = None
+
+    return "Player successfully left location", 200
