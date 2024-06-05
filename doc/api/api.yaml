@@ -105,14 +105,14 @@ paths:
                 properties:
                   scenario_start_time:
                     type: integer
-                    description: timestamp unix ms since epoch.
+                    description: Timestamp in ms since unix epoch.
                     example: 1672531200
                   travel_time:
                     type: integer
-                    description: timestamp unix ms since epoch. This parameter is only provided, iff a player is alerted.
+                    description: Timestamp in ms since unix epoch. This parameter is only provided, if a player is alerted.
                     example: 1672531200
         '204':
-          description: The execution has not been started yet
+          description: The execution has not been started yet.
         '400':
           description: Invalid execution id or TAN provided. Unable to resolve data.
         '401':
@@ -280,10 +280,10 @@ paths:
           description: Unable to access runtime object. A timeout-error occurred.
       security:
         - bearerAuth: [ ]
-  
+
   /run/location/leave:
     post:
-      summary: Leaves a location. 
+      summary: Leaves a location.
       description: The current location of the player is resetted. Used initially to leave the arriving RTW.
       parameters:
         - in: header
@@ -314,7 +314,7 @@ paths:
         '409':
           description: Unable to access runtime object. A timeout-error occurred.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
 
   /run/action/all:
     get:
@@ -377,7 +377,7 @@ paths:
                 patient_id:
                   type: integer
                   example: 2
-                resources: 
+                resources:
                   type: array
                   description: Each quantity required, needs to be an id in the array. Saying resource 0 is required 3 times, then id '0' needs to occur three 3 times in the array.
                   items:
@@ -394,7 +394,7 @@ paths:
                   performed_action_id:
                     type: string
                     example: bc8856e4-ce8c-45d3-b20d-39b693d5a35e
-              
+
         '204':
           description: No running execution detected.
         '400':

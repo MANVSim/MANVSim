@@ -37,11 +37,11 @@ Example:
 [
   {
     "text": "Hallo, dies ist mein Text",
-    "imageRef": "/assets/some_image.jpg"
+    "image_ref": "/assets/some_image.jpg"
   },
   {
     "text": "Hallo, dies ist mein zweiter Text",
-    "imageRef": "/assets/some__other_image.jpg"
+    "image_ref": "/assets/some__other_image.jpg"
   },
   {
     "text": "Hallo, dies ist mein dritter Text"
