@@ -34,7 +34,7 @@ def get_location_out_of_location():
     try:
         execution, player = util.get_execution_and_player()
 
-        required_loc_id = int(args["loc_id"])
+        required_loc_id = int(args["location_id"])
 
         # locate required parent location
         current_location: Location = player.location
@@ -45,8 +45,9 @@ def get_location_out_of_location():
         # no lock needed, because only the requesting player can edit its own inventory
         player.accessible_locations.add(required_location)
         parent_location.remove_location_by_id(required_location.id)
+        # add location back to first children of the tree, to make it reachable for the leave-operation.
+        player.location.add_locations({required_location})
 
-        # TODO add removed location to top-level location.
         return {"player_location": player.location.to_dict()}
 
     except KeyError:
@@ -63,8 +64,9 @@ def leave_location():
     _, player = util.get_execution_and_player()
 
     if player.location is None:
-        return "Player is not assigned to any patient/location", 405
+        return "Player is not assigned to any patient/location.", 405
 
+    player.location.leave_location(player.accessible_locations)
     player.location = None
 
-    return "Player successfully left location", 200
+    return "Player successfully left location.", 200

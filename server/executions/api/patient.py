@@ -49,16 +49,17 @@ def get_all_patient():
         return "Missing or invalid request parameter detected.", 400
 
 
-@api.get("/patient/leave")
+@api.post("/patient/leave")
 @jwt_required()
 def leave_patient_location():
-    execution, player = util.get_execution_and_player()
+    _, player = util.get_execution_and_player()
 
     try:
         if player.location is None:
             return "Player is not assigned to any patient/location", 405
 
         player.location.leave_location(player.accessible_locations)
+        player.location = None
 
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
