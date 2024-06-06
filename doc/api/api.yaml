@@ -123,24 +123,25 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
 
 
-  /run/patient/all:
+  /run/patient/all-ids:
     get:
-      summary: Returns a list of all patients.
+      summary: Returns a list of all patients ids.
       responses:
         '200':
-          description: A JSON array of patients
+          description: A JSON array of patients ids.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  patients:
+                  patient_ids:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Patient'
+                      type: string
+                    example: [ 1, 12, 42 ]
 
         '204':
           description: No running execution detected.
@@ -149,8 +150,8 @@ paths:
       security:
         - bearerAuth: [ ]
 
-  /run/patient:
-    get:
+  /run/patient/arrive:
+    post:
       summary: Returns a specified patient.
       parameters:
         - name: patient_id
@@ -206,7 +207,7 @@ paths:
         '404':
           description: Patient with patientId could not be found.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
 
 
   /run/location/all:
@@ -243,7 +244,7 @@ paths:
                 type: object
                 properties:
                   player_location:
-                      $ref: '#/components/schemas/Location'
+                    $ref: '#/components/schemas/Location'
         '400':
           description: Missing or invalid request parameter detected.
         '401':
@@ -265,7 +266,7 @@ paths:
                 type: object
                 properties:
                   player_location:
-                      $ref: '#/components/schemas/Location'
+                    $ref: '#/components/schemas/Location'
         '400':
           description: Missing or invalid request parameter detected.
         '401':
@@ -382,7 +383,7 @@ paths:
           content:
             application/json:
               schema:
-                type:  object
+                type: object
                 properties:
                   result:
                     type: string
@@ -434,7 +435,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
 
 
 
