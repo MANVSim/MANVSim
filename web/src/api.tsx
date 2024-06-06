@@ -1,3 +1,5 @@
+const api = "web/"
+
 export interface Template {
   id: number,
   name: string,
@@ -17,8 +19,8 @@ function isCsrfToken(obj: object): obj is CsrfToken {
   return !!(obj as CsrfToken)?.csrf_token
 }
 
-async function tryFetch(url: string, body = {}): Promise<Response> {
-  const response = await fetch(url, body)
+async function tryFetchApi(url: string, body = {}): Promise<Response> {
+  const response = await fetch(api + url, body)
   if (!response.ok) {
     throw new Error(`Could not fetch ${url}: ${response.status}: ${response.statusText}`)
   }
@@ -26,12 +28,12 @@ async function tryFetch(url: string, body = {}): Promise<Response> {
 }
 
 async function tryFetchJson(url: string, body = {}): Promise<object> {
-  const response = await tryFetch(url, body)
+  const response = await tryFetchApi(url, body)
   return await response.json()
 }
 
 export async function getTemplates(): Promise<Template[]> {
-  const templates = await tryFetchJson("/api/templates")
+  const templates = await tryFetchJson("templates")
   if (Array.isArray(templates) && templates.every(isTemplate)) {
     return templates
   }
@@ -39,7 +41,7 @@ export async function getTemplates(): Promise<Template[]> {
 }
 
 export async function getCsrfToken() {
-  const json = await tryFetchJson("/api/csrf")
+  const json = await tryFetchJson("csrf")
   if (!isCsrfToken(json)) {
     throw new Error("Fetched json does not contain a CSRF Token!")
   }
@@ -57,7 +59,7 @@ function isStartResponse(obj: object): obj is StartResponse {
 }
 
 export async function startScenario(formData: FormData): Promise<StartResponse> {
-  const json = await tryFetchJson("/api/scenario/start", { method: "POST", body: formData })
+  const json = await tryFetchJson("scenario/start", { method: "POST", body: formData })
   if (!isStartResponse(json)) {
     throw new Error("Unexpected response")
   }
@@ -74,7 +76,7 @@ function isLoginResponse(obj: object): obj is LoginResponse {
 }
 
 export async function getAuthToken(formData: FormData): Promise<string> {
-  const json = await tryFetchJson("/api/login", { method: "POST", body: formData })
+  const json = await tryFetchJson("login", { method: "POST", body: formData })
   if (!isLoginResponse(json)) {
     throw new Error("Response from server to login request failed")
   }
