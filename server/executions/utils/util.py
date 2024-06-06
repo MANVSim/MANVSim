@@ -20,5 +20,5 @@ def get_execution_and_player():
     return execution, player
 
 
-def get_current_millis():
+def get_current_secs():
     return time.time()

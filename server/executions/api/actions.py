@@ -73,7 +73,7 @@ def perform_action():
 
             checklist.remove(res.name)
 
-            if not res.decrease(duration=action.duration_msec):
+            if not res.decrease(duration=action.duration_sec):
                 rollback(backup)
                 return "Resource is not available", 409
 
@@ -86,7 +86,7 @@ def perform_action():
             return "Missmatch detected. Less resources used than required", 418
 
         # store success
-        performed_action = PerformedAction(str(uuid.uuid4()), util.get_current_millis() + action.duration_msec,
+        performed_action = PerformedAction(str(uuid.uuid4()), util.get_current_millis() + action.duration_sec,
                                            execution.id, action, resources_used, player.tan)
         patient.action_queue[performed_action.id] = performed_action
         return {"performed_action_id": performed_action.id}
