@@ -12,7 +12,7 @@ import Index from './routes'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './routes/login'
 import { CsrfProvider } from './components/csrf'
-import { AuthProvider } from './components/auth'
+import { AuthProvider } from './contexts/AuthProvider'
 
 
 const router = createBrowserRouter([
