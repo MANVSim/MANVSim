@@ -5,11 +5,17 @@ from random import random
 from executions import run
 from executions.api import api
 
-from flask import Response, request
+from flask import Response, make_response, request
 from flask_api import status
-from flask_wtf.csrf import generate_csrf
+from flask_wtf.csrf import CSRFError, generate_csrf
 
 from tans.tans import uniques
+
+
+@api.errorhandler(CSRFError)
+def handle_csrf_error(error: CSRFError):
+    status = error.response or 400
+    return make_response(({"error": error.description}, status))
 
 
 @api.get("/exec/status/<exec_id>")
