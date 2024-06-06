@@ -10,11 +10,11 @@ function isTemplate(obj: object): obj is Template {
 }
 
 interface CsrfToken {
-  csrf: string
+  csrf_token: string
 }
 
 function isCsrfToken(obj: object): obj is CsrfToken {
-  return !!(obj as CsrfToken)?.csrf
+  return !!(obj as CsrfToken)?.csrf_token
 }
 
 async function tryFetch(url: string, body = {}): Promise<Response> {
@@ -43,7 +43,7 @@ export async function getCsrfToken() {
   if (!isCsrfToken(json)) {
     throw new Error("Fetched json does not contain a CSRF Token!")
   }
-  return json.csrf
+  return json.csrf_token
 }
 
 interface StartResponse {

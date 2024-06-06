@@ -93,4 +93,4 @@ def login():
 
 @api.get("/csrf")
 def get_csrf():
-    return {"csrf": generate_csrf()}
+    return {"csrf_token": generate_csrf()}
