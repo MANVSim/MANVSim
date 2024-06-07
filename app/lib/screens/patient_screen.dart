@@ -39,26 +39,26 @@ class _PatientScreenState extends State<PatientScreen> {
             child: FutureBuilder(
                 future: futurePatientLocation,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    var (patient, location) = snapshot.data!;
-                    return SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        child: Column(children: [
-                          Card(child: PatientOverview(patient: patient)),
-                          ActionSelection(
-                              patient: patient,
-                              locations: [location],
-                              refreshPatient: refresh)
-                        ]));
-                  } else if (snapshot.hasError) {
+                  if (snapshot.hasError) {
                     return Text('${snapshot.error}');
+                  } else if (!snapshot.hasData ||
+                      snapshot.connectionState != ConnectionState.done) {
+                    return const Center(child: CircularProgressIndicator());
                   }
-                  return const Center(child: CircularProgressIndicator());
+                  var (patient, location) = snapshot.data!;
+                  return SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: Column(children: [
+                        Card(child: PatientOverview(patient: patient)),
+                        ActionSelection(
+                            patient: patient,
+                            locations: [location],
+                            refreshPatient: refresh)
+                      ]));
                 })));
   }
 
   Future refresh() {
-    // TODO: are child widgets reloaded?
     setState(() {
       futurePatientLocation = arriveAtPatient(widget.patientId);
     });

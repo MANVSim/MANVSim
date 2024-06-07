@@ -47,16 +47,17 @@ class _ActionScreenState extends State<ActionScreen> {
                 child: FutureBuilder<int>(
                     future: futureActionId,
                     builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return TimerWidget(
-                          duration: widget.action.durationInSeconds,
-                          onTimerComplete: () =>
-                              showResultDialog(successContent(snapshot.data!)),
-                        );
-                      } else if (snapshot.hasError) {
+                      if (snapshot.hasError) {
                         Timer.run(() => showResultDialog(failureContent()));
+                      } else if (!snapshot.hasData ||
+                          snapshot.connectionState != ConnectionState.done) {
+                        return const Center(child: CircularProgressIndicator());
                       }
-                      return const Center(child: CircularProgressIndicator());
+                      return TimerWidget(
+                        duration: widget.action.durationInSeconds,
+                        onTimerComplete: () =>
+                            showResultDialog(successContent(snapshot.data!)),
+                      );
                     }))));
   }
 
@@ -85,13 +86,13 @@ class _ActionScreenState extends State<ActionScreen> {
     return FutureBuilder<String>(
         future: futureResult,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Text(snapshot.data!);
-          } else if (snapshot.hasError) {
+          if (snapshot.hasError) {
             return Text('${snapshot.error}');
+          } else if (!snapshot.hasData ||
+              snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
           }
-
-          return const CircularProgressIndicator();
+          return Text(snapshot.data!);
         });
   }
 

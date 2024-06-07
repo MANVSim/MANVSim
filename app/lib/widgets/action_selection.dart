@@ -63,34 +63,35 @@ class _ActionSelectionState extends State<ActionSelection> {
       FutureBuilder(
         future: futureActions,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var selectedActions = getSelectedActions();
-            return Column(children: [
-              ListView.builder(
-                  shrinkWrap: true, // nested scrolling
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: selectedActions.length,
-                  itemBuilder: (context, index) => ActionCard(
-                        action: selectedActions[index],
-                        patient: widget.patient,
-                        canBePerformed: true,
-                        refreshPatient: widget.refreshPatient,
-                      )),
-              ListView.builder(
-                  shrinkWrap: true, // nested scrolling
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: notPossibleActions.length,
-                  itemBuilder: (context, index) => ActionCard(
-                        action: notPossibleActions[index],
-                        patient: widget.patient,
-                        canBePerformed: false,
-                        refreshPatient: widget.refreshPatient,
-                      )),
-            ]);
-          } else if (snapshot.hasError) {
+          if (snapshot.hasError) {
             return Text('${snapshot.error}');
+          } else if (!snapshot.hasData ||
+              snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
           }
-          return const CircularProgressIndicator();
+          var selectedActions = getSelectedActions();
+          return Column(children: [
+            ListView.builder(
+                shrinkWrap: true, // nested scrolling
+                physics: const ClampingScrollPhysics(),
+                itemCount: selectedActions.length,
+                itemBuilder: (context, index) => ActionCard(
+                      action: selectedActions[index],
+                      patient: widget.patient,
+                      canBePerformed: true,
+                      refreshPatient: widget.refreshPatient,
+                    )),
+            ListView.builder(
+                shrinkWrap: true, // nested scrolling
+                physics: const ClampingScrollPhysics(),
+                itemCount: notPossibleActions.length,
+                itemBuilder: (context, index) => ActionCard(
+                      action: notPossibleActions[index],
+                      patient: widget.patient,
+                      canBePerformed: false,
+                      refreshPatient: widget.refreshPatient,
+                    )),
+          ]);
         },
       )
     ]);
