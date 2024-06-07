@@ -39,26 +39,22 @@ class _ActionScreenState extends State<ActionScreen> {
           actions: const <Widget>[LogoutButton()],
           automaticallyImplyLeading: false,
         ),
-        body: RefreshIndicator(
-            onRefresh: () {
-              return Future(() => null);
-            },
-            child: Center(
-                child: FutureBuilder<int>(
-                    future: futureActionId,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        Timer.run(() => showResultDialog(failureContent()));
-                      } else if (!snapshot.hasData ||
-                          snapshot.connectionState != ConnectionState.done) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      return TimerWidget(
-                        duration: widget.action.durationInSeconds,
-                        onTimerComplete: () =>
-                            showResultDialog(successContent(snapshot.data!)),
-                      );
-                    }))));
+        body: Center(
+            child: FutureBuilder<int>(
+                future: futureActionId,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    Timer.run(() => showResultDialog(failureContent()));
+                  } else if (!snapshot.hasData ||
+                      snapshot.connectionState != ConnectionState.done) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  return TimerWidget(
+                    duration: widget.action.durationInSeconds,
+                    onTimerComplete: () =>
+                        showResultDialog(successContent(snapshot.data!)),
+                  );
+                })));
   }
 
   void showResultDialog(Widget content) {
