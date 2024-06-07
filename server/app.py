@@ -77,7 +77,7 @@ def create_app():
         else:
             return redirect("/")
 
-    app.register_blueprint(web.api.register.api, url_prefix="/web")
+    app.register_blueprint(web.api.register.api, url_prefix="/api/web")
 
     app.register_blueprint(lobby.api, url_prefix="/api")
     app.register_blueprint(patient.api, url_prefix="/api/run")
