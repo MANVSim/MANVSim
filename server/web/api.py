@@ -5,8 +5,9 @@ from flask import make_response, request
 from flask_api import status
 from flask_wtf.csrf import CSRFError, generate_csrf
 from tans.tans import uniques
+from flask import Blueprint
 
-from . import web_blueprint
+web_blueprint = Blueprint("web", "web")
 
 
 @web_blueprint.errorhandler(CSRFError)
