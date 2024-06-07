@@ -55,9 +55,8 @@ class _PatientListScreenState extends State<PatientListScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PatientScreen(
-                                      patientId: patient.id,
-                                      patient: patient)));
+                                  builder: (context) =>
+                                      PatientScreen(patientId: patient.id)));
                         },
                       ));
                     },

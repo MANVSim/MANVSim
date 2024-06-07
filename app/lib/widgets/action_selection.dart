@@ -9,16 +9,17 @@ import 'package:manvsim/widgets/resource_directory.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ActionSelection extends StatefulWidget {
+  final List<Location> locations;
   final Patient patient;
 
-  const ActionSelection({super.key, required this.patient});
+  const ActionSelection(
+      {super.key, required this.patient, required this.locations});
 
   @override
   State<ActionSelection> createState() => _ActionSelectionState();
 }
 
 class _ActionSelectionState extends State<ActionSelection> {
-  late Future<List<Location>> futureLocations;
   late Future<List<PatientAction>> futureActions;
 
   Iterable<Resource> resources = [];
@@ -33,18 +34,15 @@ class _ActionSelectionState extends State<ActionSelection> {
 
   @override
   void initState() {
-    futureLocations = fetchLocations();
-    futureLocations.then((locations) {
-      resources = Location.flattenResourcesFromList(locations);
-    });
     futureActions = fetchActions();
     futureActions.then((actions) {
-      futureLocations.then((locations) {
-        // filter actions by available resources
-        possibleActions = actions.where((action) => action.resourceNamesNeeded
-            .every((resourceName) =>
-                resources.any((resource) => resource.name == resourceName)));
-      });
+      // filter actions by available resources
+      possibleActions = actions.where((action) => action.resourceNamesNeeded
+          .every((resourceName) =>
+              resources.any((resource) => resource.name == resourceName)));
+      // Could be more efficient, but probably not needed here
+      notPossibleActions =
+          actions.where((action) => !possibleActions.contains(action)).toList();
     });
 
     super.initState();
@@ -54,18 +52,8 @@ class _ActionSelectionState extends State<ActionSelection> {
   Widget build(BuildContext context) {
     return Column(children: [
       Text(AppLocalizations.of(context)!.patientResources),
-      FutureBuilder(
-        future: futureLocations,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ResourceDirectory(
-                locations: snapshot.data!, resourceToggle: toggleResource);
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
-          return const CircularProgressIndicator();
-        },
-      ),
+      ResourceDirectory(
+          locations: widget.locations, resourceToggle: toggleResource),
       Text(AppLocalizations.of(context)!.patientActions),
       FutureBuilder(
         future: futureActions,

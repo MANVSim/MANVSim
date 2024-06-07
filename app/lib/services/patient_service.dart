@@ -1,7 +1,10 @@
 import 'dart:convert';
 
 import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/models/patient_location.dart';
+import 'package:manvsim/services/location_service.dart';
 
+@Deprecated("Should be replaced by fetchAllPatientIds.")
 Future<List<Patient>> fetchPatientList() async {
   await Future.delayed(const Duration(seconds: 1));
   String json = demoJson;
@@ -9,8 +12,10 @@ Future<List<Patient>> fetchPatientList() async {
   return jsonList.map((patient) => Patient.fromJson(patient)).toList();
 }
 
-Future<Patient> fetchPatient(int id) async {
-  return fetchPatientList().then((patientList) => patientList[0]);
+Future<PatientLocation> arriveAtPatient(int id) async {
+  var locations = await fetchLocations();
+  return fetchPatientList().then(
+      (patientList) => (patientList[id % patientList.length], locations[0]));
 }
 
 const String demoJson = """

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/models/patient_location.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/action_selection.dart';
 import 'package:manvsim/widgets/patient_overview.dart';
@@ -9,22 +9,19 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PatientScreen extends StatefulWidget {
   final int patientId;
-  final Patient? patient;
 
-  const PatientScreen({super.key, required this.patientId, this.patient});
+  const PatientScreen({super.key, required this.patientId});
 
   @override
   State<PatientScreen> createState() => _PatientScreenState();
 }
 
 class _PatientScreenState extends State<PatientScreen> {
-  late Future<Patient> futurePatient;
+  late Future<PatientLocation> futurePatientLocation;
 
   @override
   void initState() {
-    futurePatient = widget.patient != null
-        ? Future(() => widget.patient!)
-        : fetchPatient(widget.patientId);
+    futurePatientLocation = arriveAtPatient(widget.patientId);
     super.initState();
   }
 
@@ -41,19 +38,21 @@ class _PatientScreenState extends State<PatientScreen> {
             onRefresh: () {
               // TODO: are child widgets reloaded?
               setState(() {
-                futurePatient = fetchPatient(widget.patientId);
+                futurePatientLocation = arriveAtPatient(widget.patientId);
               });
-              return futurePatient;
+              return futurePatientLocation;
             },
             child: FutureBuilder(
-                future: futurePatient,
+                future: futurePatientLocation,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    var (patient, location) = snapshot.data!;
                     return SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         child: Column(children: [
-                          Card(child: PatientOverview(patient: snapshot.data!)),
-                          ActionSelection(patient: snapshot.data!)
+                          Card(child: PatientOverview(patient: patient)),
+                          ActionSelection(
+                              patient: patient, locations: [location])
                         ]));
                   } else if (snapshot.hasError) {
                     return Text('${snapshot.error}');
