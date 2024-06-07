@@ -1,0 +1,519 @@
+openapi: 3.0.1
+
+info:
+  title: MANVSim API
+  description: The specification for the API the app uses to communicate with the server.
+  version: 0.1.0
+
+servers:
+  - url: /api/v1
+
+paths:
+
+  /login:
+    post:
+      summary: TAN Login
+      description: authenticates a user with a TAN and returns a JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                TAN:
+                  type: string
+                  description: User TAN
+                  example: "987ZYX"
+      responses:
+        '200':
+          description: TAN valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jwt_token:
+                    type: string
+                    description: JWT-Token, maps game and player
+                    example: "<JWT-Token>"
+                  csrf_token:
+                    type: string
+                    description: CSRF Token to be used in future requests.
+                    example: "<CSRF-Token>"
+                  user_creation_required:
+                    type: boolean
+                    description: indicates if name for the TAN was already set.
+                    example: false
+                  user_name:
+                    type: string
+                    description: name for the TAN, if userCreationRequired is false. Otherwise empty.
+                    example: "John Doe"
+                  user_role:
+                    type: string
+                    description: role of the user.
+                    example: "Notarzt"
+        '400':
+          description: Invalid TAN detected. Unable to resolve player.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+  /player/set-name:
+    post:
+      summary: Set username for the TAN
+      description: Sets the name for the TAN provided in JWT.
+      parameters:
+        - in: header
+          name: X-CSRFToken
+          required: true
+          schema:
+            type: string
+            example: "token"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: username to be set.
+                  example: "John Doe"
+      responses:
+        '200':
+          description: Name successfully set.
+        '400':
+          description: Invalid form detected. Unable to resolve attribute 'name'.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+      security:
+        - bearerAuth: [ ]
+
+
+  /scenario/start-time:
+    get:
+      summary: Get start time and arrival time of scenario.
+      description: Get start time of scenario and time to arrive/travel at the scene.
+      responses:
+        '200':
+          description: success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  scenario_start_time:
+                    type: integer
+                    description: Timestamp in ms since unix epoch.
+                    example: 1672531200
+                  travel_time:
+                    type: integer
+                    description: Timestamp in ms since unix epoch. This parameter is only provided, if a player is alerted.
+                    example: 1672531200
+        '204':
+          description: The execution has not been started yet.
+        '400':
+          description: Invalid execution id or TAN provided. Unable to resolve data.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+      security:
+        - bearerAuth: [ ]
+
+
+  /run/patient/all-ids:
+    get:
+      summary: Returns a list of all patients ids.
+      responses:
+        '200':
+          description: A JSON array of patients ids.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  patient_ids:
+                    type: array
+                    items:
+                      type: string
+                    example: [ 1, 12, 42 ]
+
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Invalid execution id or player TAN sent. Unable to resolve running instance/player. Occurs if an invalid JWT was sent.
+      security:
+        - bearerAuth: [ ]
+
+  /run/patient/arrive:
+    post:
+      summary: Returns a specified patient.
+      parameters:
+        - name: patient_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A patient specified by patientId. Additionally the response contains updated current location of the player.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  player_location:
+                    $ref: '#/components/schemas/Location'
+                  patient:
+                    $ref: '#/components/schemas/Patient'
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Patient with patientId could not be found.
+      security:
+        - bearerAuth: [ ]
+
+  /run/patients/leave:
+    post:
+      summary: Leaves a patient.
+      description: Closes a patient profile. Other users can no longer see the username in the list of treating users.
+      parameters:
+        - in: header
+          name: X-CSRFToken
+          required: true
+          schema:
+            type: string
+            example: "token"
+        - name: patientId
+          in: query
+          required: true
+          schema:
+            type: string
+            description: patient id.
+            example: "patient123"
+
+      responses:
+        '200':
+          description: Patient profile successfully closed.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Patient with patientId could not be found.
+      security:
+        - bearerAuth: [ ]
+
+
+  /run/location/all:
+    get:
+      summary: Returns a list of locations.
+      responses:
+        '200':
+          description: A JSON array of locations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  locations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: [ ]
+
+  /run/location/arrive:
+    get:
+      summary: Simulates the arrival of a player at a certain location.
+      responses:
+        '200':
+          description: player-location changed. Returns the current location.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  player_location:
+                    $ref: '#/components/schemas/Location'
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Unable to access runtime object. A timeout-error occurred.
+      security:
+        - bearerAuth: [ ]
+
+  /run/location/take-from:
+    get:
+      summary: A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+      responses:
+        '200':
+          description: accessible locations (the inventory) are updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  player_location:
+                    $ref: '#/components/schemas/Location'
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Location not found. Update your current location-access.
+        '409':
+          description: Unable to access runtime object. A timeout-error occurred.
+      security:
+        - bearerAuth: [ ]
+
+  /run/action/all:
+    get:
+      summary: Returns a list of actions available to the user.
+      responses:
+        '200':
+          description: A JSON array of actions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Action'
+              example:
+                - id: 1
+                  name: Pflaster anbringen
+                  durationInSeconds: 10
+                  resourceNamesNeeded:
+                    - Pflaster
+                - id: 2
+                  name: Klamotten aufschneiden
+                  durationInSeconds: 4
+                  resourceNamesNeeded:
+                    - Schere
+                - id: 3
+                  name: Schmerzmittel verabreichen
+                  durationInSeconds: 20
+                  resourceNamesNeeded:
+                    - Schmerzmittel
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: [ ]
+
+  /run/action/perform:
+    post:
+      summary: Performs an action.
+      parameters:
+        - in: header
+          name: X-CSRFToken
+          required: true
+          schema:
+            type: string
+            example: "token"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action_id:
+                  type: integer
+                  example: 1
+                patient_id:
+                  type: integer
+                  example: 2
+                resources:
+                  type: array
+                  description: Each quantity required, needs to be an id in the array. Saying resource 0 is required 3 times, then id '0' needs to occur three 3 times in the array.
+                  items:
+                    type: integer
+                    example: 69
+      responses:
+        '200':
+          description: The id of the resulting performed action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  performed_action_id:
+                    type: string
+                    example: bc8856e4-ce8c-45d3-b20d-39b693d5a35e
+
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Resource not found. Update your current location-access.
+        '409':
+          description: Unable to access runtime object. A timeout-error occurred.
+      security:
+        - bearerAuth: [ ]
+
+  /run/action/perform/result:
+    get:
+      summary: Gets the result of a performed action.
+      parameters:
+        - name: performed_action_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: patient_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The result of the performed action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "Action successfully performed."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: [ ]
+
+  /notifications:
+    get:
+      summary: notification polling
+      description: Returns a list of notifications for the user after lastPollTime.
+      parameters:
+        - name: lastPollTime
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+            description: timestamp in ISO 8601 Format
+            example: "2023-01-01T12:00:00Z"
+      responses:
+        '200':
+          description: success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notifications:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        header:
+                          type: string
+                          description: header of the notification.
+                          example: "Example Notification"
+                        message:
+                          type: string
+                          description: The message itself.
+                          example: "Example Notifications content."
+                        timestamp:
+                          type: string
+                          format: date-time
+                          description: timestamp in ISO 8601 Format.
+                          example: "2023-01-01T12:30:00Z"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: [ ]
+
+
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    Patient:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        injuries:
+          type: string
+        treatingUsers:
+          type: array
+          items:
+            type: string
+
+    Location:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Location'
+
+    Resource:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        quantity:
+          type: integer
+
+    Action:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        durationInSeconds:
+          type: integer
+        resourceNamesNeeded:
+          type: array
+          items:
+            type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Unauthorized."
+
+  responses:
+    Unauthorized:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

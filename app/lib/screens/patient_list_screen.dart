@@ -4,6 +4,7 @@ import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/screens/patient_screen.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PatientListScreen extends StatefulWidget {
   const PatientListScreen({super.key});
@@ -13,18 +14,12 @@ class PatientListScreen extends StatefulWidget {
 }
 
 class _PatientListScreenState extends State<PatientListScreen> {
-  late Future<List<Patient>> patientList;
-
-  Future<void> _updatePatientList() async {
-    setState(() {
-      patientList = fetchPatientList();
-    });
-  }
+  late Future<List<Patient>> futurePatientList;
 
   @override
   void initState() {
+    futurePatientList = fetchPatientList();
     super.initState();
-    patientList = fetchPatientList();
   }
 
   @override
@@ -32,13 +27,18 @@ class _PatientListScreenState extends State<PatientListScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("List of patients"),
+          title: Text(AppLocalizations.of(context)!.patientListScreenName),
           actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(
-          onRefresh: _updatePatientList,
+          onRefresh: () {
+            setState(() {
+              futurePatientList = fetchPatientList();
+            });
+            return futurePatientList;
+          },
           child: FutureBuilder<List<Patient>>(
-              future: patientList,
+              future: futurePatientList,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return ListView.builder(
@@ -55,8 +55,9 @@ class _PatientListScreenState extends State<PatientListScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      PatientScreen(patient: patient)));
+                                  builder: (context) => PatientScreen(
+                                      patientId: patient.id,
+                                      patient: patient)));
                         },
                       ));
                     },
@@ -64,7 +65,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 }
-                return const CircularProgressIndicator();
+                return const Center(child: CircularProgressIndicator());
               }),
         ));
   }
