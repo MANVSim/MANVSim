@@ -5,18 +5,17 @@ from flask import make_response, request
 from flask_api import status
 from flask_wtf.csrf import CSRFError, generate_csrf
 from tans.tans import uniques
-from flask import Blueprint
 
-web_blueprint = Blueprint("web", "web")
+from web.api import blueprint
 
 
-@web_blueprint.errorhandler(CSRFError)
+@blueprint.errorhandler(CSRFError)
 def handle_csrf_error(error: CSRFError):
     status = error.response or 400
     return make_response(({"error": error.description}, status))
 
 
-@web_blueprint.get("/templates")
+@blueprint.get("/templates")
 def get_templates():
     return [
         {"id": 10023, "name": "Busunfall", "players": 5},
@@ -24,7 +23,7 @@ def get_templates():
     ]
 
 
-@web_blueprint.post("/scenario/start")
+@blueprint.post("/scenario/start")
 def start_scenario():
     try:
         id = request.form["id"]
@@ -37,7 +36,7 @@ def start_scenario():
     }
 
 
-@web_blueprint.post("/login")
+@blueprint.post("/login")
 def login():
     try:
         username = request.form["username"]
@@ -49,6 +48,6 @@ def login():
     return {"token": "randomtokenname"}
 
 
-@web_blueprint.get("/csrf")
+@blueprint.get("/csrf")
 def get_csrf():
     return {"csrf_token": generate_csrf()}

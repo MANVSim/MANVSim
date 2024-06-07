@@ -15,8 +15,8 @@ def create_app():
     Create the app instance, register all URLs and the database to the app
     """
     # asynchronously import local packages
-    from executions.api import register
-    import web.api
+    import executions.api.register
+    import web.api.register
 
     app = Flask(__name__, static_folder="../web/dist")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
@@ -46,7 +46,7 @@ def create_app():
         else:
             return redirect("/")
 
-    app.register_blueprint(web.api.web_blueprint, url_prefix="/web")
-    app.register_blueprint(register.api, url_prefix="/api")
+    app.register_blueprint(web.api.register.blueprint, url_prefix="/web")
+    app.register_blueprint(executions.api.register.api, url_prefix="/api")
 
     return app
