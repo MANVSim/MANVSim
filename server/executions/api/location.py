@@ -35,7 +35,7 @@ def get_location():
         location.add_locations(player.accessible_locations)
         player.location = location
 
-        return {"player": player.to_dict()}
+        return {"player_location": player.location.to_dict()}
 
     except KeyError:
         return f"Missing or invalid request parameter detected.", 400
@@ -57,10 +57,11 @@ def get_all_toplevel_location():
         return f"Missing or invalid request parameter detected.", 400
 
 
-@api.get("/location/take-from-to")
+@api.get("/location/take-from")
 def get_location_out_of_location():
     """
-    Releases a sub location of the players current location. The location ís now an accessible location for the player.
+    Releases a sub location of the players current location. Afterward the location ís an accessible location for the
+    player.
     Required Request Param:
         required_loc_id:    location identifier that shall be added to the players inventory
     """
@@ -80,7 +81,8 @@ def get_location_out_of_location():
         player.accessible_locations.add(required_location)
         parent_location.remove_location_by_id(required_location.id)
 
-        return {"player": player.to_dict()}
+        # TODO add removed location to top-level location.
+        return {"player_location": player.location.to_dict()}
 
     except KeyError:
         return f"Missing or invalid request parameter detected.", 400
