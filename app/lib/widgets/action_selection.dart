@@ -11,9 +11,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ActionSelection extends StatefulWidget {
   final List<Location> locations;
   final Patient patient;
+  final Function refreshPatient;
 
   const ActionSelection(
-      {super.key, required this.patient, required this.locations});
+      {super.key,
+      required this.locations,
+      required this.patient,
+      required this.refreshPatient});
 
   @override
   State<ActionSelection> createState() => _ActionSelectionState();
@@ -34,6 +38,7 @@ class _ActionSelectionState extends State<ActionSelection> {
 
   @override
   void initState() {
+    resources = Location.flattenResourcesFromList(widget.locations);
     futureActions = fetchActions();
     futureActions.then((actions) {
       // filter actions by available resources
@@ -66,17 +71,21 @@ class _ActionSelectionState extends State<ActionSelection> {
                   physics: const ClampingScrollPhysics(),
                   itemCount: selectedActions.length,
                   itemBuilder: (context, index) => ActionCard(
-                      action: selectedActions[index],
-                      patient: widget.patient,
-                      canBePerformed: true)),
+                        action: selectedActions[index],
+                        patient: widget.patient,
+                        canBePerformed: true,
+                        refreshPatient: widget.refreshPatient,
+                      )),
               ListView.builder(
                   shrinkWrap: true, // nested scrolling
                   physics: const ClampingScrollPhysics(),
                   itemCount: notPossibleActions.length,
                   itemBuilder: (context, index) => ActionCard(
-                      action: notPossibleActions[index],
-                      patient: widget.patient,
-                      canBePerformed: false)),
+                        action: notPossibleActions[index],
+                        patient: widget.patient,
+                        canBePerformed: false,
+                        refreshPatient: widget.refreshPatient,
+                      )),
             ]);
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');

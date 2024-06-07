@@ -9,12 +9,14 @@ class ActionCard extends StatefulWidget {
   final PatientAction action;
   final Patient patient;
   final bool canBePerformed;
+  final Function refreshPatient;
 
   const ActionCard(
       {super.key,
       required this.action,
       required this.patient,
-      this.canBePerformed = false});
+      this.canBePerformed = false,
+      required this.refreshPatient});
 
   @override
   State<ActionCard> createState() => _ActionCardState();
@@ -26,7 +28,7 @@ class _ActionCardState extends State<ActionCard> {
     return Card(
         color: widget.canBePerformed
             ? Theme.of(context).cardTheme.color
-            : Theme.of(context).disabledColor,
+            : Theme.of(context).disabledColor.withOpacity(0.2),
         child: ExpansionTile(
             title: Text(widget.action.name),
             controlAffinity: ListTileControlAffinity.leading,
@@ -51,13 +53,14 @@ class _ActionCardState extends State<ActionCard> {
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.lightGreen),
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        await Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ActionScreen(
                                     action: widget.action,
                                     patient: widget.patient)));
+                        widget.refreshPatient();
                       },
                       child: Text(AppLocalizations.of(context)!.actionPerform))
               ])

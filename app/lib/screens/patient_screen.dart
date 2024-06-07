@@ -35,13 +35,7 @@ class _PatientScreenState extends State<PatientScreen> {
           actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(
-            onRefresh: () {
-              // TODO: are child widgets reloaded?
-              setState(() {
-                futurePatientLocation = arriveAtPatient(widget.patientId);
-              });
-              return futurePatientLocation;
-            },
+            onRefresh: refresh,
             child: FutureBuilder(
                 future: futurePatientLocation,
                 builder: (context, snapshot) {
@@ -52,12 +46,22 @@ class _PatientScreenState extends State<PatientScreen> {
                         child: Column(children: [
                           Card(child: PatientOverview(patient: patient)),
                           ActionSelection(
-                              patient: patient, locations: [location])
+                              patient: patient,
+                              locations: [location],
+                              refreshPatient: refresh)
                         ]));
                   } else if (snapshot.hasError) {
                     return Text('${snapshot.error}');
                   }
                   return const Center(child: CircularProgressIndicator());
                 })));
+  }
+
+  Future refresh() {
+    // TODO: are child widgets reloaded?
+    setState(() {
+      futurePatientLocation = arriveAtPatient(widget.patientId);
+    });
+    return futurePatientLocation;
   }
 }

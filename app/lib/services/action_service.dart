@@ -17,7 +17,7 @@ Future<String> fetchActionResult(int performedActionId) async {
 
 Future<int> performAction(int actionId, List<int> resourceIds) async {
   await Future.delayed(const Duration(seconds: 1));
-  if (Random().nextBool()) throw Error();
+  if (Random().nextBool() && Random().nextBool()) throw Error();
   return 1;
 }
 
