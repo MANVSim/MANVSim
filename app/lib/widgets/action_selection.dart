@@ -3,6 +3,7 @@ import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/models/resource.dart';
+import 'package:manvsim/screens/action_screen.dart';
 import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/action_card.dart';
 import 'package:manvsim/widgets/resource_directory.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ActionSelection extends StatefulWidget {
   final List<Location> locations;
   final Patient patient;
-  final Function refreshPatient;
+  final Function() refreshPatient;
 
   const ActionSelection(
       {super.key,
@@ -79,7 +80,7 @@ class _ActionSelectionState extends State<ActionSelection> {
                       action: selectedActions[index],
                       patient: widget.patient,
                       canBePerformed: true,
-                      refreshPatient: widget.refreshPatient,
+                      onPerform: () => performAction(selectedActions[index]),
                     )),
             ListView.builder(
                 shrinkWrap: true, // nested scrolling
@@ -89,7 +90,6 @@ class _ActionSelectionState extends State<ActionSelection> {
                       action: notPossibleActions[index],
                       patient: widget.patient,
                       canBePerformed: false,
-                      refreshPatient: widget.refreshPatient,
                     )),
           ]);
         },
@@ -110,5 +110,31 @@ class _ActionSelectionState extends State<ActionSelection> {
 
   Iterable<Resource> getSelectedResources() {
     return resources.where((r) => r.selected);
+  }
+
+  Iterable<Resource> getNeededResources(PatientAction action) {
+    // quantity validation missing
+    // TODO: rework
+    var needed = action.resourceNamesNeeded;
+    var selected = getSelectedResources().toList();
+    selected.removeWhere((s) => !needed.any((n) => s.name == n));
+    needed.removeWhere((name) => selected.any((s) => s.name == name));
+    for (var n in needed) {
+      selected.add(resources.firstWhere((r) => r.name == n));
+    }
+    return getSelectedResources();
+  }
+
+  void performAction(PatientAction action) async {
+    List<int> resourceIds =
+        getNeededResources(action).map((resource) => resource.id).toList();
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ActionScreen(
+                action: action,
+                patient: widget.patient,
+                resourceIds: resourceIds)));
+    widget.refreshPatient();
   }
 }

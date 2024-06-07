@@ -12,8 +12,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ActionScreen extends StatefulWidget {
   final PatientAction action;
   final Patient patient;
+  final List<int> resourceIds;
 
-  const ActionScreen({super.key, required this.action, required this.patient});
+  const ActionScreen(
+      {super.key,
+      required this.action,
+      required this.patient,
+      required this.resourceIds});
 
   @override
   State<ActionScreen> createState() => _ActionScreenState();
@@ -25,7 +30,7 @@ class _ActionScreenState extends State<ActionScreen> {
 
   @override
   void initState() {
-    futureActionId = performAction(widget.action.id, []); // TODO
+    futureActionId = performAction(widget.action.id, widget.resourceIds);
     super.initState();
   }
 
