@@ -13,21 +13,23 @@ from executions.entities.execution import Execution
 db = SQLAlchemy()
 csrf = CSRFProtect()
 
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
 def create_app():
     """
     Create the app instance, register all URLs and the database to the app
     """
+    import models  # noqa: F401
+
     # asynchronously import local packages
     from executions.api import lobby
 
     app = Flask(__name__, static_folder="../web/dist")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
     app.config["SECRET_KEY"] = (
-        "APP_DEBUG_DO_NOT_USE_IN_PROD_20556f99182444688d9bc48cc456e99031cd39c391accd9ea2e1ff1b500405358c999c50eafe" +
-        "8c6d8fe61a148850e658374d42592f81e411e652fb3ee6839e76"
+        "APP_DEBUG_DO_NOT_USE_IN_PROD_20556f99182444688d9bc48cc456e99031cd39c391accd9ea2e1ff1b500405358c999c50eafe"
+        + "8c6d8fe61a148850e658374d42592f81e411e652fb3ee6839e76"
     )  # FIXME
     app.config["JWT_SECRET_KEY"] = "!ichsolltenichtinPROD!"
 
@@ -38,7 +40,6 @@ def create_app():
     # define run request blocker
     @app.before_request
     def return_hold_if_not_running():
-
         @jwt_required()
         def check_for_exec_status():
             try:
@@ -49,7 +50,10 @@ def create_app():
             except BadRequestKeyError:
                 return f"Incorrect JWT detected.", 400
             except KeyError:
-                return f"Invalid execution id or player TAN sent. Unable to resolve running instance/player.", 400
+                return (
+                    f"Invalid Execution ID sent. Unable to resolve running instance",
+                    400,
+                )
 
         if "/api/run" in request.path:
             return check_for_exec_status()
@@ -63,7 +67,10 @@ def create_app():
         elif path == "/" or path == "":
             return send_from_directory(app.static_folder, "index.html")
         elif path.startswith("/api"):
-            return "API Endpoint not found. Please refactor your request or contact the admin", 404
+            return (
+                "API Endpoint not found. Please refactor your request or contact the admin",
+                404,
+            )
         else:
             return redirect("/")
 
@@ -73,4 +80,3 @@ def create_app():
     # app.register_blueprint(actions.api, url_prefix="/api/run")
 
     return app
-
