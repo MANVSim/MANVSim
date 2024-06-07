@@ -46,7 +46,7 @@ def create_app():
         else:
             return redirect("/")
 
-    app.register_blueprint(web.api.register.blueprint, url_prefix="/web")
+    app.register_blueprint(web.api.register.api, url_prefix="/web")
     app.register_blueprint(executions.api.register.api, url_prefix="/api")
 
     return app
