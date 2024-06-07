@@ -11,7 +11,7 @@ from vars import ACQUIRE_TIMEOUT
 # noinspection PyArgumentList
 class Location:
 
-    def __init__(self, id: int, name: str, picture_ref: str, resources: list[Resource] = None,
+    def __init__(self, id: int, name: str, picture_ref: str | None, resources: list[Resource] = None,
                  locations: set['Location'] = None):
         if resources is None:
             resources = []

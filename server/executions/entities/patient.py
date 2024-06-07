@@ -8,10 +8,18 @@ from executions.entities.performed_action import PerformedAction
 class Patient:
 
     class Classification(Enum):
-        NOT_CLASSIFIED = "NOT_CLASSIFIED"
+        """
+        Classifies the severity of injuries and need for a treatment according to the currently used metric in Germany.
+        The prefix "PRE" indicates a preliminary classification that has to be verified by a doctor.
+        """
+        NOT_CLASSIFIED = "not classified"
+        PRE_RED = "pre-classified red"
         RED = "red"
+        PRE_YELLOW = "pre-classified yellow"
         YELLOW = "yellow"
+        PRE_GREEN = "pre-classified green"
         GREEN = "green"
+        PRE_BLUE = "pre-classified blue"
         BLUE = "blue"
         BLACK = "black"
 

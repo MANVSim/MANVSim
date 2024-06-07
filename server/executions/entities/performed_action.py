@@ -9,7 +9,7 @@ class PerformedAction:
     def __init__(self, id: str, time: int, execution_id: str, action: Action, resources_used: list[Resource],
                  player_tan: str):
         self.id = id  # uuid
-        self.time = time  # FIXME: Maybe replace by standardized time format
+        self.time = time
         self.execution_id = execution_id  # TAN
         self.action = action
         self.resources_used = resources_used
