@@ -42,7 +42,9 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
                       color:
                           resource.selected ? Colors.lightGreen : Colors.grey,
                       child: ListTile(
-                          leading: Text('${resource.quantity}'),
+                          leading: Text(resource.quantity < 10
+                              ? '${resource.quantity}'
+                              : '\u221e'),
                           title: Text(resource.name),
                           onTap: () {
                             widget.resourceToggle(resource);
