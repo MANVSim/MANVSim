@@ -23,6 +23,7 @@ class _ActionSelectionState extends State<ActionSelection> {
 
   Iterable<Resource> resources = [];
   Iterable<PatientAction> possibleActions = [];
+  List<PatientAction> notPossibleActions = [];
 
   toggleResource(Resource resource) {
     setState(() {
@@ -71,12 +72,24 @@ class _ActionSelectionState extends State<ActionSelection> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var selectedActions = getSelectedActions();
-            return ListView.builder(
-                shrinkWrap: true, // nested scrolling
-                physics: const ClampingScrollPhysics(),
-                itemCount: selectedActions.length,
-                itemBuilder: (context, index) => ActionCard(
-                    action: selectedActions[index], patient: widget.patient));
+            return Column(children: [
+              ListView.builder(
+                  shrinkWrap: true, // nested scrolling
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: selectedActions.length,
+                  itemBuilder: (context, index) => ActionCard(
+                      action: selectedActions[index],
+                      patient: widget.patient,
+                      canBePerformed: true)),
+              ListView.builder(
+                  shrinkWrap: true, // nested scrolling
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: notPossibleActions.length,
+                  itemBuilder: (context, index) => ActionCard(
+                      action: notPossibleActions[index],
+                      patient: widget.patient,
+                      canBePerformed: false)),
+            ]);
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
