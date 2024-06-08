@@ -23,8 +23,8 @@ def create_app():
     import models  # noqa: F401
 
     # asynchronously import local packages
-    import web.api.register
     from executions.api import lobby
+    import web.setup
 
     app = Flask(__name__, static_folder="../web/dist")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
@@ -37,6 +37,7 @@ def create_app():
     db.init_app(app)
     csrf.init_app(app)
     jwt = JWTManager(app)
+    web.setup(app)
 
     # define run request blocker
     @app.before_request
@@ -76,8 +77,6 @@ def create_app():
             return {"error": "Unknown endpoint"}, 404
         else:
             return redirect("/")
-
-    app.register_blueprint(web.api.register.api, url_prefix="/api/web")
 
     app.register_blueprint(lobby.api, url_prefix="/api")
     app.register_blueprint(patient.api, url_prefix="/api/run")
