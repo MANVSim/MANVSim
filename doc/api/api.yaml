@@ -119,7 +119,7 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
 
 
   /run/patient/all-tans:
@@ -133,10 +133,11 @@ paths:
               schema:
                 type: object
                 properties:
-                  patients:
+                  tans:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Patient'
+                      type: string
+                    example: [ 1, 12, 42 ]
 
         '204':
           description: No running execution detected.
@@ -219,7 +220,7 @@ paths:
         '409':
           description: Unable to access runtime object. A timeout-error occurred.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
 
 
   /run/location/all:
@@ -479,7 +480,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
 
 
 
