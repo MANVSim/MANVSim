@@ -1,11 +1,25 @@
 from flask import Flask
 from flask_login import LoginManager
+from sqlalchemy.exc import NoResultFound
 from models import WebUser
+from app import db
 from .api.register import api
+from bcrypt import gensalt, hashpw
 
 
 def setup(app: Flask):
+    # TODO: Remove
+    with app.app_context():
+        try:
+            WebUser.get_by_username("Terra")
+        except NoResultFound:
+            terra = WebUser(username="Terra",
+                            password=hashpw(b"pw1234", gensalt()).decode())
+            db.session.add(terra)
+            db.session.commit()
+
     app.register_blueprint(api, url_prefix="/api/web")
+
     login_manager = LoginManager()
     login_manager.init_app(app)
 
