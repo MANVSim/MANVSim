@@ -27,23 +27,23 @@ class Resource:
 
          - duration: amount of time the resource might be blocked
         """
-        current_millis = util.get_current_millis()
+        current_secs = util.get_current_secs()
         if self.quantity >= 10000:
             return True  # resource is infinite
         elif self.quantity > 0:
             # resource is available
             self.quantity -= 1
-            self.locked_until = current_millis + duration if self.quantity == 0 else self.locked_until
+            self.locked_until = current_secs + duration if self.quantity == 0 else self.locked_until
             return True
         elif self.consumable:
             # empty consumable
             return False
-        elif self.locked_until > current_millis:
+        elif self.locked_until > current_secs:
             # resource is not available and will be restored
             return False
         else:
             # resource is not available but should have been restocked by now
-            self.locked_until = current_millis + duration
+            self.locked_until = current_secs + duration
             return True
 
     def increase(self, force=False):
@@ -53,12 +53,13 @@ class Resource:
         """
         if force:
             self.quantity += 1
+            return
 
         with (self.lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT)) as acquired:
             if acquired:
                 # resources can only be restored if they are non consumables and no other resource has claimed the
                 # resource in the meantime.
-                if not self.consumable and util.get_current_millis() > self.locked_until:
+                if not self.consumable and util.get_current_secs() > self.locked_until:
                     self.quantity += 1
             else:
                 raise TimeoutError
@@ -88,6 +89,7 @@ def try_lock_all(resources: list['Resource']):
     Tries to lock all provided resources. If not successful, every lock will be released. Returns a boolean in every
     case.
     """
+    resources = sorted(resources, key=lambda resource: resource.id)
     success = True
     blocked_resources = []
     for res in resources:

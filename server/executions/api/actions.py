@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required
 from executions.entities.performed_action import PerformedAction
 from executions.entities.resource import Resource, try_lock_all, release_all
 from executions.utils import util
+from vars import RETRY_LOCK_ALL
 
 api = Blueprint("api-action", __name__)
 
@@ -57,7 +58,7 @@ def perform_action():
 
         # Locking for edit
         success = False
-        for _ in range(200):
+        for _ in range(RETRY_LOCK_ALL):
             if try_lock_all(resources_used):
                 success = True
                 break
@@ -86,7 +87,7 @@ def perform_action():
             return "Missmatch detected. Less resources used than required", 418
 
         # store success
-        performed_action = PerformedAction(str(uuid.uuid4()), util.get_current_millis() + action.duration_sec,
+        performed_action = PerformedAction(str(uuid.uuid4()), util.get_current_secs() + action.duration_sec,
                                            execution.id, action, resources_used, player.tan)
         patient.action_queue[performed_action.id] = performed_action
         return {"performed_action_id": performed_action.id}

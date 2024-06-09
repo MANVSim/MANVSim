@@ -1,3 +1,7 @@
+import logging
+import threading
+import time
+
 from executions.entities.resource import Resource
 from executions.utils import util
 
@@ -28,7 +32,38 @@ def test_decrease(client):
 
     # test non-consumable empty missing increase
     resource.consumable = False
-    current_millis = util.get_current_millis()
-    resource.locked_until = current_millis
+    current_secs = util.get_current_secs()
+    resource.locked_until = current_secs
     assert resource.decrease(duration=100)
-    assert resource.locked_until > current_millis
+    assert resource.locked_until > current_secs
+
+
+def test_increase_decrease(client):
+    quantity = 50
+    resource = Resource(1, "test", quantity, "ref")
+    resource.consumable = False
+
+    def t2(r):
+        for _ in range(50):
+            r.increase(force=True)
+
+    def t3(r):
+        try:
+            r.increase()
+            logging.debug("unwanted increase performed.")
+            raise AssertionError
+        except TimeoutError:
+            logging.debug("successful timeout.")
+
+    resource.lock.acquire()
+    threading.Thread(target=t2, args=([resource])).start()
+    threading.Thread(target=t3, args=([resource])).start()
+    for _ in range(50):
+        resource.decrease(0)
+
+    time.sleep(3.5)
+    resource.lock.release()
+    assert resource.quantity == quantity
+
+
+
