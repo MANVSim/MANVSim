@@ -1,4 +1,4 @@
-const api = "api/web/"
+const api = "web/"
 
 export interface Template {
   id: number,
