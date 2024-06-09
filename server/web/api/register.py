@@ -4,9 +4,12 @@ from random import random
 from flask import make_response, request, Blueprint
 from flask_api import status
 from flask_wtf.csrf import CSRFError, generate_csrf
+from sqlalchemy.exc import NoResultFound
 from tans.tans import uniques
+from models import WebUser
 
-api = Blueprint("api-web", __name__)  # FIXME sollten wir zusammen mit dem Web package iwann mal umbenennen
+# FIXME sollten wir zusammen mit dem Web package iwann mal umbenennen
+api = Blueprint("api-web", __name__)
 
 
 @api.errorhandler(CSRFError)
@@ -38,16 +41,26 @@ def start_scenario():
 
 @api.post("/login")
 def login():
+    # Extract data from request
     try:
         username = request.form["username"]
         password = request.form["password"]
-
-        return {"token": "randomtokenname"}
-
     except KeyError:
         return {
             "error": "Missing username or password in request"
         }, status.HTTP_400_BAD_REQUEST
+
+    # Get user object from database
+    try:
+        user = WebUser.get_by_username(username)
+    except NoResultFound:
+        return {"error": f"""User with user name '{username}' does not exist"""}
+
+    # Check password
+    if not user.check_password(password):
+        return {"error": "Incorrect password"}, status.HTTP_401_UNAUTHORIZED
+
+    return {"token": "todo"}  # TODO: Send back JWT
 
 
 @api.get("/csrf")
