@@ -1,4 +1,6 @@
+from bcrypt import checkpw
 from app import db
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 # just a dummy model
@@ -78,3 +80,27 @@ class ResourcesNeeded(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     action_id = db.Column(db.ForeignKey(Action.id), nullable=False)
     resource_id = db.Column(db.ForeignKey(Resource.id), nullable=False)
+
+
+class WebUser(db.Model):
+    username: Mapped[str] = mapped_column(primary_key=True)
+    password: Mapped[str]
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.username
+
+    @staticmethod
+    def get_by_username(username: str) -> "WebUser":
+        return db.session.execute(db.select(WebUser).where(WebUser.username == username)).scalar_one()
+
+    def check_password(self, password: str) -> bool:
+        return checkpw(str.encode(password), self.password.encode())
