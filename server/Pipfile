@@ -13,6 +13,8 @@ pylint = "*"
 flask-wtf = "*"
 pytest = "*"
 flask-jwt-extended = "*"
+bcrypt = "*"
+flask-login = "*"
 
 [dev-packages]
 
