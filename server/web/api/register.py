@@ -31,29 +31,6 @@ def admin_only(func):
     return wrapper
 
 
-@api.get("/templates")
-@admin_only
-def get_templates():
-    return [
-        {"id": 10023, "name": "Busunfall", "players": 5},
-        {"id": 900323, "name": "Explosion im Wohnviertel", "players": 10},
-    ]
-
-
-@api.post("/scenario/start")
-@admin_only
-def start_scenario():
-    try:
-        id = request.form["id"]
-        # TODO: Create actual execution
-        return {
-            "id": math.floor(random() * 1000),
-            "tans": [str(x) for x in uniques(10)],
-        }
-    except KeyError:
-        return {"error": "Missing id in request"}, 400
-
-
 @api.post("/login")
 @csrf.exempt  # TODO: Remove
 def login():
@@ -82,3 +59,26 @@ def login():
 @api.get("/csrf")
 def get_csrf():
     return {"csrf_token": generate_csrf()}
+
+
+@api.get("/templates")
+@admin_only
+def get_templates():
+    return [
+        {"id": 10023, "name": "Busunfall", "players": 5},
+        {"id": 900323, "name": "Explosion im Wohnviertel", "players": 10},
+    ]
+
+
+@api.post("/scenario/start")
+@admin_only
+def start_scenario():
+    try:
+        id = request.form["id"]
+        # TODO: Create actual execution
+        return {
+            "id": math.floor(random() * 1000),
+            "tans": [str(x) for x in uniques(10)],
+        }
+    except KeyError:
+        return {"error": "Missing id in request"}, 400
