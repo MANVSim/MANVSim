@@ -1,9 +1,10 @@
-import { Form } from "react-router-dom";
+import { Form, useActionData } from "react-router-dom";
 import { Button, Form as FormBS } from "react-bootstrap";
 import "./login.css"
 import { CsrfInput } from "../components/csrf";
 
 export default function Login() {
+  const error = useActionData() as string
   return (
     <div className="row h-50 justify-content-center align-items-center">
       <div className="col-12 position-at-25">
@@ -23,6 +24,11 @@ export default function Login() {
           <div className="d-grid gap-2">
             <Button type="submit" className="my-3">Einloggen</Button>
           </div>
+          {error &&
+            <div className="fade-in bg-danger p-3 mb-2 rounded-3 text-white">
+              {error}
+            </div>
+          }
         </Form>
       </div>
     </div>

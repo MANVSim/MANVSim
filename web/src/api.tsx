@@ -1,3 +1,5 @@
+import { redirect } from "react-router"
+
 const api = "api/web/"
 
 export interface Template {
@@ -75,10 +77,29 @@ function isLoginResponse(obj: object): obj is LoginResponse {
   return t.token !== undefined
 }
 
-export async function getAuthToken(formData: FormData): Promise<string> {
-  const json = await tryFetchJson("login", { method: "POST", body: formData })
-  if (!isLoginResponse(json)) {
-    throw new Error("Response from server to login request failed")
+interface ErrorResponse {
+  error: string
+}
+
+function isErrorResponse(obj: object): obj is ErrorResponse {
+  return (obj as ErrorResponse).error !== undefined
+}
+
+export async function getAuthToken(formData: FormData): Promise<string | Response> {
+  const response = await fetch(api + "login", { method: "POST", body: formData })
+  switch (response.status) {
+    case 401:
+    case 404:
+      return "Nutzer oder Passwort ist falsch"
+
+    default:
+      break;
   }
-  return json.token
+
+  const json = await response.json()
+  if (!isLoginResponse(json)) {
+    throw new Error("Login request returned unknown data")
+  }
+
+  return redirect("/")
 }
