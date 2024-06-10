@@ -41,7 +41,7 @@ def create_test_execution():
                       resources_needed=["Beatmungsgerät"], required_role=Player.Role.RETTUNGSSANITAETER)
 
     # Performed Actions
-    p_act_1 = PerformedAction(id=1, time=1715459280000, execution_id=1, action=action_2, resources_used=[res_4],
+    p_act_1 = PerformedAction(id="1", time=1715459280000, execution_id="1", action=action_2, resources_used=[res_4],
                               player_tan="123ABC")
 
     # Patients

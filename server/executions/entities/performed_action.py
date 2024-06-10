@@ -6,11 +6,11 @@ from executions.entities.resource import Resource
 
 class PerformedAction:
 
-    def __init__(self, id: str, time: int, execution_id: str, action: Action, resources_used: list[Resource],
+    def __init__(self, id: str, time: int, execution_id: int, action: Action, resources_used: list[Resource],
                  player_tan: str):
-        self.id = id  # uuid
-        self.time = time
-        self.execution_id = execution_id  # TAN
+        self.id = id  # UUID
+        self.time = time  # Time, when action was finished
+        self.execution_id = execution_id
         self.action = action
         self.resources_used = resources_used
         self.player_tan = player_tan
