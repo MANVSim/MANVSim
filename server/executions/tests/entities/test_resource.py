@@ -3,7 +3,7 @@ import threading
 import time
 
 from executions.entities.resource import Resource
-from executions.utils import util
+from utils import time
 
 
 def test_decrease(client):
@@ -32,7 +32,7 @@ def test_decrease(client):
 
     # test non-consumable empty missing increase
     resource.consumable = False
-    current_secs = util.get_current_secs()
+    current_secs = time.current_time_s()
     resource.locked_until = current_secs
     assert resource.decrease(duration=100)
     assert resource.locked_until > current_secs
@@ -64,6 +64,3 @@ def test_increase_decrease(client):
     time.sleep(3.5)
     resource.lock.release()
     assert resource.quantity == quantity
-
-
-

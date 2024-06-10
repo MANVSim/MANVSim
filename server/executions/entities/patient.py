@@ -30,7 +30,7 @@ class Patient:
         if performed_actions is None:
             performed_actions = []
 
-        self.id = id  # FIXME TANs?
+        self.id = id
         self.name = name
         self.injuries = injuries  # FIXME: Maybe replace by JSON datatype
         self.activity_diagram = activity_diagram  # FIXME: Maybe replace JSON datatype

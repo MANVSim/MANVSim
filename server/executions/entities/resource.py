@@ -1,7 +1,7 @@
 import json
 
-from executions.utils import util
 from executions.utils.timeoutlock import TimeoutLock
+from utils import time
 from vars import ACQUIRE_TIMEOUT
 
 
@@ -27,7 +27,7 @@ class Resource:
 
          - duration: amount of time the resource might be blocked
         """
-        current_secs = util.get_current_secs()
+        current_secs = time.current_time_s()
         if self.quantity >= 10000:
             return True  # resource is infinite
         elif self.quantity > 0:
@@ -59,7 +59,7 @@ class Resource:
             if acquired:
                 # resources can only be restored if they are non consumables and no other resource has claimed the
                 # resource in the meantime.
-                if not self.consumable and util.get_current_secs() > self.locked_until:
+                if not self.consumable and time.current_time_s() > self.locked_until:
                     self.quantity += 1
             else:
                 raise TimeoutError

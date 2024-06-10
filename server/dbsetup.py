@@ -22,8 +22,8 @@ with create_app().app_context():
     insert(Scenario(id=1, name="Autounfall"))
     insert(Scenario(id=3, name="Gasexplosion"))
 
-    insert(Execution(tan="ABCDEF", scenario_id=0))
-    insert(Execution(tan="012345", scenario_id=1))
+    insert(Execution(tan=1, scenario_id=0))
+    insert(Execution(tan=23456, scenario_id=1))
 
     insert(Location(id=0, name="RTW", picture_ref="rtw.jpg"))
     insert(Location(id=1, name="Rucksack", picture_ref="rucksack.jpg", location_id=0))
@@ -41,7 +41,7 @@ with create_app().app_context():
     insert(
         Player(
             tan="123ABC",
-            execution_id="ABCDEF",
+            execution_id=1,
             location_id=0,
             role_id=1,
             alerted=True,
@@ -51,7 +51,7 @@ with create_app().app_context():
     insert(
         Player(
             tan="456DEF",
-            execution_id="ABCDEF",
+            execution_id=23456,
             location_id=0,
             role_id=2,
             alerted=True,
