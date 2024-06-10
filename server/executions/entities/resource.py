@@ -93,7 +93,7 @@ def try_lock_all(resources: list['Resource']):
     success = True
     blocked_resources = []
     for res in resources:
-        if not res.lock.acquire(blocking=False):
+        if not res.lock.acquire(timeout=0.5):
             success = False
             break
         else:

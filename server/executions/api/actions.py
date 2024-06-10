@@ -57,13 +57,7 @@ def perform_action():
             resources_used.append(res)
 
         # Locking for edit
-        success = False
-        for _ in range(RETRY_LOCK_ALL):
-            if try_lock_all(resources_used):
-                success = True
-                break
-
-        if not success:
+        if not try_lock_all(resources_used):
             return "Unable to access runtime object. A timeout-error occurred.", 409
 
         checklist: list = action.resources_needed[:]
