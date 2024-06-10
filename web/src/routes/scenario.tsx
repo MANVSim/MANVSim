@@ -2,7 +2,7 @@ import { useActionData, useLoaderData } from "react-router"
 import { Template } from "../api"
 import { Form } from "react-router-dom"
 import Button from "react-bootstrap/Button"
-import { Card, CardGroup, Container, ListGroup, Row } from "react-bootstrap"
+import { Card, Container, ListGroup } from "react-bootstrap"
 import QRCode from "react-qr-code"
 
 interface LoaderData {
