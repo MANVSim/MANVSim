@@ -2,7 +2,8 @@ import { useActionData, useLoaderData } from "react-router"
 import { Template } from "../api"
 import { Form } from "react-router-dom"
 import Button from "react-bootstrap/Button"
-import { Card, ListGroup, Row } from "react-bootstrap"
+import { Card, CardGroup, Container, ListGroup, Row } from "react-bootstrap"
+import QRCode from "react-qr-code"
 
 interface LoaderData {
   csrfToken: string,
@@ -48,12 +49,12 @@ function Templates({ list, csrfToken }: { list: Template[], csrfToken: string })
 
 function TanCard({ tan }: { tan: string }) {
   return (
-    <Card style={{ width: '10rem' }}>
-      <Card.Img variant="top" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/QR_deWP.svg/330px-QR_deWP.svg.png" />
+    <Card className="d-flex m-1">
+      <QRCode value={tan} className="align-self-center p-3" />
       <Card.Body>
         <Card.Title className="text-center">{tan}</Card.Title>
       </Card.Body>
-    </Card>
+    </Card >
   )
 }
 
@@ -78,9 +79,9 @@ function Execution() {
       <h2>Ausführung</h2>
       <p>ID: {result.id}</p>
       <p>TANs:</p>
-      <Row xs={1} md={2} className="g-4">
+      <Container fluid className="d-flex flex-wrap">
         {result.tans.map(t => <TanCard key={t} tan={t} />)}
-      </Row>
+      </Container>
     </div>
   )
 }
