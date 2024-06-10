@@ -79,13 +79,8 @@ function isLoginResponse(obj: object): obj is LoginResponse {
 
 export async function getAuthToken(formData: FormData): Promise<string | Response> {
   const response = await fetch(api + "login", { method: "POST", body: formData })
-  switch (response.status) {
-    case 401:
-    case 404:
-      return "Nutzer oder Passwort ist falsch"
-
-    default:
-      break;
+  if (response.status in [401, 404]) {
+    return "Nutzer oder Passwort ist falsch"
   }
 
   const json = await response.json()
