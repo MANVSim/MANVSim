@@ -5,7 +5,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 function isLoggedIn() {
-  return false
+  return localStorage.getItem("token") !== null
 }
 
 function NavLink({ to, name }: { to: string, name: string }) {
