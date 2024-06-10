@@ -26,3 +26,5 @@ def setup(app: Flask):
     @login_manager.user_loader
     def load_user(username):
         return WebUser.get_by_username(username)
+
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False  # TODO: Remove
