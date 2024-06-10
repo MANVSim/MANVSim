@@ -6,7 +6,6 @@ from flask_jwt_extended import jwt_required
 from executions.entities.performed_action import PerformedAction
 from executions.entities.resource import Resource, try_lock_all, release_all
 from executions.utils import util
-from vars import RETRY_LOCK_ALL
 
 api = Blueprint("api-action", __name__)
 
