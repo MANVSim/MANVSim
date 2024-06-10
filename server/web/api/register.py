@@ -1,3 +1,4 @@
+from functools import wraps
 import math
 from random import random
 
@@ -21,6 +22,7 @@ def handle_csrf_error(error: CSRFError):
 
 
 def admin_only(func):
+    @wraps(func)  # https://stackoverflow.com/a/64534085/11370741
     @jwt_required()
     def wrapper(*args, **kwargs):
         identity = get_jwt_identity()
