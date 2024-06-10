@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_login import LoginManager
-from sqlalchemy.exc import NoResultFound
 from models import WebUser
 from app import db
 from .api.register import api
