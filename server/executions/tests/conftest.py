@@ -24,10 +24,12 @@ def app():
     test = create_test_execution()
     test.status = Execution.Status.RUNNING
     test.id = 2
-    test.players.pop("123ABC")
-    test.players.pop("456DEF")
-    test.players["987ZYX"].tan = "987ZYX"
-    test.players["654WVU"].tan = "654WVU"
+    player_a = test.players.pop("123ABC")
+    player_b = test.players.pop("456DEF")
+    player_a.tan = "987ZYX"
+    player_b.tan = "654WVU"
+    test.players["987ZYX"] = player_a
+    test.players["654WVU"] = player_b
     exec_before = len(run.exec_dict)
     player_before = len(run.registered_player)
     run.activate_execution(test)

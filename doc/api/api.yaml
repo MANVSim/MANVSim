@@ -55,10 +55,6 @@ paths:
                     example: "Notarzt"
         '400':
           description: Invalid TAN detected. Unable to resolve player.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
 
 
   /player/set-name:
@@ -126,18 +122,18 @@ paths:
         - bearerAuth: [ ]
 
 
-  /run/patient/all-ids:
+  /run/patient/all-tans:
     get:
-      summary: Returns a list of all patients ids.
+      summary: Returns a list of all patients.
       responses:
         '200':
-          description: A JSON array of patients ids.
+          description: A JSON array of patients
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  patient_ids:
+                  tans:
                     type: array
                     items:
                       type: string
@@ -154,11 +150,22 @@ paths:
     post:
       summary: Returns a specified patient.
       parameters:
-        - name: patient_id
-          in: query
+        - in: header
+          name: X-CSRFToken
           required: true
           schema:
-            type: integer
+            type: string
+            example: "token"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                patient_id:
+                  type: integer
+                  example: 1
       responses:
         '200':
           description: A patient specified by patientId. Additionally the response contains updated current location of the player.
@@ -171,19 +178,19 @@ paths:
                     $ref: '#/components/schemas/Location'
                   patient:
                     $ref: '#/components/schemas/Patient'
+        '204':
+          description: No running execution detected.
         '400':
           description: Missing or invalid request parameter detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '404':
-          description: Patient with patientId could not be found.
       security:
         - bearerAuth: [ ]
 
-  /run/patients/leave:
+  /run/patient/leave:
     post:
       summary: Leaves a patient.
-      description: Closes a patient profile. Other users can no longer see the username in the list of treating users.
+      description: Closes a patient profile and leaves the patients location.
       parameters:
         - in: header
           name: X-CSRFToken
@@ -191,28 +198,34 @@ paths:
           schema:
             type: string
             example: "token"
-        - name: patientId
-          in: query
-          required: true
-          schema:
-            type: string
-            description: patient id.
-            example: "patient123"
-
       responses:
         '200':
-          description: Patient profile successfully closed.
+          description: success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Patient profile successfully closed."
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Invalid JWT detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '404':
-          description: Patient with patientId could not be found.
+        '405':
+          description: Player is not assigned to any location.
+        '409':
+          description: Unable to access runtime object. A timeout-error occurred.
       security:
         - bearerAuth: [ ]
 
 
   /run/location/all:
     get:
-      summary: Returns a list of locations.
+      summary: Returns a list of  top-level accessible locations.
       responses:
         '200':
           description: A JSON array of locations
@@ -225,38 +238,29 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Location'
+        '204':
+          description: No running execution detected.
         '400':
-          description: Missing or invalid request parameter detected.
+          description: Invalid JWT detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
-      security:
-        - bearerAuth: [ ]
-
-  /run/location/arrive:
-    get:
-      summary: Simulates the arrival of a player at a certain location.
-      responses:
-        '200':
-          description: player-location changed. Returns the current location.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  player_location:
-                    $ref: '#/components/schemas/Location'
-        '400':
-          description: Missing or invalid request parameter detected.
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '409':
-          description: Unable to access runtime object. A timeout-error occurred.
       security:
         - bearerAuth: [ ]
 
   /run/location/take-from:
-    get:
+    post:
       summary: A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                take_location_id:
+                  type: integer
+                from_location_id:
+                  type: integer
       responses:
         '200':
           description: accessible locations (the inventory) are updated.
@@ -266,13 +270,50 @@ paths:
                 type: object
                 properties:
                   player_location:
-                    $ref: '#/components/schemas/Location'
+                      $ref: '#/components/schemas/Location'
+        '204':
+          description: No running execution detected.
         '400':
           description: Missing or invalid request parameter detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Location not found. Update your current location-access.
+          description: (Take-/From-) Location not found. Update your current location-access.
+        '409':
+          description: Unable to access runtime object. A timeout-error occurred.
+      security:
+        - bearerAuth: [ ]
+
+  /run/location/leave:
+    post:
+      summary: Leaves a location.
+      description: The current location of the player is resetted. Used initially to leave the arriving RTW.
+      parameters:
+        - in: header
+          name: X-CSRFToken
+          required: true
+          schema:
+            type: string
+            example: "token"
+      responses:
+        '200':
+          description: success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Player successfully left location."
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Invalid JWT detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '405':
+          description: Player is not assigned to any location.
         '409':
           description: Unable to access runtime object. A timeout-error occurred.
       security:
@@ -293,19 +334,24 @@ paths:
               example:
                 - id: 1
                   name: Pflaster anbringen
-                  durationInSeconds: 10
-                  resourceNamesNeeded:
+                  required_role: "Notarzt"
+                  duration_msec: 10000
+                  resources_needed:
                     - Pflaster
                 - id: 2
                   name: Klamotten aufschneiden
-                  durationInSeconds: 4
-                  resourceNamesNeeded:
+                  required_role: "Notarzt"
+                  duration_msec: 4
+                  resources_needed:
                     - Schere
                 - id: 3
                   name: Schmerzmittel verabreichen
-                  durationInSeconds: 20
-                  resourceNamesNeeded:
+                  required_role: "Notarzt"
+                  duration_msec: 20
+                  resources_needed:
                     - Schmerzmittel
+        '204':
+          description: No running execution detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
       security:
@@ -313,7 +359,7 @@ paths:
 
   /run/action/perform:
     post:
-      summary: Performs an action.
+      summary: Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
       parameters:
         - in: header
           name: X-CSRFToken
@@ -352,6 +398,8 @@ paths:
                     type: string
                     example: bc8856e4-ce8c-45d3-b20d-39b693d5a35e
 
+        '204':
+          description: No running execution detected.
         '400':
           description: Missing or invalid request parameter detected.
         '401':
@@ -365,7 +413,7 @@ paths:
 
   /run/action/perform/result:
     get:
-      summary: Gets the result of a performed action.
+      summary: Gets the result of a performed action and officially finishes/dequeues the action of the patient.
       parameters:
         - name: performed_action_id
           in: query
@@ -383,11 +431,10 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  result:
-                    type: string
-                    example: "Action successfully performed."
+                type: string
+              example: Action successfully performed.
+        '204':
+          description: No running execution detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
       security:
@@ -458,10 +505,6 @@ components:
           type: string
         injuries:
           type: string
-        treatingUsers:
-          type: array
-          items:
-            type: string
 
     Location:
       type: object
@@ -516,4 +559,8 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            type: object
+            properties:
+              msg:
+                type: string
+                example: "<Some message about Auth>"

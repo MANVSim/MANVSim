@@ -1,5 +1,6 @@
 import json
 import logging
+import time
 
 from executions.entities.stategraphs.patientstate import PatientState
 from utils import time
@@ -80,7 +81,7 @@ class ActivityDiagram:
         timeout_next_state = timeout + new_state.timelimit  # new start_time for next state
 
         # dash through states iff next state is also outdated
-        while new_state.timelimit != -1 and timeout_next_state <= time.current_time_ms():
+        while new_state.timelimit != -1 and timeout_next_state <= time.current_time_s():
             new_state = self.__get_state_by_id(new_state.after_time_state_uuid)
             timeout_next_state += new_state.timelimit
 

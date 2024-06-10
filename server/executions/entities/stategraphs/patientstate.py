@@ -33,7 +33,7 @@ class PatientState:
     def start_timer(self):
         """ Initiates a timer for the state object, if a timelimit is set. """
         if self.timelimit != -1:
-            self.start_time = time.current_time_ms()
+            self.start_time = time.current_time_s()
             return True
         else:
             logging.error("unable to start error, due to missing run time.")
@@ -48,7 +48,7 @@ class PatientState:
 
     def is_state_outdated(self):
         """ Returns a boolean related to the state timeout. """
-        return self.timelimit != -1 and self.timelimit + self.start_time <= time.current_time_ms()
+        return self.timelimit != -1 and self.timelimit + self.start_time <= time.current_time_s()
 
     def to_dict(self):
         return self.__dict__

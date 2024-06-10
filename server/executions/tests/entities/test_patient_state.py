@@ -26,7 +26,7 @@ def test_from_json():
 
 
 def test_to_json():
-    timestamp = time.current_time_ms()
+    timestamp = time.current_time_s()
     treatments = {
         "knive": "499d9080-dc68-41fc-a0a5-3f3e8563e70c",
         "infusion": "569f58d7-6cbb-4fde-97ae-f6b9f597c219"

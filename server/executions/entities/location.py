@@ -11,7 +11,7 @@ from vars import ACQUIRE_TIMEOUT
 # noinspection PyArgumentList
 class Location:
 
-    def __init__(self, id: str, name: str, picture_ref: str | None, resources: list[Resource] = None,
+    def __init__(self, id: int, name: str, picture_ref: str | None, resources: list[Resource] = None,
                  locations: set['Location'] = None):
         if resources is None:
             resources = []
@@ -56,7 +56,7 @@ class Location:
         """
         with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
-                self.locations.union(new_locations)
+                self.locations = self.locations.union(new_locations)
             else:
                 raise TimeoutError
 
@@ -112,6 +112,35 @@ class Location:
                     q.put((child, child_loc))
 
         return None, None
+
+    def get_resource_by_id(self, id):
+        """
+        Retrieves a resource out of the location tree. If the resource is available it returns the instance,
+        None otherwise.
+        """
+        # resource is contained on the current location
+        for res in self.resources:
+            if res.id == id:
+                return res
+
+        # resource is contained in another location
+        for loc in self.locations:
+            res = loc.get_resource_by_id(id)
+            if res is not None:
+                return res
+
+        return None
+
+    def leave_location(self, removed: set):
+        """
+        Removes provided location set from the location list. It raises a TimeoutError, if the related lock is not
+        accessible.
+        """
+        with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
+            if acquired:
+                self.locations -= removed
+            else:
+                raise TimeoutError
 
     def to_dict(self, shallow: bool = False):
         """
