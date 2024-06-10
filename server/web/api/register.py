@@ -20,6 +20,17 @@ def handle_csrf_error(error: CSRFError):
     return make_response(({"error": error.description}, status))
 
 
+def admin_only(func):
+    @jwt_required()
+    def wrapper(*args, **kwargs):
+        identity = get_jwt_identity()
+        if identity != "admin":
+            abort(status.HTTP_401_UNAUTHORIZED)
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
 @api.get("/templates")
 def get_templates():
     return [
@@ -64,17 +75,6 @@ def login():
 
     login_user(user)
     return {"token": create_access_token(identity="admin")}, 200
-
-
-def admin_only(func):
-    @jwt_required()
-    def wrapper(*args, **kwargs):
-        identity = get_jwt_identity()
-        if identity != "admin":
-            abort(status.HTTP_401_UNAUTHORIZED)
-        return func(*args, **kwargs)
-
-    return wrapper
 
 
 @api.get("/csrf")
