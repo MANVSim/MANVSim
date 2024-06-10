@@ -18,3 +18,6 @@ class TimeoutLock(object):
 
     def release(self):
         self._lock.release()
+
+    def locked(self):
+        return self._lock.locked()

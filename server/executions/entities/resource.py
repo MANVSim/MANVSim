@@ -104,7 +104,7 @@ def try_lock_all(resources: list['Resource']):
     return success
 
 
-def release_all(resources: list['Resource']):
+def release_all_resources(resources: list['Resource']):
     """ Releases all locks of the resources provided. """
     for res in resources:
         res.lock.release()
