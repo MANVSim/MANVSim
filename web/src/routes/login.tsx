@@ -1,5 +1,5 @@
 import { Form, useActionData } from "react-router-dom";
-import { Button, Form as FormBS } from "react-bootstrap";
+import { Button, Collapse, Form as FormBS } from "react-bootstrap";
 import "./login.css"
 import { CsrfInput } from "../components/csrf";
 
@@ -24,11 +24,11 @@ export default function Login() {
           <div className="d-grid gap-2">
             <Button type="submit" className="my-3">Einloggen</Button>
           </div>
-          {error &&
-            <div className="fade-in bg-danger p-3 mb-2 rounded-3 text-white">
+          <Collapse in={error !== undefined}>
+            <div className="bg-danger p-3 mb-2 rounded-3 text-white">
               {error}
             </div>
-          }
+          </Collapse>
         </Form>
       </div>
     </div>
