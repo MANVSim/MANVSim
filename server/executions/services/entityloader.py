@@ -24,7 +24,7 @@ def __load_resources(location_id: int) -> list[Resource]:
 
 def load_location(location_id: int) -> Location | None:
     """
-    Loads the location with the given id from the database along with all referenced resources and nested locations.
+    Loads the location with the given ID from the database along with all referenced resources and nested locations.
 
     Returns Location object or None (in case of an error).
     """
@@ -44,7 +44,7 @@ def load_location(location_id: int) -> Location | None:
 
 
 def __load_patients(scenario_id: int) -> dict[int, Patient]:
-    """ Loads all patients associated with the given scenario from the database and returns them in a list. """
+    """ Loads all patients associated with the given scenario from the database and returns them in a dictionary. """
     patient_ids = [participation.patient_id for participation in
                    db.session.query(models.TakesPartIn).filter(models.TakesPartIn.scenario_id == scenario_id)]
     ps = db.session.query(models.Patient).filter(models.Patient.id in patient_ids)
