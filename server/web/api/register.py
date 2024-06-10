@@ -31,6 +31,11 @@ def admin_only(func):
     return wrapper
 
 
+@api.get("/csrf")
+def get_csrf():
+    return {"csrf_token": generate_csrf()}
+
+
 @api.post("/login")
 @csrf.exempt  # TODO: Remove
 def login():
@@ -54,11 +59,6 @@ def login():
 
     login_user(user)
     return {"token": create_access_token(identity="admin")}, 200
-
-
-@api.get("/csrf")
-def get_csrf():
-    return {"csrf_token": generate_csrf()}
 
 
 @api.get("/templates")
