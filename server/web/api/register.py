@@ -1,12 +1,15 @@
 import math
 from random import random
 
-from flask import make_response, request, Blueprint
+from flask import abort, make_response, request, Blueprint
 from flask_api import status
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
 from sqlalchemy.exc import NoResultFound
 from tans.tans import uniques
 from models import WebUser
+from app import csrf
 
 # FIXME sollten wir zusammen mit dem Web package iwann mal umbenennen
 api = Blueprint("api-web", __name__)
@@ -40,6 +43,7 @@ def start_scenario():
 
 
 @api.post("/login")
+@csrf.exempt  # TODO: Remove
 def login():
     # Extract data from request
     try:
@@ -60,7 +64,19 @@ def login():
     if not user.check_password(password):
         return {"error": "Incorrect password"}, status.HTTP_401_UNAUTHORIZED
 
-    return {"token": "todo"}  # TODO: Send back JWT
+    login_user(user)
+    return {"token": create_access_token(identity="admin")}, 200
+
+
+def admin_only(func):
+    @jwt_required()
+    def wrapper(*args, **kwargs):
+        identity = get_jwt_identity()
+        if identity != "admin":
+            abort(status.HTTP_401_UNAUTHORIZED)
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 @api.get("/csrf")
