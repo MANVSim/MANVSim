@@ -79,7 +79,7 @@ function isLoginResponse(obj: object): obj is LoginResponse {
 
 export async function getAuthToken(formData: FormData): Promise<string | Response> {
   const response = await fetch(api + "login", { method: "POST", body: formData })
-  if (response.status in [401, 404]) {
+  if ([401, 404].includes(response.status)) {
     return "Nutzer oder Passwort ist falsch"
   }
 
