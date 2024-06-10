@@ -13,7 +13,7 @@ class Action:
         self.required_power = required_power  # Power of Role
         self.resources_needed = resources_needed  # Names of resources needed to perform action
 
-    def to_dict(self, shallow: bool = False):
+    def to_dict(self):
         """
         Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
         'shallow'-flag is set, only the object reference in form of a unique identifier is included.
@@ -28,9 +28,9 @@ class Action:
             'resources_needed': self.resources_needed
         }
 
-    def to_json(self, shallow: bool = False):
+    def to_json(self):
         """
         Returns this object as a JSON. By default, all nested objects are included. In case the 'shallow'-flag is set,
         only the object reference in form of a unique identifier is included.
         """
-        return json.dumps(self.to_dict(shallow))
+        return json.dumps(self.to_dict())

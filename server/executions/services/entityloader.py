@@ -1,4 +1,5 @@
 import models
+import utils.time
 from app import create_app, db
 from executions import run
 from executions.entities.action import Action
@@ -46,8 +47,8 @@ def load_location(location_id: int) -> Location | None:
 def __load_patients(scenario_id: int) -> dict[int, Patient]:
     """ Loads all patients associated with the given scenario from the database and returns them in a dictionary. """
     patient_ids = [participation.patient_id for participation in
-                   db.session.query(models.TakesPartIn).filter(models.TakesPartIn.scenario_id == scenario_id)]
-    ps = db.session.query(models.Patient).filter(models.Patient.id in patient_ids)
+                   db.session.query(models.TakesPartIn).filter(models.TakesPartIn.scenario_id == scenario_id).all()]
+    ps = db.session.query(models.Patient).filter(models.Patient.id.in_(patient_ids)).all()
     patients = dict()
     for p in ps:
         p_loc = p.location
@@ -131,7 +132,8 @@ def __load_players(exec_id: id) -> dict[str, Player] | None:
     players = dict()
     for p in ps:
         player_role = __load_role(p.role_id)
-        players[p.tan] = Player(tan=p.tan, name=None, location=p.location_id, accessible_locations=set(),
+        player_loc = load_location(p.location_id)
+        players[p.tan] = Player(tan=p.tan, name=None, location=player_loc, accessible_locations=set(),
                                 alerted=p.alerted, activation_delay_sec=p.activation_delay_sec, role=player_role)
 
     return players
@@ -162,7 +164,8 @@ def load_execution(exec_id: int) -> bool:
         # Add player locations to scenario locations
         for player in players.values():
             if player.location not in scenario.locations and player.location is not None:
-                scenario.locations[player.location.id] = player.location
+                l_id = player.location.id
+                scenario.locations[l_id] = player.location
 
         execution = Execution(id=ex.id, scenario=scenario, starting_time=-1, players=players,
                               status=Execution.Status.PENDING)

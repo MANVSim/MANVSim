@@ -16,6 +16,11 @@ class Player:
         self.location = location
         self.accessible_locations = accessible_locations
 
+    def __repr__(self):
+        return (f"Player(tan={self.tan!r}, name={self.name!r}, alerted={self.alerted!r}, "
+                f"activation_delay_sec={self.activation_delay_sec!r}, location={self.location!r}, "
+                f"accessible_locations={self.accessible_locations!r}, role={self.role!r})")
+
     def to_dict(self, shallow: bool = False):
         """
         Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
