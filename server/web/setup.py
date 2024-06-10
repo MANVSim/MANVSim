@@ -10,9 +10,7 @@ from bcrypt import gensalt, hashpw
 def setup(app: Flask):
     # TODO: Remove
     with app.app_context():
-        try:
-            WebUser.get_by_username("Terra")
-        except NoResultFound:
+        if WebUser.get_by_username("Terra") is None:
             terra = WebUser(username="Terra",
                             password=hashpw(b"pw1234", gensalt()).decode())
             db.session.add(terra)

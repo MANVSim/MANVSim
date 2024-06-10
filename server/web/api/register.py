@@ -55,9 +55,8 @@ def login():
         }, status.HTTP_400_BAD_REQUEST
 
     # Get user object from database
-    try:
-        user = WebUser.get_by_username(username)
-    except NoResultFound:
+    user = WebUser.get_by_username(username)
+    if user is None:
         return {"error": f"""User with user name '{username}' does not exist"""}
 
     # Check password

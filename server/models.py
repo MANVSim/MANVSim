@@ -99,8 +99,8 @@ class WebUser(db.Model):
         return self.username
 
     @staticmethod
-    def get_by_username(username: str) -> "WebUser":
-        return db.session.execute(db.select(WebUser).where(WebUser.username == username)).scalar_one()
+    def get_by_username(username: str) -> "WebUser | None":
+        return db.session.execute(db.select(WebUser).where(WebUser.username == username)).scalar_one_or_none()
 
     def check_password(self, password: str) -> bool:
         return checkpw(str.encode(password), self.password.encode())
