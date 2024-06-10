@@ -34,8 +34,18 @@ async function tryFetchJson(url: string, body = {}): Promise<object> {
   return await response.json()
 }
 
+function authHeader() {
+  const token = localStorage.getItem("token")
+  if (token) {
+    return { Authorization: `Bearer ${token}` }
+  }
+  return {}
+}
+
 export async function getTemplates(): Promise<Template[]> {
-  const templates = await tryFetchJson("templates")
+  const templates = await tryFetchJson("templates", {
+    headers: authHeader()
+  })
   if (Array.isArray(templates) && templates.every(isTemplate)) {
     return templates
   }
@@ -61,7 +71,7 @@ function isStartResponse(obj: object): obj is StartResponse {
 }
 
 export async function startScenario(formData: FormData): Promise<StartResponse> {
-  const json = await tryFetchJson("scenario/start", { method: "POST", body: formData })
+  const json = await tryFetchJson("scenario/start", { method: "POST", body: formData, headers: authHeader() })
   if (!isStartResponse(json)) {
     throw new Error("Unexpected response")
   }
