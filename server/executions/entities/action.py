@@ -1,7 +1,5 @@
 import json
 
-from executions.entities.player import Player
-
 
 class Action:
 
@@ -13,7 +11,7 @@ class Action:
         self.picture_ref = picture_ref  # Reference to picture
         self.duration_sec = duration_sec
         self.required_power = required_power  # Power of Role
-        self.resources_needed = resources_needed
+        self.resources_needed = resources_needed  # Names of resources needed to perform action
 
     def to_dict(self, shallow: bool = False):
         """

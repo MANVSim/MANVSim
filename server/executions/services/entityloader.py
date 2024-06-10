@@ -1,150 +1,23 @@
-import uuid
-
+import models
+from app import create_app, db
 from executions import run
 from executions.entities.action import Action
 from executions.entities.execution import Execution
 from executions.entities.location import Location
 from executions.entities.patient import Patient
-from executions.entities.performed_action import PerformedAction
 from executions.entities.player import Player
 from executions.entities.resource import Resource
+from executions.entities.role import Role
 from executions.entities.scenario import Scenario
-from utils.database import Database
-
-DB_PATH = "../../instance/db.sqlite3"
 
 
-def __load_patients(scenario_id: int, actions: list[Action], db: Database) -> list[Patient]:
-    """ Loads all patients associated with the given scenario from the database and returns them in a list. """
-    patient_ids = [r[1] for r in
-                   db.try_execute(f"SELECT patient_id FROM takes_part_in WHERE scenario_id = {scenario_id}")]
-    patient_data = db.try_execute(f"SELECT * FROM patients WHERE patient_id IN {patient_ids}")
-    patients = []
-    for patient in patient_data:
-        p_id, injuries, activity_diagram = patient
-        p_loc = Location(id=str(uuid.uuid4()), name=f"Patient with ID {p_id}", picture_ref=None, resources=[])
-        perf_acts_data = db.try_execute(f"SELECT * FROM performed_actions WHERE patient_id = {p_id}")
-        performed_actions = []
-        if perf_acts_data:
-            for perf_act in perf_acts_data:
-                pa_id, start_time, exec_id, p_id, action_id = perf_act
-                action = filter(lambda act: act.id == action_id, actions)[0] if filter(lambda act: act.id == action_id,
-                                                                                       actions) else None
-                performed_actions.append(PerformedAction(id=pa_id, time=start_time, execution_id=exec_id, action=action,
-                                                         resources_used=[], player_tan=""))
-        patients.append(Patient(id=p_id, name="", injuries=injuries, activity_diagram=activity_diagram, location=p_loc,
-                                performed_actions=performed_actions))
-
-    return patients
-
-
-def __load_actions(db: Database) -> list[Action] | None:
-    """ Loads all actions from the database and returns them in a list or None (in case of an error). """
-
-    def __get_needed_resource_names(action_id: int) -> list[str]:
-        """ Returns a list of the names of all resources needed for the given action. """
-        resource_ids = [r[0] for r in
-                        db.try_execute(f"SELECT ressource_id FROM ressources_needed WHERE action_id = {action_id}")]
-        resource_names = db.try_execute(f"SELECT name FROM ressource WHERE id IN {resource_ids}")
-
-        return [r[0] for r in resource_names]
-
-    res = db.try_execute("SELECT * FROM action")
-    if not res:
-        return None
-
-    actions = []
-    for action_data in res:
-        resources_needed = __get_needed_resource_names(action_data[0])
-        actions.append(Action(id=action_data[0], name=action_data[1], result=action_data[3], picture_ref=action_data[2],
-                              duration_sec=action_data[4], resources_needed=resources_needed))
-
-    return actions
-
-
-def __load_scenario(scenario_id: int, db: Database) -> Scenario | None:
-    """ Loads the scenario with the given id from the database and returns it or None (in case of an error). """
-    # Load scenario data
-    res = db.try_execute(f"SELECT * FROM scenario WHERE id = {scenario_id}")
-    if not res:
-        return None
-    scenario_id, scenario_name = res[0]
-
-    # Load all actions
-    actions = __load_actions(db)
-    if not actions:
-        return None
-
-    # Load all patients in this scenario
-    patients = __load_patients(scenario_id, actions, db)
-    if not patients:
-        return None
-
-    # Locations are loaded on-demand as there is no mapping between scenario/execution and locations. Only exception are
-    # those locations created for patients during object initialization.
-    locations = {}
-    for patient in patients:
-        patient_location = patient.location
-        locations[patient_location.id] = patient_location
-
-    return Scenario(id=scenario_id, name=scenario_name, patients=patients, actions=actions, locations=locations)
-
-
-def __load_players(exec_tan: str, db: Database) -> list[Player] | None:
-    """ Loads all players of the given Execution from the database and returns them in a list or None."""
-    res = db.try_execute(f"SELECT * FROM player WHERE execution_tan = {exec_tan}")
-    if not res:
-        return None
-
-    players = []
-    for player_data in res:
-        players.append(Player(tan=player_data[0], name=None, location=None, accessible_locations=[]))
-
-    return players
-
-
-def load_execution(tan: str) -> bool:
-    """
-    Loads an Execution (Simulation) and all associated data into memory and activates it to make it ready for execution.
-
-    Returns True for success, False otherwise.
-    """
-    with Database(DB_PATH) as db:
-        res = db.try_execute(f"SELECT * FROM execution WHERE tan = {tan}")
-        # If query yields no result, report failure
-        if not res:
-            return False
-
-        exec_tan, scenario_id, exec_starting_time = res[0]
-
-        players = __load_players(exec_tan, db)
-        # If players could not be loaded, report failure
-        if not players:
-            return False
-
-        scenario = __load_scenario(scenario_id, db)
-        # If scenario data could not be loaded, report failure
-        if not scenario:
-            return False
-
-        execution = Execution(id=exec_tan, scenario=scenario, starting_time=-1, players=players,
-                              status=Execution.Status.PENDING)
-        # Activate execution (makes it accessible by API)
-        run.activate_execution(execution)
-        return True
-
-
-def __load_resources(location_id: int, db: Database) -> list[Resource]:
+def __load_resources(location_id: int) -> list[Resource]:
     """ Creates a list of resources located at the given location. """
-    res = db.try_execute(f"SELECT * FROM resource WHERE location_id = {location_id}")
+    rs = db.session.query(models.Resource).filter(models.Resource.location_id == location_id).all()
 
     resources = []
-    for r_id, name, location_id in res:
-        existing_resource = list(filter(lambda r: r.id == r_id, resources))
-        if not existing_resource:
-            resources.append(Resource(id=r_id, name=name, quantity=1, picture_ref=None))
-        else:
-            existing_resource[0].quantity += 1
+    for r in rs:
+        resources.append(Resource(id=r.id, name=r.name, quantity=r.quantity, picture_ref=r.picture_ref))
 
     return resources
 
@@ -155,19 +28,144 @@ def load_location(location_id: int) -> Location | None:
 
     Returns Location object or None (in case of an error).
     """
-    with Database(DB_PATH) as db:
-        res = db.try_execute(f"SELECT * FROM location WHERE id = {location_id}")
-        if not res:
+    with create_app().app_context():
+        loc: models.Location = db.session.query(models.Location).filter(models.Location.id == location_id).first()
+        if not loc:
             return None
 
-        loc_id, name, nested_loc_id = res[0]
+        resources = __load_resources(loc.id)
 
-        resources = __load_resources(nested_loc_id, db)
+        children_locs = db.session.query(models.Location).filter(models.Location.location_id == loc.id).all()
+        sub_locs = set()
+        for child in children_locs:
+            sub_locs.add(load_location(child.id))
 
-        nested_loc = None
-        if nested_loc_id:
-            nested_loc = load_location(nested_loc_id)
-            if not nested_loc:
-                return None
+        return Location(id=loc.id, name=loc.name, picture_ref=loc.picture_ref, resources=resources, locations=sub_locs)
 
-        return Location(id=loc_id, name=name, picture_ref=None, resources=resources, location=nested_loc)
+
+def __load_patients(scenario_id: int) -> dict[int, Patient]:
+    """ Loads all patients associated with the given scenario from the database and returns them in a list. """
+    patient_ids = [participation.patient_id for participation in
+                   db.session.query(models.TakesPartIn).filter(models.TakesPartIn.scenario_id == scenario_id)]
+    ps = db.session.query(models.Patient).filter(models.Patient.id in patient_ids)
+    patients = dict()
+    for p in ps:
+        p_loc = p.location
+        if p_loc is None:
+            p_loc = Location(id=hash(p), name=f"Patient with ID {p.id}", picture_ref=None, resources=[])
+        else:
+            p_loc = load_location(p.location)
+
+        patients[p.id] = Patient(id=p.id, name=p.name, injuries=p.injuries, activity_diagram=p.activity_diagram,
+                                 location=p_loc, performed_actions=[])
+
+    return patients
+
+
+def __load_actions() -> dict[int, Action] | None:
+    """ Loads all actions from the database and returns them in a dictionary or None (in case of an error). """
+
+    def __get_needed_resource_names(action_id: int) -> list[str]:
+        """ Returns a list of the names of all resources needed for the given action. """
+        resource_ids = [r.id for r in
+                        db.session.query(models.ResourcesNeeded).filter(
+                            models.ResourcesNeeded.action_id == action_id)]
+        resources = db.session.query(models.Resource).filter(models.Resource.id in resource_ids).all()
+        return [r.name for r in resources]
+
+    acs = db.session.query(models.Action).all()
+    if not acs:
+        return None
+
+    actions = dict()
+    for ac in acs:
+        resources_needed = __get_needed_resource_names(ac.id)
+        actions[ac.id] = Action(id=ac.id, name=ac.name, result=ac.results, picture_ref=ac.picture_ref,
+                                duration_sec=ac.duration_secs, resources_needed=resources_needed)
+
+    return actions
+
+
+def __load_scenario(scenario_id: int) -> Scenario | None:
+    """ Loads the scenario with the given id from the database and returns it or None (in case of an error). """
+    # Load scenario data
+    scenario = db.session.query(models.Scenario).filter(models.Scenario.id == scenario_id).first()
+    if not scenario:
+        return None
+
+    # Load all actions
+    actions = __load_actions()
+    if not actions:
+        return None
+
+    # Load all patients in this scenario
+    patients = __load_patients(scenario_id)
+    if not patients:
+        return None
+
+    # Locations are loaded on-demand as there is no mapping between scenario/execution and locations. Only exception are
+    # those locations created for patients during object initialization.
+    locations = {}
+    for patient in patients.values():
+        patient_location = patient.location
+        locations[patient_location.id] = patient_location
+
+    return Scenario(id=scenario.id, name=scenario.name, patients=patients, actions=actions, locations=locations)
+
+
+def __load_role(role_id: int) -> Role | None:
+    """ Loads and returns the a Role object for a given role ID. """
+    role = db.session.query(models.Role).filter(models.Role.id == role_id).first()
+    if not role:
+        return None
+
+    return Role(role.id, role.name, role.short_name, role.power)
+
+
+def __load_players(exec_id: id) -> dict[str, Player] | None:
+    """ Loads all players of the given Execution from the database and returns them in a dictionary or None."""
+    ps: list[models.Player] = db.session.query(models.Player).filter(models.Player.execution_id == exec_id).all()
+    if not ps:
+        return None
+
+    players = dict()
+    for p in ps:
+        player_role = __load_role(p.role_id)
+        players[p.tan] = Player(tan=p.tan, name=None, location=p.location_id, accessible_locations=set(),
+                                alerted=p.alerted, activation_delay_sec=p.activation_delay_sec, role=player_role)
+
+    return players
+
+
+def load_execution(exec_id: int) -> bool:
+    """
+    Loads an Execution (Simulation) and all associated data into memory and activates it to make it ready for execution.
+
+    Returns True for success, False otherwise.
+    """
+    with create_app().app_context():
+        ex: models.Execution = db.session.query(models.Execution).filter(models.Execution.id == exec_id).first()
+        # If query yields no result, report failure
+        if not ex:
+            return False
+
+        players = __load_players(ex.id)
+        # If players could not be loaded, report failure
+        if not players:
+            return False
+
+        scenario = __load_scenario(ex.scenario_id)
+        # If scenario data could not be loaded, report failure
+        if not scenario:
+            return False
+
+        # Add player locations to scenario locations
+        for player in players.values():
+            if player.location not in scenario.locations and player.location is not None:
+                scenario.locations[player.location.id] = player.location
+
+        execution = Execution(id=ex.id, scenario=scenario, starting_time=-1, players=players,
+                              status=Execution.Status.PENDING)
+        # Activate execution (makes it accessible by API)
+        run.activate_execution(execution)
+        return True
