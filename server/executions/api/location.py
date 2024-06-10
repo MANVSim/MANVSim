@@ -34,13 +34,17 @@ def get_location_out_of_location():
     try:
         execution, player = util.get_execution_and_player()
 
-        required_loc_id = int(args["location_id"])
+        required_loc_id = int(args["take_location_id"])
+        from_loc_id = int(args["from_location_id"])
 
         # locate required parent location
-        current_location: Location = player.location
-        parent_location, required_location = current_location.get_child_location_by_id(required_loc_id)
+        from_location: Location = execution.scenario[from_loc_id]
+        if from_location is None:
+            return "From-Location not found. Update your current location-access.", 404
+
+        parent_location, required_location = from_location.get_child_location_by_id(required_loc_id)
         if required_location is None:
-            return "Location not found. Update your current location-access.", 404
+            return "Take-Location not found. Update your current location-access.", 404
 
         # no lock needed, because only the requesting player can edit its own inventory
         player.accessible_locations.add(required_location)

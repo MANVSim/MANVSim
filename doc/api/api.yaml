@@ -257,7 +257,9 @@ paths:
             schema:
               type: object
               properties:
-                location_id:
+                take_location_id:
+                  type: integer
+                from_location_id:
                   type: integer
       responses:
         '200':
@@ -276,7 +278,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Location not found. Update your current location-access.
+          description: (Take-/From-) Location not found. Update your current location-access.
         '409':
           description: Unable to access runtime object. A timeout-error occurred.
       security:
