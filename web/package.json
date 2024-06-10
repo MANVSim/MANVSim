@@ -31,6 +31,5 @@
     "eslint-plugin-react-refresh": "^0.4.6",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
-  },
-  "proxy": "http://127.0.0.1:5000"
+  }
 }
