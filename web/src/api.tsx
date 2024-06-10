@@ -77,14 +77,6 @@ function isLoginResponse(obj: object): obj is LoginResponse {
   return t.token !== undefined
 }
 
-interface ErrorResponse {
-  error: string
-}
-
-function isErrorResponse(obj: object): obj is ErrorResponse {
-  return (obj as ErrorResponse).error !== undefined
-}
-
 export async function getAuthToken(formData: FormData): Promise<string | Response> {
   const response = await fetch(api + "login", { method: "POST", body: formData })
   switch (response.status) {
