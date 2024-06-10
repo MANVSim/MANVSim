@@ -1,5 +1,4 @@
-from contextlib import contextmanager
-from threading import Lock
+import time
 
 from flask_jwt_extended import get_jwt
 
@@ -19,3 +18,7 @@ def get_execution_and_player():
     player = execution.players[tan]
 
     return execution, player
+
+
+def get_current_secs():
+    return time.time()

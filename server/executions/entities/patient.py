@@ -22,13 +22,18 @@ class Patient:
         if performed_actions is None:
             performed_actions = []
 
-        self.id = id
+        self.id = id  # FIXME TANs?
         self.name = name
         self.injuries = injuries  # FIXME: Maybe replace by JSON datatype
         self.activity_diagram = activity_diagram  # FIXME: Maybe replace JSON datatype
         self.location = location
         self.classification = classification
         self.performed_actions = performed_actions
+
+        self.action_queue = {}
+
+    def apply_action(self, action):
+        pass         # TODO implement impact on a patient status.
 
     def to_dict(self, shallow: bool = False):
         """

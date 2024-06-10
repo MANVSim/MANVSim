@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.exceptions import BadRequestKeyError
 
-from executions.api import location, patient
+from executions.api import location, patient, actions
 from executions.utils import util
 from executions.entities.execution import Execution
 
@@ -77,6 +77,6 @@ def create_app():
     app.register_blueprint(lobby.api, url_prefix="/api")
     app.register_blueprint(patient.api, url_prefix="/api/run")
     app.register_blueprint(location.api, url_prefix="/api/run")
-    # app.register_blueprint(actions.api, url_prefix="/api/run")
+    app.register_blueprint(actions.api, url_prefix="/api/run")
 
     return app
