@@ -32,6 +32,7 @@ def admin_only(func):
 
 
 @api.get("/templates")
+@admin_only
 def get_templates():
     return [
         {"id": 10023, "name": "Busunfall", "players": 5},
@@ -40,6 +41,7 @@ def get_templates():
 
 
 @api.post("/scenario/start")
+@admin_only
 def start_scenario():
     try:
         id = request.form["id"]
