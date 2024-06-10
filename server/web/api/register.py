@@ -57,7 +57,7 @@ def login():
     # Get user object from database
     user = WebUser.get_by_username(username)
     if user is None:
-        return {"error": f"""User with user name '{username}' does not exist"""}
+        return {"error": f"""User with user name '{username}' does not exist"""}, 404
 
     # Check password
     if not user.check_password(password):
