@@ -14,6 +14,17 @@ services:
         context: app
         dockerfile: Dockerfile
     ports:
-        - "80:80"
+        - "5001:5001"
     depends_on:
         - server
+
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/nginx/component_mapping.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - server
+      - app
