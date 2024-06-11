@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router";
+import { Navigate, Outlet, useNavigate } from "react-router";
 import { LinkContainer } from 'react-router-bootstrap'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -14,8 +14,15 @@ function NavLink({ to, name }: { to: string, name: string }) {
 }
 
 export default function Root() {
+  const navigate = useNavigate()
+
   if (!isLoggedIn()) {
     return <Navigate replace to="/login" />
+  }
+
+  function logout() {
+    localStorage.removeItem("token")
+    navigate("login")
   }
 
   return (
@@ -28,18 +35,14 @@ export default function Root() {
             <Nav className="me-auto">
               <NavLink to="/" name="Home" />
               <NavLink to="/scenario" name="Szenario" />
-              <NavDropdown title="Benutzer" className="justify-content-end">
-                <Navbar.Text className="p-3">
-                  Username
-                </Navbar.Text>
-                <NavDropdown.Item>
-                  <div>Logout</div>
-                </NavDropdown.Item>
+              <NavDropdown title="Benutzer">
+                <NavDropdown.Header>Username</NavDropdown.Header>
+                <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>
         </Container>
-      </Navbar>
+      </Navbar >
       <Container>
         <Outlet />
       </Container>
