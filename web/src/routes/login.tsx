@@ -1,11 +1,17 @@
-import { ActionFunctionArgs, Form, redirect, useActionData } from "react-router-dom";
+import { ActionFunctionArgs, Form, Navigate, redirect, useActionData } from "react-router-dom";
 import { Button, Collapse, Form as FormBS } from "react-bootstrap";
 import "./login.css"
 import { CsrfInput } from "../components/csrf";
 import { tryFetchApi } from "../api";
+import { isLoggedIn } from "../utils";
 
 export default function Login() {
   const error = useActionData() as string
+
+  if (isLoggedIn()) {
+    return <Navigate replace to="/" />
+  }
+
   return (
     <div className="row h-50 justify-content-center align-items-center">
       <div className="col-12 position-at-25">
