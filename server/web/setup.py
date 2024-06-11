@@ -15,7 +15,7 @@ def setup(app: Flask):
             db.session.add(terra)
             db.session.commit()
 
-    app.register_blueprint(api, url_prefix="/api/web")
+    app.register_blueprint(api, url_prefix="/web")
 
     login_manager = LoginManager()
     login_manager.init_app(app)
