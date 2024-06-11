@@ -3,6 +3,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import { NavDropdown } from "react-bootstrap";
 
 function isLoggedIn() {
   return localStorage.getItem("token") !== null
@@ -27,6 +28,14 @@ export default function Root() {
             <Nav className="me-auto">
               <NavLink to="/" name="Home" />
               <NavLink to="/scenario" name="Szenario" />
+              <NavDropdown title="Benutzer" className="justify-content-end">
+                <Navbar.Text className="p-3">
+                  Username
+                </Navbar.Text>
+                <NavDropdown.Item>
+                  <div>Logout</div>
+                </NavDropdown.Item>
+              </NavDropdown>
             </Nav>
           </Navbar.Collapse>
         </Container>
