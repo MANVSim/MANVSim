@@ -22,11 +22,7 @@ function isCsrfToken(obj: object): obj is CsrfToken {
 }
 
 export async function tryFetchApi(url: string, body = {}): Promise<Response> {
-  const response = await fetch(api + url, body)
-  if (!response.ok) {
-    throw new Error(`Could not fetch ${url}: ${response.status}: ${response.statusText}`)
-  }
-  return response
+  return await fetch(api + url, body)
 }
 
 export async function tryFetchJson(url: string, body = {}): Promise<object> {

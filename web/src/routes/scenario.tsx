@@ -1,5 +1,5 @@
-import { useActionData, useLoaderData } from "react-router"
-import { Template } from "../api"
+import { ActionFunctionArgs, useActionData, useLoaderData } from "react-router"
+import { Template, getCsrfToken, getTemplates, startScenario } from "../api"
 import { Form } from "react-router-dom"
 import Button from "react-bootstrap/Button"
 import { Card, Container, ListGroup } from "react-bootstrap"
@@ -99,3 +99,16 @@ export default function Scenario() {
     </div>
   )
 }
+
+Scenario.loader = async function () {
+  const csrfToken = await getCsrfToken()
+  const templates = await getTemplates()
+  return { csrfToken: csrfToken, templates: templates }
+}
+
+Scenario.action = async function ({ request }: ActionFunctionArgs<Request>) {
+  const formData = await request.formData()
+  const result = await startScenario(formData)
+  return result
+}
+

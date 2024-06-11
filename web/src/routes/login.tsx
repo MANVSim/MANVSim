@@ -1,7 +1,8 @@
-import { Form, useActionData } from "react-router-dom";
+import { ActionFunctionArgs, Form, redirect, useActionData } from "react-router-dom";
 import { Button, Collapse, Form as FormBS } from "react-bootstrap";
 import "./login.css"
 import { CsrfInput } from "../components/csrf";
+import { tryFetchApi } from "../api";
 
 export default function Login() {
   const error = useActionData() as string
@@ -33,4 +34,21 @@ export default function Login() {
       </div>
     </div>
   )
+}
+
+Login.action = async function ({ request }: ActionFunctionArgs<Request>) {
+  const formData = await request.formData()
+  const response = await tryFetchApi("login", { method: "POST", body: formData })
+  if (response.status === 401) {
+    return "Nutzer oder Passwort ist falsch"
+  }
+
+  const json = await response.json() as { token: string }
+  if (json.token === undefined) {
+    throw new Error("Login request returned unknown data")
+  }
+
+  localStorage.setItem("token", json.token)
+
+  return redirect("/")
 }
