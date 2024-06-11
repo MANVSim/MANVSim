@@ -21,7 +21,7 @@ function isCsrfToken(obj: object): obj is CsrfToken {
   return !!(obj as CsrfToken)?.csrf_token
 }
 
-async function tryFetchApi(url: string, body = {}): Promise<Response> {
+export async function tryFetchApi(url: string, body = {}): Promise<Response> {
   const response = await fetch(api + url, body)
   if (!response.ok) {
     throw new Error(`Could not fetch ${url}: ${response.status}: ${response.statusText}`)
@@ -29,7 +29,7 @@ async function tryFetchApi(url: string, body = {}): Promise<Response> {
   return response
 }
 
-async function tryFetchJson(url: string, body = {}): Promise<object> {
+export async function tryFetchJson(url: string, body = {}): Promise<object> {
   const response = await tryFetchApi(url, body)
   return await response.json()
 }

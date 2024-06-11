@@ -8,7 +8,7 @@ import {
 import Root from './routes/root'
 import ErrorPage from './error-page'
 import Scenario from './routes/scenario'
-import { getCsrfToken, getTemplates, startScenario } from './api'
+import { getCsrfToken, getTemplates, startScenario, tryFetchApi } from './api'
 import Index from './routes'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './routes/login'
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
     element: <Login />,
     action: async ({ request }) => {
       const formData = await request.formData()
-      const response = await fetch("/api/web/login", { method: "POST", body: formData })
+      const response = await tryFetchApi("login", { method: "POST", body: formData })
       if ([401, 404].includes(response.status)) {
         return "Nutzer oder Passwort ist falsch"
       }
