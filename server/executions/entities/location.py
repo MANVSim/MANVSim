@@ -144,7 +144,7 @@ class Location:
 
         # identify removing nodes (locations)
         q.put(self)
-        while q.not_empty:
+        while not q.qsize() == 0:
             loc = q.get()
             if loc in removed:
                 identified_nodes += 1
@@ -157,13 +157,13 @@ class Location:
 
         # lock all resources related to the leaving action
         success = True
-        while locking_q.not_empty:
-            loc: Location = q.get()
+        while not locking_q.qsize() == 0:
+            loc = locking_q.get(block=False)
             # mark location for a leave
             if loc.loc_lock.acquire(timeout=ACQUIRE_TIMEOUT) and loc.res_lock.acquire(timeout=ACQUIRE_TIMEOUT):
 
                 # block resource for editing
-                if try_lock_all(self.resources):
+                if try_lock_all(loc.resources):
                     loc_locked.append(loc)
                     _add_locations_to_queue(locking_q, loc)
                     continue  # locking whole location with its resources successful

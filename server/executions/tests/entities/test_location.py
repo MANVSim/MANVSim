@@ -1,6 +1,7 @@
 import threading
 from time import sleep
 
+from executions import run
 from executions.entities.location import Location
 
 flag = False
@@ -26,3 +27,19 @@ def test_timeout():
     # Cleanup
     l.loc_lock.release()
     flag = False
+
+
+def test_leave_location(client):
+
+    execution = run.exec_dict["2"]
+    locations = list(execution.scenario.locations.values())
+    location_parent = locations[0]
+    location_rm1: Location = locations[2]
+    resources_rm1 = location_rm1.resources
+    remove = {location_rm1}
+    resources_rm1[0].lock.acquire()
+
+    assert not location_parent.leave_location(removed=remove)
+
+
+
