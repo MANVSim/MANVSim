@@ -4,10 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { NavDropdown } from "react-bootstrap";
-
-function isLoggedIn() {
-  return localStorage.getItem("token") !== null
-}
+import { isLoggedIn } from "../utils";
 
 function NavLink({ to, name }: { to: string, name: string }) {
   return <LinkContainer to={to}><Nav.Link>{name}</Nav.Link></LinkContainer>
@@ -35,6 +32,7 @@ export default function Root() {
             <Nav className="me-auto">
               <NavLink to="/" name="Home" />
               <NavLink to="/scenario" name="Szenario" />
+              <NavLink to="/login" name="Login" />
               <NavDropdown title="Benutzer">
                 <NavDropdown.Header>Username</NavDropdown.Header>
                 <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
