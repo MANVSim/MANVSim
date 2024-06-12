@@ -32,7 +32,6 @@ export default function Root() {
             <Nav className="me-auto">
               <NavLink to="/" name="Home" />
               <NavLink to="/scenario" name="Szenario" />
-              <NavLink to="/login" name="Login" />
               <NavDropdown title="Benutzer">
                 <NavDropdown.Header>Username</NavDropdown.Header>
                 <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
