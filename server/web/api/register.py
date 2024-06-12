@@ -60,7 +60,7 @@ def login():
         return {"error": "Incorrect password"}, status.HTTP_401_UNAUTHORIZED
 
     login_user(user)
-    return {"token": create_access_token(identity="admin")}, 200
+    return {"token": create_access_token(identity="admin"), "username": username}, 200
 
 
 @api.get("/templates")

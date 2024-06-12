@@ -49,12 +49,13 @@ Login.action = async function ({ request }: ActionFunctionArgs<Request>) {
     return "Nutzer oder Passwort ist falsch"
   }
 
-  const json = await response.json() as { token: string }
-  if (json.token === undefined) {
+  const json = await response.json() as { token: string, username: string }
+  if (!("token" in json) || !("username" in json)) {
     throw new Error("Login request returned unknown data")
   }
 
   localStorage.setItem("token", json.token)
+  localStorage.setItem("user", json.username)
 
   return redirect("/")
 }

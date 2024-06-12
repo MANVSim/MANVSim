@@ -19,6 +19,7 @@ export default function Root() {
 
   function logout() {
     localStorage.removeItem("token")
+    localStorage.removeItem("user")
     navigate("login")
   }
 
@@ -33,7 +34,7 @@ export default function Root() {
               <NavLink to="/" name="Home" />
               <NavLink to="/scenario" name="Szenario" />
               <NavDropdown title="Benutzer">
-                <NavDropdown.Header>Username</NavDropdown.Header>
+                <NavDropdown.Header>{localStorage.getItem("user")}</NavDropdown.Header>
                 <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
               </NavDropdown>
             </Nav>
