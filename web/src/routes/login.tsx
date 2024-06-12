@@ -22,11 +22,11 @@ export default function Login() {
           <CsrfInput />
           <FormBS.Group className="my-3" controlId="formGroupUsername">
             <FormBS.Label>Benutzername</FormBS.Label>
-            <FormBS.Control type="text" placeholder="Benutzername" name="username" autoComplete="username" />
+            <FormBS.Control required type="text" placeholder="Benutzername" name="username" autoComplete="username" />
           </FormBS.Group>
           <FormBS.Group controlId="formGroupPassword">
             <FormBS.Label>Passwort</FormBS.Label>
-            <FormBS.Control type="password" placeholder="Passwort" name="password" />
+            <FormBS.Control required type="password" placeholder="Passwort" name="password" />
           </FormBS.Group>
           <div className="d-grid gap-2">
             <Button type="submit" className="my-3">Einloggen</Button>
