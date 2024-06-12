@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, Form, Navigate, redirect, useActionData } from "react-router-dom";
 import { Button, Collapse, Form as FormBS } from "react-bootstrap";
 import "./login.css"
-import { CsrfInput } from "../components/csrf";
+import { CsrfInput } from "../contexts/csrf";
 import { tryFetchApi } from "../api";
 import { isLoggedIn } from "../utils";
 

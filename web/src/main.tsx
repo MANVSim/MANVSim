@@ -10,8 +10,8 @@ import Scenario from './routes/scenario'
 import Index from './routes'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './routes/login'
-import { CsrfProvider } from './components/csrf'
 import { AuthProvider } from './contexts/Auth'
+import { CsrfProvider } from './contexts/csrf'
 
 
 const router = createBrowserRouter([

@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { getCsrfToken } from "../api";
 
-const CsrfContext = createContext("")
+export const CsrfContext = createContext("")
 
 export function CsrfInput() {
   const csrfToken = useContext(CsrfContext)
