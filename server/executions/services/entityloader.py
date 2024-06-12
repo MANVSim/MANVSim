@@ -1,5 +1,4 @@
 import models
-import utils.time
 from app import create_app, db
 from executions import run
 from executions.entities.action import Action
@@ -68,10 +67,9 @@ def __load_actions() -> dict[int, Action] | None:
 
     def __get_needed_resource_names(action_id: int) -> list[str]:
         """ Returns a list of the names of all resources needed for the given action. """
-        resource_ids = [r.id for r in
-                        db.session.query(models.ResourcesNeeded).filter(
-                            models.ResourcesNeeded.action_id == action_id)]
-        resources = db.session.query(models.Resource).filter(models.Resource.id in resource_ids).all()
+        resource_ids = [r.resource_id for r in
+                        db.session.query(models.ResourcesNeeded).filter_by(action_id=action_id).all()]
+        resources = db.session.query(models.Resource).filter(models.Resource.id.in_(resource_ids)).all()
         return [r.name for r in resources]
 
     acs = db.session.query(models.Action).all()
@@ -90,7 +88,7 @@ def __load_actions() -> dict[int, Action] | None:
 def __load_scenario(scenario_id: int) -> Scenario | None:
     """ Loads the scenario with the given id from the database and returns it or None (in case of an error). """
     # Load scenario data
-    scenario = db.session.query(models.Scenario).filter(models.Scenario.id == scenario_id).first()
+    scenario = db.session.query(models.Scenario).filter_by(id=scenario_id).first()
     if not scenario:
         return None
 
@@ -105,7 +103,7 @@ def __load_scenario(scenario_id: int) -> Scenario | None:
         return None
 
     # Locations are loaded on-demand as there is no mapping between scenario/execution and locations. Only exception are
-    # those locations created for patients during object initialization.
+    # top-level locations of players and patients created during object initialization.
     locations = {}
     for patient in patients.values():
         patient_location = patient.location
@@ -125,7 +123,7 @@ def __load_role(role_id: int) -> Role | None:
 
 def __load_players(exec_id: id) -> dict[str, Player] | None:
     """ Loads all players of the given Execution from the database and returns them in a dictionary or None."""
-    ps: list[models.Player] = db.session.query(models.Player).filter(models.Player.execution_id == exec_id).all()
+    ps: list[models.Player] = db.session.query(models.Player).filter_by(execution_id=exec_id).all()
     if not ps:
         return None
 
@@ -146,7 +144,7 @@ def load_execution(exec_id: int) -> bool:
     Returns True for success, False otherwise.
     """
     with create_app().app_context():
-        ex: models.Execution = db.session.query(models.Execution).filter(models.Execution.id == exec_id).first()
+        ex: models.Execution = db.session.query(models.Execution).filter_by(id=exec_id).first()
         # If query yields no result, report failure
         if not ex:
             return False
@@ -163,9 +161,8 @@ def load_execution(exec_id: int) -> bool:
 
         # Add player locations to scenario locations
         for player in players.values():
-            if player.location not in scenario.locations and player.location is not None:
-                l_id = player.location.id
-                scenario.locations[l_id] = player.location
+            if player.location and player.location.id not in scenario.locations:
+                scenario.locations[player.location.id] = player.location
 
         execution = Execution(id=ex.id, scenario=scenario, starting_time=-1, players=players,
                               status=Execution.Status.PENDING)
