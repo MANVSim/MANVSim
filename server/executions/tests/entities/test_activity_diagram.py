@@ -1,11 +1,10 @@
-import time
-
 from executions.entities.stategraphs.activitydiagram import ActivityDiagram
 from executions.entities.stategraphs.patientstate import PatientState
+from utils import time
 
 
 def test_time_dash():
-    timestamp = round(time.time())
+    timestamp = time.current_time_s()
     outdated_followup_uuid = "18a23a91-1f60-442a-b5c2-3a97b69e214d"
     update_uuid = "8c049d05-9dea-45f2-9ec1-7d2bb813569f"
     treatments = {
@@ -31,14 +30,14 @@ def test_time_dash():
 
 
 def test_to_dict():
-    timestamp = round(time.time())
+    timestamp = time.current_time_s()
     treatments = {
         "knive": "499d9080-dc68-41fc-a0a5-3f3e8563e70c",
         "infusion": "569f58d7-6cbb-4fde-97ae-f6b9f597c219"
     }
     state1 = PatientState(treatments=treatments, start_time=timestamp, timelimit=1337,
                           after_time_state_uuid="563b8b6a-11cb-40ad-bc62-6a833aebd024")
-    timestamp = round(time.time())
+    timestamp = time.current_time_s()
     state2 = PatientState(treatments=treatments, start_time=timestamp, timelimit=1337,
                           after_time_state_uuid="563b8b6a-11cb-40ad-bc62-6a833aebd024")
     activity_diagram = ActivityDiagram(state1, [state2])

@@ -1,5 +1,3 @@
-import time
-
 from flask_jwt_extended import get_jwt
 
 from executions import run
@@ -18,7 +16,3 @@ def get_execution_and_player():
     player = execution.players[tan]
 
     return execution, player
-
-
-def get_current_secs():
-    return time.time()

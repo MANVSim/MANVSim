@@ -16,7 +16,7 @@ class Scenario(db.Model):
 
 
 class Execution(db.Model):
-    tan = db.Column(db.VARCHAR(255), primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     scenario_id = db.Column(db.ForeignKey(Scenario.id), nullable=False)
 
 
@@ -36,7 +36,7 @@ class Role(db.Model):
 
 class Player(db.Model):
     tan = db.Column(db.VARCHAR(6), primary_key=True, nullable=False)
-    execution_id = db.Column(db.ForeignKey(Execution.tan), nullable=False)
+    execution_id = db.Column(db.ForeignKey(Execution.id), nullable=False)
     location_id = db.Column(db.ForeignKey(Location.id), nullable=False)
     role_id = db.Column(db.ForeignKey(Role.id), nullable=False)
     alerted = db.Column(db.Boolean, nullable=False)

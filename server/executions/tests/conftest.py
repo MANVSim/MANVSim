@@ -32,7 +32,7 @@ def app():
     test.players["654WVU"] = player_b
     exec_before = len(run.exec_dict)
     player_before = len(run.registered_player)
-    run.create_execution(test)
+    run.activate_execution(test)
 
     assert len(run.exec_dict) == exec_before + 1
     assert len(run.registered_player) == player_before + len(test.players)
@@ -40,7 +40,7 @@ def app():
     yield app
 
     # Clean up
-    run.delete_execution(str(test.id))
+    run.deactivate_execution(str(test.id))
     assert len(run.exec_dict) == exec_before
     assert len(run.registered_player) == player_before
 
