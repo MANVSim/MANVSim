@@ -34,7 +34,7 @@ def perform_action():
         # Get request data
         execution, player = util.get_execution_and_player()
         action_id = int(request.form["action_id"])
-        resource_ids_used = list(map(int,request.form["resources"]))
+        resource_ids_used = list(map(int, request.form["resources"]))
         patient_id = int(request.form["patient_id"])
 
         action = execution.scenario.actions[action_id]
@@ -79,7 +79,7 @@ def perform_action():
         # edit resources
         checklist: list = action.resources_needed[:]
         backup = []
-        for res in resources_used:
+        for res in resources_locked:
             if res.name not in checklist:
                 continue
 

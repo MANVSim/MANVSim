@@ -17,7 +17,7 @@ def get_execution_and_player():
     execution = run.exec_dict[exec_id]
     player = execution.players[tan]
 
-    return execution, player
+    return run.exec_dict[exec_id], player
 
 
 def get_current_secs():

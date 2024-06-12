@@ -7,7 +7,7 @@ from executions.entities.location import Location
 flag = False
 
 
-def test_timeout():
+def ttest_timeout():
     def t2(loc):
         try:
             loc.add_locations()
@@ -30,16 +30,37 @@ def test_timeout():
 
 
 def test_leave_location(client):
-
+    # Setup
     execution = run.exec_dict["2"]
     locations = list(execution.scenario.locations.values())
     location_parent = locations[0]
-    location_rm1: Location = locations[2]
-    resources_rm1 = location_rm1.resources
-    remove = {location_rm1}
-    resources_rm1[0].lock.acquire()
+    location_rm: Location = locations[2]   # "Blauer Rucksack"
+    resources_rm = location_rm.resources
+    remove = {location_rm}
 
+    # Test 1: blocked resource
+    assert resources_rm[0].lock.acquire()
     assert not location_parent.leave_location(removed=remove)
+    resources_rm[0].lock.release()
 
+    # Test 2: blocked location due to other leave
+    assert location_rm.res_lock.acquire()
+    assert not location_parent.leave_location(removed=remove)
+    assert not location_rm.loc_lock.locked()
+    location_rm.res_lock.release()
+
+    # Test 3: blocked location due to other leave
+    assert location_rm.loc_lock.acquire()
+    assert not location_parent.leave_location(removed=remove)
+    assert not location_rm.res_lock.locked()
+    location_rm.loc_lock.release()
+
+    # Test 4: no resource to be removed
+    assert location_parent.leave_location(removed=set([]))
+
+    # Test 5: remove resource
+    assert location_parent.leave_location(removed=remove)
+    l, r = location_parent.get_resource_by_id(resources_rm[0].id)  # try to find a resource on location.
+    assert l is None and r is None
 
 

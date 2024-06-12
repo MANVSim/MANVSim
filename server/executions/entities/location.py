@@ -129,7 +129,7 @@ class Location:
             if res is not None:
                 return found_loc, res
 
-        return None
+        return None, None
 
     def leave_location(self, removed: set):
         """
@@ -144,7 +144,7 @@ class Location:
 
         # identify removing nodes (locations)
         q.put(self)
-        while not q.qsize() == 0:
+        while not q.empty():
             loc = q.get()
             if loc in removed:
                 identified_nodes += 1
@@ -157,25 +157,26 @@ class Location:
 
         # lock all resources related to the leaving action
         success = True
-        while not locking_q.qsize() == 0:
-            loc = locking_q.get(block=False)
+        while not locking_q.empty():
+            loc = locking_q.get()
             # mark location for a leave
-            if loc.loc_lock.acquire(timeout=ACQUIRE_TIMEOUT) and loc.res_lock.acquire(timeout=ACQUIRE_TIMEOUT):
+            if loc.loc_lock.acquire(timeout=ACQUIRE_TIMEOUT):
+                if loc.res_lock.acquire(timeout=ACQUIRE_TIMEOUT):
 
-                # block resource for editing
-                if try_lock_all(loc.resources):
-                    loc_locked.append(loc)
-                    _add_locations_to_queue(locking_q, loc)
-                    continue  # locking whole location with its resources successful
-                else:
-                    success = False
+                    # block resource for editing
+                    if try_lock_all(loc.resources):
+                        loc_locked.append(loc)
+                        _add_locations_to_queue(locking_q, loc)
+                        continue  # locking whole location with its resources successful
+                    else:
+                        success = False
+                        loc.loc_lock.release()
+                        loc.res_lock.release()
+                        break
+
+                if loc.loc_lock.locked():
+                    # res_lock acquire failed but loc_lock was successful
                     loc.loc_lock.release()
-                    loc.res_lock.release()
-                    break
-
-            if loc.loc_lock.locked():
-                # res_lock acquire failed but loc_lock was successful
-                loc.loc_lock.release()
 
             success = False
             break
