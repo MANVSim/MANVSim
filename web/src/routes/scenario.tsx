@@ -1,21 +1,16 @@
 import { ActionFunctionArgs, useActionData, useLoaderData } from "react-router"
-import { Template, getCsrfToken, getTemplates, startScenario } from "../api"
+import { Template, getTemplates, startScenario } from "../api"
 import { Form } from "react-router-dom"
 import Button from "react-bootstrap/Button"
 import { Card, Container, ListGroup } from "react-bootstrap"
 import QRCode from "react-qr-code"
+import { useCsrf } from "../contexts/use"
 
-interface LoaderData {
-  csrfToken: string,
-  templates: Template[]
-}
 
-function isLoaderData(obj: unknown): obj is LoaderData {
-  return (obj as LoaderData).templates !== undefined
-}
-
-function TemplateEntry({ template, csrfToken }: Readonly<{ template: Template, csrfToken: string }>) {
+function TemplateEntry({ template }: Readonly<{ template: Template }>) {
   const { id, players, name } = template
+  const csrfToken = useCsrf()
+
   return (
     <ListGroup.Item>
       <Form method="post">
@@ -28,7 +23,7 @@ function TemplateEntry({ template, csrfToken }: Readonly<{ template: Template, c
   )
 }
 
-function Templates({ list, csrfToken }: { list: Template[], csrfToken: string }) {
+function Templates({ list }: { list: Template[] }) {
   return (
     <div>
       <h2>Vorlagen</h2>
@@ -37,7 +32,7 @@ function Templates({ list, csrfToken }: { list: Template[], csrfToken: string })
         list.length ?
           <ListGroup>
             {
-              list.map((t: Template) => <TemplateEntry key={t.id} template={t} csrfToken={csrfToken} />)
+              list.map((t: Template) => <TemplateEntry key={t.id} template={t} />)
             }
           </ListGroup>
           :
@@ -87,23 +82,22 @@ function Execution() {
 }
 
 export default function Scenario() {
-  const loaderData = useLoaderData()
+  const loaderData = useLoaderData() as { templates: Array<Template> }
   const startResult = useActionData()
-  if (!isLoaderData(loaderData)) {
-    return <div>Loading...</div>
-  }
-  const { csrfToken, templates } = loaderData
+  // if ("templates" in loaderData) {
+  //   return <div>Loading...</div>
+  // }
+  const { templates } = loaderData
   return (
     <div>
-      {startResult ? <Execution /> : <Templates list={templates} csrfToken={csrfToken} />}
+      {startResult ? <Execution /> : <Templates list={templates} />}
     </div>
   )
 }
 
 Scenario.loader = async function () {
-  const csrfToken = await getCsrfToken()
   const templates = await getTemplates()
-  return { csrfToken: csrfToken, templates: templates }
+  return { templates: templates }
 }
 
 Scenario.action = async function ({ request }: ActionFunctionArgs<Request>) {
