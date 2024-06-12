@@ -1,6 +1,11 @@
-import { useState } from "react";
-import { AuthContext } from "./Auth";
+import { useContext } from "react";
+import { AuthContext } from "./auth";
+import { CsrfContext } from "./csrf";
 
 export function useAuth() {
-  return useState(AuthContext)
+  return useContext(AuthContext)
+}
+
+export function useCsrf() {
+  return useContext(CsrfContext)
 }
