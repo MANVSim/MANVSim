@@ -35,7 +35,7 @@ class Role(db.Model):
 
 
 class Player(db.Model):
-    tan = db.Column(db.VARCHAR(6), primary_key=True, nullable=False)
+    tan = db.Column(db.VARCHAR(6), primary_key=True)
     execution_id = db.Column(db.ForeignKey(Execution.id), nullable=False)
     location_id = db.Column(db.ForeignKey(Location.id), nullable=False)
     role_id = db.Column(db.ForeignKey(Role.id), nullable=False)

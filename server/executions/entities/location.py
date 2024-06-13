@@ -27,6 +27,10 @@ class Location:
         self.res_lock = TimeoutLock()
         self.loc_lock = TimeoutLock()
 
+    def __repr__(self):
+        return (f"Location(id={self.id!r}, name={self.name!r}, picture_ref={self.picture_ref!r}, "
+                f"resources={self.resources!r}, locations={self.locations!r})")
+
     def get_location_by_id(self, id):
         """
         Retrieves a location of the stored locations.

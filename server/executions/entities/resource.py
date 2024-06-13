@@ -5,7 +5,6 @@ from utils import time
 from vars import ACQUIRE_TIMEOUT
 
 
-# noinspection PyArgumentList
 class Resource:
 
     def __init__(self, id: int, name: str, quantity: int, picture_ref: str | None):
@@ -17,6 +16,10 @@ class Resource:
         self.consumable = True
         self.lock = TimeoutLock()
         self.locked_until = 0
+
+    def __repr__(self):
+        return f"Resource(id={self.id!r}, name={self.name!r}, quantity={self.quantity!r}, " \
+               f"picture_ref={self.picture_ref!r}, consumable={self.consumable!r}, locked_until={self.locked_until!r})"
 
     def decrease(self, duration):
         """
@@ -64,7 +67,7 @@ class Resource:
             else:
                 raise TimeoutError
 
-    def to_dict(self, shallow: bool = False):
+    def to_dict(self):
         """
         Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
         'shallow'-flag is set, only the object reference in form of a unique identifier is included.
@@ -76,12 +79,12 @@ class Resource:
             'picture_ref': self.picture_ref
         }
 
-    def to_json(self, shallow: bool = False):
+    def to_json(self):
         """
         Returns this object as a JSON. By default, all nested objects are included. In case the 'shallow'-flag is set,
         only the object reference in form of a unique identifier is included.
         """
-        return json.dumps(self.to_dict(shallow))
+        return json.dumps(self.to_dict())
 
 
 def try_lock_all(resources: list['Resource']):

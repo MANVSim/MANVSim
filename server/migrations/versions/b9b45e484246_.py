@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 0db124b6b4d6
+Revision ID: b9b45e484246
 Revises: 
-Create Date: 2024-06-04 20:27:23.707418
+Create Date: 2024-06-10 21:29:24.342560
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0db124b6b4d6'
+revision = 'b9b45e484246'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -47,10 +47,10 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('execution',
-    sa.Column('tan', sa.VARCHAR(length=255), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('scenario_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['scenario_id'], ['scenario.id'], ),
-    sa.PrimaryKeyConstraint('tan')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('patient',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -72,12 +72,12 @@ def upgrade():
     )
     op.create_table('player',
     sa.Column('tan', sa.VARCHAR(length=6), nullable=False),
-    sa.Column('execution_id', sa.VARCHAR(length=255), nullable=False),
+    sa.Column('execution_id', sa.Integer(), nullable=False),
     sa.Column('location_id', sa.Integer(), nullable=False),
     sa.Column('role_id', sa.Integer(), nullable=False),
     sa.Column('alerted', sa.Boolean(), nullable=False),
     sa.Column('activation_delay_sec', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['execution_id'], ['execution.tan'], ),
+    sa.ForeignKeyConstraint(['execution_id'], ['execution.id'], ),
     sa.ForeignKeyConstraint(['location_id'], ['location.id'], ),
     sa.ForeignKeyConstraint(['role_id'], ['role.id'], ),
     sa.PrimaryKeyConstraint('tan')

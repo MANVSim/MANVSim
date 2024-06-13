@@ -22,8 +22,8 @@ with create_app().app_context():
     insert(Scenario(id=1, name="Autounfall"))
     insert(Scenario(id=3, name="Gasexplosion"))
 
-    insert(Execution(tan=1, scenario_id=0))
-    insert(Execution(tan=23456, scenario_id=1))
+    insert(Execution(id=1, scenario_id=0))
+    insert(Execution(id=23456, scenario_id=1))
 
     insert(Location(id=0, name="RTW", picture_ref="rtw.jpg"))
     insert(Location(id=1, name="Rucksack", picture_ref="rucksack.jpg", location_id=0))

@@ -17,6 +17,9 @@ class Role:
     def __eq__(self, other: 'Role'):
         return self.power == other.power
 
+    def __repr__(self):
+        return f"Role(id={self.id!r}, name={self.name!r}, short_name={self.short_name!r}, power={self.power!r})"
+
     def to_dict(self) -> dict:
         return self.__dict__
 
