@@ -1,0 +1,81 @@
+Beispielzustände von Patienten
+
+Gesunder Patient:
+RR 120/80mmHg
+HF 80/min
+AF 12/min
+SpO2 98%
+Radialispuls tastbar, kräftig
+Rekapzeit 1.5s
+EKG Sinusrythmus (Bild)
+12-Kanal-EKG Sinusrythmus (12-Kanal-Bild)
+Haut normal, trocken
+Schmerz 0(NAS)
+Bewusstsein wach, orientiert
+Psychischer Zustand normal
+Verletzungen keine
+Temperatur 36,7°C
+BZ 80mg/dl
+Auskultation vesikuläre Atmengeräusch beidseitig
+Abdomen weich
+
+ACS-Patient:
+RR 120/80mmHg
+HF 80/min
+AF 20/min
+SpO2 95%
+Radialispuls tastbar, kräftig
+Rekapzeit 1.5s
+EKG Sinusrythmus ST-Hebung in II (Bild)
+12-Kanal-EKG STEMI (12-Kanal-Bild)
+Haut blass, kaltschweißig
+Schmerz 7(NAS) in der Brust, ausstrahlend in linken Arm
+Bewusstsein wach, orientiert
+Psychischer Zustand angstlich
+Verletzungen keine
+Temperatur 36,7°C
+BZ 80mg/dl
+Auskultation vesikuläre Atmengeräusch beidseitig
+Abdomen weich
+
+SHT-Patient:
+RR 70/50mmHg
+HF 150/min
+AF 20/min
+SpO2 84%
+Radialispuls tastbar, schwach
+Rekapzeit 2.5s
+EKG Sinusrythmus tachykarder Sinusrythmus (Bild)
+12-Kanal-EKG tachykarder Sinusrythmus (12-Kanal-Bild)
+Haut blass, kaltschweißig, Lippenzyanose
+Schmerz vorhanden, aber nicht quantitativ beurtailbar
+Bewusstsein reagiert auf Ansprache, 
+Psychischer Zustand nicht beurteilbar
+Verletzungen klaffende Kopfplatzwunde, Knochenfragmente sichtbar (zusätzlich Bild)
+Temperatur 35,3°C
+BZ 80mg/dl
+Auskultation vesikuläre Atmengeräusch beidseitig
+Abdomen weich
+
+Polytrauma-Patient:
+RR 60/40mmHg
+HF 140/min
+AF 30/min
+SpO2 82%
+Radialispuls nicht tastbar
+Rekapzeit 5s
+EKG Sinusrythmus tachykarder Sinusrythmus (Bild)
+12-Kanal-EKG tachykarder Sinusrythmus (12-Kanal-Bild)
+Haut blass, kaltschweißig, Lippenzyanose
+Schmerz nicht beurtailbar
+Bewusstsein reagiert auf Schmerzreiz, 
+Psychischer Zustand nicht beurteilbar
+Verletzungen amputierter linker Unterschenkel, Prellmarken an Bauch und Brust, 
+ linker Oberarm gebrochen, Knochensplitter steht vor
+Temperatur 35,3°C
+DMS keine Gefühl in linker Hand
+BZ 80mg/dl
+Auskultation vermindertes Atmengeräusch links, rechts vesikulär
+Abdomen hart
+
+
