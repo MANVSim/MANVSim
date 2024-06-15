@@ -21,8 +21,14 @@ function isCsrfToken(obj: object): obj is CsrfToken {
   return !!(obj as CsrfToken)?.csrf_token
 }
 
-export async function tryFetchApi(url: string, body = {}): Promise<Response> {
-  return await fetch(api + url, body)
+export async function tryFetchApi(url: string, body: RequestInit = {}): Promise<Response> {
+  const apiRequest = new Request(api + url, body)
+  apiRequest.headers.append("Content-Type", "application/json")
+  const token = localStorage.getItem("token")
+  if (token) {
+    apiRequest.headers.append("Authorization", `Bearer ${token}`)
+  }
+  return await fetch(apiRequest)
 }
 
 export async function tryFetchJson(url: string, body = {}): Promise<object> {
@@ -30,18 +36,8 @@ export async function tryFetchJson(url: string, body = {}): Promise<object> {
   return await response.json()
 }
 
-function authHeader() {
-  const token = localStorage.getItem("token")
-  if (token) {
-    return { Authorization: `Bearer ${token}` }
-  }
-  return {}
-}
-
 export async function getTemplates(): Promise<Template[]> {
-  const templates = await tryFetchJson("templates", {
-    headers: authHeader()
-  })
+  const templates = await tryFetchJson("templates")
   if (Array.isArray(templates) && templates.every(isTemplate)) {
     return templates
   }
@@ -67,7 +63,7 @@ function isStartResponse(obj: object): obj is StartResponse {
 }
 
 export async function startScenario(formData: FormData): Promise<StartResponse> {
-  const json = await tryFetchJson("scenario/start", { method: "POST", body: formData, headers: authHeader() })
+  const json = await tryFetchJson("scenario/start", { method: "POST", body: formData })
   if (!isStartResponse(json)) {
     throw new Error("Unexpected response")
   }
