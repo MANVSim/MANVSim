@@ -1,4 +1,7 @@
 import { Navigate, Outlet, useNavigate } from "react-router";
+// LinkContainer currently has a bug generating a deprecation warning in the
+// console
+// https://github.com/react-bootstrap/react-router-bootstrap/issues/317
 import { LinkContainer } from 'react-router-bootstrap'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
