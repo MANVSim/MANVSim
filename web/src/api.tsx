@@ -1,6 +1,6 @@
 import { redirect } from "react-router"
 
-const api = "web/"
+const api = "/web/"
 
 export interface Template {
   id: number,
