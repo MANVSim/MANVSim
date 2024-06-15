@@ -12,6 +12,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './routes/login'
 import { CsrfProvider } from './contexts/csrf'
 import { AuthProvider } from './contexts/auth'
+import Execution from './routes/execution'
 
 
 const router = createBrowserRouter([
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
         loader: Scenario.loader,
         action: Scenario.action
       },
+      {
+        path: "/execution/:id",
+        element: <Execution />,
+      }
     ]
   },
   {
