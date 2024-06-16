@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:manvsim/services/login_service.dart';
+import 'package:get_it/get_it.dart';
 
+import '../services/api_service.dart';
 import 'name_screen.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -65,7 +66,7 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   void _navigateToNext() {
-    if(AuthenticationService().isNameSet) {
+    if(ApiService().isNameSet) {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const WaitScreen()),
@@ -100,8 +101,14 @@ class LoginScreenState extends State<LoginScreen> {
         _isLoading = true;
       });
 
-      String? failureMessage = await AuthenticationService().login(tan, url);
+      String? failureMessage;
 
+      try {
+        ApiService authenticationService = GetIt.instance.get<ApiService>();
+        await authenticationService.login(tan, url);
+      } catch (e) {
+        failureMessage = e.toString();
+      }
 
       int maxLength = 80;
       String? shortFailureMessage = ((failureMessage?.length ?? 0) > maxLength)

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:manvsim/services/api_service.dart';
 
 import 'screens/login_screen.dart';
 
@@ -15,6 +17,10 @@ class ManvSimApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final GetIt getIt = GetIt.instance();
+    getIt.registerLazySingleton<ApiService>(() => ApiService());
+
     return MaterialApp(
       title: 'ManvSim',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
