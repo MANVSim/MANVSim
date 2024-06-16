@@ -1,4 +1,4 @@
-import { Card, Container } from "react-bootstrap"
+import { Card, Col, Container, Row } from "react-bootstrap"
 import QRCode from "react-qr-code"
 import { useParams } from "react-router"
 import { isType } from "../utils"
@@ -31,6 +31,15 @@ function isExecutionData(obj: object): obj is ExecutionData {
   return isType<ExecutionData>(obj, "players", "status", "id")
 }
 
+function PlayerStatus({ player }: { player: Player }) {
+  return (
+    <tr>
+      <td>{player.tan}</td>
+      <td>{player.status}</td>
+    </tr>
+  )
+}
+
 export default function Execution() {
   const [execution, setExecution] = useState<null | ExecutionData>(null)
   const { executionId } = useParams<{ executionId: string }>()
@@ -41,7 +50,7 @@ export default function Execution() {
       if (isExecutionData(status)) {
         setExecution(status)
       }
-    }, 5000)
+    }, 50000)
     return () => clearInterval(intervalId)
   })
 
@@ -51,10 +60,21 @@ export default function Execution() {
         <div>
           <h2>Ausführung</h2>
           <p>ID: {execution.id}</p>
-          <p>TANs:</p>
+          <p>Verfübare TANs:</p>
           <Container fluid className="d-flex flex-wrap">
-            {execution.players.map(player => <TanCard key={player.tan} tan={player.tan} />)}
+            {execution.players.filter(x => x.status === "").map(player => <TanCard key={player.tan} tan={player.tan} />)}
           </Container>
+          <table className="table mt-5">
+            <thead>
+              <tr>
+                <th>TAN</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {execution.players.filter(x => x.status !== "").map(player => <PlayerStatus player={player} />)}
+            </tbody>
+          </table>
         </div>
       }
     </div>
