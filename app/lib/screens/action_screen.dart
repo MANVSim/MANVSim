@@ -12,8 +12,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ActionScreen extends StatefulWidget {
   final PatientAction action;
   final Patient patient;
+  final List<int> resourceIds;
 
-  const ActionScreen({super.key, required this.action, required this.patient});
+  const ActionScreen(
+      {super.key,
+      required this.action,
+      required this.patient,
+      required this.resourceIds});
 
   @override
   State<ActionScreen> createState() => _ActionScreenState();
@@ -25,7 +30,7 @@ class _ActionScreenState extends State<ActionScreen> {
 
   @override
   void initState() {
-    futureActionId = performAction(widget.action.id, []); // TODO
+    futureActionId = performAction(widget.action.id, widget.resourceIds);
     super.initState();
   }
 
@@ -39,25 +44,22 @@ class _ActionScreenState extends State<ActionScreen> {
           actions: const <Widget>[LogoutButton()],
           automaticallyImplyLeading: false,
         ),
-        body: RefreshIndicator(
-            onRefresh: () {
-              return Future(() => null);
-            },
-            child: Center(
-                child: FutureBuilder<int>(
-                    future: futureActionId,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return TimerWidget(
-                          duration: widget.action.durationInSeconds,
-                          onTimerComplete: () =>
-                              showResultDialog(successContent(snapshot.data!)),
-                        );
-                      } else if (snapshot.hasError) {
-                        Timer.run(() => showResultDialog(failureContent()));
-                      }
-                      return const Center(child: CircularProgressIndicator());
-                    }))));
+        body: Center(
+            child: FutureBuilder<int>(
+                future: futureActionId,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    Timer.run(() => showResultDialog(failureContent()));
+                  } else if (!snapshot.hasData ||
+                      snapshot.connectionState != ConnectionState.done) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  return TimerWidget(
+                    duration: widget.action.durationInSeconds,
+                    onTimerComplete: () =>
+                        showResultDialog(successContent(snapshot.data!)),
+                  );
+                })));
   }
 
   void showResultDialog(Widget content) {
@@ -85,13 +87,13 @@ class _ActionScreenState extends State<ActionScreen> {
     return FutureBuilder<String>(
         future: futureResult,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Text(snapshot.data!);
-          } else if (snapshot.hasError) {
+          if (snapshot.hasError) {
             return Text('${snapshot.error}');
+          } else if (!snapshot.hasData ||
+              snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
           }
-
-          return const CircularProgressIndicator();
+          return Text(snapshot.data!);
         });
   }
 

@@ -3,26 +3,33 @@ import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/models/resource.dart';
+import 'package:manvsim/screens/action_screen.dart';
 import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/action_card.dart';
 import 'package:manvsim/widgets/resource_directory.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ActionSelection extends StatefulWidget {
+  final List<Location> locations;
   final Patient patient;
+  final Function() refreshPatient;
 
-  const ActionSelection({super.key, required this.patient});
+  const ActionSelection(
+      {super.key,
+      required this.locations,
+      required this.patient,
+      required this.refreshPatient});
 
   @override
   State<ActionSelection> createState() => _ActionSelectionState();
 }
 
 class _ActionSelectionState extends State<ActionSelection> {
-  late Future<List<Location>> futureLocations;
   late Future<List<PatientAction>> futureActions;
 
   Iterable<Resource> resources = [];
   Iterable<PatientAction> possibleActions = [];
+  List<PatientAction> notPossibleActions = [];
 
   toggleResource(Resource resource) {
     setState(() {
@@ -32,18 +39,16 @@ class _ActionSelectionState extends State<ActionSelection> {
 
   @override
   void initState() {
-    futureLocations = fetchLocations();
-    futureLocations.then((locations) {
-      resources = Location.flattenResourcesFromList(locations);
-    });
+    resources = Location.flattenResourcesFromList(widget.locations);
     futureActions = fetchActions();
     futureActions.then((actions) {
-      futureLocations.then((locations) {
-        // filter actions by available resources
-        possibleActions = actions.where((action) => action.resourceNamesNeeded
-            .every((resourceName) =>
-                resources.any((resource) => resource.name == resourceName)));
-      });
+      // filter actions by available resources
+      possibleActions = actions.where((action) => action.resourceNamesNeeded
+          .every((resourceName) =>
+              resources.any((resource) => resource.name == resourceName)));
+      // Could be more efficient, but probably not needed here
+      notPossibleActions =
+          actions.where((action) => !possibleActions.contains(action)).toList();
     });
 
     super.initState();
@@ -53,34 +58,40 @@ class _ActionSelectionState extends State<ActionSelection> {
   Widget build(BuildContext context) {
     return Column(children: [
       Text(AppLocalizations.of(context)!.patientResources),
-      FutureBuilder(
-        future: futureLocations,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ResourceDirectory(
-                locations: snapshot.data!, resourceToggle: toggleResource);
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
-          return const CircularProgressIndicator();
-        },
-      ),
+      ResourceDirectory(
+          locations: widget.locations, resourceToggle: toggleResource),
       Text(AppLocalizations.of(context)!.patientActions),
       FutureBuilder(
         future: futureActions,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var selectedActions = getSelectedActions();
-            return ListView.builder(
+          if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          } else if (!snapshot.hasData ||
+              snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          var selectedActions = getSelectedActions();
+          return Column(children: [
+            ListView.builder(
                 shrinkWrap: true, // nested scrolling
                 physics: const ClampingScrollPhysics(),
                 itemCount: selectedActions.length,
                 itemBuilder: (context, index) => ActionCard(
-                    action: selectedActions[index], patient: widget.patient));
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
-          return const CircularProgressIndicator();
+                      action: selectedActions[index],
+                      patient: widget.patient,
+                      canBePerformed: true,
+                      onPerform: () => performAction(selectedActions[index]),
+                    )),
+            ListView.builder(
+                shrinkWrap: true, // nested scrolling
+                physics: const ClampingScrollPhysics(),
+                itemCount: notPossibleActions.length,
+                itemBuilder: (context, index) => ActionCard(
+                      action: notPossibleActions[index],
+                      patient: widget.patient,
+                      canBePerformed: false,
+                    )),
+          ]);
         },
       )
     ]);
@@ -99,5 +110,31 @@ class _ActionSelectionState extends State<ActionSelection> {
 
   Iterable<Resource> getSelectedResources() {
     return resources.where((r) => r.selected);
+  }
+
+  Iterable<Resource> getNeededResources(PatientAction action) {
+    // quantity validation missing
+    // TODO: rework
+    var needed = action.resourceNamesNeeded;
+    var selected = getSelectedResources().toList();
+    selected.removeWhere((s) => !needed.any((n) => s.name == n));
+    needed.removeWhere((name) => selected.any((s) => s.name == name));
+    for (var n in needed) {
+      selected.add(resources.firstWhere((r) => r.name == n));
+    }
+    return getSelectedResources();
+  }
+
+  void performAction(PatientAction action) async {
+    List<int> resourceIds =
+        getNeededResources(action).map((resource) => resource.id).toList();
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ActionScreen(
+                action: action,
+                patient: widget.patient,
+                resourceIds: resourceIds)));
+    widget.refreshPatient();
   }
 }
