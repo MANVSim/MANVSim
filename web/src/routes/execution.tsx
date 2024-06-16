@@ -1,6 +1,7 @@
 import { Card, Container } from "react-bootstrap"
 import QRCode from "react-qr-code"
 import { useLocation } from "react-router"
+import { isType } from "../utils"
 
 function TanCard({ tan }: { tan: string }) {
   return (
@@ -19,9 +20,7 @@ interface LocationStateData {
 }
 
 function isLocationStateData(obj: unknown): obj is LocationStateData {
-  if (typeof obj !== "object") return false
-  const t = obj as LocationStateData
-  return t.id !== undefined && t.tans !== undefined
+  return isType<LocationStateData>(obj, "tans", "id")
 }
 
 export default function Execution() {

@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button"
 import { ListGroup } from "react-bootstrap"
 import { useCsrf } from "../contexts/use"
 import { useEffect } from "react"
+import { isType } from "../utils"
 
 
 function TemplateEntry({ template }: Readonly<{ template: Template }>) {
@@ -26,11 +27,6 @@ function TemplateEntry({ template }: Readonly<{ template: Template }>) {
 interface ExecutionData {
   id: string,
   tans: string[]
-}
-
-function isType<T extends object>(obj: unknown, ...props: string[]): obj is T {
-  if (typeof obj !== "object" || obj === null) return false
-  return props.every(prop => prop in obj)
 }
 
 function isExecutionData(obj: object): obj is ExecutionData {

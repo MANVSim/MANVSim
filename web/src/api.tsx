@@ -1,4 +1,5 @@
 import { redirect } from "react-router"
+import { isType } from "./utils"
 
 const api = "/web/"
 
@@ -9,8 +10,7 @@ export interface Template {
 }
 
 function isTemplate(obj: object): obj is Template {
-  const template = obj as Template
-  return [template.id, template.name, template.players].every(x => x !== undefined)
+  return isType<Template>(obj, "players", "name", "id")
 }
 
 interface CsrfToken {
@@ -18,7 +18,7 @@ interface CsrfToken {
 }
 
 function isCsrfToken(obj: object): obj is CsrfToken {
-  return !!(obj as CsrfToken)?.csrf_token
+  return isType<CsrfToken>(obj, "csrf_token")
 }
 
 export async function tryFetchApi(url: string, body: RequestInit = {}): Promise<Response> {
@@ -58,8 +58,7 @@ interface StartResponse {
 }
 
 function isStartResponse(obj: object): obj is StartResponse {
-  const t = obj as StartResponse
-  return t.id !== undefined && t.tans !== undefined
+  return isType<StartResponse>(obj, "id", "tans")
 }
 
 export async function startScenario(formData: FormData): Promise<StartResponse> {
@@ -75,8 +74,7 @@ interface LoginResponse {
 }
 
 function isLoginResponse(obj: object): obj is LoginResponse {
-  const t = obj as LoginResponse
-  return t.token !== undefined
+  return isType<LoginResponse>(obj, "token")
 }
 
 export async function getAuthToken(formData: FormData): Promise<string | Response> {
