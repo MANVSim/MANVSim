@@ -20,7 +20,7 @@ class AuthenticationService {
     _apiClient = DefaultApi(ApiClient(basePath: url));
 
     try {
-      LoginPost200Response? loginResponse = await _apiClient!.loginPost(TAN: tan);
+      LoginPost200Response? loginResponse = await _apiClient!.loginPost(LoginPostRequest(TAN: tan));
       _isNameSet = loginResponse!.userCreationRequired!;
       _jwtToken = loginResponse.jwtToken!;
       _isLoggedIn = true;
