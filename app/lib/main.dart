@@ -18,7 +18,7 @@ class ManvSimApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final GetIt getIt = GetIt.instance();
+    final GetIt getIt = GetIt.instance;
     getIt.registerLazySingleton<ApiService>(() => ApiService());
 
     return MaterialApp(
