@@ -1,7 +1,9 @@
 import { Card, Container } from "react-bootstrap"
 import QRCode from "react-qr-code"
-import { useLocation } from "react-router"
+import { useParams } from "react-router"
 import { isType } from "../utils"
+import { useEffect, useState } from "react"
+import { getExecutionStatus } from "../api"
 
 function TanCard({ tan }: { tan: string }) {
   return (
@@ -14,29 +16,47 @@ function TanCard({ tan }: { tan: string }) {
   )
 }
 
-interface LocationStateData {
-  id: number,
-  tans: string[]
+interface Player {
+  tan: string,
+  status: string
 }
 
-function isLocationStateData(obj: unknown): obj is LocationStateData {
-  return isType<LocationStateData>(obj, "tans", "id")
+interface ExecutionData {
+  id: number,
+  status: string,
+  players: Player[]
+}
+
+function isExecutionData(obj: object): obj is ExecutionData {
+  return isType<ExecutionData>(obj, "players", "status", "id")
 }
 
 export default function Execution() {
-  const { state } = useLocation()
+  const [execution, setExecution] = useState<null | ExecutionData>(null)
+  const { executionId } = useParams<{ executionId: string }>()
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      if (typeof executionId === "undefined") return
+      const status = await getExecutionStatus(executionId)
+      if (isExecutionData(status)) {
+        setExecution(status)
+      }
+    }, 5000)
+    return () => clearInterval(intervalId)
+  })
 
-  if (!isLocationStateData(state)) {
-    throw Error("The location data for the execution is in the wrong format")
-  }
   return (
     <div>
-      <h2>Ausführung</h2>
-      <p>ID: {state.id}</p>
-      <p>TANs:</p>
-      <Container fluid className="d-flex flex-wrap">
-        {state.tans.map(t => <TanCard key={t} tan={t} />)}
-      </Container>
+      {execution &&
+        <div>
+          <h2>Ausführung</h2>
+          <p>ID: {execution.id}</p>
+          <p>TANs:</p>
+          <Container fluid className="d-flex flex-wrap">
+            {execution.players.map(player => <TanCard key={player.tan} tan={player.tan} />)}
+          </Container>
+        </div>
+      }
     </div>
   )
 }

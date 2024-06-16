@@ -32,8 +32,8 @@ const router = createBrowserRouter([
         action: Scenario.action
       },
       {
-        path: "/execution/:id",
-        element: <Execution />,
+        path: "/execution/:executionId",
+        element: <Execution />
       }
     ]
   },

@@ -1,12 +1,9 @@
-import { ActionFunctionArgs, useActionData, useLoaderData, useNavigate } from "react-router"
+import { ActionFunctionArgs, useLoaderData, redirect } from "react-router"
 import { Template, getTemplates, startScenario } from "../api"
 import { Form } from "react-router-dom"
 import Button from "react-bootstrap/Button"
 import { ListGroup } from "react-bootstrap"
 import { useCsrf } from "../contexts/use"
-import { useEffect } from "react"
-import { isType } from "../utils"
-
 
 function TemplateEntry({ template }: Readonly<{ template: Template }>) {
   const { id, players, name } = template
@@ -24,23 +21,7 @@ function TemplateEntry({ template }: Readonly<{ template: Template }>) {
   )
 }
 
-interface ExecutionData {
-  id: string,
-  tans: string[]
-}
-
-function isExecutionData(obj: object): obj is ExecutionData {
-  return isType<ExecutionData>(obj, "id", "tans")
-}
-
 export default function Scenario() {
-  const executionData = useActionData()
-  const navigate = useNavigate()
-  useEffect(() => {
-    if (executionData && isExecutionData(executionData)) {
-      navigate(`/execution/${executionData.id}`, { state: executionData })
-    }
-  })
   const loaderData = useLoaderData() as { templates: Array<Template> }
   const { templates } = loaderData
   return (
@@ -69,6 +50,6 @@ Scenario.loader = async function () {
 Scenario.action = async function ({ request }: ActionFunctionArgs<Request>) {
   const formData = await request.formData()
   const result = await startScenario(formData)
-  return result
+  return redirect(`/execution/${result.id}`)
 }
 

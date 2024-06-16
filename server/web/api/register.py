@@ -1,6 +1,6 @@
 from functools import wraps
 import math
-from random import random
+from random import random, choice
 
 from flask import abort, make_response, request, Blueprint
 from flask_api import status
@@ -80,7 +80,23 @@ def start_scenario():
         # TODO: Create actual execution
         return {
             "id": math.floor(random() * 1000),
-            "tans": [str(x) for x in uniques(10)],
         }
     except KeyError:
         return {"error": "Missing id in request"}, 400
+
+
+test_tans = [str(x) for x in uniques(5)]
+
+
+@api.get("/execution/<int:id>")
+@admin_only
+def get_execution_status(id: int):
+    return {
+        "id": id,
+        "status": "In Vorbereitung",
+        "players": [
+            {
+                "tan": x,
+                "status": choice(["", "In Vorbereitung"])
+            } for x in test_tans]
+    }

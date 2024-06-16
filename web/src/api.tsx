@@ -53,12 +53,11 @@ export async function getCsrfToken() {
 }
 
 interface StartResponse {
-  id: number,
-  tans: string[]
+  id: number
 }
 
 function isStartResponse(obj: object): obj is StartResponse {
-  return isType<StartResponse>(obj, "id", "tans")
+  return isType<StartResponse>(obj, "id")
 }
 
 export async function startScenario(formData: FormData): Promise<StartResponse> {
@@ -89,4 +88,9 @@ export async function getAuthToken(formData: FormData): Promise<string | Respons
   }
 
   return redirect("/")
+}
+
+export async function getExecutionStatus(id: string) {
+  const json = await tryFetchJson(`/execution/${id}`)
+  return json
 }
