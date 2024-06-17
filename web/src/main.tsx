@@ -34,7 +34,8 @@ const router = createBrowserRouter([
       {
         path: "/execution/:executionId",
         element: <Execution />,
-        loader: Execution.loader
+        loader: Execution.loader,
+        action: Execution.action
       }
     ]
   },

@@ -87,18 +87,35 @@ def start_scenario():
 
 test_tans = [str(x) for x in uniques(5)]
 
+test_execution = {
+    "id": -1,
+    "status": "",
+    "players": [
+        {
+            "tan": x,
+            "name": "Max Mustermann",
+            "status": choice(["", "In Vorbereitung"]),
+            "action": "Legt Zugang"
+        } for x in test_tans]
+}
+
 
 @api.get("/execution/<int:id>")
 @admin_only
 def get_execution_status(id: int):
-    return {
-        "id": id,
-        "status": "In Vorbereitung",
-        "players": [
-            {
-                "tan": x,
-                "name": "Max Mustermann",
-                "status": choice(["", "In Vorbereitung"]),
-                "action": "Legt Zugang"
-            } for x in test_tans]
-    }
+    test_execution["id"] = id
+    return test_execution
+
+
+@api.post("/execution/<int:id>/start")
+@admin_only
+def start_execution(id: int):
+    test_execution["status"] = "Aktiv"
+    return test_execution
+
+
+@api.post("/execution/<int:id>/stop")
+@admin_only
+def stop_execution(id: int):
+    test_execution["status"] = ""
+    return test_execution

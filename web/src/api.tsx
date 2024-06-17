@@ -94,3 +94,11 @@ export async function getExecutionStatus(id: string) {
   const json = await tryFetchJson(`execution/${id}`)
   return json
 }
+
+export async function startExecution(id: string, formData: FormData) {
+  return await tryFetchJson(`execution/${id}/start`, { method: "POST", body: formData })
+}
+
+export async function stopExecution(id: string, formData: FormData) {
+  return await tryFetchJson(`execution/${id}/stop`, { method: "POST", body: formData })
+}
