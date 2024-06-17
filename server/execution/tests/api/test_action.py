@@ -71,13 +71,10 @@ def test_perform_action_but_blocked_to_leaving(client):
     form = {
         "TAN": list(player_ids)[-1]
     }
-    headers = {
-        "Content-Type": "application/json"
-    }
+    headers = generate_token(client.application, running=True)
+    headers["Content-Type"] = "application/json"
     response = client.post(f"/api/login", data=json.dumps(form), headers=headers)
     assert response.status_code == http.HTTPStatus.OK
-    headers = generate_token(client.application, running=True)
-    headers["X-CSRFToken"] = response.json["csrf_token"]
 
     # leave location
     response = client.post("/api/run/location/leave", headers=headers)
@@ -87,7 +84,7 @@ def test_perform_action_but_blocked_to_leaving(client):
     form = {
         "patient_id": 1,
     }
-    response = client.post("/api/run/patient/arrive", headers=headers, data=form)
+    response = client.post("/api/run/patient/arrive", headers=headers, data=json.dumps(form))
     assert response.status_code == http.HTTPStatus.OK
 
     # simulate leaving on the location
@@ -98,6 +95,6 @@ def test_perform_action_but_blocked_to_leaving(client):
         "patient_id": 1,
         "resources": [1]
     }
-    response = client.post("/api/run/action/perform", headers=headers, data=form)
+    response = client.post("/api/run/action/perform", headers=headers, data=json.dumps(form))
     assert response.status_code == http.HTTPStatus.CONFLICT
     location.res_lock.release()
