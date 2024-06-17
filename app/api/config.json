@@ -1,0 +1,8 @@
+{
+  "pubLibrary": "manv_api",
+  "pubName": "manv_api",
+  "sortParamsByRequiredFlag": true,
+  "ensureUniqueParams": true,
+  "prependFormOrBodyParameters": true,
+  "hideGenerationTimestamp": true
+}
