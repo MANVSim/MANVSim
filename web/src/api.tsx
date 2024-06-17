@@ -91,6 +91,6 @@ export async function getAuthToken(formData: FormData): Promise<string | Respons
 }
 
 export async function getExecutionStatus(id: string) {
-  const json = await tryFetchJson(`/execution/${id}`)
+  const json = await tryFetchJson(`execution/${id}`)
   return json
 }
