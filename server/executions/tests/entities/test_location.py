@@ -7,7 +7,7 @@ from executions.entities.location import Location
 flag = False
 
 
-def ttest_timeout():
+def test_timeout():
     def t2(loc):
         try:
             loc.add_locations()
