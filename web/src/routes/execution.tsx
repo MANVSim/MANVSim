@@ -1,6 +1,6 @@
 import { Card, Container } from "react-bootstrap"
 import QRCode from "react-qr-code"
-import { useParams } from "react-router"
+import { LoaderFunctionArgs, useLoaderData, useParams } from "react-router"
 import { isType } from "../utils"
 import { useEffect, useState } from "react"
 import { getExecutionStatus } from "../api"
@@ -30,7 +30,7 @@ interface ExecutionData {
   players: Player[]
 }
 
-function isExecutionData(obj: object): obj is ExecutionData {
+function isExecutionData(obj: unknown): obj is ExecutionData {
   return isType<ExecutionData>(obj, "players", "status", "id")
 }
 
@@ -46,7 +46,10 @@ function PlayerStatus({ player }: { player: Player }) {
 }
 
 export default function Execution() {
-  const [execution, setExecution] = useState<null | ExecutionData>(null)
+  const loaderData = useLoaderData()
+  const [execution, setExecution] = useState<null | ExecutionData>(
+    isExecutionData(loaderData) ? loaderData : null
+  )
   const { executionId } = useParams<{ executionId: string }>()
   useEffect(() => {
     const intervalId = setInterval(async () => {
@@ -95,4 +98,9 @@ export default function Execution() {
       }
     </div>
   )
+}
+
+Execution.loader = async function ({ params: { executionId } }: LoaderFunctionArgs) {
+  if (executionId === undefined) return null
+  return await getExecutionStatus(executionId)
 }

@@ -33,7 +33,8 @@ const router = createBrowserRouter([
       },
       {
         path: "/execution/:executionId",
-        element: <Execution />
+        element: <Execution />,
+        loader: Execution.loader
       }
     ]
   },
