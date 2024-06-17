@@ -12,7 +12,7 @@ from executions.entities.scenario import Scenario
 from executions.tests.entities import dummy_entities
 
 # TEST DATA
-player_a = Player("69", "Finn Bartels", False, 10,  None, set(), role=None)
+player_a = Player("69", "Finn Bartels", False, 10,  None, set())
 
 test_a = Execution(1337, Scenario(17, "Test-Scenario-Pending", {}, {}, {}), {"69": player_a}, Execution.Status.PENDING)
 test_b = dummy_entities.create_test_execution()
