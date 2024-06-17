@@ -104,6 +104,8 @@ test_execution = {
 @admin_only
 def get_execution_status(id: int):
     test_execution["id"] = id
+    random_player = choice(test_execution["players"])
+    random_player["status"] = "In Vorbereitung" if random_player["status"] == "" else ""
     return test_execution
 
 
