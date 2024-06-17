@@ -2,6 +2,7 @@ import jwt
 import pytest
 
 from app import create_app
+from app_config import csrf, db
 from execution import run
 from execution.tests.entities.dummy_entities import create_test_execution
 
@@ -14,7 +15,7 @@ database.
 
 @pytest.fixture()
 def app():
-    app = create_app()
+    app = create_app(csrf=csrf, db=db)
     app.config.update({
         "TESTING": True,
     })

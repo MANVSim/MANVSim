@@ -3,6 +3,7 @@ import uuid
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 
+from app_config import csrf
 from execution.entities.performed_action import PerformedAction
 from execution.entities.resource import Resource, try_lock_all, release_all_resources
 from execution.utils import util
@@ -23,6 +24,7 @@ def get_all_actions():
 
 @api.post("/action/perform")
 @jwt_required()
+@csrf.exempt
 def perform_action():
     """
     Enqueues an action for a patient if:
@@ -34,9 +36,10 @@ def perform_action():
     try:
         # Get request data
         execution, player = util.get_execution_and_player()
-        action_id = int(request.form["action_id"])
-        resource_ids_used = list(map(int, request.form["resources"]))
-        patient_id = int(request.form["patient_id"])
+        form = request.get_json()
+        action_id = int(form["action_id"])
+        resource_ids_used = list(map(int, form["resources"]))
+        patient_id = int(form["patient_id"])
 
         action = execution.scenario.actions[action_id]
         patient = execution.scenario.patients[patient_id]

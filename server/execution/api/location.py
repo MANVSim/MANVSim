@@ -2,6 +2,7 @@ from flask import request
 from flask import Blueprint
 from flask_jwt_extended import jwt_required
 
+from app_config import csrf
 from execution.utils import util
 from execution.entities.location import Location
 
@@ -23,6 +24,7 @@ def get_all_toplevel_location():
 
 @api.post("/location/take-from")
 @jwt_required()
+@csrf.exempt
 def get_location_out_of_location():
     """
     Releases a sub location of the players current location. Afterward the location is an accessible location for the
@@ -30,7 +32,7 @@ def get_location_out_of_location():
     Required Request Param:
         required_loc_id:    location identifier that shall be added to the players inventory
     """
-    args: dict = request.form
+    args: dict = request.get_json()
     try:
         execution, player = util.get_execution_and_player()
 
@@ -63,6 +65,7 @@ def get_location_out_of_location():
 
 @api.post("/location/leave")
 @jwt_required()
+@csrf.exempt
 def leave_location():
     """ Leaves a location. Required for the initial arrival. The players inventory will not be edited. """
     _, player = util.get_execution_and_player()
