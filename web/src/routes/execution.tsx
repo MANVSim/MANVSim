@@ -1,9 +1,10 @@
-import { Card, Col, Container, Row } from "react-bootstrap"
+import { Card, Container } from "react-bootstrap"
 import QRCode from "react-qr-code"
 import { useParams } from "react-router"
 import { isType } from "../utils"
 import { useEffect, useState } from "react"
 import { getExecutionStatus } from "../api"
+import _ from "lodash"
 
 function TanCard({ tan }: { tan: string }) {
   return (
@@ -50,9 +51,18 @@ export default function Execution() {
       if (isExecutionData(status)) {
         setExecution(status)
       }
-    }, 50000)
+    }, 5000)
     return () => clearInterval(intervalId)
   })
+
+  const [tansAvailable, setTansAvailable] = useState<Player[]>([])
+  const [tansUsed, setTansUsed] = useState<Player[]>([])
+  useEffect(() => {
+    if (execution === null) return
+    const [newTansAvailable, newTansUsed] = _.partition(execution.players, x => x.status === "")
+    setTansAvailable(newTansAvailable)
+    setTansUsed(newTansUsed)
+  }, [execution])
 
   return (
     <div>
@@ -62,7 +72,7 @@ export default function Execution() {
           <p>ID: {execution.id}</p>
           <p>Verfübare TANs:</p>
           <Container fluid className="d-flex flex-wrap">
-            {execution.players.filter(x => x.status === "").map(player => <TanCard key={player.tan} tan={player.tan} />)}
+            {tansAvailable.map(player => <TanCard key={player.tan} tan={player.tan} />)}
           </Container>
           <table className="table mt-5">
             <thead>
@@ -72,7 +82,7 @@ export default function Execution() {
               </tr>
             </thead>
             <tbody>
-              {execution.players.filter(x => x.status !== "").map(player => <PlayerStatus player={player} />)}
+              {tansUsed.map(player => <PlayerStatus player={player} />)}
             </tbody>
           </table>
         </div>
