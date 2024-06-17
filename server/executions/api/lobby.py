@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from flask_jwt_extended import create_access_token, jwt_required
 from flask_wtf.csrf import generate_csrf
@@ -27,7 +28,8 @@ def login():
      - user-role
     """
     try:
-        tan = request.form["TAN"]
+        data = request.get_json()
+        tan = data["TAN"]
         exec_id = run.registered_player[tan]
         player = run.exec_dict[exec_id].players[tan]
         expires = datetime.timedelta(hours=12)
@@ -39,7 +41,7 @@ def login():
             "csrf_token": generate_csrf(),
             "user_creation_required": userCreationRequired,
             "user_name": "" if userCreationRequired else player.name,
-            "user_role": player.role.name
+            "user_role": (player.role if player.role is None else player.role.name)
         }
     except KeyError:
         return Response(response="Invalid TAN detected. Unable to resolve player.", status=status.HTTP_400_BAD_REQUEST)

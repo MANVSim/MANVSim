@@ -23,13 +23,13 @@ class Player:
 
     def to_dict(self, shallow: bool = False):
         """
-        Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
+        Returns all fields of this class in a dictionary. By default, all nested objects are included. In case thes
         'shallow'-flag is set, only the object reference in form of a unique identifier is included.
         """
         return {
             'tan': self.tan,
             'name': self.name,
-            'role': self.role.name,
+            'role': (self.role if self.role is None else self.role.name),
             'alerted': self.alerted,
             'activation_delay_sec': self.activation_delay_sec,
             'location': self.location.id if shallow else self.location.to_dict(),
