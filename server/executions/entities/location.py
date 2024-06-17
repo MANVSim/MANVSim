@@ -12,24 +12,24 @@ from vars import ACQUIRE_TIMEOUT
 class Location:
 
     def __init__(self, id: int, name: str, picture_ref: str | None, resources: list[Resource] = None,
-                 locations: set['Location'] = None):
+                 sub_locations: set['Location'] = None):
         if resources is None:
             resources = []
-        if locations is None:
-            locations = set()
+        if sub_locations is None:
+            sub_locations = set()
 
         self.id = id
         self.name = name
         self.picture_ref = picture_ref  # Reference to picture
         self.resources = resources
-        self.locations = locations
+        self.sub_locations = sub_locations
 
         self.res_lock = TimeoutLock()
         self.loc_lock = TimeoutLock()
 
     def __repr__(self):
         return (f"Location(id={self.id!r}, name={self.name!r}, picture_ref={self.picture_ref!r}, "
-                f"resources={self.resources!r}, locations={self.locations!r})")
+                f"resources={self.resources!r}, locations={self.sub_locations!r})")
 
     def get_location_by_id(self, id):
         """
@@ -38,7 +38,7 @@ class Location:
         """
         with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
-                return next((location for location in self.locations if location.id == id), None)
+                return next((location for location in self.sub_locations if location.id == id), None)
             else:
                 raise TimeoutError
 
@@ -49,7 +49,7 @@ class Location:
         """
         with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
-                self.locations = {location for location in self.locations if location.id != id}
+                self.sub_locations = {location for location in self.sub_locations if location.id != id}
             else:
                 raise TimeoutError
 
@@ -60,7 +60,7 @@ class Location:
         """
         with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
-                self.locations = self.locations.union(new_locations)
+                self.sub_locations = self.sub_locations.union(new_locations)
             else:
                 raise TimeoutError
 
@@ -71,7 +71,7 @@ class Location:
         """
         with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
-                self.locations = self.locations - old_locations
+                self.sub_locations = self.sub_locations - old_locations
             else:
                 raise TimeoutError
 
@@ -93,7 +93,7 @@ class Location:
         """
         with self.res_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
-                self.locations = [resource for resource in self.resources if resource not in old_resources]
+                self.sub_locations = [resource for resource in self.resources if resource not in old_resources]
             else:
                 raise TimeoutError
 
@@ -104,7 +104,7 @@ class Location:
         If the list is blocked more than 3 seconds the methods raises a TimeoutError
         """
         q = Queue()
-        for loc in list(self.locations):
+        for loc in list(self.sub_locations):
             q.put((self, loc))
 
         while q.not_empty:
@@ -112,7 +112,7 @@ class Location:
             if child.id == id:
                 return parent, child
             else:
-                for child_loc in list(self.locations):
+                for child_loc in list(self.sub_locations):
                     q.put((child, child_loc))
 
         return None, None
@@ -128,7 +128,7 @@ class Location:
                 return res
 
         # resource is contained in another location
-        for loc in self.locations:
+        for loc in self.sub_locations:
             res = loc.get_resource_by_id(id)
             if res is not None:
                 return res
@@ -142,7 +142,7 @@ class Location:
         """
         with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
-                self.locations -= removed
+                self.sub_locations -= removed
             else:
                 raise TimeoutError
 
@@ -156,7 +156,7 @@ class Location:
             'name': self.name,
             'picture_ref': self.picture_ref,
             'resources': [resource.id if shallow else resource.to_dict() for resource in self.resources],
-            'location': [location.id if shallow else location.to_dict() for location in self.locations]
+            'sub_locations': [location.id if shallow else location.to_dict() for location in self.sub_locations]
         }
 
     def to_json(self, shallow: bool = False):

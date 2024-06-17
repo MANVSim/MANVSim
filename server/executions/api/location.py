@@ -15,7 +15,7 @@ def get_all_toplevel_location():
         """ Returns all locations stored in the scenario. """
         execution, _ = util.get_execution_and_player()
         return {
-            "locations": [location.to_dict() for location in list(execution.scenario.locations.values())]
+            "locations": [location.to_dict() for location in list(execution.scenario.sub_locations.values())]
         }
     except KeyError:
         return f"Missing or invalid request parameter detected.", 400
