@@ -18,14 +18,11 @@ def test_perform_action(client):
     form = {
         "TAN": list(player_ids)[-1]
     }
-    headers = {
-        "Content-Type": "application/json"
-    }
+    headers = generate_token(client.application, running=True)
+    headers["Content-Type"] = "application/json"
+
     response = client.post(f"/api/login", data=json.dumps(form), headers=headers)
     assert response.status_code == http.HTTPStatus.OK
-
-    headers = generate_token(client.application, running=True)
-    headers["X-CSRFToken"] = response.json["csrf_token"]
 
     # leave location
     response = client.post("/api/run/location/leave", headers=headers)
@@ -35,7 +32,7 @@ def test_perform_action(client):
     form = {
         "patient_id": 1,
     }
-    response = client.post("/api/run/patient/arrive", headers=headers, data=form)
+    response = client.post("/api/run/patient/arrive", headers=headers, data=json.dumps(form))
     assert response.status_code == http.HTTPStatus.OK
 
     # perform action
@@ -44,7 +41,7 @@ def test_perform_action(client):
         "patient_id": 1,
         "resources": [1]
     }
-    response = client.post("/api/run/action/perform", headers=headers, data=form)
+    response = client.post("/api/run/action/perform", headers=headers, data=json.dumps(form))
     assert response.status_code == http.HTTPStatus.OK
 
     # check for result

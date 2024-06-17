@@ -1,5 +1,4 @@
 import datetime
-import logging
 
 from flask_jwt_extended import create_access_token, jwt_required
 from flask_wtf.csrf import generate_csrf
@@ -7,7 +6,7 @@ from flask import request, Response
 from flask_api import status
 from flask import Blueprint
 
-from app import csrf
+from app_config import csrf
 from execution import run
 from execution.utils import util
 
@@ -49,10 +48,12 @@ def login():
 
 @api.post("/player/set-name")
 @jwt_required()
+@csrf.exempt
 def set_name():
     """ Changes the name of the requesting player. """
     try:
-        name = request.form["name"]
+        form = request.get_json()
+        name = form["name"]
         _, player = util.get_execution_and_player()
         player.name = name
         return Response(response="Name successfully set.", status=status.HTTP_200_OK)
