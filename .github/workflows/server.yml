@@ -39,6 +39,6 @@ jobs:
 
       # Test execution component
       - name: Run pytest
-        working-directory: server/executions
+        working-directory: server/execution
         run: |
           pipenv run pytest tests/
