@@ -1,8 +1,8 @@
 import json
 from queue import Queue
 
-from executions.entities.resource import Resource, try_lock_all, release_all_resources
-from executions.utils.timeoutlock import TimeoutLock
+from execution.entities.resource import Resource, try_lock_all, release_all_resources
+from execution.utils.timeoutlock import TimeoutLock
 from vars import ACQUIRE_TIMEOUT
 
 
@@ -129,7 +129,7 @@ class Location:
 
         # resource is contained in another location
         for loc in self.sub_locations:
-            foun_loc, res = loc.get_resource_by_id(id)
+            found_loc, res = loc.get_resource_by_id(id)
             if res is not None:
                 return found_loc, res
 
@@ -225,5 +225,5 @@ def release_all_locations(locations: ['Location'], include_resource=False):
 
 
 def _add_locations_to_queue(queue: Queue, location: 'Location'):
-    for child_loc in location.locations:
+    for child_loc in location.sub_locations:
         queue.put(child_loc)
