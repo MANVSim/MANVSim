@@ -83,14 +83,7 @@ export default function Execution() {
     return () => clearInterval(intervalId)
   })
 
-  const [tansAvailable, setTansAvailable] = useState<Player[]>([])
-  const [tansUsed, setTansUsed] = useState<Player[]>([])
-  useEffect(() => {
-    if (execution === null) return
-    const [newTansAvailable, newTansUsed] = _.partition(execution.players, x => x.status === "")
-    setTansAvailable(newTansAvailable)
-    setTansUsed(newTansUsed)
-  }, [execution])
+  const [tansAvailable, tansUsed] = _.partition(execution?.players, player => player.status === "")
 
   return (
     <div>
