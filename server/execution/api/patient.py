@@ -61,10 +61,10 @@ def leave_patient_location():
         if player.location is None:
             return "Player is not assigned to any patient/location", 405
 
-        player.location.leave_location(player.accessible_locations)
-        player.location = None
+        if player.location.leave_location(player.accessible_locations):
+            player.location = None
+        else:
+            return "Unable to access runtime object. A timeout-error occurred.", 409
 
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
-    except TimeoutError:
-        return "Unable to access runtime object. A timeout-error occurred.", 409
