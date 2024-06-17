@@ -5,6 +5,7 @@ import { isType } from "../utils"
 import { useEffect, useState } from "react"
 import { getExecutionStatus } from "../api"
 import _ from "lodash"
+import { config } from "../config"
 
 function TanCard({ tan }: { tan: string }) {
   return (
@@ -58,7 +59,7 @@ export default function Execution() {
       if (isExecutionData(status)) {
         setExecution(status)
       }
-    }, 5000)
+    }, config.pollingRate)
     return () => clearInterval(intervalId)
   })
 
