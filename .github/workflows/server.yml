@@ -2,8 +2,9 @@ name: Server Lint & Code Quality & Test
 on: 
   push:
     branches:
-      - feature/server
-      - bug/server
+      - main
+      - feature/server/**
+      - bug/server/**
 
 
 jobs:
