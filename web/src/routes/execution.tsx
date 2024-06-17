@@ -19,7 +19,9 @@ function TanCard({ tan }: { tan: string }) {
 
 interface Player {
   tan: string,
-  status: string
+  name: string,
+  status: string,
+  action: string
 }
 
 interface ExecutionData {
@@ -37,6 +39,8 @@ function PlayerStatus({ player }: { player: Player }) {
     <tr>
       <td>{player.tan}</td>
       <td>{player.status}</td>
+      <td>{player.name}</td>
+      <td>{player.action}</td>
     </tr>
   )
 }
@@ -79,6 +83,8 @@ export default function Execution() {
               <tr>
                 <th>TAN</th>
                 <th>Status</th>
+                <th>Name</th>
+                <th>Maßnahme</th>
               </tr>
             </thead>
             <tbody>

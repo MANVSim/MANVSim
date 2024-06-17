@@ -97,6 +97,8 @@ def get_execution_status(id: int):
         "players": [
             {
                 "tan": x,
-                "status": choice(["", "In Vorbereitung"])
+                "name": "Max Mustermann",
+                "status": choice(["", "In Vorbereitung"]),
+                "action": "Legt Zugang"
             } for x in test_tans]
     }
