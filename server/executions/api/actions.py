@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required
 from executions.entities.performed_action import PerformedAction
 from executions.entities.resource import Resource, try_lock_all, release_all_resources
 from executions.utils import util
+from utils import time
 
 api = Blueprint("api-action", __name__)
 
@@ -41,7 +42,7 @@ def perform_action():
         patient = execution.scenario.patients[patient_id]
 
         # check permission and parameters
-        if player.role < action.required_role:
+        if player.role.power < action.required_power:
             return "Missing right detected. You need a higher role to perform that action", 403
 
         if len(resource_ids_used) < len(action.resources_needed):
@@ -98,7 +99,7 @@ def perform_action():
             return "Missmatch detected. Less resources used than required", 418
 
         # store success
-        performed_action = PerformedAction(str(uuid.uuid4()), util.get_current_secs() + action.duration_sec,
+        performed_action = PerformedAction(str(uuid.uuid4()), time.current_time_s() + action.duration_sec,
                                            execution.id, action, resources_locked, player.tan)
         patient.action_queue[performed_action.id] = performed_action
         return {"performed_action_id": performed_action.id}

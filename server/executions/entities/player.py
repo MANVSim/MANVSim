@@ -1,28 +1,13 @@
 import json
-from enum import IntEnum
 
 from executions.entities.location import Location
+from executions.entities.role import Role
 
 
 class Player:
 
-    class Role(IntEnum):
-        """
-        Models the players role in the scenario. Each role has an integer value of 'power' assigned that has no meaning
-        other than to define an order between the different roles.
-
-        For example, NOTARZT > NOTFALLSANITAETER = True. This can be used to check the eligibility of a player to
-        perform an action.
-        """
-        UNKNOWN = -1
-        ORGL = 0  # Organisatorischer Leiter Rettungsdienst
-        RETTUNGSASSISTENT = 100
-        RETTUNGSSANITAETER = 200
-        NOTFALLSANITAETER = 300
-        NOTARZT = 400
-
-    def __init__(self, tan: str, name: str, alerted: bool, activation_delay_sec: int, location: Location,
-                 accessible_locations: set[Location], role: 'Player.Role' = Role.UNKNOWN):
+    def __init__(self, tan: str, name: str | None, alerted: bool, activation_delay_sec: int, location: Location | None,
+                 accessible_locations: set[Location], role: Role | None = None):
         self.tan = tan
         self.name = name
         self.role = role
@@ -30,6 +15,11 @@ class Player:
         self.activation_delay_sec = activation_delay_sec
         self.location = location
         self.accessible_locations = accessible_locations
+
+    def __repr__(self):
+        return (f"Player(tan={self.tan!r}, name={self.name!r}, alerted={self.alerted!r}, "
+                f"activation_delay_sec={self.activation_delay_sec!r}, location={self.location!r}, "
+                f"accessible_locations={self.accessible_locations!r}, role={self.role!r})")
 
     def to_dict(self, shallow: bool = False):
         """
@@ -39,7 +29,7 @@ class Player:
         return {
             'tan': self.tan,
             'name': self.name,
-            'role': self.role.name,
+            'role': (self.role if self.role is None else self.role.name),
             'alerted': self.alerted,
             'activation_delay_sec': self.activation_delay_sec,
             'location': self.location.id if shallow else self.location.to_dict(),

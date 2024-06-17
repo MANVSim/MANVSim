@@ -9,6 +9,16 @@
   "loginTAN"     : "TAN",
   "loginServerUrl": "Server URL",
   "loginSubmit"  : "Anmelden",
+  "loginWarningEmptyFields": "Bitte füllen Sie alle Felder aus",
+  "loginWarningRequestFailed": "Der Anmeldeversuch ist fehlgeschlagen: {error}",
+    "@loginWarningRequestFailed": {
+        "placeholders": {
+        "error": {
+            "type": "String",
+            "example": "Server nicht erreichbar"
+        }
+        }
+    },
 
   "waitText": "Warten auf Start der Simulation",
   "waitSkip": "Überspringen",

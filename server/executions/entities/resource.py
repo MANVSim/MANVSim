@@ -1,14 +1,13 @@
 import json
 
-from executions.utils import util
 from executions.utils.timeoutlock import TimeoutLock
+from utils import time
 from vars import ACQUIRE_TIMEOUT
 
 
-# noinspection PyArgumentList
 class Resource:
 
-    def __init__(self, id: int, name: str, quantity: int, picture_ref: str):
+    def __init__(self, id: int, name: str, quantity: int, picture_ref: str | None):
         self.id = id
         self.name = name
         self.quantity = quantity  # quantity >= 10000 indicates infinite resource
@@ -17,6 +16,10 @@ class Resource:
         self.consumable = True
         self.lock = TimeoutLock()
         self.locked_until = 0
+
+    def __repr__(self):
+        return f"Resource(id={self.id!r}, name={self.name!r}, quantity={self.quantity!r}, " \
+               f"picture_ref={self.picture_ref!r}, consumable={self.consumable!r}, locked_until={self.locked_until!r})"
 
     def decrease(self, duration):
         """
@@ -27,7 +30,7 @@ class Resource:
 
          - duration: amount of time the resource might be blocked
         """
-        current_secs = util.get_current_secs()
+        current_secs = time.current_time_s()
         if self.quantity >= 10000:
             return True  # resource is infinite
         elif self.quantity > 0:
@@ -59,12 +62,12 @@ class Resource:
             if acquired:
                 # resources can only be restored if they are non consumables and no other resource has claimed the
                 # resource in the meantime.
-                if not self.consumable and util.get_current_secs() > self.locked_until:
+                if not self.consumable and time.current_time_s() > self.locked_until:
                     self.quantity += 1
             else:
                 raise TimeoutError
 
-    def to_dict(self, shallow: bool = False):
+    def to_dict(self):
         """
         Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
         'shallow'-flag is set, only the object reference in form of a unique identifier is included.
@@ -76,12 +79,12 @@ class Resource:
             'picture_ref': self.picture_ref
         }
 
-    def to_json(self, shallow: bool = False):
+    def to_json(self):
         """
         Returns this object as a JSON. By default, all nested objects are included. In case the 'shallow'-flag is set,
         only the object reference in form of a unique identifier is included.
         """
-        return json.dumps(self.to_dict(shallow))
+        return json.dumps(self.to_dict())
 
 
 def try_lock_all(resources: list['Resource']):

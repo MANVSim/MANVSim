@@ -5,6 +5,7 @@ from executions.entities.patient import Patient
 from executions.entities.performed_action import PerformedAction
 from executions.entities.player import Player
 from executions.entities.resource import Resource
+from executions.entities.role import Role
 from executions.entities.scenario import Scenario
 
 
@@ -25,23 +26,27 @@ def create_test_execution():
     loc_5 = Location(id=5, name="Holstein Stadion", picture_ref="dummy_location.png")
     loc_1 = Location(id=1, name="RTW", picture_ref="dummy_rtw.jpg", resources=[res_3], locations={loc_2, loc_3, loc_4})
 
+    # Roles
+    role_1 = Role(id=1, name="Notärzt:in", short_name="NA", power=400)
+    role_2 = Role(id=2, name="Rettungsassistent:in", short_name="RA", power=200)
+
     # Players
     player_1 = Player(tan="123ABC", name="Frank Huch", location=loc_1, accessible_locations={loc_2, loc_3, loc_4},
-                      role=Player.Role.RETTUNGSSANITAETER, alerted=False, activation_delay_sec=10)
+                      role=role_2, alerted=False, activation_delay_sec=10)
     player_2 = Player(tan="456DEF", name="Prof. Dr. Reinhard von Hanxleden", location=loc_1,
-                      accessible_locations={loc_2, loc_3, loc_4}, role=Player.Role.NOTARZT, alerted=False,
+                      accessible_locations={loc_2, loc_3, loc_4}, role=role_1, alerted=False,
                       activation_delay_sec=10)
 
     # Actions
     action_1 = Action(id=1, name="EKG schreiben", picture_ref="placeholder.png", duration_sec=120, result="UNDEFINED",
-                      resources_needed=["EKG"], required_role=Player.Role.RETTUNGSASSISTENT)
+                      resources_needed=["EKG"], required_power=200)
     action_2 = Action(id=2, name="Pflaster kleben", picture_ref="placeholder.png", duration_sec=10, result="UNDEFINED",
-                      resources_needed=["Blümchenpflaster"], required_role=Player.Role.NOTARZT)
+                      resources_needed=["Blümchenpflaster"], required_power=400)
     action_3 = Action(id=3, name="Beatmen", picture_ref="placeholder.png", duration_sec=300, result="UNDEFINED",
-                      resources_needed=["Beatmungsgerät"], required_role=Player.Role.RETTUNGSSANITAETER)
+                      resources_needed=["Beatmungsgerät"], required_power=300)
 
     # Performed Actions
-    p_act_1 = PerformedAction(id="1", time=1715459280000, execution_id="1", action=action_2, resources_used=[res_4],
+    p_act_1 = PerformedAction(id="1", time=1715459280000, execution_id=1, action=action_2, resources_used=[res_4],
                               player_tan="123ABC")
 
     # Patients

@@ -22,7 +22,6 @@ def app():
 
     # Set up
     test = create_test_execution()
-    test.status = Execution.Status.RUNNING
     test.id = 2
     player_a = test.players.pop("123ABC")
     player_b = test.players.pop("456DEF")
@@ -32,7 +31,7 @@ def app():
     test.players["654WVU"] = player_b
     exec_before = len(run.exec_dict)
     player_before = len(run.registered_player)
-    run.create_execution(test)
+    run.activate_execution(test)
 
     assert len(run.exec_dict) == exec_before + 1
     assert len(run.registered_player) == player_before + len(test.players)
@@ -40,7 +39,7 @@ def app():
     yield app
 
     # Clean up
-    run.delete_execution(str(test.id))
+    run.deactivate_execution(str(test.id))
     assert len(run.exec_dict) == exec_before
     assert len(run.registered_player) == player_before
 
@@ -55,10 +54,10 @@ def runner(app):
     return app.test_cli_runner()
 
 
-def generate_token(app, valid_payload=True):
+def generate_token(app, valid_payload=True, running=False):
     payload = {
-        "sub": "123ABC",
-        "exec_id": "1",
+        "sub": ("123ABC" if running else "654WVU"),
+        "exec_id": ("1" if running else "2"),
     }
     payload_invalid = {
         "sub": "123ABC",

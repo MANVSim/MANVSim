@@ -1,5 +1,4 @@
-from flask import Blueprint, request, Response
-from flask_api import status
+from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 
 from executions.utils import util

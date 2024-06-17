@@ -1,4 +1,5 @@
 import http
+import json
 
 from executions import run
 from executions.entities.location import Location
@@ -18,9 +19,13 @@ def test_perform_action(client):
     form = {
         "TAN": list(player_ids)[-1]
     }
-    response = client.post(f"/api/login", data=form)
+    headers = {
+        "Content-Type": "application/json"
+    }
+    response = client.post(f"/api/login", data=json.dumps(form), headers=headers)
     assert response.status_code == http.HTTPStatus.OK
-    headers = generate_token(client.application)
+
+    headers = generate_token(client.application, running=True)
     headers["X-CSRFToken"] = response.json["csrf_token"]
 
     # leave location
