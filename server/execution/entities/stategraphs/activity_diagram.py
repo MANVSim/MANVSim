@@ -2,7 +2,7 @@ import json
 import logging
 import time
 
-from executions.entities.stategraphs.patientstate import PatientState
+from execution.entities.stategraphs.patientstate import PatientState
 from utils import time
 
 

@@ -2,7 +2,7 @@ import logging
 import threading
 import time
 
-from executions.entities.resource import Resource
+from execution.entities.resource import Resource
 from utils import time as utime
 
 

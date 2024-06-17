@@ -1,6 +1,6 @@
 from flask_jwt_extended import get_jwt
 
-from executions import run
+from execution import run
 
 
 def __get_param_from_jwt(param):

@@ -1,14 +1,14 @@
 import models
 from app import create_app, db
-from executions import run
-from executions.entities.action import Action
-from executions.entities.execution import Execution
-from executions.entities.location import Location
-from executions.entities.patient import Patient
-from executions.entities.player import Player
-from executions.entities.resource import Resource
-from executions.entities.role import Role
-from executions.entities.scenario import Scenario
+from execution import run
+from execution.entities.action import Action
+from execution.entities.execution import Execution
+from execution.entities.location import Location
+from execution.entities.patient import Patient
+from execution.entities.player import Player
+from execution.entities.resource import Resource
+from execution.entities.role import Role
+from execution.entities.scenario import Scenario
 
 
 def __load_resources(location_id: int) -> list[Resource]:

@@ -1,8 +1,8 @@
 import json
 
-from executions import run
-from executions.entities.execution import Execution
-from executions.tests.conftest import generate_token
+from execution import run
+from execution.entities.execution import Execution
+from execution.tests.conftest import generate_token
 
 execution_ids = run.exec_dict.keys()
 player_ids = run.registered_player.keys()

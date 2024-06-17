@@ -1,8 +1,8 @@
 import http
 import json
 
-from executions import run
-from executions.tests.conftest import generate_token
+from execution import run
+from execution.tests.conftest import generate_token
 
 player_ids = run.registered_player.keys()
 

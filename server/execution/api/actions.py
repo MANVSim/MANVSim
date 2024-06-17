@@ -3,9 +3,9 @@ import uuid
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 
-from executions.entities.performed_action import PerformedAction
-from executions.entities.resource import Resource, try_lock_all, release_all
-from executions.utils import util
+from execution.entities.performed_action import PerformedAction
+from execution.entities.resource import Resource, try_lock_all, release_all
+from execution.utils import util
 from utils import time
 
 api = Blueprint("api-action", __name__)

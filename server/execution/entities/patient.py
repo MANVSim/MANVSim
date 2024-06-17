@@ -1,8 +1,8 @@
 import json
 from enum import Enum
 
-from executions.entities.location import Location
-from executions.entities.performed_action import PerformedAction
+from execution.entities.location import Location
+from execution.entities.performed_action import PerformedAction
 
 
 class Patient:

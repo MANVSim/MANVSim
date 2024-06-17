@@ -2,9 +2,8 @@ import jwt
 import pytest
 
 from app import create_app
-from executions import run
-from executions.entities.execution import Execution
-from executions.tests.entities.dummy_entities import create_test_execution
+from execution import run
+from execution.tests.entities.dummy_entities import create_test_execution
 
 """
 If you’re using an application factory, define an app fixture to create and configure an app instance. 

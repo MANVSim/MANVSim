@@ -1,5 +1,5 @@
-from executions.entities.stategraphs.activity_diagram import ActivityDiagram
-from executions.entities.stategraphs.patientstate import PatientState
+from execution.entities.stategraphs.activity_diagram import ActivityDiagram
+from execution.entities.stategraphs.patientstate import PatientState
 from utils import time
 
 

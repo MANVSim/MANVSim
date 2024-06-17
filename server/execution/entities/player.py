@@ -1,7 +1,7 @@
 import json
 
-from executions.entities.location import Location
-from executions.entities.role import Role
+from execution.entities.location import Location
+from execution.entities.role import Role
 
 
 class Player:

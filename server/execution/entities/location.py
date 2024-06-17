@@ -1,8 +1,8 @@
 import json
 from queue import Queue
 
-from executions.entities.resource import Resource
-from executions.utils.timeoutlock import TimeoutLock
+from execution.entities.resource import Resource
+from execution.utils.timeoutlock import TimeoutLock
 from vars import ACQUIRE_TIMEOUT
 
 

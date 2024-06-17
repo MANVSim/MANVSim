@@ -1,8 +1,8 @@
 import json
 from enum import Enum
 
-from executions.entities.player import Player
-from executions.entities.scenario import Scenario
+from execution.entities.player import Player
+from execution.entities.scenario import Scenario
 
 
 class Execution:

@@ -1,8 +1,8 @@
 import json
 
-from executions.entities.action import Action
-from executions.entities.location import Location
-from executions.entities.patient import Patient
+from execution.entities.action import Action
+from execution.entities.location import Location
+from execution.entities.patient import Patient
 
 
 class Scenario:

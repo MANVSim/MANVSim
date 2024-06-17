@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 
-from executions.utils import util
+from execution.utils import util
 
 api = Blueprint("api-patient", __name__)
 

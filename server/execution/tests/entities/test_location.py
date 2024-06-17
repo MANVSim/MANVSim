@@ -1,4 +1,4 @@
-from executions.entities.location import Location
+from execution.entities.location import Location
 
 
 def test_timeout():

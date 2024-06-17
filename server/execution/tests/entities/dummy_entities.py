@@ -1,12 +1,12 @@
-from executions.entities.action import Action
-from executions.entities.execution import Execution
-from executions.entities.location import Location
-from executions.entities.patient import Patient
-from executions.entities.performed_action import PerformedAction
-from executions.entities.player import Player
-from executions.entities.resource import Resource
-from executions.entities.role import Role
-from executions.entities.scenario import Scenario
+from execution.entities.action import Action
+from execution.entities.execution import Execution
+from execution.entities.location import Location
+from execution.entities.patient import Patient
+from execution.entities.performed_action import PerformedAction
+from execution.entities.player import Player
+from execution.entities.resource import Resource
+from execution.entities.role import Role
+from execution.entities.scenario import Scenario
 
 
 # -- Create Test Scenario/Execution --

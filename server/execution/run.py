@@ -6,10 +6,10 @@ separate file (FIXME: docu update @Louis)
 
 import logging
 
-from executions.entities.execution import Execution
-from executions.entities.player import Player
-from executions.entities.scenario import Scenario
-from executions.tests.entities import dummy_entities
+from execution.entities.execution import Execution
+from execution.entities.player import Player
+from execution.entities.scenario import Scenario
+from execution.tests.entities import dummy_entities
 
 # TEST DATA
 player_a = Player("69", "Finn Bartels", False, 10,  None, set())

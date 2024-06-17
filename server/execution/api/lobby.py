@@ -8,8 +8,8 @@ from flask_api import status
 from flask import Blueprint
 
 from app import csrf
-from executions import run
-from executions.utils import util
+from execution import run
+from execution.utils import util
 
 api = Blueprint("api-lobby", __name__)
 

@@ -1,6 +1,6 @@
 import json
 
-from executions.utils.timeoutlock import TimeoutLock
+from execution.utils.timeoutlock import TimeoutLock
 from utils import time
 from vars import ACQUIRE_TIMEOUT
 

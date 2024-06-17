@@ -2,8 +2,8 @@ from flask import request
 from flask import Blueprint
 from flask_jwt_extended import jwt_required
 
-from executions.utils import util
-from executions.entities.location import Location
+from execution.utils import util
+from execution.entities.location import Location
 
 api = Blueprint("api-location", __name__)
 
