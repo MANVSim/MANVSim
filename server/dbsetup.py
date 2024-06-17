@@ -1,4 +1,5 @@
-from app import create_app, db
+from app import create_app
+from app_config import db, csrf
 from models import (
     Scenario,
     Execution,
@@ -17,7 +18,7 @@ def insert(data):
     db.session.add(data)
 
 
-with create_app().app_context():
+with create_app(csrf=csrf, db=db).app_context():
     insert(Scenario(id=0, name="Busunglück"))
     insert(Scenario(id=1, name="Autounfall"))
     insert(Scenario(id=3, name="Gasexplosion"))
