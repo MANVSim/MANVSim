@@ -40,7 +40,7 @@ def load_location(location_id: int) -> Location | None:
         for child in children_locs:
             sub_locs.add(load_location(child.id))
 
-        return Location(id=loc.id, name=loc.name, picture_ref=loc.picture_ref, resources=resources, locations=sub_locs)
+        return Location(id=loc.id, name=loc.name, picture_ref=loc.picture_ref, resources=resources, sub_locations=sub_locs)
 
 
 def __load_patients(scenario_id: int) -> dict[int, Patient]:

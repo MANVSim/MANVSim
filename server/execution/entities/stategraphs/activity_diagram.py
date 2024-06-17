@@ -1,6 +1,5 @@
 import json
 import logging
-import time
 
 from execution.entities.stategraphs.patientstate import PatientState
 from utils import time

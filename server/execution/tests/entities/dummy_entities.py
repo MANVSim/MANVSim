@@ -24,7 +24,7 @@ def create_test_execution():
     loc_3 = Location(id=3, name="Blauer Rucksack", picture_ref="dummy_blau.png", resources=[res_5])
     loc_4 = Location(id=4, name="EKG", picture_ref="dummy_ekg.png", resources=[res_1])
     loc_5 = Location(id=5, name="Holstein Stadion", picture_ref="dummy_location.png")
-    loc_1 = Location(id=1, name="RTW", picture_ref="dummy_rtw.jpg", resources=[res_3], locations={loc_2, loc_3, loc_4})
+    loc_1 = Location(id=1, name="RTW", picture_ref="dummy_rtw.jpg", resources=[res_3], sub_locations={loc_2, loc_3, loc_4})
 
     # Roles
     role_1 = Role(id=1, name="Notärzt:in", short_name="NA", power=400)
