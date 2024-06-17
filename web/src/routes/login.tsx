@@ -1,9 +1,16 @@
-import { ActionFunctionArgs, Form, Navigate, redirect, useActionData } from "react-router-dom";
-import { Button, Collapse, Form as FormBS } from "react-bootstrap";
+import {
+  ActionFunctionArgs,
+  Form,
+  Navigate,
+  redirect,
+  useActionData,
+} from "react-router-dom"
+import { Button, Collapse, Form as FormBS } from "react-bootstrap"
 import "./login.css"
-import { CsrfInput } from "../contexts/csrf";
-import { tryFetchApi } from "../api";
-import { isLoggedIn } from "../utils";
+import { CsrfInput } from "../contexts/csrf"
+import { tryFetchApi } from "../api"
+import { isLoggedIn } from "../utils"
+import { setStorageItem } from "../storage"
 
 export default function Login() {
   const error = useActionData() as string
@@ -22,14 +29,27 @@ export default function Login() {
           <CsrfInput />
           <FormBS.Group className="my-3" controlId="formGroupUsername">
             <FormBS.Label>Benutzername</FormBS.Label>
-            <FormBS.Control required type="text" placeholder="Benutzername" name="username" autoComplete="username" />
+            <FormBS.Control
+              required
+              type="text"
+              placeholder="Benutzername"
+              name="username"
+              autoComplete="username"
+            />
           </FormBS.Group>
           <FormBS.Group controlId="formGroupPassword">
             <FormBS.Label>Passwort</FormBS.Label>
-            <FormBS.Control required type="password" placeholder="Passwort" name="password" />
+            <FormBS.Control
+              required
+              type="password"
+              placeholder="Passwort"
+              name="password"
+            />
           </FormBS.Group>
           <div className="d-grid gap-2">
-            <Button type="submit" className="my-3">Einloggen</Button>
+            <Button type="submit" className="my-3">
+              Einloggen
+            </Button>
           </div>
           <Collapse in={error !== undefined}>
             <div className="bg-danger p-3 mb-2 rounded-3 text-white">
@@ -44,18 +64,23 @@ export default function Login() {
 
 Login.action = async function ({ request }: ActionFunctionArgs<Request>) {
   const formData = await request.formData()
-  const response = await tryFetchApi("login", { method: "POST", body: formData })
+  const response = await tryFetchApi("login", {
+    method: "POST",
+    body: formData,
+  })
   if (response.status === 401) {
     return "Nutzer oder Passwort ist falsch"
   }
 
-  const json = await response.json() as { token: string, username: string }
+  const json = (await response.json()) as { token: string; username: string }
   if (!("token" in json) || !("username" in json)) {
     throw new Error("Login request returned unknown data")
   }
 
-  localStorage.setItem("token", json.token)
-  localStorage.setItem("user", json.username)
+  setStorageItem("token", json.token)
+  setStorageItem("user", json.username)
+  // localStorage.setItem("token", json.token)
+  // localStorage.setItem("user", json.username)
 
   return redirect("/")
 }

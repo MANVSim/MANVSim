@@ -1,6 +1,12 @@
 import { Button, Card, Container } from "react-bootstrap"
 import QRCode from "react-qr-code"
-import { ActionFunctionArgs, LoaderFunctionArgs, useActionData, useLoaderData, useParams } from "react-router"
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  useActionData,
+  useLoaderData,
+  useParams,
+} from "react-router"
 import { isType } from "../utils"
 import { useEffect, useState } from "react"
 import { getExecutionStatus, startExecution, stopExecution } from "../api"
@@ -16,20 +22,20 @@ function TanCard({ tan }: { tan: string }) {
       <Card.Body>
         <Card.Title className="text-center">{tan}</Card.Title>
       </Card.Body>
-    </Card >
+    </Card>
   )
 }
 
 interface Player {
-  tan: string,
-  name: string,
-  status: string,
+  tan: string
+  name: string
+  status: string
   action: string
 }
 
 interface ExecutionData {
-  id: number,
-  status: string,
+  id: number
+  status: string
   players: Player[]
 }
 
@@ -54,7 +60,13 @@ function ToggleExecution({ execution }: { execution: ExecutionData }) {
     <div className="mt-5">
       <Form method="POST">
         <CsrfInput />
-        <Button name="toggle" value={executionActive ? "stop" : "start"} type="submit">{executionActive ? "Beenden" : "Starten"}</Button>
+        <Button
+          name="toggle"
+          value={executionActive ? "stop" : "start"}
+          type="submit"
+        >
+          {executionActive ? "Beenden" : "Starten"}
+        </Button>
       </Form>
     </div>
   )
@@ -69,7 +81,7 @@ export default function Execution() {
     }
   }, [actionData])
   const [execution, setExecution] = useState<null | ExecutionData>(
-    isExecutionData(loaderData) ? loaderData : null
+    isExecutionData(loaderData) ? loaderData : null,
   )
   const { executionId } = useParams<{ executionId: string }>()
   useEffect(() => {
@@ -83,17 +95,22 @@ export default function Execution() {
     return () => clearInterval(intervalId)
   })
 
-  const [tansAvailable, tansUsed] = _.partition(execution?.players, player => player.status === "")
+  const [tansAvailable, tansUsed] = _.partition(
+    execution?.players,
+    (player) => player.status === "",
+  )
 
   return (
     <div>
-      {execution &&
+      {execution && (
         <div>
           <h2>Ausführung</h2>
           <p>ID: {execution.id}</p>
           <h3>Verfügbare TANs:</h3>
           <Container fluid className="d-flex flex-wrap">
-            {tansAvailable.map(player => <TanCard key={player.tan} tan={player.tan} />)}
+            {tansAvailable.map((player) => (
+              <TanCard key={player.tan} tan={player.tan} />
+            ))}
           </Container>
           <ToggleExecution execution={execution} />
           <h3 className="mt-5">Aktive TANs:</h3>
@@ -107,16 +124,20 @@ export default function Execution() {
               </tr>
             </thead>
             <tbody>
-              {tansUsed.map(player => <PlayerStatus key={player.tan} player={player} />)}
+              {tansUsed.map((player) => (
+                <PlayerStatus key={player.tan} player={player} />
+              ))}
             </tbody>
           </table>
         </div>
-      }
+      )}
     </div>
   )
 }
 
-Execution.loader = async function ({ params: { executionId } }: LoaderFunctionArgs) {
+Execution.loader = async function ({
+  params: { executionId },
+}: LoaderFunctionArgs) {
   if (executionId === undefined) return null
   return await getExecutionStatus(executionId)
 }
@@ -124,7 +145,7 @@ Execution.loader = async function ({ params: { executionId } }: LoaderFunctionAr
 Execution.action = async function ({ params, request }: ActionFunctionArgs) {
   if (params.executionId === undefined) return null
   const formData = await request.formData()
-  console.log(formData);
+  console.log(formData)
 
   if (formData.get("toggle") === "start") {
     return await startExecution(params.executionId, formData)

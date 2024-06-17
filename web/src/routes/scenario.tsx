@@ -15,7 +15,9 @@ function TemplateEntry({ template }: Readonly<{ template: Template }>) {
         {/* <span>{name} ({players} Spieler) </span> */}
         <input type="hidden" name="csrf_token" value={csrfToken} />
         <input type="hidden" name="id" value={id} />
-        <Button type="submit">{name} ({players} Spieler)</Button>
+        <Button type="submit">
+          {name} ({players} Spieler)
+        </Button>
       </Form>
     </ListGroup.Item>
   )
@@ -28,17 +30,18 @@ export default function Scenario() {
     <div>
       <h2>Vorlagen</h2>
       <p>Die folgenden Vorlagen sind verfügbar:</p>
-      {
-        templates.length ?
-          <ListGroup>
-            {
-              templates.map((t: Template) => <TemplateEntry key={t.id} template={t} />)
-            }
-          </ListGroup>
-          :
-          <p><i>Keine Vorlagen</i></p>
-      }
-    </div >
+      {templates.length ? (
+        <ListGroup>
+          {templates.map((t: Template) => (
+            <TemplateEntry key={t.id} template={t} />
+          ))}
+        </ListGroup>
+      ) : (
+        <p>
+          <i>Keine Vorlagen</i>
+        </p>
+      )}
+    </div>
   )
 }
 
@@ -52,4 +55,3 @@ Scenario.action = async function ({ request }: ActionFunctionArgs<Request>) {
   const result = await startScenario(formData)
   return redirect(`/execution/${result.id}`)
 }
-

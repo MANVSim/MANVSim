@@ -34,6 +34,7 @@ def admin_only(func):
 
 
 @api.get("/csrf")
+@csrf.exempt  # TODO: Remove
 def get_csrf():
     return {"csrf_token": generate_csrf()}
 
@@ -53,7 +54,9 @@ def login():
     # Get user object from database
     user = WebUser.get_by_username(username)
     if user is None:
-        return {"error": f"""User with user name '{username}' does not exist"""}, status.HTTP_401_UNAUTHORIZED
+        return {
+            "error": f"""User with user name '{username}' does not exist"""
+        }, status.HTTP_401_UNAUTHORIZED
 
     # Check password
     if not user.check_password(password):
@@ -95,8 +98,10 @@ test_execution = {
             "tan": x,
             "name": "Max Mustermann",
             "status": choice(["", "In Vorbereitung"]),
-            "action": "Legt Zugang"
-        } for x in test_tans]
+            "action": "Legt Zugang",
+        }
+        for x in test_tans
+    ],
 }
 
 

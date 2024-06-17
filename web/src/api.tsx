@@ -1,16 +1,20 @@
 import { redirect } from "react-router"
 import { isType } from "./utils"
+import { getStorageItem } from "./storage"
+import { z } from "zod"
 
 const api = "/web/"
 
-export interface Template {
-  id: number,
-  name: string,
-  players: number
-}
+const Template = z.object({
+  id: z.number(),
+  name: z.string(),
+  players: z.number(),
+})
 
-function isTemplate(obj: object): obj is Template {
-  return isType<Template>(obj, "players", "name", "id")
+export type Template = z.infer<typeof Template>
+
+function isTemplate(obj: unknown): obj is Template {
+  return Template.safeParse(obj).success
 }
 
 interface CsrfToken {
@@ -21,10 +25,13 @@ function isCsrfToken(obj: object): obj is CsrfToken {
   return isType<CsrfToken>(obj, "csrf_token")
 }
 
-export async function tryFetchApi(url: string, body: RequestInit = {}): Promise<Response> {
+export async function tryFetchApi(
+  url: string,
+  body: RequestInit = {},
+): Promise<Response> {
   const apiRequest = new Request(api + url, body)
   apiRequest.headers.append("Content-Type", "application/json")
-  const token = localStorage.getItem("token")
+  const token = getStorageItem("token")
   if (token) {
     apiRequest.headers.append("Authorization", `Bearer ${token}`)
   }
@@ -60,8 +67,13 @@ function isStartResponse(obj: object): obj is StartResponse {
   return isType<StartResponse>(obj, "id")
 }
 
-export async function startScenario(formData: FormData): Promise<StartResponse> {
-  const json = await tryFetchJson("scenario/start", { method: "POST", body: formData })
+export async function startScenario(
+  formData: FormData,
+): Promise<StartResponse> {
+  const json = await tryFetchJson("scenario/start", {
+    method: "POST",
+    body: formData,
+  })
   if (!isStartResponse(json)) {
     throw new Error("Unexpected response")
   }
@@ -76,8 +88,13 @@ function isLoginResponse(obj: object): obj is LoginResponse {
   return isType<LoginResponse>(obj, "token")
 }
 
-export async function getAuthToken(formData: FormData): Promise<string | Response> {
-  const response = await fetch(api + "login", { method: "POST", body: formData })
+export async function getAuthToken(
+  formData: FormData,
+): Promise<string | Response> {
+  const response = await fetch(api + "login", {
+    method: "POST",
+    body: formData,
+  })
   if ([401, 404].includes(response.status)) {
     return "Nutzer oder Passwort ist falsch"
   }
@@ -96,9 +113,15 @@ export async function getExecutionStatus(id: string) {
 }
 
 export async function startExecution(id: string, formData: FormData) {
-  return await tryFetchJson(`execution/${id}/start`, { method: "POST", body: formData })
+  return await tryFetchJson(`execution/${id}/start`, {
+    method: "POST",
+    body: formData,
+  })
 }
 
 export async function stopExecution(id: string, formData: FormData) {
-  return await tryFetchJson(`execution/${id}/stop`, { method: "POST", body: formData })
+  return await tryFetchJson(`execution/${id}/stop`, {
+    method: "POST",
+    body: formData,
+  })
 }
