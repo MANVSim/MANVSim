@@ -77,11 +77,12 @@ export default function Execution() {
         <div>
           <h2>Ausführung</h2>
           <p>ID: {execution.id}</p>
-          <p>Verfübare TANs:</p>
+          <h3>Verfübare TANs:</h3>
           <Container fluid className="d-flex flex-wrap">
             {tansAvailable.map(player => <TanCard key={player.tan} tan={player.tan} />)}
           </Container>
-          <table className="table mt-5">
+          <h3 className="mt-5">Aktive TANs:</h3>
+          <table className="table">
             <thead>
               <tr>
                 <th>TAN</th>
