@@ -93,7 +93,7 @@ export default function Execution() {
               </tr>
             </thead>
             <tbody>
-              {tansUsed.map(player => <PlayerStatus player={player} />)}
+              {tansUsed.map(player => <PlayerStatus key={player.tan} player={player} />)}
             </tbody>
           </table>
         </div>
