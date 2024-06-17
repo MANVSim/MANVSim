@@ -6,4 +6,4 @@ from app import create_app, db
 app = create_app()
 
 # set up all needed migrations
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, render_as_batch=True)

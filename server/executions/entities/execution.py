@@ -13,6 +13,9 @@ class Execution:
         FINISHED = "finished"
         UNKNOWN = "unknown"
 
+        def __repr__(self):
+            return self.name
+
     def __init__(self, id: int, scenario: Scenario, players: dict[str, Player], status: Status,
                  starting_time: int | None = None):
         self.id = id
@@ -20,6 +23,10 @@ class Execution:
         self.players = players
         self.status = status
         self.starting_time = starting_time
+
+    def __repr__(self):
+        return (f"Execution(id={self.id!r}, scenario={self.scenario!r}, players={self.players!r}, "
+                f"status={self.status!r}, starting_time={self.starting_time!r})")
 
     def to_dict(self, shallow: bool = False):
         """

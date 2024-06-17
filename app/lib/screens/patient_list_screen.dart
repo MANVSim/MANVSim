@@ -40,32 +40,32 @@ class _PatientListScreenState extends State<PatientListScreen> {
           child: FutureBuilder<List<Patient>>(
               future: futurePatientList,
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      final patient = snapshot.data![index];
-                      return Card(
-                          child: ListTile(
-                        leading: const Icon(Icons.person), // or person_pin
-                        title: Text(patient.name),
-                        subtitle: Text(patient.injuries),
-                        trailing: Text(patient.id.toString()),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PatientScreen(
-                                      patientId: patient.id,
-                                      patient: patient)));
-                        },
-                      ));
-                    },
-                  );
-                } else if (snapshot.hasError) {
+                if (snapshot.hasError) {
                   return Text('${snapshot.error}');
+                } else if (!snapshot.hasData ||
+                    snapshot.connectionState != ConnectionState.done) {
+                  return const Center(child: CircularProgressIndicator());
                 }
-                return const Center(child: CircularProgressIndicator());
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    final patient = snapshot.data![index];
+                    return Card(
+                        child: ListTile(
+                      leading: const Icon(Icons.person),
+                      title: Text(patient.name),
+                      subtitle: Text(patient.injuries),
+                      trailing: Text(patient.id.toString()),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    PatientScreen(patientId: patient.id)));
+                      },
+                    ));
+                  },
+                );
               }),
         ));
   }
