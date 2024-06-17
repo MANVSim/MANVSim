@@ -23,7 +23,7 @@ class Player:
 
     def to_dict(self, shallow: bool = False):
         """
-        Returns all fields of this class in a dictionary. By default, all nested objects are included. In case thes
+        Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
         'shallow'-flag is set, only the object reference in form of a unique identifier is included.
         """
         return {
