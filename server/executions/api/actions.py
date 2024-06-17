@@ -42,7 +42,7 @@ def perform_action():
         patient = execution.scenario.patients[patient_id]
 
         # check permission and parameters
-        if player.role < action.required_role:
+        if player.role.power < action.required_power:
             return "Missing right detected. You need a higher role to perform that action", 403
 
         if len(resource_ids_used) < len(action.resources_needed):
