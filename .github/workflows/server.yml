@@ -1,5 +1,10 @@
-name: Server Lint & Code Quality
-on: push
+name: Server Lint & Code Quality & Test
+on: 
+  push:
+    branches:
+      - feature/server
+      - bug/server
+
 
 jobs:
   test:
@@ -30,3 +35,9 @@ jobs:
         working-directory: server
         run: |
           pipenv run lint
+
+      # Test execution component
+      - name: Run pytest
+        working-directory: server/executions
+        run: |
+          pipenv run pytest tests/
