@@ -9,6 +9,6 @@ export function getStorageItem<Item extends StorageItem>(
 export function setStorageItem<Item extends StorageItem>(
   key: Item,
   value: string,
-) {
+): void {
   localStorage.setItem(key, value)
 }

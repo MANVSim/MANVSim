@@ -5,8 +5,11 @@ import Button from "react-bootstrap/Button"
 import { ListGroup } from "react-bootstrap"
 import { useCsrf } from "../contexts/use"
 import { Template } from "../types"
+import { ReactElement } from "react"
 
-function TemplateEntry({ template }: Readonly<{ template: Template }>) {
+function TemplateEntry({
+  template,
+}: Readonly<{ template: Template }>): ReactElement {
   const { id, players, name } = template
   const csrfToken = useCsrf()
 
@@ -24,7 +27,7 @@ function TemplateEntry({ template }: Readonly<{ template: Template }>) {
   )
 }
 
-export default function Scenario() {
+export default function Scenario(): ReactElement {
   const loaderData = useLoaderData() as { templates: Array<Template> }
   const { templates } = loaderData
   return (
@@ -46,12 +49,14 @@ export default function Scenario() {
   )
 }
 
-Scenario.loader = async function () {
+Scenario.loader = async function (): Promise<{ templates: Template[] }> {
   const templates = await getTemplates()
   return { templates: templates }
 }
 
-Scenario.action = async function ({ request }: ActionFunctionArgs<Request>) {
+Scenario.action = async function ({
+  request,
+}: ActionFunctionArgs<Request>): Promise<Response> {
   const formData = await request.formData()
   const result = await startScenario(formData)
   return redirect(`/execution/${result.id}`)

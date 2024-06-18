@@ -7,7 +7,7 @@ import {
   useLoaderData,
   useParams,
 } from "react-router"
-import { useEffect, useState } from "react"
+import { ReactElement, useEffect, useState } from "react"
 import { getExecutionStatus, startExecution, stopExecution } from "../api"
 import _ from "lodash"
 import { config } from "../config"
@@ -15,7 +15,7 @@ import { Form } from "react-router-dom"
 import { CsrfInput } from "../contexts/csrf"
 import { Player, ExecutionData, isExecutionData } from "../types"
 
-function TanCard({ tan }: { tan: string }) {
+function TanCard({ tan }: { tan: string }): ReactElement {
   return (
     <Card className="d-flex m-1">
       <QRCode value={tan} className="align-self-center p-3" />
@@ -26,7 +26,7 @@ function TanCard({ tan }: { tan: string }) {
   )
 }
 
-function PlayerStatus({ player }: { player: Player }) {
+function PlayerStatus({ player }: { player: Player }): ReactElement {
   return (
     <tr>
       <td>{player.tan}</td>
@@ -37,7 +37,7 @@ function PlayerStatus({ player }: { player: Player }) {
   )
 }
 
-function ToggleExecution({ execution }: { execution: ExecutionData }) {
+function ToggleExecution({ execution }: { execution: ExecutionData }): ReactElement {
   const executionActive = execution.status !== ""
   return (
     <div className="mt-5">
@@ -55,7 +55,7 @@ function ToggleExecution({ execution }: { execution: ExecutionData }) {
   )
 }
 
-export default function Execution() {
+export default function Execution(): ReactElement {
   const loaderData = useLoaderData()
   const actionData = useActionData()
   useEffect(() => {

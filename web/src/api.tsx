@@ -37,7 +37,7 @@ export async function getTemplates(): Promise<Template[]> {
   throw Error(`Could not load templates!`)
 }
 
-export async function getCsrfToken() {
+export async function getCsrfToken(): Promise<string> {
   const json = await tryFetchJson("csrf")
   if (!isCsrfToken(json)) {
     throw new Error("Fetched json does not contain a CSRF Token!")
@@ -77,18 +77,24 @@ export async function getAuthToken(
   return redirect("/")
 }
 
-export async function getExecutionStatus(id: string) {
+export async function getExecutionStatus(id: string): Promise<object> {
   return tryFetchJson(`execution/${id}`)
 }
 
-export async function startExecution(id: string, formData: FormData) {
+export async function startExecution(
+  id: string,
+  formData: FormData,
+): Promise<object> {
   return tryFetchJson(`execution/${id}/start`, {
     method: "POST",
     body: formData,
   })
 }
 
-export async function stopExecution(id: string, formData: FormData) {
+export async function stopExecution(
+  id: string,
+  formData: FormData,
+): Promise<object> {
   return tryFetchJson(`execution/${id}/stop`, {
     method: "POST",
     body: formData,

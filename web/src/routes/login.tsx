@@ -11,8 +11,9 @@ import { CsrfInput } from "../contexts/csrf"
 import { tryFetchApi } from "../api"
 import { isLoggedIn } from "../utils"
 import { setStorageItem } from "../storage"
+import { ReactElement } from "react"
 
-export default function Login() {
+export default function Login(): ReactElement {
   const error = useActionData() as string
 
   if (isLoggedIn()) {
@@ -62,7 +63,9 @@ export default function Login() {
   )
 }
 
-Login.action = async function ({ request }: ActionFunctionArgs<Request>) {
+Login.action = async function ({
+  request,
+}: ActionFunctionArgs<Request>): Promise<string | Response> {
   const formData = await request.formData()
   const response = await tryFetchApi("login", {
     method: "POST",

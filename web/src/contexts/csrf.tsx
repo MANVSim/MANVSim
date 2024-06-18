@@ -1,4 +1,5 @@
 import {
+  ReactElement,
   ReactNode,
   createContext,
   useContext,
@@ -9,12 +10,16 @@ import { getCsrfToken } from "../api"
 
 export const CsrfContext = createContext("")
 
-export function CsrfInput() {
+export function CsrfInput(): ReactElement {
   const csrfToken = useContext(CsrfContext)
   return <input type="hidden" value={csrfToken} name="csrf_token" />
 }
 
-export function CsrfProvider({ children }: { children: ReactNode }) {
+export function CsrfProvider({
+  children,
+}: {
+  children: ReactNode
+}): ReactElement {
   const [csrfToken, setCsrfToken] = useState("")
   useEffect(() => {
     getCsrfToken().then((token) => setCsrfToken(token))

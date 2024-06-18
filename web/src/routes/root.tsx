@@ -8,8 +8,9 @@ import Nav from "react-bootstrap/Nav"
 import Navbar from "react-bootstrap/Navbar"
 import { NavDropdown } from "react-bootstrap"
 import { isLoggedIn } from "../utils"
+import { ReactElement } from "react"
 
-function NavLink({ to, name }: { to: string; name: string }) {
+function NavLink({ to, name }: { to: string; name: string }): ReactElement {
   return (
     <LinkContainer to={to}>
       <Nav.Link>{name}</Nav.Link>
@@ -17,7 +18,7 @@ function NavLink({ to, name }: { to: string; name: string }) {
   )
 }
 
-export default function Root() {
+export default function Root(): ReactElement {
   const navigate = useNavigate()
 
   if (!isLoggedIn()) {
