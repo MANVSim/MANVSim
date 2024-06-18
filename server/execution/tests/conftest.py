@@ -54,13 +54,13 @@ def runner(app):
     return app.test_cli_runner()
 
 
-def generate_token(app, valid_payload=True, running=False):
+def generate_token(app, valid_payload=True, running=False, plid="123ABC"):
     payload = {
-        "sub": ("123ABC" if running else "654WVU"),
+        "sub": (plid if running else "654WVU"),
         "exec_id": ("1" if running else "2"),
     }
     payload_invalid = {
-        "sub": "123ABC",
+        "sub": plid,
         "exec_id": "-1",
     }
     if valid_payload:
