@@ -1,7 +1,6 @@
-import app_config
 import models
 from app import create_app
-from app_config import db
+from app_config import db, csrf
 from execution import run
 from execution.entities.execution import Execution
 from execution.entities.location import Location
@@ -123,9 +122,9 @@ def test_load_execution():
     run.active_executions = {}
     run.registered_players = {}
 
-    with create_app(app_config.csrf, app_config.db).app_context():
+    with create_app(csrf, db).app_context():
         # Load Executions from DB
-        db_execs = app_config.db.session.query(models.Execution).all()
+        db_execs = db.session.query(models.Execution).all()
         for ex in db_execs:
             assert entityloader.load_execution(ex.id)
 
