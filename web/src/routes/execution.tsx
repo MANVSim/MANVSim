@@ -122,7 +122,7 @@ Execution.loader = async function ({
   params: { executionId },
 }: LoaderFunctionArgs) {
   if (executionId === undefined) return null
-  return await getExecutionStatus(executionId)
+  return getExecutionStatus(executionId)
 }
 
 Execution.action = async function ({ params, request }: ActionFunctionArgs) {
@@ -131,8 +131,8 @@ Execution.action = async function ({ params, request }: ActionFunctionArgs) {
   console.log(formData)
 
   if (formData.get("toggle") === "start") {
-    return await startExecution(params.executionId, formData)
+    return startExecution(params.executionId, formData)
   } else {
-    return await stopExecution(params.executionId, formData)
+    return stopExecution(params.executionId, formData)
   }
 }

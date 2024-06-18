@@ -14,12 +14,12 @@ export async function tryFetchApi(
   if (token) {
     apiRequest.headers.append("Authorization", `Bearer ${token}`)
   }
-  return await fetch(apiRequest)
+  return fetch(apiRequest)
 }
 
 export async function tryFetchJson(url: string, body = {}): Promise<object> {
   const response = await tryFetchApi(url, body)
-  return await response.json()
+  return response.json()
 }
 
 export async function getTemplates(): Promise<Template[]> {
@@ -71,19 +71,18 @@ export async function getAuthToken(
 }
 
 export async function getExecutionStatus(id: string) {
-  const json = await tryFetchJson(`execution/${id}`)
-  return json
+  return tryFetchJson(`execution/${id}`)
 }
 
 export async function startExecution(id: string, formData: FormData) {
-  return await tryFetchJson(`execution/${id}/start`, {
+  return tryFetchJson(`execution/${id}/start`, {
     method: "POST",
     body: formData,
   })
 }
 
 export async function stopExecution(id: string, formData: FormData) {
-  return await tryFetchJson(`execution/${id}/stop`, {
+  return tryFetchJson(`execution/${id}/stop`, {
     method: "POST",
     body: formData,
   })
