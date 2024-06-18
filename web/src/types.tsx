@@ -2,6 +2,10 @@ import { z } from "zod"
 import { isType } from "./utils"
 import { Dispatch, SetStateAction } from "react"
 
+function generateIs<T>(zobj: ReturnType<typeof z.object>): (x: unknown) => x is T {
+  return (x: unknown): x is T => zobj.safeParse(x).success
+}
+
 const template = z.object({
   id: z.number(),
   name: z.string(),
@@ -10,9 +14,7 @@ const template = z.object({
 
 export type Template = z.infer<typeof template>
 
-export function isTemplate(obj: unknown): obj is Template {
-  return template.safeParse(obj).success
-}
+export const isTemplate = generateIs<Template>(template)
 
 export interface CsrfToken {
   csrf_token: string
