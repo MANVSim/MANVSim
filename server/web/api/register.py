@@ -7,7 +7,7 @@ from flask_api import status
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
-from tans.tans import uniques
+from utils.tans import uniques
 from models import WebUser
 from app import csrf
 
