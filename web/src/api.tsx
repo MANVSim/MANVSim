@@ -5,16 +5,16 @@ import { z } from "zod"
 
 const api = "/web/"
 
-const Template = z.object({
+const template = z.object({
   id: z.number(),
   name: z.string(),
   players: z.number(),
 })
 
-export type Template = z.infer<typeof Template>
+export type Template = z.infer<typeof template>
 
 function isTemplate(obj: unknown): obj is Template {
-  return Template.safeParse(obj).success
+  return template.safeParse(obj).success
 }
 
 interface CsrfToken {
