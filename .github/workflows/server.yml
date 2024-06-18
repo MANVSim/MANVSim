@@ -40,7 +40,7 @@ jobs:
       - name: Initialize database
         working-directory: server
         run: |
-          pipenv run flask --app main db init 2>/dev/null | True
+          pipenv run flask --app main db init 2>/dev/null | true
           pipenv run flask --app main db upgrade
 
       - name: Load test data to database
