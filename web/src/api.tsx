@@ -1,6 +1,13 @@
 import { redirect } from "react-router"
 import { getStorageItem } from "./storage"
-import { Template, isTemplate, isCsrfToken, StartResponse, isStartResponse, isLoginResponse } from "./types"
+import {
+  Template,
+  isTemplate,
+  isCsrfToken,
+  StartResponse,
+  isStartResponse,
+  isLoginResponse,
+} from "./types"
 
 const api = "/web/"
 

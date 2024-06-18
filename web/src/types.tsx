@@ -9,7 +9,9 @@ import { Dispatch, SetStateAction } from "react"
  * @param {ReturnType<typeof z.object>} zobj - zod object that contains the attributes
  * @returns {(x: unknown) => x is T} Function that checks the type of a passed object
  */
-function isTypeFactory<T>(zobj: ReturnType<typeof z.object>): (x: unknown) => x is T {
+function isTypeFactory<T>(
+  zobj: ReturnType<typeof z.object>,
+): (x: unknown) => x is T {
   return (x: unknown): x is T => zobj.safeParse(x).success
 }
 
@@ -32,7 +34,7 @@ export const isTemplate = isTypeFactory<Template>(template)
 
 // CsrfToken
 const csrfToken = z.object({
-  csrf_token: z.string()
+  csrf_token: z.string(),
 })
 
 export type CsrfToken = z.infer<typeof csrfToken>
@@ -47,7 +49,7 @@ export const isCsrfToken = isTypeFactory<CsrfToken>(csrfToken)
 
 // StartResponse
 const startResponse = z.object({
-  id: z.number()
+  id: z.number(),
 })
 
 export type StartResponse = z.infer<typeof startResponse>
@@ -62,7 +64,7 @@ export const isStartResponse = isTypeFactory<StartResponse>(startResponse)
 
 // LoginResponse
 const loginResponse = z.object({
-  token: z.string()
+  token: z.string(),
 })
 
 export type LoginResponse = z.infer<typeof loginResponse>
@@ -80,7 +82,7 @@ const player = z.object({
   tan: z.string(),
   name: z.string(),
   status: z.string(),
-  action: z.string()
+  action: z.string(),
 })
 
 export type Player = z.infer<typeof player>
@@ -88,7 +90,7 @@ export type Player = z.infer<typeof player>
 const executionData = z.object({
   id: z.number(),
   status: z.string(),
-  players: z.array(player)
+  players: z.array(player),
 })
 
 export type ExecutionData = z.infer<typeof executionData>

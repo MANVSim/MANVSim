@@ -1,9 +1,5 @@
 // https://www.robinwieruch.de/react-router-authentication/
-import {
-  ReactNode,
-  createContext,
-  useState,
-} from "react"
+import { ReactNode, createContext, useState } from "react"
 import { AuthValue, Nullable, NullableString } from "../types"
 
 export const AuthContext = createContext<Nullable<AuthValue>>(null)
