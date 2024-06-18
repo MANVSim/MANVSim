@@ -83,7 +83,8 @@ def __load_actions() -> dict[int, Action] | None:
     for ac in acs:
         resources_needed = __get_needed_resource_names(ac.id)
         actions[ac.id] = Action(id=ac.id, name=ac.name, result=ac.results, picture_ref=ac.picture_ref,
-                                duration_sec=ac.duration_secs, resources_needed=resources_needed)
+                                duration_sec=ac.duration_secs, resources_needed=resources_needed,
+                                required_power=ac.required_power)
 
     return actions
 
