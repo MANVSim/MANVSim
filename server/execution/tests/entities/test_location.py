@@ -1,12 +1,8 @@
-import threading
-from time import sleep
-
 from execution import run
 from execution.entities.location import Location
 
 
 def test_timeout():
-
     l = Location(1, "test", ".")
     l.loc_lock.acquire()  # t1
     try:
@@ -21,10 +17,10 @@ def test_timeout():
 
 def test_leave_location(client):
     # Setup
-    execution = run.exec_dict["2"]
+    execution = run.active_executions[2]
     locations = list(execution.scenario.locations.values())
     location_parent = locations[0]
-    location_rm: Location = locations[2]   # "Blauer Rucksack"
+    location_rm: Location = locations[2]  # "Blauer Rucksack"
     resources_rm = location_rm.resources
     remove = {location_rm}
 
@@ -52,5 +48,3 @@ def test_leave_location(client):
     assert location_parent.leave_location(removed=remove)
     l, r = location_parent.get_resource_by_id(resources_rm[0].id)  # try to find a resource on location.
     assert l is None and r is None
-
-

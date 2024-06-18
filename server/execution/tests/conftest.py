@@ -29,19 +29,19 @@ def app():
     player_b.tan = "654WVU"
     test.players["987ZYX"] = player_a
     test.players["654WVU"] = player_b
-    exec_before = len(run.exec_dict)
-    player_before = len(run.registered_player)
+    exec_before = len(run.active_executions)
+    player_before = len(run.registered_players)
     run.activate_execution(test)
 
-    assert len(run.exec_dict) == exec_before + 1
-    assert len(run.registered_player) == player_before + len(test.players)
+    assert len(run.active_executions) == exec_before + 1
+    assert len(run.registered_players) == player_before + len(test.players)
 
     yield app
 
     # Clean up
-    run.deactivate_execution(str(test.id))
-    assert len(run.exec_dict) == exec_before
-    assert len(run.registered_player) == player_before
+    run.deactivate_execution(test.id)
+    assert len(run.active_executions) == exec_before
+    assert len(run.registered_players) == player_before
 
 
 @pytest.fixture()

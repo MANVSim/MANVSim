@@ -1,5 +1,7 @@
+import app_config
 import models
-from app import create_app, db
+from app import create_app
+from app_config import db
 from execution import run
 from execution.entities.action import Action
 from execution.entities.execution import Execution
@@ -28,7 +30,7 @@ def load_location(location_id: int) -> Location | None:
 
     Returns Location object or None (in case of an error).
     """
-    with create_app().app_context():
+    with create_app(app_config.csrf, db).app_context():
         loc: models.Location = db.session.query(models.Location).filter(models.Location.id == location_id).first()
         if not loc:
             return None
@@ -40,7 +42,8 @@ def load_location(location_id: int) -> Location | None:
         for child in children_locs:
             sub_locs.add(load_location(child.id))
 
-        return Location(id=loc.id, name=loc.name, picture_ref=loc.picture_ref, resources=resources, sub_locations=sub_locs)
+        return Location(id=loc.id, name=loc.name, picture_ref=loc.picture_ref, resources=resources,
+                        sub_locations=sub_locs)
 
 
 def __load_patients(scenario_id: int) -> dict[int, Patient]:
@@ -94,12 +97,12 @@ def __load_scenario(scenario_id: int) -> Scenario | None:
 
     # Load all actions
     actions = __load_actions()
-    if not actions:
+    if actions is None:
         return None
 
     # Load all patients in this scenario
     patients = __load_patients(scenario_id)
-    if not patients:
+    if patients is None:
         return None
 
     # Locations are loaded on-demand as there is no mapping between scenario/execution and locations. Only exception are
@@ -143,7 +146,7 @@ def load_execution(exec_id: int) -> bool:
 
     Returns True for success, False otherwise.
     """
-    with create_app().app_context():
+    with create_app(app_config.csrf, db).app_context():
         ex: models.Execution = db.session.query(models.Execution).filter_by(id=exec_id).first()
         # If query yields no result, report failure
         if not ex:
@@ -151,12 +154,12 @@ def load_execution(exec_id: int) -> bool:
 
         players = __load_players(ex.id)
         # If players could not be loaded, report failure
-        if not players:
+        if players is None:
             return False
 
         scenario = __load_scenario(ex.scenario_id)
         # If scenario data could not be loaded, report failure
-        if not scenario:
+        if scenario is None:
             return False
 
         # Add player locations to scenario locations
@@ -164,8 +167,7 @@ def load_execution(exec_id: int) -> bool:
             if player.location and player.location.id not in scenario.locations:
                 scenario.locations[player.location.id] = player.location
 
-        execution = Execution(id=ex.id, scenario=scenario, starting_time=-1, players=players,
-                              status=Execution.Status.PENDING)
+        execution = Execution(id=ex.id, scenario=scenario, players=players, status=Execution.Status.PENDING)
         # Activate execution (makes it accessible by API)
         run.activate_execution(execution)
         return True

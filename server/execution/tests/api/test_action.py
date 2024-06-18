@@ -5,7 +5,7 @@ from execution import run
 from execution.entities.location import Location
 from execution.tests.conftest import generate_token
 
-player_ids = run.registered_player.keys()
+player_ids = run.registered_players.keys()
 
 
 def test_perform_action(client):
@@ -63,7 +63,7 @@ def test_perform_action_but_blocked_to_leaving(client):
     beforehand. Therefor not action is enqueued.
     """
     # Setup
-    execution = run.exec_dict["2"]
+    execution = run.active_executions[2]
     locations = list(execution.scenario.locations.values())
     location: Location = locations[3]  # EKG
 
