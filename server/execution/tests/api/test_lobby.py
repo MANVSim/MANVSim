@@ -4,8 +4,8 @@ from execution import run
 from execution.entities.execution import Execution
 from execution.tests.conftest import generate_token
 
-execution_ids = run.exec_dict.keys()
-player_ids = run.registered_player.keys()
+execution_ids = run.active_executions.keys()
+player_ids = run.registered_players.keys()
 
 
 def test_active_player(client):
@@ -30,7 +30,7 @@ def test_active_player(client):
 
 def test_current_exec_status(client):
     execution_id = list(execution_ids)[-1]
-    test_execution: Execution = run.exec_dict[execution_id]
+    test_execution: Execution = run.active_executions[execution_id]
     headers = generate_token(client.application)
     headers_invalid_payload = generate_token(client.application, valid_payload=False)
 

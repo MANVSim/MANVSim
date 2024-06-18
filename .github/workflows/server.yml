@@ -36,7 +36,18 @@ jobs:
         working-directory: server
         run: |
           pipenv run lint
+  
+      - name: Initialize database
+        working-directory: server
+        run: |
+          pipenv run flask --app main db init 2>/dev/null | true
+          pipenv run flask --app main db upgrade
 
+      - name: Load test data to database
+        working-directory: server
+        run: |
+          pipenv run python dbsetup.py
+    
       # Test execution component
       - name: Run pytest
         working-directory: server/execution

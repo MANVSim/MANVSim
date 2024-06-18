@@ -17,7 +17,7 @@ class Execution:
             return self.name
 
     def __init__(self, id: int, scenario: Scenario, players: dict[str, Player], status: Status,
-                 starting_time: int | None = None):
+                 starting_time: int = -1):
         self.id = id
         self.scenario = scenario
         self.players = players

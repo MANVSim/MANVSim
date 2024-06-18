@@ -29,8 +29,8 @@ def login():
     try:
         data = request.get_json()
         tan = data["TAN"]
-        exec_id = run.registered_player[tan]
-        player = run.exec_dict[exec_id].players[tan]
+        exec_id = run.registered_players[tan]
+        player = run.active_executions[exec_id].players[tan]
         expires = datetime.timedelta(hours=12)
         additional_claims = {"exec_id": exec_id}
         access_token = create_access_token(identity=tan, expires_delta=expires, additional_claims=additional_claims)
