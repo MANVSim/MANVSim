@@ -1,11 +1,19 @@
 import { z } from "zod"
-import { isType } from "./utils"
 import { Dispatch, SetStateAction } from "react"
 
-function generateIs<T>(zobj: ReturnType<typeof z.object>): (x: unknown) => x is T {
+/**
+ * Higher order function that returns a function which checks if a given object
+ * is of the required type.
+ *
+ * @template T - The interface that the object should match
+ * @param {ReturnType<typeof z.object>} zobj - zod object that contains the attributes
+ * @returns {(x: unknown) => x is T} Function that checks the type of a passed object
+ */
+function isTypeFactory<T>(zobj: ReturnType<typeof z.object>): (x: unknown) => x is T {
   return (x: unknown): x is T => zobj.safeParse(x).success
 }
 
+// Template
 const template = z.object({
   id: z.number(),
   name: z.string(),
@@ -14,49 +22,86 @@ const template = z.object({
 
 export type Template = z.infer<typeof template>
 
-export const isTemplate = generateIs<Template>(template)
+/**
+ * Checks if a variable matches the Template interface
+ *
+ * @param {unknown} x - Variable to check
+ * @returns {obj is Template} true when variable is a template
+ */
+export const isTemplate = isTypeFactory<Template>(template)
 
-export interface CsrfToken {
-  csrf_token: string
-}
+// CsrfToken
+const csrfToken = z.object({
+  csrf_token: z.string()
+})
 
-export function isCsrfToken(obj: object): obj is CsrfToken {
-  return isType<CsrfToken>(obj, "csrf_token")
-}
+export type CsrfToken = z.infer<typeof csrfToken>
 
-export interface StartResponse {
-  id: number
-}
+/**
+ * Checks if a variable matches the CsrfToken interface
+ *
+ * @param {unknown} x - Variable to check
+ * @returns {obj is CsrfToken} true when variable is a CSRF token
+ */
+export const isCsrfToken = isTypeFactory<CsrfToken>(csrfToken)
 
-export function isStartResponse(obj: object): obj is StartResponse {
-  return isType<StartResponse>(obj, "id")
-}
+// StartResponse
+const startResponse = z.object({
+  id: z.number()
+})
 
-export interface LoginResponse {
-  token: string
-}
+export type StartResponse = z.infer<typeof startResponse>
 
-export function isLoginResponse(obj: object): obj is LoginResponse {
-  return isType<LoginResponse>(obj, "token")
-}
+/**
+ * Checks if a variable matches the StartResponse interface
+ *
+ * @param {unknown} x - Variable to check
+ * @returns {obj is StartResponse} true when variable is a response from the start API call
+ */
+export const isStartResponse = isTypeFactory<StartResponse>(startResponse)
 
-export interface Player {
-  tan: string
-  name: string
-  status: string
-  action: string
-}
+// LoginResponse
+const loginResponse = z.object({
+  token: z.string()
+})
 
-export interface ExecutionData {
-  id: number
-  status: string
-  players: Player[]
-}
+export type LoginResponse = z.infer<typeof loginResponse>
 
-export function isExecutionData(obj: unknown): obj is ExecutionData {
-  return isType<ExecutionData>(obj, "players", "status", "id")
-}
+/**
+ * Checks if a variable matches the LoginResponse interface
+ *
+ * @param {unknown} x - Variable to check
+ * @returns {obj is LoginResponse} true when variable is a response from the login API call
+ */
+export const isLoginResponse = isTypeFactory<LoginResponse>(loginResponse)
 
+// Player
+const player = z.object({
+  tan: z.string(),
+  name: z.string(),
+  status: z.string(),
+  action: z.string()
+})
+
+export type Player = z.infer<typeof player>
+
+const executionData = z.object({
+  id: z.number(),
+  status: z.string(),
+  players: z.array(player)
+})
+
+export type ExecutionData = z.infer<typeof executionData>
+
+/**
+ * Checks if a variable matches the ExecutionData interface
+ *
+ * @param {unknown} x - Variable to check
+ * @returns {obj is ExecutionData} true when variable matches the ExecutionData interface
+ */
+export const isExecutionData = isTypeFactory<ExecutionData>(executionData)
+
+// AuthValue
 export type Nullable<T> = T | null
 export type NullableString = Nullable<string>
 export type SetAuthTokenType = Dispatch<SetStateAction<NullableString>>
