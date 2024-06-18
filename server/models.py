@@ -50,7 +50,7 @@ class Player(db.Model):
 class Patient(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
-    location: Mapped[int] = mapped_column(ForeignKey("location.id"), nullable=False)
+    location: Mapped[int] = mapped_column(ForeignKey("location.id"), nullable=True)  # If no location is set, one is generated at runtime
     injuries = db.Column(db.JSON(), nullable=False)
     activity_diagram = db.Column(db.JSON(), nullable=False)
 
