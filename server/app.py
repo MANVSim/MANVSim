@@ -7,9 +7,9 @@ from sqlalchemy import MetaData
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.exceptions import BadRequestKeyError
 
-from executions.api import location, patient, actions
-from executions.utils import util
-from executions.entities.execution import Execution
+from execution.api import location, patient, actions
+from execution.utils import util
+from execution.entities.execution import Execution
 
 convention = {
     "ix": "ix_%(column_0_label)s",
@@ -34,8 +34,8 @@ def create_app():
     import models  # noqa: F401
 
     # asynchronously import local packages
-    from executions.api import lobby
     import web.setup
+    from execution.api import lobby
 
     app = Flask(__name__, static_folder="../web/dist")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
