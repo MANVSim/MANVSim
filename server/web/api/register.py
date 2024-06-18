@@ -55,7 +55,7 @@ def login():
     user = WebUser.get_by_username(username)
     if user is None:
         return {
-            "error": f"""User with user name '{username}' does not exist"""
+            "error": f"User with user name '{username}' does not exist"
         }, status.HTTP_401_UNAUTHORIZED
 
     # Check password
