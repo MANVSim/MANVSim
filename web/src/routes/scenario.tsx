@@ -1,9 +1,10 @@
 import { ActionFunctionArgs, useLoaderData, redirect } from "react-router"
-import { Template, getTemplates, startScenario } from "../api"
+import { getTemplates, startScenario } from "../api"
 import { Form } from "react-router-dom"
 import Button from "react-bootstrap/Button"
 import { ListGroup } from "react-bootstrap"
 import { useCsrf } from "../contexts/use"
+import { Template } from "../types"
 
 function TemplateEntry({ template }: Readonly<{ template: Template }>) {
   const { id, players, name } = template

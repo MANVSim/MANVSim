@@ -1,29 +1,8 @@
 import { redirect } from "react-router"
-import { isType } from "./utils"
 import { getStorageItem } from "./storage"
-import { z } from "zod"
+import { Template, isTemplate, isCsrfToken, StartResponse, isStartResponse, isLoginResponse } from "./types"
 
 const api = "/web/"
-
-const template = z.object({
-  id: z.number(),
-  name: z.string(),
-  players: z.number(),
-})
-
-export type Template = z.infer<typeof template>
-
-function isTemplate(obj: unknown): obj is Template {
-  return template.safeParse(obj).success
-}
-
-interface CsrfToken {
-  csrf_token: string
-}
-
-function isCsrfToken(obj: object): obj is CsrfToken {
-  return isType<CsrfToken>(obj, "csrf_token")
-}
 
 export async function tryFetchApi(
   url: string,
@@ -59,14 +38,6 @@ export async function getCsrfToken() {
   return json.csrf_token
 }
 
-interface StartResponse {
-  id: number
-}
-
-function isStartResponse(obj: object): obj is StartResponse {
-  return isType<StartResponse>(obj, "id")
-}
-
 export async function startScenario(
   formData: FormData,
 ): Promise<StartResponse> {
@@ -78,14 +49,6 @@ export async function startScenario(
     throw new Error("Unexpected response")
   }
   return json
-}
-
-interface LoginResponse {
-  token: string
-}
-
-function isLoginResponse(obj: object): obj is LoginResponse {
-  return isType<LoginResponse>(obj, "token")
 }
 
 export async function getAuthToken(

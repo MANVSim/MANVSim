@@ -1,20 +1,10 @@
 // https://www.robinwieruch.de/react-router-authentication/
 import {
-  Dispatch,
   ReactNode,
-  SetStateAction,
   createContext,
   useState,
 } from "react"
-
-type Nullable<T> = T | null
-type NullableString = Nullable<string>
-export type SetAuthTokenType = Dispatch<SetStateAction<NullableString>>
-
-interface AuthValue {
-  authToken: NullableString
-  setAuthToken: SetAuthTokenType
-}
+import { AuthValue, Nullable, NullableString } from "../types"
 
 export const AuthContext = createContext<Nullable<AuthValue>>(null)
 

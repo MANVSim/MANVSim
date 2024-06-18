@@ -7,13 +7,13 @@ import {
   useLoaderData,
   useParams,
 } from "react-router"
-import { isType } from "../utils"
 import { useEffect, useState } from "react"
 import { getExecutionStatus, startExecution, stopExecution } from "../api"
 import _ from "lodash"
 import { config } from "../config"
 import { Form } from "react-router-dom"
 import { CsrfInput } from "../contexts/csrf"
+import { Player, ExecutionData, isExecutionData } from "../types"
 
 function TanCard({ tan }: { tan: string }) {
   return (
@@ -24,23 +24,6 @@ function TanCard({ tan }: { tan: string }) {
       </Card.Body>
     </Card>
   )
-}
-
-interface Player {
-  tan: string
-  name: string
-  status: string
-  action: string
-}
-
-interface ExecutionData {
-  id: number
-  status: string
-  players: Player[]
-}
-
-function isExecutionData(obj: unknown): obj is ExecutionData {
-  return isType<ExecutionData>(obj, "players", "status", "id")
 }
 
 function PlayerStatus({ player }: { player: Player }) {
