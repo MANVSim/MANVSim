@@ -3,7 +3,7 @@ import { isType } from "./utils"
 import { getStorageItem } from "./storage"
 import { z } from "zod"
 
-const api = "/web/"
+const api = "/"
 
 const template = z.object({
   id: z.number(),

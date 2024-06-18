@@ -75,6 +75,8 @@ def create_app():
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve(path):
+        if not path.startswith("/"):
+            path = f"/{path}"
         if path != "" and os.path.exists(app.static_folder + "/" + path):
             return send_from_directory(app.static_folder, path)
         elif path == "/" or path == "":
@@ -84,8 +86,6 @@ def create_app():
                 "API Endpoint not found. Please refactor your request or contact the admin",
                 404,
             )
-        elif path.startswith("web/"):
-            return {"error": "Unknown endpoint"}, 404
         else:
             return redirect("/")
 
