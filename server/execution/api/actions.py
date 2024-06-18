@@ -91,6 +91,7 @@ def perform_action():
 
             if not res.decrease(duration=action.duration_sec):
                 rollback_quantity(backup)
+                release_all_resources(resources_locked)  # release all locks after edit
                 return "Resource is not available", 409
 
             backup.append(res)

@@ -13,11 +13,11 @@ from execution.entities.scenario import Scenario
 
 def create_test_execution():
     # Resources
-    res_1 = Resource(id=1, name="EKG", quantity=1, picture_ref="dummy_ekg.png")
+    res_1 = Resource(id=1, name="EKG", quantity=1, picture_ref="dummy_ekg.png", consumable=False)
     res_2 = Resource(id=2, name="Infusion", quantity=3, picture_ref="dummy_infusion.png")
-    res_3 = Resource(id=3, name="Trage", quantity=4, picture_ref="dummy_trage.png")
-    res_4 = Resource(id=4, name="Blümchenpflaster", quantity=500, picture_ref="dummy_pflaster.png")
-    res_5 = Resource(id=5, name="Beatmungsgerät", quantity=1, picture_ref="dummy_beatmung.png")
+    res_3 = Resource(id=3, name="Trage", quantity=4, picture_ref="dummy_trage.png", consumable=False)
+    res_4 = Resource(id=4, name="Blümchenpflaster", quantity=10000, picture_ref="dummy_pflaster.png")
+    res_5 = Resource(id=5, name="Beatmungsgerät", quantity=1, picture_ref="dummy_beatmung.png", consumable=False)
 
     # Locations
     loc_2 = Location(id=2, name="Roter Rucksack", picture_ref="dummy_rot.png", resources=[res_2, res_4])
@@ -38,7 +38,7 @@ def create_test_execution():
                       activation_delay_sec=10)
 
     # Actions
-    action_1 = Action(id=1, name="EKG schreiben", picture_ref="placeholder.png", duration_sec=120, result="UNDEFINED",
+    action_1 = Action(id=1, name="EKG schreiben", picture_ref="placeholder.png", duration_sec=2, result="UNDEFINED",
                       resources_needed=["EKG"], required_power=200)
     action_2 = Action(id=2, name="Pflaster kleben", picture_ref="placeholder.png", duration_sec=10, result="UNDEFINED",
                       resources_needed=["Blümchenpflaster"], required_power=400)
