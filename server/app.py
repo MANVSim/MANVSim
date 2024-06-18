@@ -75,8 +75,6 @@ def create_app():
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve(path):
-        if not path.startswith("/"):
-            path = f"/{path}"
         if path != "" and os.path.exists(app.static_folder + "/" + path):
             return send_from_directory(app.static_folder, path)
         elif path == "/" or path == "":
