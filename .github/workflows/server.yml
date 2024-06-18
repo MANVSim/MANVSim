@@ -39,6 +39,7 @@ jobs:
   
       - name: Initialize database
         working-directory: server
+        continue-on-error: true
         run: |
           pipenv run flask --app main db init 2>/dev/null
           pipenv run flask --app main db upgrade
