@@ -8,11 +8,15 @@ from utils import time
 class ActivityDiagram:
 
     def __init__(self, root: PatientState = None, states: list[PatientState] = None):
-        if states is None:
+        if not states:
             states = []
 
         self.states: dict[str, PatientState] = {}
-        self.current: PatientState = root
+        if root:
+            self.current: PatientState = root
+        else:
+            self.current = PatientState()
+            states.append(self.current)
 
         self.__create_state_dict(states)
 
@@ -20,21 +24,20 @@ class ActivityDiagram:
         """
             A game-method to eventually change states after an action was performed.
             It further checks if the state is still active or has changed due to a timeout. If a timeout occurs, the
-            current state is updated and the treatment fails.
+            current state is updated and the action applied to the new state.
         """
-        if not self.current.is_state_changing(treatment):
-            return True
-
         if self.current.is_state_outdated():
             self.__update_state(self.current)
-            return False
 
-        new_state_uuid = self.current.treatments[treatment]
-        self.current = self.__get_state_by_id(new_state_uuid)
-        if self.current.timelimit != -1:
-            self.current.start_timer()
+        try:
+            new_state_uuid, reveals = self.current.treatments[treatment]
+            self.current = self.__get_state_by_id(new_state_uuid)
+            if self.current.timelimit != -1:
+                self.current.start_timer()
+        except KeyError:
+            return []   # if the treatment is not placed in the updated state return no reveals
 
-        return True
+        return reveals
 
     def add_state(self, state: PatientState, force_update: bool = False):
         """ An administration method to extend the activity diagram with another state. """

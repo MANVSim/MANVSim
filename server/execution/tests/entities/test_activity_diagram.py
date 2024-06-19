@@ -1,3 +1,5 @@
+from json import JSONDecodeError
+
 from execution.entities.stategraphs.activity_diagram import ActivityDiagram
 from execution.entities.stategraphs.patientstate import PatientState
 from utils import time
@@ -8,7 +10,7 @@ def test_time_dash():
     outdated_followup_uuid = "18a23a91-1f60-442a-b5c2-3a97b69e214d"
     update_uuid = "8c049d05-9dea-45f2-9ec1-7d2bb813569f"
     treatments = {
-        "foo": "18a23a91-1f60-442a-b5c2-3a97b69e214d"
+        "foo": ("18a23a91-1f60-442a-b5c2-3a97b69e214d", [])
     }
 
     outdated_state = PatientState(start_time=timestamp - 1000, treatments=treatments, timelimit=500,
@@ -23,8 +25,8 @@ def test_time_dash():
     activity_diagram_v2 = ActivityDiagram(outdated_state,
                                           [outdated_state, outdated_followup_state, updated_state_v2])
 
-    assert not activity_diagram_v1.apply_treatment("foo")
-    assert not activity_diagram_v2.apply_treatment("foo")
+    assert len(activity_diagram_v1.apply_treatment("foo")) == 0
+    assert len(activity_diagram_v2.apply_treatment("foo")) == 0
     assert activity_diagram_v1.current.uuid == update_uuid
     assert activity_diagram_v2.current.uuid == update_uuid
 
@@ -32,8 +34,8 @@ def test_time_dash():
 def test_to_dict():
     timestamp = time.current_time_s()
     treatments = {
-        "knive": "499d9080-dc68-41fc-a0a5-3f3e8563e70c",
-        "infusion": "569f58d7-6cbb-4fde-97ae-f6b9f597c219"
+        "1": ("499d9080-dc68-41fc-a0a5-3f3e8563e70c", []),
+        "2": ("569f58d7-6cbb-4fde-97ae-f6b9f597c219", [])
     }
     state1 = PatientState(treatments=treatments, start_time=timestamp, timelimit=1337,
                           after_time_state_uuid="563b8b6a-11cb-40ad-bc62-6a833aebd024")
@@ -53,8 +55,8 @@ def test_from_json():
                          "timelimit": 1337, 
                          "after_time_state_uuid": "563b8b6a-11cb-40ad-bc62-6a833aebd024", 
                          "treatments": {
-                            "knive": "499d9080-dc68-41fc-a0a5-3f3e8563e70c", 
-                            "infusion": "569f58d7-6cbb-4fde-97ae-f6b9f597c219"
+                            "1": ["499d9080-dc68-41fc-a0a5-3f3e8563e70c", []], 
+                            "2": ["569f58d7-6cbb-4fde-97ae-f6b9f597c219", []]
                             }
                         }
                 },
@@ -64,11 +66,23 @@ def test_from_json():
         "timelimit": 1337, 
         "after_time_state_uuid": "563b8b6a-11cb-40ad-bc62-6a833aebd024", 
         "treatments": {
-            "knive": "499d9080-dc68-41fc-a0a5-3f3e8563e70c", 
-            "infusion": "569f58d7-6cbb-4fde-97ae-f6b9f597c219"
+            "1": ["499d9080-dc68-41fc-a0a5-3f3e8563e70c", []], 
+            "2": ["569f58d7-6cbb-4fde-97ae-f6b9f597c219", []]
             }
         }   
     }"""
+    try:
+        ActivityDiagram().from_json(json_string="{bullshit-string}")
+        assert False
+    except JSONDecodeError:
+        assert True
+
+    try:
+        ActivityDiagram().from_json(json_string=None)
+        assert False
+    except TypeError:
+        assert True
+
     activity_diagram = ActivityDiagram().from_json(json_string=json_string)
     assert activity_diagram.states["54a8174a-d52a-4a76-84cb-d33fcdaf3b8f"].start_time == 1715753665
     assert activity_diagram.current.after_time_state_uuid == "563b8b6a-11cb-40ad-bc62-6a833aebd024"

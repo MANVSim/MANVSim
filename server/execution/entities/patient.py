@@ -3,6 +3,10 @@ from enum import Enum
 
 from execution.entities.location import Location
 from execution.entities.performed_action import PerformedAction
+from execution.entities.stategraphs.activity_diagram import ActivityDiagram
+from execution.utils.timeoutlock import TimeoutLock
+from models import Action
+from vars import ACQUIRE_TIMEOUT
 
 
 class Patient:
@@ -23,7 +27,7 @@ class Patient:
         BLUE = "blue"
         BLACK = "black"
 
-    def __init__(self, id: int, name: str, injuries: str, activity_diagram: str, location: Location,
+    def __init__(self, id: int, name: str, injuries: str, activity_diagram: ActivityDiagram, location: Location,
                  classification: Classification = Classification.NOT_CLASSIFIED,
                  performed_actions: list[PerformedAction] = None):
 
@@ -33,15 +37,21 @@ class Patient:
         self.id = id
         self.name = name
         self.injuries = injuries  # FIXME: Maybe replace by JSON datatype
-        self.activity_diagram = activity_diagram  # FIXME: Maybe replace JSON datatype
+        self.activity_diagram = activity_diagram
         self.location = location
         self.classification = classification
         self.performed_actions = performed_actions
 
         self.action_queue = {}
+        self.lock = TimeoutLock()
 
-    def apply_action(self, action):
-        pass         # TODO implement impact on a patient status.
+    # Suppresses "unexpected argument" warning for the lock.acquire_timeout() method. PyCharm does not recognize the
+    # parameter in the related method definition.
+    # noinspection PyArgumentList
+    def apply_action(self, action: Action):
+        """ Applies the provided action to the current active state. """
+        with self.lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT):
+            return self.activity_diagram.apply_treatment(str(action.id))
 
     def to_dict(self, shallow: bool = False):
         """
@@ -52,7 +62,6 @@ class Patient:
             'id': self.id,
             'name': self.name,
             'injuries': self.injuries,
-            'activity_diagram': self.activity_diagram,
             'location': self.location.id if shallow else self.location.to_dict(),
             'classification': self.classification.name,
             'performed_actions': [performed_action.id if shallow else performed_action.to_dict() for performed_action in
