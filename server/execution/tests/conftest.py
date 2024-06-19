@@ -2,6 +2,7 @@ import jwt
 import pytest
 
 from app import create_app
+from app_config import csrf, db
 from execution import run
 from execution.tests.entities.dummy_entities import create_test_execution
 
@@ -14,7 +15,7 @@ database.
 
 @pytest.fixture()
 def app():
-    app = create_app()
+    app = create_app(csrf=csrf, db=db)
     app.config.update({
         "TESTING": True,
     })
@@ -28,19 +29,19 @@ def app():
     player_b.tan = "654WVU"
     test.players["987ZYX"] = player_a
     test.players["654WVU"] = player_b
-    exec_before = len(run.exec_dict)
-    player_before = len(run.registered_player)
+    exec_before = len(run.active_executions)
+    player_before = len(run.registered_players)
     run.activate_execution(test)
 
-    assert len(run.exec_dict) == exec_before + 1
-    assert len(run.registered_player) == player_before + len(test.players)
+    assert len(run.active_executions) == exec_before + 1
+    assert len(run.registered_players) == player_before + len(test.players)
 
     yield app
 
     # Clean up
-    run.deactivate_execution(str(test.id))
-    assert len(run.exec_dict) == exec_before
-    assert len(run.registered_player) == player_before
+    run.deactivate_execution(test.id)
+    assert len(run.active_executions) == exec_before
+    assert len(run.registered_players) == player_before
 
 
 @pytest.fixture()
@@ -53,13 +54,13 @@ def runner(app):
     return app.test_cli_runner()
 
 
-def generate_token(app, valid_payload=True, running=False):
+def generate_token(app, valid_payload=True, running=False, plid="123ABC"):
     payload = {
-        "sub": ("123ABC" if running else "654WVU"),
+        "sub": (plid if running else "654WVU"),
         "exec_id": ("1" if running else "2"),
     }
     payload_invalid = {
-        "sub": "123ABC",
+        "sub": plid,
         "exec_id": "-1",
     }
     if valid_payload:

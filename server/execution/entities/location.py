@@ -1,7 +1,7 @@
 import json
 from queue import Queue
 
-from execution.entities.resource import Resource
+from execution.entities.resource import Resource, try_lock_all, release_all_resources
 from execution.utils.timeoutlock import TimeoutLock
 from vars import ACQUIRE_TIMEOUT
 
@@ -125,26 +125,71 @@ class Location:
         # resource is contained on the current location
         for res in self.resources:
             if res.id == id:
-                return res
+                return self, res
 
         # resource is contained in another location
         for loc in self.sub_locations:
-            res = loc.get_resource_by_id(id)
+            found_loc, res = loc.get_resource_by_id(id)
             if res is not None:
-                return res
+                return found_loc, res
 
-        return None
+        return None, None
 
     def leave_location(self, removed: set):
         """
         Removes provided location set from the location list. It raises a TimeoutError, if the related lock is not
         accessible.
         """
-        with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
-            if acquired:
-                self.sub_locations -= removed
+        q = Queue()  # for all reachable nodes (locations)
+        locking_q = Queue()  # for all nodes contained in removed
+
+        loc_locked = []  # backup list for lock rollback
+        identified_nodes = 0  # counter to break search iff all nodes were identified
+
+        # identify removing nodes (locations)
+        q.put(self)
+        while not q.empty():
+            loc = q.get()
+            if loc in removed:
+                identified_nodes += 1
+                locking_q.put(loc)
             else:
-                raise TimeoutError
+                _add_locations_to_queue(q, loc)
+
+            if identified_nodes == len(removed):
+                break
+
+        # lock all resources related to the leaving action
+        success = True
+        while not locking_q.empty():
+            loc = locking_q.get()
+            # mark location for a leave
+            if loc.loc_lock.acquire(timeout=ACQUIRE_TIMEOUT):
+                if loc.res_lock.acquire(timeout=ACQUIRE_TIMEOUT):
+
+                    # block resource for editing
+                    if try_lock_all(loc.resources):
+                        loc_locked.append(loc)
+                        _add_locations_to_queue(locking_q, loc)
+                        continue  # locking whole location with its resources successful
+                    else:
+                        success = False
+                        loc.loc_lock.release()
+                        loc.res_lock.release()
+                        break
+
+                if loc.loc_lock.locked():
+                    # res_lock acquire failed but loc_lock was successful
+                    loc.loc_lock.release()
+
+            success = False
+            break
+
+        if success:
+            self.sub_locations -= removed   # reduce location access according to provided set
+
+        release_all_locations(locations=loc_locked, include_resource=True)
+        return success
 
     def to_dict(self, shallow: bool = False):
         """
@@ -165,3 +210,20 @@ class Location:
         only the object reference in form of a unique identifier is included.
         """
         return json.dumps(self.to_dict(shallow))
+
+
+def release_all_locations(locations: ['Location'], include_resource=False):
+    for loc in locations:
+        if include_resource:
+            release_all_resources(loc.resources)
+
+        if loc.res_lock.locked():
+            loc.res_lock.release()
+
+        if loc.loc_lock.locked():
+            loc.loc_lock.release()
+
+
+def _add_locations_to_queue(queue: Queue, location: 'Location'):
+    for child_loc in location.sub_locations:
+        queue.put(child_loc)

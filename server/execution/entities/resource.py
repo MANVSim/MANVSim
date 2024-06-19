@@ -7,13 +7,13 @@ from vars import ACQUIRE_TIMEOUT
 
 class Resource:
 
-    def __init__(self, id: int, name: str, quantity: int, picture_ref: str | None):
+    def __init__(self, id: int, name: str, quantity: int, picture_ref: str | None, consumable: bool = True):
         self.id = id
         self.name = name
         self.quantity = quantity  # quantity >= 10000 indicates infinite resource
         self.picture_ref = picture_ref
 
-        self.consumable = True
+        self.consumable = consumable
         self.lock = TimeoutLock()
         self.locked_until = 0
 
@@ -49,6 +49,9 @@ class Resource:
             self.locked_until = current_secs + duration
             return True
 
+    # Suppresses "unexpected argument" warning for the lock.acquire_timeout() method. PyCharm does not recognize the
+    # parameter in the related method definition.
+    # noinspection PyArgumentList
     def increase(self, force=False):
         """
         Increases the quantity, in case the resource is a non-consumable. Using the force parameter, allows
@@ -107,7 +110,7 @@ def try_lock_all(resources: list['Resource']):
     return success
 
 
-def release_all(resources: list['Resource']):
+def release_all_resources(resources: list['Resource']):
     """ Releases all locks of the resources provided. """
     for res in resources:
         res.lock.release()

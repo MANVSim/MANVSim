@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 
+from app_config import csrf
 from execution.utils import util
 
 api = Blueprint("api-patient", __name__)
@@ -8,6 +9,7 @@ api = Blueprint("api-patient", __name__)
 
 @api.post("/patient/arrive")
 @jwt_required()
+@csrf.exempt
 def get_patient():
     """
     Assigns the requesting player to the patients location and makes the players inventory accessible, iff the player
@@ -15,7 +17,8 @@ def get_patient():
     """
     try:
         execution, player = util.get_execution_and_player()
-        patient_id = int(request.form["patient_id"])
+        form = request.get_json()
+        patient_id = int(form["patient_id"])
         scenario = execution.scenario
         patient = scenario.patients[patient_id]
 
@@ -50,6 +53,7 @@ def get_all_patient():
 
 @api.post("/patient/leave")
 @jwt_required()
+@csrf.exempt
 def leave_patient_location():
     _, player = util.get_execution_and_player()
 
@@ -57,10 +61,10 @@ def leave_patient_location():
         if player.location is None:
             return "Player is not assigned to any patient/location", 405
 
-        player.location.leave_location(player.accessible_locations)
-        player.location = None
+        if player.location.leave_location(player.accessible_locations):
+            player.location = None
+        else:
+            return "Unable to access runtime object. A timeout-error occurred.", 409
 
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
-    except TimeoutError:
-        return "Unable to access runtime object. A timeout-error occurred.", 409

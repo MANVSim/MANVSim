@@ -18,38 +18,37 @@ test_a = Execution(1337, Scenario(17, "Test-Scenario-Pending", {}, {}, {}), {"69
 test_b = dummy_entities.create_test_execution()
 test_b.status = Execution.Status.RUNNING
 
-# Dictionary storing the current available execution, whether they are PENDING, RUNNING or about to FINISH
-exec_dict = {
+# Dictionary storing the currently available executions, whether they are PENDING, RUNNING or about to FINISH
+active_executions: dict[int, Execution] = {
     # "exec_id": "exec: execution_dbo"
-    "1337": test_a,
-    str(test_b.id): test_b,
+    1337: test_a,
+    test_b.id: test_b,
 }
 
 # Dictionary storing all active players in an execution
-registered_player = {
+registered_players: dict[str, int] = {
     # "TAN" : "exec_uuid"
-    "69": "1337",
-    "123ABC": str(test_b.id),
-    "456DEF": str(test_b.id),
+    "69": 1337,
+    "123ABC": test_b.id,
+    "456DEF": test_b.id,
 }
 
 
 # CREATE
 def activate_execution(execution: Execution):
-    exec_id = str(execution.id)  # exec id is unique due to database primary key
-    exec_dict[exec_id] = execution
-    register_player(exec_id, execution.players.values())
+    active_executions[execution.id] = execution
+    register_player(execution.id, execution.players.values())
 
 
 def register_player(exec_id, players):
     for player in players:
-        registered_player[player.tan] = str(exec_id)  # player_tan is unique due to database primary key
+        registered_players[player.tan] = exec_id  # player_tan is unique due to database primary key
 
 
 # DELETE
-def deactivate_execution(exec_id: str):
+def deactivate_execution(exec_id: int):
     try:
-        execution = exec_dict.pop(exec_id)
+        execution = active_executions.pop(exec_id)
         remove_player(execution.players.values())
     except KeyError:
         logging.error(f"{exec_id} already removed")
@@ -58,6 +57,6 @@ def deactivate_execution(exec_id: str):
 def remove_player(players):
     for player in players:
         try:
-            registered_player.pop(player.tan)
+            registered_players.pop(player.tan)
         except KeyError:
             logging.info(f"{player.tan} already removed")

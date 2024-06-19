@@ -3,8 +3,9 @@ import uuid
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 
+from app_config import csrf
 from execution.entities.performed_action import PerformedAction
-from execution.entities.resource import Resource, try_lock_all, release_all
+from execution.entities.resource import Resource, try_lock_all, release_all_resources
 from execution.utils import util
 from utils import time
 
@@ -23,6 +24,7 @@ def get_all_actions():
 
 @api.post("/action/perform")
 @jwt_required()
+@csrf.exempt
 def perform_action():
     """
     Enqueues an action for a patient if:
@@ -34,9 +36,10 @@ def perform_action():
     try:
         # Get request data
         execution, player = util.get_execution_and_player()
-        action_id = int(request.form["action_id"])
-        resource_ids_used = list(map(int, request.form["resources"]))
-        patient_id = int(request.form["patient_id"])
+        form = request.get_json()
+        action_id = int(form["action_id"])
+        resource_ids_used = list(map(int, form["resources"]))
+        patient_id = int(form["patient_id"])
 
         action = execution.scenario.actions[action_id]
         patient = execution.scenario.patients[patient_id]
@@ -49,40 +52,59 @@ def perform_action():
             return "Missmatch detected. Less resources used than required", 418
 
         # get objects from ids
-        resources_used = []
+        resources_used = {}
         for res_id in resource_ids_used:
-            res = player.location.get_resource_by_id(res_id)
+            loc, res = player.location.get_resource_by_id(res_id)
             if res is None:
-                return "Resource not Found. Please update your location-access.", 404
-            resources_used.append(res)
+                return "Unable to identify resource. Please update your location-access.", 404
+            if loc not in resources_used.keys():
+                resources_used[loc] = [res]
+            else:
+                resources_used[loc].append(res)
 
         # Locking for edit
-        if not try_lock_all(resources_used):
+        resources_locked = []
+        success = True
+        for loc in resources_used.keys():
+            if not loc.res_lock.locked():
+                success = try_lock_all(resources_used[loc])
+                if success:
+                    resources_locked += resources_used[loc]
+                else:
+                    break
+            else:
+                success = False
+                break
+
+        if not success:
+            release_all_resources(resources_locked)
             return "Unable to access runtime object. A timeout-error occurred.", 409
 
+        # edit resources
         checklist: list = action.resources_needed[:]
         backup = []
-        for res in resources_used:
+        for res in resources_locked:
             if res.name not in checklist:
                 continue
 
             checklist.remove(res.name)
 
             if not res.decrease(duration=action.duration_sec):
-                rollback(backup)
+                rollback_quantity(backup)
+                release_all_resources(resources_locked)  # release all locks after edit
                 return "Resource is not available", 409
 
             backup.append(res)
 
         # release all locks after edit
-        release_all(resources_used)
+        release_all_resources(resources_locked)
 
         if len(checklist) > 0:
             return "Missmatch detected. Less resources used than required", 418
 
         # store success
         performed_action = PerformedAction(str(uuid.uuid4()), time.current_time_s() + action.duration_sec,
-                                           execution.id, action, resources_used, player.tan)
+                                           execution.id, action, resources_locked, player.tan)
         patient.action_queue[performed_action.id] = performed_action
         return {"performed_action_id": performed_action.id}
 
@@ -118,7 +140,7 @@ def get_perform_action_result():
 
 
 # Helper
-def rollback(backup: list[Resource]):
+def rollback_quantity(backup: list[Resource]):
     """ Initiates an increase operation on every resource provided in the parameter. """
     for res in backup:
         res.increase(force=True)
