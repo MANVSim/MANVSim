@@ -9,7 +9,8 @@ from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
 from utils.tans import uniques
 from models import WebUser
-from app import csrf
+from app_config import csrf
+from .test_data import test_execution
 
 # FIXME sollten wir zusammen mit dem Web package iwann mal umbenennen
 api = Blueprint("api-web", __name__)
@@ -86,23 +87,6 @@ def start_scenario():
         }
     except KeyError:
         return {"error": "Missing id in request"}, 400
-
-
-test_tans = [str(x) for x in uniques(5)]
-
-test_execution = {
-    "id": -1,
-    "status": "",
-    "players": [
-        {
-            "tan": x,
-            "name": "Max Mustermann",
-            "status": choice(["", "In Vorbereitung"]),
-            "action": "Legt Zugang",
-        }
-        for x in test_tans
-    ],
-}
 
 
 @api.get("/execution/<int:id>")
