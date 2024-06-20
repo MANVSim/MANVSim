@@ -124,16 +124,17 @@ def get_perform_action_result():
 
         patient = execution.scenario.patients[patient_id]
         performed_action = patient.action_queue.pop(perform_action_id)
+        result_keys = patient.apply_action(performed_action.action)
         patient.performed_actions.append(performed_action)
-
         # restore non-consumables
         for res in performed_action.resources_used:
             if not res.consumable:
                 res.increase()
 
-        patient.apply_action(performed_action.action)
-
-        return {"patient": patient.to_dict()}
+        return {
+            "patient": patient.to_dict(),
+            "conditions": patient.activity_diagram.current.get_conditions(result_keys)
+        }
 
     except KeyError:
         return "Missing or invalid request parameter detected.", 400

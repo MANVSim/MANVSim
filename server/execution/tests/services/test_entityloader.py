@@ -114,7 +114,7 @@ def _check_actions(scenario: Scenario):
         assert db_action.picture_ref == exec_action.picture_ref
         assert db_action.duration_secs == exec_action.duration_sec
         assert db_action.required_power == exec_action.required_power
-        assert True if db_action.results is not None and exec_action.result is not None else db_action.results is None
+        assert True if db_action.results is not None and exec_action.results is not None else db_action.results is None
 
 
 def test_load_execution():

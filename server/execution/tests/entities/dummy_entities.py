@@ -1,3 +1,5 @@
+import uuid
+
 from execution.entities.action import Action
 from execution.entities.execution import Execution
 from execution.entities.location import Location
@@ -7,6 +9,8 @@ from execution.entities.player import Player
 from execution.entities.resource import Resource
 from execution.entities.role import Role
 from execution.entities.scenario import Scenario
+from execution.entities.stategraphs.activity_diagram import ActivityDiagram
+from execution.entities.stategraphs.patientstate import PatientState
 
 
 # -- Create Test Scenario/Execution --
@@ -38,21 +42,31 @@ def create_test_execution():
                       activation_delay_sec=10)
 
     # Actions
-    action_1 = Action(id=1, name="EKG schreiben", picture_ref="placeholder.png", duration_sec=2, result="UNDEFINED",
-                      resources_needed=["EKG"], required_power=200)
-    action_2 = Action(id=2, name="Pflaster kleben", picture_ref="placeholder.png", duration_sec=10, result="UNDEFINED",
+    action_1 = Action(id=1, name="EKG schreiben", picture_ref="placeholder.png", duration_sec=2,
+                      results=["EKG", "12-Kanal-EKG"], resources_needed=["EKG"], required_power=200)
+    action_2 = Action(id=2, name="Pflaster kleben", picture_ref="placeholder.png", duration_sec=10, results=[],
                       resources_needed=["Blümchenpflaster"], required_power=400)
-    action_3 = Action(id=3, name="Beatmen", picture_ref="placeholder.png", duration_sec=300, result="UNDEFINED",
+    action_3 = Action(id=3, name="Beatmen", picture_ref="placeholder.png", duration_sec=300, results=[],
                       resources_needed=["Beatmungsgerät"], required_power=300)
+    action_4 = Action(id=4, name="Betrachten", picture_ref="placeholder.png", duration_sec=5,
+                      results=["Verletzung", "Haut", "Bewusstsein"], resources_needed=[], required_power=200)
+    action_5 = Action(id=4, name="Wunderheilung", picture_ref="placeholder.png", duration_sec=5, results=[],
+                      resources_needed=[], required_power=400)
 
     # Performed Actions
     p_act_1 = PerformedAction(id="1", time=1715459280000, execution_id=1, action=action_2, resources_used=[res_4],
                               player_tan="123ABC")
 
+    ads = __get_activity_diagrams()
+
     # Patients
-    patient_1 = Patient(id=1, name="Holger Hooligan", injuries="UNDEFINED", activity_diagram="UNDEFINED",
+    patient_1 = Patient(id=1, name="Holger Hooligan", injuries="UNDEFINED", activity_diagram=ads[0],
                         location=loc_5, performed_actions=[p_act_1])
-    patient_2 = Patient(id=2, name="Stefan Schiri", injuries="UNDEFINED", activity_diagram="UNDEFINED",
+    patient_2 = Patient(id=2, name="Stefan Schiri", injuries="UNDEFINED", activity_diagram=ads[1],
+                        location=loc_5)
+    patient_3 = Patient(id=3, name="Hoff Nungs Loserfall", injuries="UNDEFINED", activity_diagram=ads[2],
+                        location=loc_5)
+    patient_4 = Patient(id=3, name="Hoff Nungs Vollerfall", injuries="UNDEFINED", activity_diagram=ads[3],
                         location=loc_5)
 
     # Scenario
@@ -65,12 +79,16 @@ def create_test_execution():
     }
     patient_dict = {
         1: patient_1,
-        2: patient_2
+        2: patient_2,
+        3: patient_3,
+        4: patient_4
     }
     action_dict = {
         1: action_1,
         2: action_2,
         3: action_3,
+        4: action_4,
+        5: action_5
     }
     scenario = Scenario(id=1, name="Schlägerei", patients=patient_dict, actions=action_dict, locations=location_dict)
 
@@ -83,3 +101,137 @@ def create_test_execution():
                           status=Execution.Status.PENDING)
 
     return execution
+
+
+def __get_activity_diagrams():
+    conditions_s1 = {
+        "RR": "120/80mmHg",
+        "HF": "80/min",
+        "AF": "20/min",
+        "SpO2": "95%",
+        "Radialispuls": "tastbar, kräftig",
+        "Rekapzeit": "1.5s",
+        "EKG": "Sinusrhythmus ST-Hebung in II;(Bild)",
+        "12-Kanal-EKG": "STEMI;(12-Kanal-Bild)",
+        "Haut": "blass, kalt schweißig",
+        "Schmerz": "7(NAS) in der Brust, ausstrahlend in linken Arm",
+        "Bewusstsein": "wach, orientiert",
+        "Psychischer Zustand": "aengstlich",
+        "Verletzungen": "keine",
+        "Temperatur": "36,7°C",
+        "BZ": "80 mg / dl",
+        "Auskultation": "vesikuläre Atemgeräusche beidseitig",
+        "Abdomen": "weich",
+    }
+
+    conditions_s2 = {
+        "RR": "70/50mmHg",
+        "HF": "150/min",
+        "AF": "20/min",
+        "SpO2": "84%",
+        "Radialispuls": "tastbar, schwach",
+        "Rekapzeit": "2.5s",
+        "EKG": "Sinusrhythmus tachykarder Sinusrhythmus;(Bild)",
+        "12-Kanal-EKG": "tachykarder Sinusrhythmus;(12-Kanal-Bild)",
+        "Haut": "blass, kalt schweißig, Lippenzyanose",
+        "Schmerz": "vorhanden, aber nicht quantitativ beurteilbar",
+        "Bewusstsein": "reagiert auf Ansprache",
+        "Psychischer Zustand": "nicht beurteilbar",
+        "Verletzungen": "klaffende Kopfplatzwunde, Knochenfragmente sichtbar (zusätzlich Bild)",
+        "Temperatur": "35,3°C",
+        "BZ": "80 mg / dl",
+        "Auskultation": "vesikuläre Atemgeräusche beidseitig",
+        "Abdomen": "weich",
+    }
+
+    conditions_s3 = {
+        "RR": "60/40mmHg",
+        "HF": "140/min",
+        "AF": "30/min",
+        "SpO2": "82%",
+        "Radialispuls": "nicht tastbar",
+        "Rekapzeit": "5s",
+        "EKG": "Sinusrhythmus tachykarder Sinusrhythmus;(Bild)",
+        "12-Kanal-EKG": "tachykarder Sinusrhythmus;(12-Kanal-Bild)",
+        "Haut": "blass, kalt schweißig, Lippenzyanose",
+        "Schmerz": "vorhanden, aber nicht quantitativ beurteilbar",
+        "Bewusstsein": "reagiert auf Schmerzreiz",
+        "Psychischer Zustand": "nicht beurteilbar",
+        "Verletzungen": "amputierter linker Unterschenkel, Prellmarken an Bauch und Brust, linker Oberarm gebrochen, "
+                        "Knochensplitter steht vor",
+        "Temperatur": "35,3°C",
+        "DMS": "keine Gefühl in linker Hand",
+        "BZ": "80 mg/dl",
+        "Auskultation": "vesikuläre Atemgeräusche beidseitig",
+        "Abdomen": "weich",
+    }
+
+    healthy_conditions = {
+        "RR": "120/80mmHg",
+        "HF": "80/min",
+        "AF": "12/min",
+        "SpO2": "98%",
+        "Radialispuls": "tastbar, kräftig",
+        "Rekapzeit": "1.5s",
+        "EKG": "Sinusrhythmus;(Bild)",
+        "12-Kanal-EKG": "STEMI;(12-Kanal-Bild)",
+        "Haut": "blass, kalt schweißig",
+        "Schmerz": "7(NAS) in der Brust, ausstrahlend in linken Arm",
+        "Bewusstsein": "wach, orientiert",
+        "Psychischer Zustand": "aengstlich",
+        "Verletzungen": "keine",
+        "Temperatur": "36,7°C",
+        "BZ": "80 mg / dl",
+        "Auskultation": "vesikuläre Atemgeräusche beidseitig",
+        "Abdomen": "weich",
+    }
+
+    uuid_s1 = str(uuid.uuid4())
+    uuid_s2 = str(uuid.uuid4())
+    uuid_s3 = str(uuid.uuid4())
+    uuid_s4 = str(uuid.uuid4())
+
+    treatment_s1 = {
+        "1": uuid_s1,   # "EKG schreiben"
+        "2": uuid_s1,   # "Pflaster kleben"
+        "3": uuid_s1,   # "Beatmen"
+        "4": uuid_s1,   # "Betrachten"
+        "5": uuid_s4    # "Wunderheilung"
+    }
+
+    treatment_s2 = {
+        "1": uuid_s2,
+        "2": uuid_s2,
+        "3": uuid_s2,
+        "4": uuid_s2,
+        "5": uuid_s4,
+    }
+
+    treatment_s3 = {
+        "1": uuid_s3,
+        "2": uuid_s3,
+        "3": uuid_s3,
+        "4": uuid_s3,
+        "5": uuid_s4,
+    }
+
+    treatment_s4 = {
+        "1": uuid_s4,
+        "2": uuid_s4,
+        "3": uuid_s4,
+        "4": uuid_s4,
+    }
+
+    s1 = PatientState(state_uuid=uuid_s1, treatments=treatment_s1, conditions=conditions_s1)
+    s2 = PatientState(state_uuid=uuid_s2, treatments=treatment_s2, conditions=conditions_s2)
+    s3 = PatientState(state_uuid=uuid_s3, treatments=treatment_s3, conditions=conditions_s3)
+    s4 = PatientState(state_uuid=uuid_s4, treatments=treatment_s4, conditions=healthy_conditions)
+
+    acd1 = ActivityDiagram(root=s1, states=[s1, s4])
+    acd2 = ActivityDiagram(root=s2, states=[s2, s4])
+    acd3 = ActivityDiagram(root=s3, states=[s3, s4])
+    acd4 = ActivityDiagram(root=s4, states=[s4])
+
+    return acd1, acd2, acd3, acd4
+
+

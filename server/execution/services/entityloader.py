@@ -1,3 +1,5 @@
+from json import JSONDecodeError
+
 import models
 from app import create_app
 from app_config import db, csrf
@@ -10,6 +12,7 @@ from execution.entities.player import Player
 from execution.entities.resource import Resource
 from execution.entities.role import Role
 from execution.entities.scenario import Scenario
+from execution.entities.stategraphs.activity_diagram import ActivityDiagram
 
 
 def __load_resources(location_id: int) -> list[Resource]:
@@ -58,7 +61,16 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
         else:
             p_loc = load_location(p.location)
 
-        patients[p.id] = Patient(id=p.id, name=p.name, injuries=p.injuries, activity_diagram=p.activity_diagram,
+        p_ad = p.activity_diagram
+        try:
+            p_ad = ActivityDiagram().from_json(json_string=p_ad)
+        except JSONDecodeError:
+            # enters iff p_ad is None or an invalid json string
+            p_ad = ActivityDiagram()  # empty diagram with an empty root state
+        except TypeError:
+            p_ad = ActivityDiagram()  # empty diagram with an empty root state
+
+        patients[p.id] = Patient(id=p.id, name=p.name, injuries=p.injuries, activity_diagram=p_ad,
                                  location=p_loc, performed_actions=[])
 
     return patients
@@ -81,7 +93,7 @@ def __load_actions() -> dict[int, Action] | None:
     actions = dict()
     for ac in acs:
         resources_needed = __get_needed_resource_names(ac.id)
-        actions[ac.id] = Action(id=ac.id, name=ac.name, result=ac.results, picture_ref=ac.picture_ref,
+        actions[ac.id] = Action(id=ac.id, name=ac.name, results=ac.results, picture_ref=ac.picture_ref,
                                 duration_sec=ac.duration_secs, resources_needed=resources_needed,
                                 required_power=ac.required_power)
 
