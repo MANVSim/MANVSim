@@ -11,26 +11,25 @@ ALLOWED_CHARS = string.ascii_uppercase + string.digits
 
 class Tan:
 
-    value: str = ""
-
-    def __init__(self, length_or_value: int | str = 5):
+    def __init__(self, value: str):
         """
         Initializes a new TAN with a random value or a given string.
 
         Parameters:
-        length_or_value (int | str): The length of the TAN to generate or a string to use as the TAN value. Default is 5.
-
-        Raises:
-        TypeError: If length_or_value is not an int or str.
+        value (str): Value of the TAN.
         """
-        if isinstance(length_or_value, int):
-            self.value = "".join(random.choices(ALLOWED_CHARS, k=length_or_value))
-        elif isinstance(length_or_value, str):
-            self.value = length_or_value.upper()
-        else:
-            raise TypeError(
-                f"Wrong type for Tan constructor. Expected int or str, got {type(length_or_value)}"
-            )
+        self.value = value
+
+    @classmethod
+    def of_length(cls, length: int = 5) -> 'Tan':
+        """
+        Creates a new TAN with the given length.
+
+        Parameters:
+        length (int): The length of the TAN to generate. Default is 5.
+        """
+        value = "".join(random.choices(ALLOWED_CHARS, k=length))
+        return cls(value)
 
     def __eq__(self, other):
         """
@@ -109,6 +108,6 @@ def uniques(n: int, length: int = 5) -> list[Tan]:
         )
     # Generate new unique tans
     while len(tans) - len(existing_tans) < n:
-        tans.add(Tan(length))
+        tans.add(Tan.of_length(length))
 
     return list(tans.difference(existing_tans))
