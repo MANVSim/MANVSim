@@ -1,15 +1,16 @@
 import random
 import string
 
+import models
+from app import create_app
+from app_config import csrf, db
+
 
 ALLOWED_CHARS = string.ascii_uppercase + string.digits
 
 
-def possible_tans(length: int) -> int:
-    return len(ALLOWED_CHARS) ** length
-
-
 class Tan:
+
     value: str = ""
 
     def __init__(self, length_or_value: int | str = 5):
@@ -66,6 +67,14 @@ class Tan:
         """
         return f"Tan({self.value.upper()!r})"
 
+    def __hash__(self) -> int:
+        return hash(self.value)
+
+
+def possible_tans(length: int) -> int:
+    """ Calculates the number of possible unique TANs of the given length. """
+    return len(ALLOWED_CHARS) ** length
+
 
 def uniques(n: int, length: int = 5) -> list[Tan]:
     """
@@ -83,9 +92,23 @@ def uniques(n: int, length: int = 5) -> list[Tan]:
     """
     if n > possible_tans(length):
         raise ValueError(
-            f"Cannot generate {n} unique TANs of length {length}. Maximum possible TANs is {possible_tans(length)}."
+            f"Cannot generate {n} unique TANs of length {length}. Maximum possible TANs of this length are "
+            f"{possible_tans(length)}."
         )
+    # Retrieve existing tans
     tans = set()
-    while len(tans) < n:
+    with create_app(csrf, db).app_context():
+        db_tans = [tan for tan, in db.session.query(models.Player.tan).all()]
+        tans.update(db_tans)
+    existing_tans = set(tans)
+    # Check search space
+    if possible_tans(length) - len(existing_tans) < n:
+        raise ValueError(
+            f"Cannot generate {n} unique TANs due to limited permutations. Unique TANs left with this length: "
+            f"{possible_tans(length) - len(existing_tans)}"
+        )
+    # Generate new unique tans
+    while len(tans) - len(existing_tans) < n:
         tans.add(Tan(length))
-    return list(tans)
+
+    return list(tans.difference(existing_tans))
