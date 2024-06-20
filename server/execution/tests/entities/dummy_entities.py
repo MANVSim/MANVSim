@@ -43,14 +43,14 @@ def create_test_execution():
 
     # Actions
     action_1 = Action(id=1, name="EKG schreiben", picture_ref="placeholder.png", duration_sec=2,
-                      result=["EKG", "12-Kanal-EKG"], resources_needed=["EKG"], required_power=200)
-    action_2 = Action(id=2, name="Pflaster kleben", picture_ref="placeholder.png", duration_sec=10, result=[],
+                      results=["EKG", "12-Kanal-EKG"], resources_needed=["EKG"], required_power=200)
+    action_2 = Action(id=2, name="Pflaster kleben", picture_ref="placeholder.png", duration_sec=10, results=[],
                       resources_needed=["Blümchenpflaster"], required_power=400)
-    action_3 = Action(id=3, name="Beatmen", picture_ref="placeholder.png", duration_sec=300, result=[],
+    action_3 = Action(id=3, name="Beatmen", picture_ref="placeholder.png", duration_sec=300, results=[],
                       resources_needed=["Beatmungsgerät"], required_power=300)
     action_4 = Action(id=4, name="Betrachten", picture_ref="placeholder.png", duration_sec=5,
-                      result=["Verletzung", "Haut", "Bewusstsein"], resources_needed=[], required_power=200)
-    action_5 = Action(id=4, name="Wunderheilung", picture_ref="placeholder.png", duration_sec=5, result=[],
+                      results=["Verletzung", "Haut", "Bewusstsein"], resources_needed=[], required_power=200)
+    action_5 = Action(id=4, name="Wunderheilung", picture_ref="placeholder.png", duration_sec=5, results=[],
                       resources_needed=[], required_power=400)
 
     # Performed Actions

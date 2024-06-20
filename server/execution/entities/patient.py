@@ -51,7 +51,8 @@ class Patient:
     def apply_action(self, action: Action):
         """ Applies the provided action to the current active state. """
         with self.lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT):
-            return self.activity_diagram.apply_treatment(str(action.id))
+            self.activity_diagram.apply_treatment(str(action.id))
+            return action.results
 
     def to_dict(self, shallow: bool = False):
         """
