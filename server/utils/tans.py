@@ -13,7 +13,7 @@ class Tan:
 
     def __init__(self, value: str):
         """
-        Initializes a new TAN with a random value or a given string.
+        Initializes a new TAN with a given string.
 
         Parameters:
         value (str): Value of the TAN.
@@ -89,22 +89,23 @@ def uniques(n: int, length: int = 5) -> list[Tan]:
     Raises:
     ValueError: If n is greater than the maximum possible TANs of the given length.
     """
-    if n > possible_tans(length):
+    max_tans = possible_tans(length)
+    if n > max_tans:
         raise ValueError(
-            f"Cannot generate {n} unique TANs of length {length}. Maximum possible TANs of this length are "
-            f"{possible_tans(length)}."
+            f"Cannot generate {n} unique TANs of length {length}. Maximum possible TANs of this length are {max_tans}."
         )
     # Retrieve existing tans
     tans = set()
     with create_app(csrf, db).app_context():
-        db_tans = [tan for tan, in db.session.query(models.Player.tan).all()]
+        db_tans = [tan for tan, in db.session.query(models.Player.tan)]
         tans.update(db_tans)
     existing_tans = set(tans)
     # Check search space
-    if possible_tans(length) - len(existing_tans) < n:
+    unique_tans_left = max_tans - len(existing_tans)
+    if unique_tans_left < n:
         raise ValueError(
             f"Cannot generate {n} unique TANs due to limited permutations. Unique TANs left with this length: "
-            f"{possible_tans(length) - len(existing_tans)}"
+            f"{unique_tans_left}"
         )
     # Generate new unique tans
     while len(tans) - len(existing_tans) < n:
