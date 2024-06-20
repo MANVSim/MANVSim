@@ -7,7 +7,7 @@ from utils import time
 
 class PatientState:
 
-    def __init__(self, state_uuid: str = str(uuid.uuid4()), treatments: dict[str, (str, list[str])] = None,
+    def __init__(self, state_uuid: str = str(uuid.uuid4()), treatments: dict[str, str] = None,
                  start_time: int = -1, timelimit: int = -1, after_time_state_uuid="",
                  conditions: dict[str, str] = None):
         if not treatments:
@@ -28,7 +28,7 @@ class PatientState:
             provided it keeps the old state unless the force_update flags allows an overwrite.
         """
         if force_update or treatment not in self.treatments.keys():
-            self.treatments[treatment] = (new_state_uuid, reveals)
+            self.treatments[treatment] = new_state_uuid
             return True
         else:
             logging.warning("treatment already exist. You might force-update the id if necessary.")

@@ -124,8 +124,8 @@ def get_perform_action_result():
 
         patient = execution.scenario.patients[patient_id]
         performed_action = patient.action_queue.pop(perform_action_id)
-        reveals = patient.apply_action(performed_action.action)
-
+        patient.apply_action(performed_action.action)
+        result_keys = performed_action.action.result
         patient.performed_actions.append(performed_action)
         # restore non-consumables
         for res in performed_action.resources_used:
@@ -134,7 +134,7 @@ def get_perform_action_result():
 
         return {
             "patient": patient.to_dict(),
-            "conditions": patient.activity_diagram.current.get_conditions(reveals)
+            "conditions": patient.activity_diagram.current.get_conditions(result_keys)
         }
 
     except KeyError:

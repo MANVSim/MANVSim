@@ -42,15 +42,15 @@ def create_test_execution():
                       activation_delay_sec=10)
 
     # Actions
-    action_1 = Action(id=1, name="EKG schreiben", picture_ref="placeholder.png", duration_sec=2, result="UNDEFINED",
-                      resources_needed=["EKG"], required_power=200)
-    action_2 = Action(id=2, name="Pflaster kleben", picture_ref="placeholder.png", duration_sec=10, result="UNDEFINED",
+    action_1 = Action(id=1, name="EKG schreiben", picture_ref="placeholder.png", duration_sec=2,
+                      result=["EKG", "12-Kanal-EKG"], resources_needed=["EKG"], required_power=200)
+    action_2 = Action(id=2, name="Pflaster kleben", picture_ref="placeholder.png", duration_sec=10, result=[],
                       resources_needed=["Blümchenpflaster"], required_power=400)
-    action_3 = Action(id=3, name="Beatmen", picture_ref="placeholder.png", duration_sec=300, result="UNDEFINED",
+    action_3 = Action(id=3, name="Beatmen", picture_ref="placeholder.png", duration_sec=300, result=[],
                       resources_needed=["Beatmungsgerät"], required_power=300)
-    action_4 = Action(id=4, name="Betrachten", picture_ref="placeholder.png", duration_sec=5, result="UNDEFINED",
-                      resources_needed=[], required_power=200)
-    action_5 = Action(id=4, name="Wunderheilung", picture_ref="placeholder.png", duration_sec=5, result="UNDEFINED",
+    action_4 = Action(id=4, name="Betrachten", picture_ref="placeholder.png", duration_sec=5,
+                      result=["Verletzung", "Haut", "Bewusstsein"], resources_needed=[], required_power=200)
+    action_5 = Action(id=4, name="Wunderheilung", picture_ref="placeholder.png", duration_sec=5, result=[],
                       resources_needed=[], required_power=400)
 
     # Performed Actions
@@ -192,34 +192,34 @@ def __get_activity_diagrams():
     uuid_s4 = str(uuid.uuid4())
 
     treatment_s1 = {
-        "1": [uuid_s1, ["EKG", "12-Kanal-EKG"]],  # "EKG schreiben"
-        "2": [uuid_s1, []],  # "Pflaster kleben"
-        "3": [uuid_s1, []],  # "Beatmen"
-        "4": [uuid_s1, ["Verletzung", "Haut", "Bewusstsein"]],  # "Betrachten"
-        "5": [uuid_s4, []]   # "Wunderheilung"
+        "1": uuid_s1,   # "EKG schreiben"
+        "2": uuid_s1,   # "Pflaster kleben"
+        "3": uuid_s1,   # "Beatmen"
+        "4": uuid_s1,   # "Betrachten"
+        "5": uuid_s4    # "Wunderheilung"
     }
 
     treatment_s2 = {
-        "1": [uuid_s2, ["EKG", "12-Kanal-EKG"]],
-        "2": [uuid_s2, []],
-        "3": [uuid_s2, []],
-        "4": [uuid_s2, ["Verletzung", "Haut", "Bewusstsein"]],
-        "5": [uuid_s4, []]
+        "1": uuid_s2,
+        "2": uuid_s2,
+        "3": uuid_s2,
+        "4": uuid_s2,
+        "5": uuid_s4,
     }
 
     treatment_s3 = {
-        "1": [uuid_s3, ["EKG", "12-Kanal-EKG"]],
-        "2": [uuid_s3, []],
-        "3": [uuid_s3, []],
-        "4": [uuid_s3, ["Verletzung", "Haut", "Bewusstsein"]],
-        "5": [uuid_s4, []]
+        "1": uuid_s3,
+        "2": uuid_s3,
+        "3": uuid_s3,
+        "4": uuid_s3,
+        "5": uuid_s4,
     }
 
     treatment_s4 = {
-        "1": [uuid_s4, ["EKG", "12-Kanal-EKG"]],
-        "2": [uuid_s4, []],
-        "3": [uuid_s4, ["Verletzung", "Haut", "Bewusstsein"]],
-        "4": [uuid_s4, []],
+        "1": uuid_s4,
+        "2": uuid_s4,
+        "3": uuid_s4,
+        "4": uuid_s4,
     }
 
     s1 = PatientState(state_uuid=uuid_s1, treatments=treatment_s1, conditions=conditions_s1)

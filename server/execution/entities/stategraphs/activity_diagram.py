@@ -30,14 +30,12 @@ class ActivityDiagram:
             self.__update_state(self.current)
 
         try:
-            new_state_uuid, reveals = self.current.treatments[treatment]
+            new_state_uuid = self.current.treatments[treatment]
             self.current = self.__get_state_by_id(new_state_uuid)
             if self.current.timelimit != -1:
                 self.current.start_timer()
         except KeyError:
-            return []   # if the treatment is not placed in the updated state return no reveals
-
-        return reveals
+            logging.debug(f"Unable to identify treatment on current_state: {self.current.uuid}")
 
     def add_state(self, state: PatientState, force_update: bool = False):
         """ An administration method to extend the activity diagram with another state. """
