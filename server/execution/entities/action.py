@@ -7,7 +7,7 @@ class Action:
                  resources_needed: list[str], required_power: int = 0):
         self.id = id
         self.name = name
-        self.results = results  # list of condition keys to reveals on a patient
+        self.results = results  # list of condition keys to reveal on a patient
         self.picture_ref = picture_ref  # Reference to picture
         self.duration_sec = duration_sec
         self.required_power = required_power  # Power of Role
