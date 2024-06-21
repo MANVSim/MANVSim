@@ -1,35 +1,35 @@
 import random
 import string
 
+import models
+from app import create_app
+from app_config import csrf, db
+
 
 ALLOWED_CHARS = string.ascii_uppercase + string.digits
 
 
-def possible_tans(length: int) -> int:
-    return len(ALLOWED_CHARS) ** length
-
-
 class Tan:
-    value: str = ""
 
-    def __init__(self, length_or_value: int | str = 5):
+    def __init__(self, value: str):
         """
-        Initializes a new TAN with a random value or a given string.
+        Initializes a new TAN with a given string.
 
         Parameters:
-        length_or_value (int | str): The length of the TAN to generate or a string to use as the TAN value. Default is 5.
-
-        Raises:
-        TypeError: If length_or_value is not an int or str.
+        value (str): Value of the TAN.
         """
-        if isinstance(length_or_value, int):
-            self.value = "".join(random.choices(ALLOWED_CHARS, k=length_or_value))
-        elif isinstance(length_or_value, str):
-            self.value = length_or_value.upper()
-        else:
-            raise TypeError(
-                f"Wrong type for Tan constructor. Expected int or str, got {type(length_or_value)}"
-            )
+        self.value = value
+
+    @classmethod
+    def of_length(cls, length: int = 5) -> 'Tan':
+        """
+        Creates a new TAN with the given length.
+
+        Parameters:
+        length (int): The length of the TAN to generate. Default is 5.
+        """
+        value = "".join(random.choices(ALLOWED_CHARS, k=length))
+        return cls(value)
 
     def __eq__(self, other):
         """
@@ -70,6 +70,11 @@ class Tan:
         return hash(self.value)
 
 
+def possible_tans(length: int) -> int:
+    """ Calculates the number of possible unique TANs of the given length. """
+    return len(ALLOWED_CHARS) ** length
+
+
 def uniques(n: int, length: int = 5) -> list[Tan]:
     """
     Generates a list of unique TANs.
@@ -84,11 +89,26 @@ def uniques(n: int, length: int = 5) -> list[Tan]:
     Raises:
     ValueError: If n is greater than the maximum possible TANs of the given length.
     """
-    if n > possible_tans(length):
+    max_tans = possible_tans(length)
+    if n > max_tans:
         raise ValueError(
-            f"Cannot generate {n} unique TANs of length {length}. Maximum possible TANs is {possible_tans(length)}."
+            f"Cannot generate {n} unique TANs of length {length}. Maximum possible TANs of this length are {max_tans}."
         )
+    # Retrieve existing tans
     tans = set()
-    while len(tans) < n:
-        tans.add(Tan(length))
-    return list(tans)
+    with create_app(csrf, db).app_context():
+        db_tans = [tan for tan, in db.session.query(models.Player.tan)]
+        tans.update(db_tans)
+    existing_tans = set(tans)
+    # Check search space
+    unique_tans_left = max_tans - len(existing_tans)
+    if unique_tans_left < n:
+        raise ValueError(
+            f"Cannot generate {n} unique TANs due to limited permutations. Unique TANs left with this length: "
+            f"{unique_tans_left}"
+        )
+    # Generate new unique tans
+    while len(tans) - len(existing_tans) < n:
+        tans.add(Tan.of_length(length))
+
+    return list(tans.difference(existing_tans))

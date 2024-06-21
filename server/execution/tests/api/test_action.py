@@ -71,6 +71,10 @@ def test_perform_action(client):
     # Player 1: check for result
     response = client.get(f"/api/run/action/perform/result?performed_action_id={id}&patient_id=1", headers=headers)
     assert response.status_code == http.HTTPStatus.OK
+    response_json = response.json
+    assert "conditions" in response_json
+    assert "EKG" in response_json["conditions"]
+
     patient = response.json["patient"]
     performed_action = list(patient["performed_actions"])
     assert len(performed_action) > 1    # patient already got a performed action
