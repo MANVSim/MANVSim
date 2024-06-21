@@ -33,13 +33,12 @@ def admin_only(func):
 
 
 @api.get("/csrf")
-@csrf.exempt  # TODO: Remove
+@csrf.exempt
 def get_csrf():
     return {"csrf_token": generate_csrf()}
 
 
 @api.post("/login")
-@csrf.exempt  # TODO: Remove
 def login():
     # Extract data from request
     try:
