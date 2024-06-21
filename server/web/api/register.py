@@ -1,13 +1,11 @@
 from functools import wraps
 import math
 from random import random, choice
-
 from flask import abort, make_response, request, Blueprint
 from flask_api import status
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
-from utils.tans import uniques
 from models import WebUser
 from app_config import csrf
 from .test_data import test_execution
