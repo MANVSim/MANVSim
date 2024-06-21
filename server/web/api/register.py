@@ -6,8 +6,10 @@ from flask_api import status
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
+from execution.entities.execution import Execution
 from models import WebUser
 from app_config import csrf
+from utils.tans import uniques
 from .test_data import test_execution
 
 # FIXME sollten wir zusammen mit dem Web package iwann mal umbenennen
@@ -78,12 +80,27 @@ def get_templates():
 def start_scenario():
     try:
         id = request.form["id"]
-        # TODO: Create actual execution
-        return {
-            "id": math.floor(random() * 1000),
-        }
     except KeyError:
         return {"error": "Missing id in request"}, 400
+
+    # TODO: Create actual execution
+    exec_id = math.floor(random() * 1000)
+    test_execution.update({
+        "id": exec_id,
+        "status": "",
+        "players": [
+            {
+                "tan": x,
+                "name": "Max Mustermann",
+                "status": choice(["", "In Vorbereitung"]),
+                "action": "Legt Zugang",
+            }
+            for x in [str(x) for x in uniques(5)]
+        ],
+    })
+    return {
+        "id": exec_id,
+    }
 
 
 @api.get("/execution/<int:id>")
