@@ -1,4 +1,5 @@
 from app import create_app
+from bcrypt import gensalt, hashpw
 from app_config import db, csrf
 from models import (
     Scenario,
@@ -11,6 +12,7 @@ from models import (
     Resource,
     Action,
     ResourcesNeeded,
+    WebUser,
 )
 
 
@@ -140,5 +142,6 @@ with create_app(csrf=csrf, db=db).app_context():
     insert(ResourcesNeeded(action_id=1, resource_id=2))
     insert(ResourcesNeeded(action_id=2, resource_id=1))
     insert(ResourcesNeeded(action_id=3, resource_id=3))
+    insert(WebUser(username="Terra", password=hashpw(b"pw1234", gensalt()).decode()))
 
     db.session.commit()

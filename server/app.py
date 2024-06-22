@@ -20,6 +20,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     import models  # noqa: F401
 
     # asynchronously import local packages
+    import web.setup
     from execution.api import lobby
 
     app = Flask(__name__, static_folder="../web/dist")
@@ -33,6 +34,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     db.init_app(app)
     csrf.init_app(app)
     jwt = JWTManager(app)
+    web.setup(app)
 
     # define run request blocker
     @app.before_request
@@ -68,6 +70,8 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
                 "API Endpoint not found. Please refactor your request or contact the admin",
                 404,
             )
+        elif path.startswith("web/"):
+            return {"error": "Unknown endpoint"}, 404
         else:
             return redirect("/")
 
