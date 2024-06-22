@@ -1,25 +1,55 @@
 from functools import wraps
-import math
-from random import random, choice
+from time import time
 from flask import abort, make_response, request, Blueprint
 from flask_api import status
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
 from execution.entities.execution import Execution
-from models import WebUser
+from execution.entities.location import Location
+from execution.entities.player import Player
+from execution.entities.scenario import Scenario
+import models
 from app_config import csrf
-from utils.tans import uniques
-from .test_data import test_execution
+from execution.run import activate_execution, active_executions
+from utils.tans import Tan, uniques
 
 # FIXME sollten wir zusammen mit dem Web package iwann mal umbenennen
 api = Blueprint("api-web", __name__)
+
+
+class ExecutionIdNotFound(Exception):
+    status_code = 404
+    execution_id: int
+
+    def __init__(self, id: int) -> None:
+        super().__init__()
+        self.execution_id = id
+
+    def to_dict(self):
+        return {
+            "error": f"The given execution with id {self.execution_id} does not exist"
+        }
+
+
+@api.errorhandler(ExecutionIdNotFound)
+def execution_not_found(e: ExecutionIdNotFound):
+    return e.to_dict(), e.status_code
 
 
 @api.errorhandler(CSRFError)
 def handle_csrf_error(error: CSRFError):
     status = error.response or 400
     return make_response(({"error": error.description}, status))
+
+
+def try_get_execution(id: int):
+    try:
+        execution = active_executions[id]
+    except KeyError:
+        raise ExecutionIdNotFound(id)
+
+    return execution
 
 
 def admin_only(func):
@@ -52,7 +82,7 @@ def login():
         }, status.HTTP_400_BAD_REQUEST
 
     # Get user object from database
-    user = WebUser.get_by_username(username)
+    user = models.WebUser.get_by_username(username)
     if user is None:
         return {
             "error": f"User with user name '{username}' does not exist"
@@ -67,60 +97,56 @@ def login():
 
 
 @api.get("/templates")
-@admin_only
+# @admin_only
+@csrf.exempt
 def get_templates():
-    return [
-        {"id": 10023, "name": "Busunfall", "players": 5},
-        {"id": 900323, "name": "Explosion im Wohnviertel", "players": 10},
-    ]
+    return [{"id": scenario.id, "name": scenario.name, "executions": [execution.id for execution in scenario.executions]}
+            for scenario in models.Scenario.query]
 
 
 @api.post("/scenario/start")
-@admin_only
+# @admin_only
+@csrf.exempt
 def start_scenario():
     try:
-        id = request.form["id"]
+        id = int(request.form["id"])
     except KeyError:
         return {"error": "Missing id in request"}, 400
 
-    # TODO: Create actual execution
-    exec_id = math.floor(random() * 1000)
-    test_execution.update({
-        "id": exec_id,
-        "status": "",
-        "players": [
-            {
-                "tan": x,
-                "name": "Max Mustermann",
-                "status": choice(["", "In Vorbereitung"]),
-                "action": "Legt Zugang",
-            }
-            for x in [str(x) for x in uniques(5)]
-        ],
-    })
-    return {
-        "id": exec_id,
-    }
+    execution = models.Execution.query.get(id)
+    if execution is None:
+        return {"error": f"Could not find execution with id {id}"}
+
+    players = {p.tan: p for p in [
+        Player(str(tan), "Max Mustermann", False, 100, Location(i, "", None, None, None), set(), None) for i, tan in enumerate(uniques(5))]}
+
+    run_scenario = Scenario(
+        execution.scenario.id, execution.scenario.name, {}, {}, {})
+    run_execution = Execution(
+        execution.id, run_scenario, players, Execution.Status.PENDING, int(time()))
+    activate_execution(run_execution)
+    return run_execution.to_dict()
 
 
-@api.get("/execution/<int:id>")
-@admin_only
+@ api.get("/execution/<int:id>")
+# @admin_only
+@ csrf.exempt
 def get_execution_status(id: int):
-    test_execution["id"] = id
-    random_player = choice(test_execution["players"])
-    random_player["status"] = "In Vorbereitung" if random_player["status"] == "" else ""
-    return test_execution
+    execution = try_get_execution(id)
+    return execution.to_dict()
 
 
-@api.post("/execution/<int:id>/start")
-@admin_only
+@ api.post("/execution/<int:id>/start")
+@ admin_only
 def start_execution(id: int):
-    test_execution["status"] = "Aktiv"
-    return test_execution
+    execution = try_get_execution(id)
+    execution.status = Execution.Status.RUNNING
+    return execution.to_dict()
 
 
-@api.post("/execution/<int:id>/stop")
-@admin_only
+@ api.post("/execution/<int:id>/stop")
+@ admin_only
 def stop_execution(id: int):
-    test_execution["status"] = ""
-    return test_execution
+    execution = try_get_execution(id)
+    execution.status = Execution.Status.FINISHED
+    return execution.to_dict()

@@ -2,28 +2,50 @@ import { ActionFunctionArgs, useLoaderData, redirect } from "react-router"
 import { getTemplates, startScenario } from "../api"
 import { Form } from "react-router-dom"
 import Button from "react-bootstrap/Button"
-import { ListGroup } from "react-bootstrap"
+import {
+  Accordion,
+  AccordionBody,
+  AccordionHeader,
+  AccordionItem,
+} from "react-bootstrap"
 import { useCsrf } from "../contexts/use"
 import { Template } from "../types"
 import { ReactElement } from "react"
 
+function ExecutionEntry({
+  execution,
+}: Readonly<{ execution: number }>): ReactElement {
+  const csrfToken = useCsrf()
+  return (
+    <Form className="my-1" method="post">
+      <input type="hidden" name="csrf_token" value={csrfToken} />
+      <input type="hidden" name="id" value={execution} />
+      <div className="d-grid gap-2">
+        <Button type="submit">{execution}</Button>
+      </div>
+    </Form>
+  )
+}
+
 function TemplateEntry({
   template,
-}: Readonly<{ template: Template }>): ReactElement {
-  const { id, players, name } = template
-  const csrfToken = useCsrf()
+  index,
+}: Readonly<{ template: Template; index: number }>): ReactElement {
+  const { name, executions } = template
 
   return (
-    <ListGroup.Item>
-      <Form method="post">
-        {/* <span>{name} ({players} Spieler) </span> */}
-        <input type="hidden" name="csrf_token" value={csrfToken} />
-        <input type="hidden" name="id" value={id} />
-        <Button type="submit">
-          {name} ({players} Spieler)
-        </Button>
-      </Form>
-    </ListGroup.Item>
+    <AccordionItem eventKey={index.toString()}>
+      <AccordionHeader>{name}</AccordionHeader>
+      <AccordionBody>
+        {executions.length ? (
+          executions.map((execution: number) => (
+            <ExecutionEntry key={execution} execution={execution} />
+          ))
+        ) : (
+          <div className="fw-light fst-italic">Keine Ausführungen</div>
+        )}
+      </AccordionBody>
+    </AccordionItem>
   )
 }
 
@@ -35,11 +57,11 @@ export default function Scenario(): ReactElement {
       <h2>Vorlagen</h2>
       <p>Die folgenden Vorlagen sind verfügbar:</p>
       {templates.length ? (
-        <ListGroup>
-          {templates.map((t: Template) => (
-            <TemplateEntry key={t.id} template={t} />
+        <Accordion>
+          {templates.map((t: Template, index: number) => (
+            <TemplateEntry key={t.id} template={t} index={index} />
           ))}
-        </ListGroup>
+        </Accordion>
       ) : (
         <p>
           <i>Keine Vorlagen</i>

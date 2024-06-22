@@ -13,7 +13,12 @@ import _ from "lodash"
 import { config } from "../config"
 import { Form } from "react-router-dom"
 import { CsrfInput } from "../contexts/csrf"
-import { Player, ExecutionData, isExecutionData } from "../types"
+import {
+  Player,
+  ExecutionData,
+  isExecutionData,
+  ExecutionStatusEnum,
+} from "../types"
 
 function TanCard({ tan }: { tan: string }): ReactElement {
   return (
@@ -37,8 +42,12 @@ function PlayerStatus({ player }: { player: Player }): ReactElement {
   )
 }
 
-function ToggleExecution({ execution }: { execution: ExecutionData }): ReactElement {
-  const executionActive = execution.status !== ""
+function ToggleExecution({
+  execution,
+}: {
+  execution: ExecutionData
+}): ReactElement {
+  const executionActive = execution.status === ExecutionStatusEnum.enum.RUNNING
   return (
     <div className="mt-5">
       <Form method="POST">
@@ -58,15 +67,19 @@ function ToggleExecution({ execution }: { execution: ExecutionData }): ReactElem
 export default function Execution(): ReactElement {
   const loaderData = useLoaderData()
   const actionData = useActionData()
+
   useEffect(() => {
     if (isExecutionData(actionData)) {
       setExecution(actionData)
     }
   }, [actionData])
+
   const [execution, setExecution] = useState<null | ExecutionData>(
     isExecutionData(loaderData) ? loaderData : null,
   )
+
   const { executionId } = useParams<{ executionId: string }>()
+
   useEffect(() => {
     const intervalId = setInterval(async () => {
       if (typeof executionId === "undefined") return
@@ -80,12 +93,12 @@ export default function Execution(): ReactElement {
 
   const [tansAvailable, tansUsed] = _.partition(
     execution?.players,
-    (player) => player.status === "",
+    (player: Player): boolean => player.status === "",
   )
 
   return (
     <div>
-      {execution && (
+      {execution ? (
         <div>
           <h2>Ausführung</h2>
           <p>ID: {execution.id}</p>
@@ -113,6 +126,8 @@ export default function Execution(): ReactElement {
             </tbody>
           </table>
         </div>
+      ) : (
+        <div>Loading...</div>
       )}
     </div>
   )
