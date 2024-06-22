@@ -35,9 +35,8 @@ function PlayerStatus({ player }: { player: Player }): ReactElement {
   return (
     <tr>
       <td>{player.tan}</td>
-      <td>{player.status}</td>
+      <td>{player.alerted ? "Alarmiert" : "Bereitschaft"}</td>
       <td>{player.name}</td>
-      <td>{player.action}</td>
     </tr>
   )
 }
@@ -93,7 +92,7 @@ export default function Execution(): ReactElement {
 
   const [tansAvailable, tansUsed] = _.partition(
     execution?.players,
-    (player: Player): boolean => player.status === "",
+    (player: Player): boolean => player.alerted,
   )
 
   return (
@@ -116,7 +115,6 @@ export default function Execution(): ReactElement {
                 <th>TAN</th>
                 <th>Status</th>
                 <th>Name</th>
-                <th>Maßnahme</th>
               </tr>
             </thead>
             <tbody>
