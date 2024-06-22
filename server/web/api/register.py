@@ -1,18 +1,14 @@
 from functools import wraps
-from time import time
 from flask import abort, make_response, request, Blueprint
 from flask_api import status
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
 from execution.entities.execution import Execution
-from execution.entities.location import Location
-from execution.entities.player import Player
-from execution.entities.scenario import Scenario
+from execution.tests.entities.dummy_entities import create_test_execution
 import models
 from app_config import csrf
 from execution.run import activate_execution, active_executions
-from utils.tans import Tan, uniques
 
 # FIXME sollten wir zusammen mit dem Web package iwann mal umbenennen
 api = Blueprint("api-web", __name__)
@@ -117,13 +113,8 @@ def start_scenario():
     if execution is None:
         return {"error": f"Could not find execution with id {id}"}
 
-    players = {p.tan: p for p in [
-        Player(str(tan), "Max Mustermann", False, 100, Location(i, "", None, None, None), set(), None) for i, tan in enumerate(uniques(5))]}
-
-    run_scenario = Scenario(
-        execution.scenario.id, execution.scenario.name, {}, {}, {})
-    run_execution = Execution(
-        execution.id, run_scenario, players, Execution.Status.PENDING, int(time()))
+    run_execution = create_test_execution()
+    run_execution.id = id
     activate_execution(run_execution)
     return run_execution.to_dict()
 
