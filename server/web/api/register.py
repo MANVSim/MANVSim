@@ -93,8 +93,7 @@ def login():
 
 
 @api.get("/templates")
-# @admin_only
-@csrf.exempt
+@admin_only
 def get_templates():
     return [{"id": scenario.id, "name": scenario.name, "executions": [execution.id for execution in scenario.executions]}
             for scenario in models.Scenario.query]
@@ -119,24 +118,23 @@ def start_scenario():
     return run_execution.to_dict()
 
 
-@ api.get("/execution/<int:id>")
-# @admin_only
-@ csrf.exempt
+@api.get("/execution/<int:id>")
+@admin_only
 def get_execution_status(id: int):
     execution = try_get_execution(id)
     return execution.to_dict()
 
 
-@ api.post("/execution/<int:id>/start")
-@ admin_only
+@api.post("/execution/<int:id>/start")
+@admin_only
 def start_execution(id: int):
     execution = try_get_execution(id)
     execution.status = Execution.Status.RUNNING
     return execution.to_dict()
 
 
-@ api.post("/execution/<int:id>/stop")
-@ admin_only
+@api.post("/execution/<int:id>/stop")
+@admin_only
 def stop_execution(id: int):
     execution = try_get_execution(id)
     execution.status = Execution.Status.FINISHED
