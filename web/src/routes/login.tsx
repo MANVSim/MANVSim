@@ -1,17 +1,16 @@
 import {
   ActionFunctionArgs,
-  Form,
   Navigate,
   redirect,
   useActionData,
 } from "react-router-dom"
 import { Button, Collapse, Form as FormBS } from "react-bootstrap"
 import "./login.css"
-import { CsrfInput } from "../contexts/csrf"
 import { tryFetchApi } from "../api"
 import { isLoggedIn } from "../utils"
 import { setStorageItem } from "../storage"
 import { ReactElement } from "react"
+import CsrfForm from "../components/CsrfForm"
 
 export default function Login(): ReactElement {
   const error = useActionData() as string
@@ -26,8 +25,7 @@ export default function Login(): ReactElement {
         <div className="d-flex justify-content-center m-3">
           <h1>MANVSim</h1>
         </div>
-        <Form className="login-form m-auto m-3" method="post">
-          <CsrfInput />
+        <CsrfForm className="login-form m-auto m-3" method="post">
           <FormBS.Group className="my-3" controlId="formGroupUsername">
             <FormBS.Label>Benutzername</FormBS.Label>
             <FormBS.Control
@@ -57,7 +55,7 @@ export default function Login(): ReactElement {
               {error}
             </div>
           </Collapse>
-        </Form>
+        </CsrfForm>
       </div>
     </div>
   )

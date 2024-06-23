@@ -1,6 +1,5 @@
 import { ActionFunctionArgs, useLoaderData, redirect } from "react-router"
 import { getTemplates, startScenario } from "../api"
-import { Form } from "react-router-dom"
 import Button from "react-bootstrap/Button"
 import {
   Accordion,
@@ -8,22 +7,20 @@ import {
   AccordionHeader,
   AccordionItem,
 } from "react-bootstrap"
-import { useCsrf } from "../contexts/use"
 import { Template } from "../types"
 import { ReactElement } from "react"
+import CsrfForm from "../components/CsrfForm"
 
 function ExecutionEntry({
   execution,
 }: Readonly<{ execution: number }>): ReactElement {
-  const csrfToken = useCsrf()
   return (
-    <Form className="my-1" method="post">
-      <input type="hidden" name="csrf_token" value={csrfToken} />
+    <CsrfForm className="my-1" method="post">
       <input type="hidden" name="id" value={execution} />
       <div className="d-grid gap-2">
         <Button type="submit">{execution}</Button>
       </div>
-    </Form>
+    </CsrfForm>
   )
 }
 

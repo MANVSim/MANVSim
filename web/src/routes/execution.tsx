@@ -10,14 +10,13 @@ import { ReactElement, useEffect, useState } from "react"
 import { getExecutionStatus, startExecution, stopExecution } from "../api"
 import _ from "lodash"
 import { config } from "../config"
-import { Form } from "react-router-dom"
-import { CsrfInput } from "../contexts/csrf"
 import {
   Player,
   ExecutionData,
   isExecutionData,
   ExecutionStatusEnum,
 } from "../types"
+import CsrfForm from "../components/CsrfForm"
 
 function TanCard({ tan }: { tan: string }): ReactElement {
   return (
@@ -48,8 +47,7 @@ function ToggleExecution({
   const executionActive = execution.status === ExecutionStatusEnum.enum.RUNNING
   return (
     <div className="mt-5">
-      <Form method="POST">
-        <CsrfInput />
+      <CsrfForm method="POST">
         <Button
           name="toggle"
           value={executionActive ? "stop" : "start"}
@@ -57,7 +55,7 @@ function ToggleExecution({
         >
           {executionActive ? "Beenden" : "Starten"}
         </Button>
-      </Form>
+      </CsrfForm>
     </div>
   )
 }
