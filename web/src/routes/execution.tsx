@@ -3,7 +3,6 @@ import QRCode from "react-qr-code"
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
-  useActionData,
   useLoaderData,
   useParams,
 } from "react-router"
@@ -65,13 +64,12 @@ function ToggleExecution({
 
 export default function Execution(): ReactElement {
   const loaderData = useLoaderData()
-  const actionData = useActionData()
 
   useEffect(() => {
-    if (isExecutionData(actionData)) {
-      setExecution(actionData)
+    if (isExecutionData(loaderData)) {
+      setExecution(loaderData)
     }
-  }, [actionData])
+  }, [loaderData])
 
   const [execution, setExecution] = useState<null | ExecutionData>(
     isExecutionData(loaderData) ? loaderData : null,
@@ -88,7 +86,7 @@ export default function Execution(): ReactElement {
       }
     }, config.pollingRate)
     return () => clearInterval(intervalId)
-  })
+  }, [executionId])
 
   const [tansAvailable, tansUsed] = _.partition(
     execution?.players,

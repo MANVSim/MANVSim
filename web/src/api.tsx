@@ -84,8 +84,8 @@ export async function getExecutionStatus(id: string): Promise<object> {
 export async function startExecution(
   id: string,
   formData: FormData,
-): Promise<object> {
-  return tryFetchJson(`execution/${id}/start`, {
+): Promise<Response> {
+  return tryFetchApi(`execution/${id}/start`, {
     method: "POST",
     body: formData,
   })
@@ -94,8 +94,8 @@ export async function startExecution(
 export async function stopExecution(
   id: string,
   formData: FormData,
-): Promise<object> {
-  return tryFetchJson(`execution/${id}/stop`, {
+): Promise<Response> {
+  return tryFetchApi(`execution/${id}/stop`, {
     method: "POST",
     body: formData,
   })

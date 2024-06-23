@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import abort, make_response, request, Blueprint
+from flask import Response, abort, make_response, request, Blueprint
 from flask_api import status
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from flask_login import login_user
@@ -130,7 +130,7 @@ def get_execution_status(id: int):
 def start_execution(id: int):
     execution = try_get_execution(id)
     execution.status = Execution.Status.RUNNING
-    return execution.to_dict()
+    return Response(status=204)
 
 
 @api.post("/execution/<int:id>/stop")
@@ -138,4 +138,4 @@ def start_execution(id: int):
 def stop_execution(id: int):
     execution = try_get_execution(id)
     execution.status = Execution.Status.FINISHED
-    return execution.to_dict()
+    return Response(status=204)
