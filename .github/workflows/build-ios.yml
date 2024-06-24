@@ -1,0 +1,27 @@
+name: iOS Build
+
+on:
+ push:
+  paths: 
+   - 'app/**'
+ pull_request:
+   paths:
+   - 'app/**'
+
+   
+jobs:
+ main:
+  runs-on: macos-latest
+  steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: flutter pub get
+        working-directory: app
+        run: flutter pub get
+      - name: flutter build
+        working-directory: app
+        run: flutter build ios --release --no-codesign
