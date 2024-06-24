@@ -87,6 +87,8 @@ const player = z.object({
 
 export type Player = z.infer<typeof player>
 
+export const isPlayer = isTypeFactory<Player>(player)
+
 export const ExecutionStatusEnum = z.enum([
   "RUNNING",
   "PENDING",
@@ -119,3 +121,19 @@ export interface AuthValue {
   authToken: NullableString
   setAuthToken: SetAuthTokenType
 }
+
+// Error Response
+const errorResponse = z.object({
+  error: z.string(),
+})
+
+export type ErrorResponse = z.infer<typeof errorResponse>
+
+/**
+ * Checks if a variable matches the ErrorResponse interface
+ *
+ * @param {unknown} x - Variable to check
+ * @returns {x is ErrorResponse} true when variable is an ErrorResponse
+ * @function
+ */
+export const isErrorResponse = isTypeFactory<ErrorResponse>(errorResponse)

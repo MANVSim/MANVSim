@@ -7,7 +7,12 @@ import {
   useParams,
 } from "react-router"
 import { ReactElement, useEffect, useState } from "react"
-import { getExecutionStatus, startExecution, stopExecution } from "../api"
+import {
+  getExecutionStatus,
+  startExecution,
+  stopExecution,
+  togglePlayerStatus,
+} from "../api"
 import _ from "lodash"
 import { config } from "../config"
 import {
@@ -17,6 +22,7 @@ import {
   ExecutionStatusEnum,
 } from "../types"
 import CsrfForm from "../components/CsrfForm"
+import { useSubmit } from "react-router-dom"
 
 function TanCard({ tan }: { tan: string }): ReactElement {
   return (
@@ -30,10 +36,28 @@ function TanCard({ tan }: { tan: string }): ReactElement {
 }
 
 function PlayerStatus({ player }: { player: Player }): ReactElement {
+  const submit = useSubmit()
   return (
     <tr>
       <td>{player.tan}</td>
-      <td>{player.alerted ? "Alarmiert" : "Bereitschaft"}</td>
+      <td>
+        <CsrfForm
+          onChange={(event) => submit(event.currentTarget)}
+          method="POST"
+        >
+          <input type="hidden" name="id" value="player-status" />
+          <input type="hidden" name="tan" value={player.tan} />
+          <Button
+            id={"toggle-status-" + player.tan}
+            name="alerted"
+            type="submit"
+            value={Number(player.alerted)}
+            title="Zum Ändern klicken"
+          >
+            {player.alerted ? "Alarmiert" : "Bereit"}
+          </Button>
+        </CsrfForm>
+      </td>
       <td>{player.name}</td>
     </tr>
   )
@@ -48,6 +72,7 @@ function ToggleExecution({
   return (
     <div className="mt-5">
       <CsrfForm method="POST">
+        <input type="hidden" name="id" value="toggle-execution" />
         <Button
           name="toggle"
           value={executionActive ? "stop" : "start"}
@@ -88,7 +113,7 @@ export default function Execution(): ReactElement {
 
   const [tansAvailable, tansUsed] = _.partition(
     execution?.players,
-    (player: Player): boolean => player.alerted,
+    (): boolean => false, // TODO: Determine if TAN is used or not
   )
 
   return (
@@ -137,11 +162,17 @@ Execution.loader = async function ({
 Execution.action = async function ({ params, request }: ActionFunctionArgs) {
   if (params.executionId === undefined) return null
   const formData = await request.formData()
-  console.log(formData)
-
-  if (formData.get("toggle") === "start") {
-    return startExecution(params.executionId, formData)
-  } else {
-    return stopExecution(params.executionId, formData)
+  const id = formData.get("id")
+  formData.delete("id")
+  if (id === "toggle-execution") {
+    const fExec =
+      formData.get("toggle") === "start" ? startExecution : stopExecution
+    return fExec(params.executionId, formData)
+  } else if (id === "player-status") {
+    const playerTan = formData.get("tan") as string | null
+    if (playerTan === null) return null
+    formData.delete("tan")
+    return togglePlayerStatus(params.executionId, playerTan, formData)
   }
+  return null
 }

@@ -24,7 +24,10 @@ export async function tryFetchApi(
   return fetch(apiRequest)
 }
 
-export async function tryFetchJson(url: string, body = {}): Promise<object> {
+export async function tryFetchJson(
+  url: string,
+  body: RequestInit = {},
+): Promise<object> {
   const response = await tryFetchApi(url, body)
   return response.json()
 }
@@ -96,6 +99,17 @@ export async function stopExecution(
   formData: FormData,
 ): Promise<Response> {
   return tryFetchApi(`execution/${id}/stop`, {
+    method: "POST",
+    body: formData,
+  })
+}
+
+export async function togglePlayerStatus(
+  executionId: string,
+  playerTan: string,
+  formData: FormData,
+): Promise<Response> {
+  return tryFetchApi(`execution/${executionId}/player/${playerTan}/status`, {
     method: "POST",
     body: formData,
   })

@@ -4,6 +4,7 @@ from flask_api import status
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
+from werkzeug.exceptions import BadRequestKeyError
 from execution.entities.execution import Execution
 from execution.tests.entities.dummy_entities import create_test_execution
 import models
@@ -138,4 +139,17 @@ def start_execution(id: int):
 def stop_execution(id: int):
     execution = try_get_execution(id)
     execution.status = Execution.Status.FINISHED
+    return Response(status=204)
+
+
+@api.post("/execution/<int:id>/player/<tan>/status")
+@admin_only
+def change_player_status(id: int, tan: str):
+    try:
+        status: bool = request.form["alerted"] == "1"
+    except BadRequestKeyError:
+        return {"error": "Missing 'alerted' attribute in request data"}, 400
+    execution = try_get_execution(id)
+    player = execution.players[tan]
+    player.alerted = not status
     return Response(status=204)
