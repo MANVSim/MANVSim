@@ -10,10 +10,10 @@
 
 part of manv_api;
 
-class RunLocationArriveGet200Response {
-  /// Returns a new [RunLocationArriveGet200Response] instance.
-  RunLocationArriveGet200Response({
-    this.playerLocation,
+class RunPatientLeavePost200Response {
+  /// Returns a new [RunPatientLeavePost200Response] instance.
+  RunPatientLeavePost200Response({
+    this.message,
   });
 
   ///
@@ -22,34 +22,34 @@ class RunLocationArriveGet200Response {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  Location? playerLocation;
+  String? message;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is RunLocationArriveGet200Response &&
-    other.playerLocation == playerLocation;
+  bool operator ==(Object other) => identical(this, other) || other is RunPatientLeavePost200Response &&
+    other.message == message;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (playerLocation == null ? 0 : playerLocation!.hashCode);
+    (message == null ? 0 : message!.hashCode);
 
   @override
-  String toString() => 'RunLocationArriveGet200Response[playerLocation=$playerLocation]';
+  String toString() => 'RunPatientLeavePost200Response[message=$message]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.playerLocation != null) {
-      json[r'player_location'] = this.playerLocation;
+    if (this.message != null) {
+      json[r'message'] = this.message;
     } else {
-      json[r'player_location'] = null;
+      json[r'message'] = null;
     }
     return json;
   }
 
-  /// Returns a new [RunLocationArriveGet200Response] instance and imports its values from
+  /// Returns a new [RunPatientLeavePost200Response] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static RunLocationArriveGet200Response? fromJson(dynamic value) {
+  static RunPatientLeavePost200Response? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -58,24 +58,24 @@ class RunLocationArriveGet200Response {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "RunLocationArriveGet200Response[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "RunLocationArriveGet200Response[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "RunPatientLeavePost200Response[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "RunPatientLeavePost200Response[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return RunLocationArriveGet200Response(
-        playerLocation: Location.fromJson(json[r'player_location']),
+      return RunPatientLeavePost200Response(
+        message: mapValueOfType<String>(json, r'message'),
       );
     }
     return null;
   }
 
-  static List<RunLocationArriveGet200Response> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <RunLocationArriveGet200Response>[];
+  static List<RunPatientLeavePost200Response> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <RunPatientLeavePost200Response>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = RunLocationArriveGet200Response.fromJson(row);
+        final value = RunPatientLeavePost200Response.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -84,12 +84,12 @@ class RunLocationArriveGet200Response {
     return result.toList(growable: growable);
   }
 
-  static Map<String, RunLocationArriveGet200Response> mapFromJson(dynamic json) {
-    final map = <String, RunLocationArriveGet200Response>{};
+  static Map<String, RunPatientLeavePost200Response> mapFromJson(dynamic json) {
+    final map = <String, RunPatientLeavePost200Response>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = RunLocationArriveGet200Response.fromJson(entry.value);
+        final value = RunPatientLeavePost200Response.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -98,14 +98,14 @@ class RunLocationArriveGet200Response {
     return map;
   }
 
-  // maps a json object with a list of RunLocationArriveGet200Response-objects as value to a dart map
-  static Map<String, List<RunLocationArriveGet200Response>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<RunLocationArriveGet200Response>>{};
+  // maps a json object with a list of RunPatientLeavePost200Response-objects as value to a dart map
+  static Map<String, List<RunPatientLeavePost200Response>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<RunPatientLeavePost200Response>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = RunLocationArriveGet200Response.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = RunPatientLeavePost200Response.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;

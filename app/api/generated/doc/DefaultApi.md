@@ -13,14 +13,14 @@ Method | HTTP request | Description
 [**notificationsGet**](DefaultApi.md#notificationsget) | **GET** /notifications | notification polling
 [**playerSetNamePost**](DefaultApi.md#playersetnamepost) | **POST** /player/set-name | Set username for the TAN
 [**runActionAllGet**](DefaultApi.md#runactionallget) | **GET** /run/action/all | Returns a list of actions available to the user.
-[**runActionPerformPost**](DefaultApi.md#runactionperformpost) | **POST** /run/action/perform | Performs an action.
-[**runActionPerformResultGet**](DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action.
-[**runLocationAllGet**](DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of locations.
-[**runLocationArriveGet**](DefaultApi.md#runlocationarriveget) | **GET** /run/location/arrive | Simulates the arrival of a player at a certain location.
-[**runLocationTakeFromGet**](DefaultApi.md#runlocationtakefromget) | **GET** /run/location/take-from | A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
-[**runPatientAllIdsGet**](DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patients ids.
+[**runActionPerformPost**](DefaultApi.md#runactionperformpost) | **POST** /run/action/perform | Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
+[**runActionPerformResultGet**](DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action and officially finishes/dequeues the action of the patient.
+[**runLocationAllGet**](DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of  top-level accessible locations.
+[**runLocationLeavePost**](DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
+[**runLocationTakeFromPost**](DefaultApi.md#runlocationtakefrompost) | **POST** /run/location/take-from | A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+[**runPatientAllTansGet**](DefaultApi.md#runpatientalltansget) | **GET** /run/patient/all-tans | Returns a list of all patients.
 [**runPatientArrivePost**](DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
-[**runPatientsLeavePost**](DefaultApi.md#runpatientsleavepost) | **POST** /run/patients/leave | Leaves a patient.
+[**runPatientLeavePost**](DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
 [**scenarioStartTimeGet**](DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
 
 
@@ -117,7 +117,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **playerSetNamePost**
-> playerSetNamePost(playerSetNamePostRequest, xCSRFToken)
+> playerSetNamePost(playerSetNamePostRequest)
 
 Set username for the TAN
 
@@ -135,10 +135,9 @@ import 'package:manv_api/api.dart';
 
 final api_instance = DefaultApi();
 final playerSetNamePostRequest = PlayerSetNamePostRequest(); // PlayerSetNamePostRequest | 
-final xCSRFToken = token; // String | 
 
 try {
-    api_instance.playerSetNamePost(playerSetNamePostRequest, xCSRFToken);
+    api_instance.playerSetNamePost(playerSetNamePostRequest);
 } catch (e) {
     print('Exception when calling DefaultApi->playerSetNamePost: $e\n');
 }
@@ -149,7 +148,6 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **playerSetNamePostRequest** | [**PlayerSetNamePostRequest**](PlayerSetNamePostRequest.md)|  | 
- **xCSRFToken** | **String**|  | 
 
 ### Return type
 
@@ -210,9 +208,9 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **runActionPerformPost**
-> RunActionPerformPost200Response runActionPerformPost(runActionPerformPostRequest, xCSRFToken)
+> RunActionPerformPost200Response runActionPerformPost(runActionPerformPostRequest)
 
-Performs an action.
+Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
 
 ### Example
 ```dart
@@ -226,10 +224,9 @@ import 'package:manv_api/api.dart';
 
 final api_instance = DefaultApi();
 final runActionPerformPostRequest = RunActionPerformPostRequest(); // RunActionPerformPostRequest | 
-final xCSRFToken = token; // String | 
 
 try {
-    final result = api_instance.runActionPerformPost(runActionPerformPostRequest, xCSRFToken);
+    final result = api_instance.runActionPerformPost(runActionPerformPostRequest);
     print(result);
 } catch (e) {
     print('Exception when calling DefaultApi->runActionPerformPost: $e\n');
@@ -241,7 +238,6 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **runActionPerformPostRequest** | [**RunActionPerformPostRequest**](RunActionPerformPostRequest.md)|  | 
- **xCSRFToken** | **String**|  | 
 
 ### Return type
 
@@ -259,9 +255,9 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **runActionPerformResultGet**
-> RunActionPerformResultGet200Response runActionPerformResultGet(performedActionId, patientId)
+> String runActionPerformResultGet(performedActionId, patientId)
 
-Gets the result of a performed action.
+Gets the result of a performed action and officially finishes/dequeues the action of the patient.
 
 ### Example
 ```dart
@@ -294,7 +290,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**RunActionPerformResultGet200Response**](RunActionPerformResultGet200Response.md)
+**String**
 
 ### Authorization
 
@@ -310,7 +306,7 @@ Name | Type | Description  | Notes
 # **runLocationAllGet**
 > RunLocationAllGet200Response runLocationAllGet()
 
-Returns a list of locations.
+Returns a list of  top-level accessible locations.
 
 ### Example
 ```dart
@@ -350,10 +346,12 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **runLocationArriveGet**
-> RunLocationArriveGet200Response runLocationArriveGet()
+# **runLocationLeavePost**
+> RunLocationLeavePost200Response runLocationLeavePost()
 
-Simulates the arrival of a player at a certain location.
+Leaves a location.
+
+The current location of the player is resetted. Used initially to leave the arriving RTW.
 
 ### Example
 ```dart
@@ -368,10 +366,10 @@ import 'package:manv_api/api.dart';
 final api_instance = DefaultApi();
 
 try {
-    final result = api_instance.runLocationArriveGet();
+    final result = api_instance.runLocationLeavePost();
     print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->runLocationArriveGet: $e\n');
+    print('Exception when calling DefaultApi->runLocationLeavePost: $e\n');
 }
 ```
 
@@ -380,7 +378,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**RunLocationArriveGet200Response**](RunLocationArriveGet200Response.md)
+[**RunLocationLeavePost200Response**](RunLocationLeavePost200Response.md)
 
 ### Authorization
 
@@ -393,8 +391,8 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **runLocationTakeFromGet**
-> RunLocationArriveGet200Response runLocationTakeFromGet()
+# **runLocationTakeFromPost**
+> RunLocationTakeFromPost200Response runLocationTakeFromPost(runLocationTakeFromPostRequest)
 
 A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
 
@@ -409,21 +407,25 @@ import 'package:manv_api/api.dart';
 //defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
 
 final api_instance = DefaultApi();
+final runLocationTakeFromPostRequest = RunLocationTakeFromPostRequest(); // RunLocationTakeFromPostRequest | 
 
 try {
-    final result = api_instance.runLocationTakeFromGet();
+    final result = api_instance.runLocationTakeFromPost(runLocationTakeFromPostRequest);
     print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->runLocationTakeFromGet: $e\n');
+    print('Exception when calling DefaultApi->runLocationTakeFromPost: $e\n');
 }
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **runLocationTakeFromPostRequest** | [**RunLocationTakeFromPostRequest**](RunLocationTakeFromPostRequest.md)|  | 
 
 ### Return type
 
-[**RunLocationArriveGet200Response**](RunLocationArriveGet200Response.md)
+[**RunLocationTakeFromPost200Response**](RunLocationTakeFromPost200Response.md)
 
 ### Authorization
 
@@ -431,15 +433,15 @@ This endpoint does not need any parameter.
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **runPatientAllIdsGet**
-> RunPatientAllIdsGet200Response runPatientAllIdsGet()
+# **runPatientAllTansGet**
+> RunPatientAllTansGet200Response runPatientAllTansGet()
 
-Returns a list of all patients ids.
+Returns a list of all patients.
 
 ### Example
 ```dart
@@ -454,10 +456,10 @@ import 'package:manv_api/api.dart';
 final api_instance = DefaultApi();
 
 try {
-    final result = api_instance.runPatientAllIdsGet();
+    final result = api_instance.runPatientAllTansGet();
     print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->runPatientAllIdsGet: $e\n');
+    print('Exception when calling DefaultApi->runPatientAllTansGet: $e\n');
 }
 ```
 
@@ -466,7 +468,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**RunPatientAllIdsGet200Response**](RunPatientAllIdsGet200Response.md)
+[**RunPatientAllTansGet200Response**](RunPatientAllTansGet200Response.md)
 
 ### Authorization
 
@@ -480,7 +482,7 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **runPatientArrivePost**
-> RunPatientArrivePost200Response runPatientArrivePost(patientId)
+> RunPatientArrivePost200Response runPatientArrivePost(runPatientArrivePostRequest)
 
 Returns a specified patient.
 
@@ -495,10 +497,10 @@ import 'package:manv_api/api.dart';
 //defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
 
 final api_instance = DefaultApi();
-final patientId = 56; // int | 
+final runPatientArrivePostRequest = RunPatientArrivePostRequest(); // RunPatientArrivePostRequest | 
 
 try {
-    final result = api_instance.runPatientArrivePost(patientId);
+    final result = api_instance.runPatientArrivePost(runPatientArrivePostRequest);
     print(result);
 } catch (e) {
     print('Exception when calling DefaultApi->runPatientArrivePost: $e\n');
@@ -509,7 +511,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **patientId** | **int**|  | 
+ **runPatientArrivePostRequest** | [**RunPatientArrivePostRequest**](RunPatientArrivePostRequest.md)|  | 
 
 ### Return type
 
@@ -521,17 +523,17 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **runPatientsLeavePost**
-> runPatientsLeavePost(xCSRFToken, patientId)
+# **runPatientLeavePost**
+> RunPatientLeavePost200Response runPatientLeavePost()
 
 Leaves a patient.
 
-Closes a patient profile. Other users can no longer see the username in the list of treating users.
+Closes a patient profile and leaves the patients location.
 
 ### Example
 ```dart
@@ -544,26 +546,21 @@ import 'package:manv_api/api.dart';
 //defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
 
 final api_instance = DefaultApi();
-final xCSRFToken = token; // String | 
-final patientId = patient123; // String | 
 
 try {
-    api_instance.runPatientsLeavePost(xCSRFToken, patientId);
+    final result = api_instance.runPatientLeavePost();
+    print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->runPatientsLeavePost: $e\n');
+    print('Exception when calling DefaultApi->runPatientLeavePost: $e\n');
 }
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **xCSRFToken** | **String**|  | 
- **patientId** | **String**|  | 
+This endpoint does not need any parameter.
 
 ### Return type
 
-void (empty response body)
+[**RunPatientLeavePost200Response**](RunPatientLeavePost200Response.md)
 
 ### Authorization
 

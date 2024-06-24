@@ -141,9 +141,7 @@ class DefaultApi {
   /// Parameters:
   ///
   /// * [PlayerSetNamePostRequest] playerSetNamePostRequest (required):
-  ///
-  /// * [String] xCSRFToken (required):
-  Future<Response> playerSetNamePostWithHttpInfo(PlayerSetNamePostRequest playerSetNamePostRequest, String xCSRFToken,) async {
+  Future<Response> playerSetNamePostWithHttpInfo(PlayerSetNamePostRequest playerSetNamePostRequest,) async {
     // ignore: prefer_const_declarations
     final path = r'/player/set-name';
 
@@ -153,8 +151,6 @@ class DefaultApi {
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
-
-    headerParams[r'X-CSRFToken'] = parameterToString(xCSRFToken);
 
     const contentTypes = <String>['application/json'];
 
@@ -177,10 +173,8 @@ class DefaultApi {
   /// Parameters:
   ///
   /// * [PlayerSetNamePostRequest] playerSetNamePostRequest (required):
-  ///
-  /// * [String] xCSRFToken (required):
-  Future<void> playerSetNamePost(PlayerSetNamePostRequest playerSetNamePostRequest, String xCSRFToken,) async {
-    final response = await playerSetNamePostWithHttpInfo(playerSetNamePostRequest, xCSRFToken,);
+  Future<void> playerSetNamePost(PlayerSetNamePostRequest playerSetNamePostRequest,) async {
+    final response = await playerSetNamePostWithHttpInfo(playerSetNamePostRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -233,16 +227,14 @@ class DefaultApi {
     return null;
   }
 
-  /// Performs an action.
+  /// Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
   ///
   /// Note: This method returns the HTTP [Response].
   ///
   /// Parameters:
   ///
   /// * [RunActionPerformPostRequest] runActionPerformPostRequest (required):
-  ///
-  /// * [String] xCSRFToken (required):
-  Future<Response> runActionPerformPostWithHttpInfo(RunActionPerformPostRequest runActionPerformPostRequest, String xCSRFToken,) async {
+  Future<Response> runActionPerformPostWithHttpInfo(RunActionPerformPostRequest runActionPerformPostRequest,) async {
     // ignore: prefer_const_declarations
     final path = r'/run/action/perform';
 
@@ -252,8 +244,6 @@ class DefaultApi {
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
-
-    headerParams[r'X-CSRFToken'] = parameterToString(xCSRFToken);
 
     const contentTypes = <String>['application/json'];
 
@@ -269,15 +259,13 @@ class DefaultApi {
     );
   }
 
-  /// Performs an action.
+  /// Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
   ///
   /// Parameters:
   ///
   /// * [RunActionPerformPostRequest] runActionPerformPostRequest (required):
-  ///
-  /// * [String] xCSRFToken (required):
-  Future<RunActionPerformPost200Response?> runActionPerformPost(RunActionPerformPostRequest runActionPerformPostRequest, String xCSRFToken,) async {
-    final response = await runActionPerformPostWithHttpInfo(runActionPerformPostRequest, xCSRFToken,);
+  Future<RunActionPerformPost200Response?> runActionPerformPost(RunActionPerformPostRequest runActionPerformPostRequest,) async {
+    final response = await runActionPerformPostWithHttpInfo(runActionPerformPostRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -291,7 +279,7 @@ class DefaultApi {
     return null;
   }
 
-  /// Gets the result of a performed action.
+  /// Gets the result of a performed action and officially finishes/dequeues the action of the patient.
   ///
   /// Note: This method returns the HTTP [Response].
   ///
@@ -328,14 +316,14 @@ class DefaultApi {
     );
   }
 
-  /// Gets the result of a performed action.
+  /// Gets the result of a performed action and officially finishes/dequeues the action of the patient.
   ///
   /// Parameters:
   ///
   /// * [String] performedActionId (required):
   ///
   /// * [String] patientId (required):
-  Future<RunActionPerformResultGet200Response?> runActionPerformResultGet(String performedActionId, String patientId,) async {
+  Future<String?> runActionPerformResultGet(String performedActionId, String patientId,) async {
     final response = await runActionPerformResultGetWithHttpInfo(performedActionId, patientId,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -344,13 +332,13 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunActionPerformResultGet200Response',) as RunActionPerformResultGet200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'String',) as String;
     
     }
     return null;
   }
 
-  /// Returns a list of locations.
+  /// Returns a list of  top-level accessible locations.
   ///
   /// Note: This method returns the HTTP [Response].
   Future<Response> runLocationAllGetWithHttpInfo() async {
@@ -378,7 +366,7 @@ class DefaultApi {
     );
   }
 
-  /// Returns a list of locations.
+  /// Returns a list of  top-level accessible locations.
   Future<RunLocationAllGet200Response?> runLocationAllGet() async {
     final response = await runLocationAllGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
@@ -394,12 +382,14 @@ class DefaultApi {
     return null;
   }
 
-  /// Simulates the arrival of a player at a certain location.
+  /// Leaves a location.
+  ///
+  /// The current location of the player is resetted. Used initially to leave the arriving RTW.
   ///
   /// Note: This method returns the HTTP [Response].
-  Future<Response> runLocationArriveGetWithHttpInfo() async {
+  Future<Response> runLocationLeavePostWithHttpInfo() async {
     // ignore: prefer_const_declarations
-    final path = r'/run/location/arrive';
+    final path = r'/run/location/leave';
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -413,7 +403,7 @@ class DefaultApi {
 
     return apiClient.invokeAPI(
       path,
-      'GET',
+      'POST',
       queryParams,
       postBody,
       headerParams,
@@ -422,9 +412,11 @@ class DefaultApi {
     );
   }
 
-  /// Simulates the arrival of a player at a certain location.
-  Future<RunLocationArriveGet200Response?> runLocationArriveGet() async {
-    final response = await runLocationArriveGetWithHttpInfo();
+  /// Leaves a location.
+  ///
+  /// The current location of the player is resetted. Used initially to leave the arriving RTW.
+  Future<RunLocationLeavePost200Response?> runLocationLeavePost() async {
+    final response = await runLocationLeavePostWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -432,7 +424,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunLocationArriveGet200Response',) as RunLocationArriveGet200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunLocationLeavePost200Response',) as RunLocationLeavePost200Response;
     
     }
     return null;
@@ -441,23 +433,27 @@ class DefaultApi {
   /// A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
   ///
   /// Note: This method returns the HTTP [Response].
-  Future<Response> runLocationTakeFromGetWithHttpInfo() async {
+  ///
+  /// Parameters:
+  ///
+  /// * [RunLocationTakeFromPostRequest] runLocationTakeFromPostRequest (required):
+  Future<Response> runLocationTakeFromPostWithHttpInfo(RunLocationTakeFromPostRequest runLocationTakeFromPostRequest,) async {
     // ignore: prefer_const_declarations
     final path = r'/run/location/take-from';
 
     // ignore: prefer_final_locals
-    Object? postBody;
+    Object? postBody = runLocationTakeFromPostRequest;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-    const contentTypes = <String>[];
+    const contentTypes = <String>['application/json'];
 
 
     return apiClient.invokeAPI(
       path,
-      'GET',
+      'POST',
       queryParams,
       postBody,
       headerParams,
@@ -467,8 +463,12 @@ class DefaultApi {
   }
 
   /// A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
-  Future<RunLocationArriveGet200Response?> runLocationTakeFromGet() async {
-    final response = await runLocationTakeFromGetWithHttpInfo();
+  ///
+  /// Parameters:
+  ///
+  /// * [RunLocationTakeFromPostRequest] runLocationTakeFromPostRequest (required):
+  Future<RunLocationTakeFromPost200Response?> runLocationTakeFromPost(RunLocationTakeFromPostRequest runLocationTakeFromPostRequest,) async {
+    final response = await runLocationTakeFromPostWithHttpInfo(runLocationTakeFromPostRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -476,18 +476,18 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunLocationArriveGet200Response',) as RunLocationArriveGet200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunLocationTakeFromPost200Response',) as RunLocationTakeFromPost200Response;
     
     }
     return null;
   }
 
-  /// Returns a list of all patients ids.
+  /// Returns a list of all patients.
   ///
   /// Note: This method returns the HTTP [Response].
-  Future<Response> runPatientAllIdsGetWithHttpInfo() async {
+  Future<Response> runPatientAllTansGetWithHttpInfo() async {
     // ignore: prefer_const_declarations
-    final path = r'/run/patient/all-ids';
+    final path = r'/run/patient/all-tans';
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -510,9 +510,9 @@ class DefaultApi {
     );
   }
 
-  /// Returns a list of all patients ids.
-  Future<RunPatientAllIdsGet200Response?> runPatientAllIdsGet() async {
-    final response = await runPatientAllIdsGetWithHttpInfo();
+  /// Returns a list of all patients.
+  Future<RunPatientAllTansGet200Response?> runPatientAllTansGet() async {
+    final response = await runPatientAllTansGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -520,7 +520,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientAllIdsGet200Response',) as RunPatientAllIdsGet200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientAllTansGet200Response',) as RunPatientAllTansGet200Response;
     
     }
     return null;
@@ -532,21 +532,19 @@ class DefaultApi {
   ///
   /// Parameters:
   ///
-  /// * [int] patientId (required):
-  Future<Response> runPatientArrivePostWithHttpInfo(int patientId,) async {
+  /// * [RunPatientArrivePostRequest] runPatientArrivePostRequest (required):
+  Future<Response> runPatientArrivePostWithHttpInfo(RunPatientArrivePostRequest runPatientArrivePostRequest,) async {
     // ignore: prefer_const_declarations
     final path = r'/run/patient/arrive';
 
     // ignore: prefer_final_locals
-    Object? postBody;
+    Object? postBody = runPatientArrivePostRequest;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-      queryParams.addAll(_queryParams('', 'patient_id', patientId));
-
-    const contentTypes = <String>[];
+    const contentTypes = <String>['application/json'];
 
 
     return apiClient.invokeAPI(
@@ -564,9 +562,9 @@ class DefaultApi {
   ///
   /// Parameters:
   ///
-  /// * [int] patientId (required):
-  Future<RunPatientArrivePost200Response?> runPatientArrivePost(int patientId,) async {
-    final response = await runPatientArrivePostWithHttpInfo(patientId,);
+  /// * [RunPatientArrivePostRequest] runPatientArrivePostRequest (required):
+  Future<RunPatientArrivePost200Response?> runPatientArrivePost(RunPatientArrivePostRequest runPatientArrivePostRequest,) async {
+    final response = await runPatientArrivePostWithHttpInfo(runPatientArrivePostRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -582,18 +580,12 @@ class DefaultApi {
 
   /// Leaves a patient.
   ///
-  /// Closes a patient profile. Other users can no longer see the username in the list of treating users.
+  /// Closes a patient profile and leaves the patients location.
   ///
   /// Note: This method returns the HTTP [Response].
-  ///
-  /// Parameters:
-  ///
-  /// * [String] xCSRFToken (required):
-  ///
-  /// * [String] patientId (required):
-  Future<Response> runPatientsLeavePostWithHttpInfo(String xCSRFToken, String patientId,) async {
+  Future<Response> runPatientLeavePostWithHttpInfo() async {
     // ignore: prefer_const_declarations
-    final path = r'/run/patients/leave';
+    final path = r'/run/patient/leave';
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -601,10 +593,6 @@ class DefaultApi {
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
-
-      queryParams.addAll(_queryParams('', 'patientId', patientId));
-
-    headerParams[r'X-CSRFToken'] = parameterToString(xCSRFToken);
 
     const contentTypes = <String>[];
 
@@ -622,18 +610,20 @@ class DefaultApi {
 
   /// Leaves a patient.
   ///
-  /// Closes a patient profile. Other users can no longer see the username in the list of treating users.
-  ///
-  /// Parameters:
-  ///
-  /// * [String] xCSRFToken (required):
-  ///
-  /// * [String] patientId (required):
-  Future<void> runPatientsLeavePost(String xCSRFToken, String patientId,) async {
-    final response = await runPatientsLeavePostWithHttpInfo(xCSRFToken, patientId,);
+  /// Closes a patient profile and leaves the patients location.
+  Future<RunPatientLeavePost200Response?> runPatientLeavePost() async {
+    final response = await runPatientLeavePostWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientLeavePost200Response',) as RunPatientLeavePost200Response;
+    
+    }
+    return null;
   }
 
   /// Get start time and arrival time of scenario.

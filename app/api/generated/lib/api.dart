@@ -38,15 +38,19 @@ part 'model/login_post_request.dart';
 part 'model/notifications_get200_response.dart';
 part 'model/notifications_get200_response_notifications_inner.dart';
 part 'model/patient.dart';
+part 'model/player_set_name_post401_response.dart';
 part 'model/player_set_name_post_request.dart';
 part 'model/resource.dart';
 part 'model/run_action_perform_post200_response.dart';
 part 'model/run_action_perform_post_request.dart';
-part 'model/run_action_perform_result_get200_response.dart';
 part 'model/run_location_all_get200_response.dart';
-part 'model/run_location_arrive_get200_response.dart';
-part 'model/run_patient_all_ids_get200_response.dart';
+part 'model/run_location_leave_post200_response.dart';
+part 'model/run_location_take_from_post200_response.dart';
+part 'model/run_location_take_from_post_request.dart';
+part 'model/run_patient_all_tans_get200_response.dart';
 part 'model/run_patient_arrive_post200_response.dart';
+part 'model/run_patient_arrive_post_request.dart';
+part 'model/run_patient_leave_post200_response.dart';
 part 'model/scenario_start_time_get200_response.dart';
 
 

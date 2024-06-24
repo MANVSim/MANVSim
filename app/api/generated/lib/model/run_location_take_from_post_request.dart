@@ -10,12 +10,11 @@
 
 part of manv_api;
 
-class Patient {
-  /// Returns a new [Patient] instance.
-  Patient({
-    this.id,
-    this.name,
-    this.injuries,
+class RunLocationTakeFromPostRequest {
+  /// Returns a new [RunLocationTakeFromPostRequest] instance.
+  RunLocationTakeFromPostRequest({
+    this.takeLocationId,
+    this.fromLocationId,
   });
 
   ///
@@ -24,7 +23,7 @@ class Patient {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  int? id;
+  int? takeLocationId;
 
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
@@ -32,56 +31,41 @@ class Patient {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  String? name;
-
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? injuries;
+  int? fromLocationId;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is Patient &&
-    other.id == id &&
-    other.name == name &&
-    other.injuries == injuries;
+  bool operator ==(Object other) => identical(this, other) || other is RunLocationTakeFromPostRequest &&
+    other.takeLocationId == takeLocationId &&
+    other.fromLocationId == fromLocationId;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (id == null ? 0 : id!.hashCode) +
-    (name == null ? 0 : name!.hashCode) +
-    (injuries == null ? 0 : injuries!.hashCode);
+    (takeLocationId == null ? 0 : takeLocationId!.hashCode) +
+    (fromLocationId == null ? 0 : fromLocationId!.hashCode);
 
   @override
-  String toString() => 'Patient[id=$id, name=$name, injuries=$injuries]';
+  String toString() => 'RunLocationTakeFromPostRequest[takeLocationId=$takeLocationId, fromLocationId=$fromLocationId]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.id != null) {
-      json[r'id'] = this.id;
+    if (this.takeLocationId != null) {
+      json[r'take_location_id'] = this.takeLocationId;
     } else {
-      json[r'id'] = null;
+      json[r'take_location_id'] = null;
     }
-    if (this.name != null) {
-      json[r'name'] = this.name;
+    if (this.fromLocationId != null) {
+      json[r'from_location_id'] = this.fromLocationId;
     } else {
-      json[r'name'] = null;
-    }
-    if (this.injuries != null) {
-      json[r'injuries'] = this.injuries;
-    } else {
-      json[r'injuries'] = null;
+      json[r'from_location_id'] = null;
     }
     return json;
   }
 
-  /// Returns a new [Patient] instance and imports its values from
+  /// Returns a new [RunLocationTakeFromPostRequest] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static Patient? fromJson(dynamic value) {
+  static RunLocationTakeFromPostRequest? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -90,26 +74,25 @@ class Patient {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "Patient[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "Patient[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "RunLocationTakeFromPostRequest[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "RunLocationTakeFromPostRequest[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return Patient(
-        id: mapValueOfType<int>(json, r'id'),
-        name: mapValueOfType<String>(json, r'name'),
-        injuries: mapValueOfType<String>(json, r'injuries'),
+      return RunLocationTakeFromPostRequest(
+        takeLocationId: mapValueOfType<int>(json, r'take_location_id'),
+        fromLocationId: mapValueOfType<int>(json, r'from_location_id'),
       );
     }
     return null;
   }
 
-  static List<Patient> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <Patient>[];
+  static List<RunLocationTakeFromPostRequest> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <RunLocationTakeFromPostRequest>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = Patient.fromJson(row);
+        final value = RunLocationTakeFromPostRequest.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -118,12 +101,12 @@ class Patient {
     return result.toList(growable: growable);
   }
 
-  static Map<String, Patient> mapFromJson(dynamic json) {
-    final map = <String, Patient>{};
+  static Map<String, RunLocationTakeFromPostRequest> mapFromJson(dynamic json) {
+    final map = <String, RunLocationTakeFromPostRequest>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = Patient.fromJson(entry.value);
+        final value = RunLocationTakeFromPostRequest.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -132,14 +115,14 @@ class Patient {
     return map;
   }
 
-  // maps a json object with a list of Patient-objects as value to a dart map
-  static Map<String, List<Patient>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<Patient>>{};
+  // maps a json object with a list of RunLocationTakeFromPostRequest-objects as value to a dart map
+  static Map<String, List<RunLocationTakeFromPostRequest>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<RunLocationTakeFromPostRequest>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = Patient.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = RunLocationTakeFromPostRequest.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;
