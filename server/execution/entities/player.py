@@ -7,7 +7,7 @@ from execution.entities.role import Role
 class Player:
 
     def __init__(self, tan: str, name: str | None, alerted: bool, activation_delay_sec: int, location: Location | None,
-                 accessible_locations: set[Location], role: Role | None = None):
+                 accessible_locations: set[Location], role: Role | None = None, logged_in: bool = False):
         self.tan = tan
         self.name = name
         self.role = role
@@ -15,6 +15,7 @@ class Player:
         self.activation_delay_sec = activation_delay_sec
         self.location = location
         self.accessible_locations = accessible_locations
+        self.logged_in = logged_in
 
     def __repr__(self):
         return (f"Player(tan={self.tan!r}, name={self.name!r}, alerted={self.alerted!r}, "
@@ -29,12 +30,13 @@ class Player:
         return {
             'tan': self.tan,
             'name': self.name,
-            'role': (self.role if self.role is None else self.role.name),
+            'role': self.role if self.role is None else self.role.name,
             'alerted': self.alerted,
             'activation_delay_sec': self.activation_delay_sec,
             'location': self.location.id if shallow else self.location.to_dict(),
             'accessible_locations': [location.id if shallow else location.to_dict() for location in
-                                     self.accessible_locations]
+                                     self.accessible_locations],
+            'logged_in': self.logged_in
         }
 
     def to_json(self, shallow: bool = False):
