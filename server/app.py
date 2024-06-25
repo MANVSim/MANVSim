@@ -1,12 +1,11 @@
 import logging
 import os
+
 from flask import Flask, send_from_directory, redirect, request
 from flask_jwt_extended import JWTManager, jwt_required
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.exceptions import BadRequestKeyError
-
-import execution.web.setup
 from execution.utils import util
 from execution.entities.execution import Execution
 
@@ -21,6 +20,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
 
     # asynchronously import local packages
     import web.setup
+    import execution.web.setup
     from execution.api import lobby, location, patient, action, notification
 
     app = Flask(__name__, static_folder="../web/dist")
