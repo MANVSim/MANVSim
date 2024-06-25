@@ -15,7 +15,7 @@ class Player:
         self.activation_delay_sec = activation_delay_sec
         self.location = location
         self.accessible_locations = accessible_locations
-        self.logged_in = logged_in
+        self.logged_in = logged_in  # is toggled upon first login
 
     def __repr__(self):
         return (f"Player(tan={self.tan!r}, name={self.name!r}, alerted={self.alerted!r}, "
@@ -45,3 +45,6 @@ class Player:
         only the object reference in form of a unique identifier is included.
         """
         return json.dumps(self.to_dict(shallow))
+
+    def has_logged_in(self) -> bool:
+        return self.logged_in
