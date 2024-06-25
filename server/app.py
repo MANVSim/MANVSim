@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager, jwt_required
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.exceptions import BadRequestKeyError
+
 from execution.utils import util
 from execution.entities.execution import Execution
 
