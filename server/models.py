@@ -20,6 +20,7 @@ class Scenario(db.Model):
 
 class Execution(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(nullable=False)
     scenario_id: Mapped[int] = mapped_column(ForeignKey("scenario.id"), nullable=False)
 
 
