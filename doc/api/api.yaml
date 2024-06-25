@@ -406,14 +406,12 @@ paths:
       summary: notification polling
       description: Returns a list of notifications for the user after lastPollTime.
       parameters:
-        - name: lastPollTime
+        - name: next_id
           in: query
-          required: false
+          required: true
           schema:
-            type: string
-            format: date-time
-            description: timestamp in ISO 8601 Format
-            example: "2023-01-01T12:00:00Z"
+            type: integer
+            example: "2"
       responses:
         '200':
           description: success.
@@ -425,23 +423,19 @@ paths:
                   notifications:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        header:
-                          type: string
-                          description: header of the notification.
-                          example: "Example Notification"
-                        message:
-                          type: string
-                          description: The message itself.
-                          example: "Example Notifications content."
-                        timestamp:
-                          type: string
-                          format: date-time
-                          description: timestamp in ISO 8601 Format.
-                          example: "2023-01-01T12:30:00Z"
+                      type: string
+                      example: "I am a message"
+                  next_id:
+                    type: integer
+                    example: 2
+        '204':
+          description: "No newer notifications available."
+        '400':
+          description: "Invalid request-query detected."
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '418':
+          description: "Requested id larger than notifications available."
       security:
         - bearerAuth: [ ]
 
