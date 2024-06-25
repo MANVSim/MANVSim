@@ -80,7 +80,7 @@ export const isLoginResponse = isTypeFactory<LoginResponse>(loginResponse)
 // Player
 const player = z.object({
   tan: z.string(),
-  name: z.string(),
+  name: z.string().or(z.null()),
   role: z.string().or(z.null()),
   alerted: z.boolean(),
 })
@@ -98,8 +98,9 @@ export const ExecutionStatusEnum = z.enum([
 
 const executionData = z.object({
   id: z.number(),
-  status: ExecutionStatusEnum,
+  starting_time: z.number(),
   players: z.array(player),
+  status: ExecutionStatusEnum,
 })
 
 export type ExecutionData = z.infer<typeof executionData>

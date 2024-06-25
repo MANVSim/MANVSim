@@ -6,6 +6,7 @@ from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
 from werkzeug.exceptions import BadRequestKeyError
 from execution.entities.execution import Execution
+from execution.services.entityloader import load_execution
 from execution.tests.entities.dummy_entities import create_test_execution
 import models
 from app_config import csrf
@@ -109,14 +110,11 @@ def start_scenario():
     except KeyError:
         return {"error": "Missing id in request"}, 400
 
-    execution = models.Execution.query.get(id)
-    if execution is None:
-        return {"error": f"Could not find execution with id {id}"}
+    if load_execution(id):
+        return active_executions[id].to_dict()
 
-    run_execution = create_test_execution()
-    run_execution.id = id
-    activate_execution(run_execution)
-    return run_execution.to_dict()
+    # Failure
+    raise Exception(f"Could not load execution with id {id}")
 
 
 @api.get("/execution/<int:id>")
