@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.exceptions import BadRequestKeyError
 
-from execution.api import location, patient, actions
+import execution.web.setup
 from execution.utils import util
 from execution.entities.execution import Execution
 
@@ -21,7 +21,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
 
     # asynchronously import local packages
     import web.setup
-    from execution.api import lobby
+    from execution.api import lobby, location, patient, action, notification
 
     app = Flask(__name__, static_folder="../web/dist")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
@@ -34,7 +34,8 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     db.init_app(app)
     csrf.init_app(app)
     jwt = JWTManager(app)
-    web.setup(app)
+    web.setup(app)      # FIXME deprecated package
+    execution.web.setup.setup(app)
 
     # define run request blocker
     @app.before_request
@@ -76,8 +77,9 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
             return redirect("/")
 
     app.register_blueprint(lobby.api, url_prefix="/api")
+    app.register_blueprint(notification.api, url_prefix="/api")
     app.register_blueprint(patient.api, url_prefix="/api/run")
     app.register_blueprint(location.api, url_prefix="/api/run")
-    app.register_blueprint(actions.api, url_prefix="/api/run")
+    app.register_blueprint(action.api, url_prefix="/api/run")
 
     return app

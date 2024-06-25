@@ -23,6 +23,7 @@ class Execution:
         self.players = players
         self.status = status
         self.starting_time = starting_time
+        self.notifications = []
 
     def __repr__(self):
         return (f"Execution(id={self.id!r}, scenario={self.scenario!r}, players={self.players!r}, "
