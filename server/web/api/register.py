@@ -7,10 +7,9 @@ from flask_wtf.csrf import CSRFError, generate_csrf
 from werkzeug.exceptions import BadRequestKeyError
 from execution.entities.execution import Execution
 from execution.services.entityloader import load_execution
-from execution.tests.entities.dummy_entities import create_test_execution
 import models
 from app_config import csrf
-from execution.run import activate_execution, active_executions
+from execution.run import active_executions
 
 # FIXME sollten wir zusammen mit dem Web package iwann mal umbenennen
 api = Blueprint("api-web", __name__)
