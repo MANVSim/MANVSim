@@ -101,7 +101,7 @@ def get_templates():
 
 
 @api.post("/scenario/start")
-# @admin_only
+@admin_only
 @csrf.exempt
 def start_scenario():
     try:
