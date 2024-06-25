@@ -129,7 +129,7 @@ def get_execution_status(id: int):
 def start_execution(id: int):
     execution = try_get_execution(id)
     execution.status = Execution.Status.RUNNING
-    return Response(status=204)
+    return Response(status=200)
 
 
 @api.post("/execution/<int:id>/stop")
@@ -137,7 +137,7 @@ def start_execution(id: int):
 def stop_execution(id: int):
     execution = try_get_execution(id)
     execution.status = Execution.Status.FINISHED
-    return Response(status=204)
+    return Response(status=200)
 
 
 @api.post("/execution/<int:id>/player/<tan>/status")
@@ -150,4 +150,4 @@ def change_player_status(id: int, tan: str):
     execution = try_get_execution(id)
     player = execution.players[tan]
     player.alerted = not status
-    return Response(status=204)
+    return Response(status=200)
