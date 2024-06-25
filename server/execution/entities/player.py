@@ -45,6 +45,3 @@ class Player:
         only the object reference in form of a unique identifier is included.
         """
         return json.dumps(self.to_dict(shallow))
-
-    def has_logged_in(self) -> bool:
-        return self.logged_in
