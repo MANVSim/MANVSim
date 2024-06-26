@@ -88,17 +88,22 @@ function ToggleExecution({
 export default function Execution(): ReactElement {
   const loaderData = useLoaderData()
 
+  const [execution, setExecution] = useState<null | ExecutionData>(
+    isExecutionData(loaderData) ? loaderData : null,
+  )
+
+  const [tansAvailable, tansUsed] = _.partition(
+    execution?.players,
+    (): boolean => false, // TODO: Determine if TAN is used or not
+  )
+
+  const { executionId } = useParams<{ executionId: string }>()
+
   useEffect(() => {
     if (isExecutionData(loaderData)) {
       setExecution(loaderData)
     }
   }, [loaderData])
-
-  const [execution, setExecution] = useState<null | ExecutionData>(
-    isExecutionData(loaderData) ? loaderData : null,
-  )
-
-  const { executionId } = useParams<{ executionId: string }>()
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
@@ -110,11 +115,6 @@ export default function Execution(): ReactElement {
     }, config.pollingRate)
     return () => clearInterval(intervalId)
   }, [executionId])
-
-  const [tansAvailable, tansUsed] = _.partition(
-    execution?.players,
-    (): boolean => false, // TODO: Determine if TAN is used or not
-  )
 
   return (
     <div>
