@@ -58,7 +58,7 @@ def set_name():
         force_update = form["force_update"] == "True" if "force_update" in form.keys() else False
         _, player = util.get_execution_and_player()
         with player.lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT):
-            if not player.name or player.name == "" or force_update:
+            if not player.name or force_update:
                 player.name = name
             else:
                 return "A player-name is already set", 409
