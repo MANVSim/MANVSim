@@ -1,11 +1,11 @@
-import { Form, FormProps } from "react-router-dom"
+import { Form } from "react-router-dom"
 import { CsrfInput } from "../contexts/csrf"
-import { ReactElement, ReactNode } from "react"
+import { PropsWithChildren, ReactElement } from "react"
 
 export default function CsrfForm({
   children,
   ...props
-}: FormProps & { children?: ReactNode }): ReactElement {
+}: PropsWithChildren): ReactElement {
   return (
     <Form {...props}>
       <CsrfInput />
