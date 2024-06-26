@@ -50,3 +50,58 @@ def test_current_exec_status(client):
     # invalid id
     response = client.get("/api/scenario/start-time", headers=headers_invalid_payload)
     assert response.status_code == 400
+
+
+def test_set_name(client):
+    player_id = "654WVU"
+    exec_id = run.registered_players[player_id]
+    execution = run.active_executions[exec_id]
+    player = execution.players[player_id]
+    player.name = None
+
+    auth_header = generate_token(client.application)
+    auth_header["Content-Type"] = "application/json"
+    # initial set-name
+    form = {
+        "name": "Test-User"
+    }
+    response = client.post("/api/player/set-name", data=json.dumps(form), headers=auth_header)
+    assert response.status_code == 200
+    assert player.name == "Test-User"
+
+    # invalid set-name due to already existing string
+    response = client.post("/api/player/set-name", data=json.dumps(form), headers=auth_header)
+    assert response.status_code == 409
+
+    # forcing the set name to succeed
+    form = {
+        "name": "Test-User-v2",
+        "force_update": "True"
+    }
+    response = client.post("/api/player/set-name", data=json.dumps(form), headers=auth_header)
+    assert response.status_code == 200
+
+    # set wrong force flag
+    form = {
+        "name": "Test-User-v3",
+        "force_update": "False"
+    }
+    response = client.post("/api/player/set-name", data=json.dumps(form), headers=auth_header)
+    assert response.status_code == 409
+
+    # set invalid force key with True
+    form = {
+        "name": "Test-User-v4",
+        "force_update-invalid-key": "True"
+    }
+    response = client.post("/api/player/set-name", data=json.dumps(form), headers=auth_header)
+    assert response.status_code == 409
+
+    # invalid name key
+    form = {
+        "name-invalid-key": "Test-User-v5"
+    }
+    response = client.post("/api/player/set-name", data=json.dumps(form), headers=auth_header)
+    assert response.status_code == 400
+
+    assert player.name == "Test-User-v2"

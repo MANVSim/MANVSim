@@ -9,6 +9,7 @@ from flask import Blueprint
 from app_config import csrf
 from execution import run
 from execution.utils import util
+from vars import ACQUIRE_TIMEOUT
 
 api = Blueprint("api-lobby", __name__)
 
@@ -43,7 +44,7 @@ def login():
             "user_role": (player.role if player.role is None else player.role.name)
         }
     except KeyError:
-        return Response(response="Invalid TAN detected. Unable to resolve player.", status=status.HTTP_400_BAD_REQUEST)
+        return "Invalid TAN detected. Unable to resolve player.", 400
 
 
 @api.post("/player/set-name")
@@ -54,14 +55,17 @@ def set_name():
     try:
         form = request.get_json()
         name = form["name"]
+        force_update = form["force_update"] == "True" if "force_update" in form.keys() else False
         _, player = util.get_execution_and_player()
-        player.name = name
-        return Response(response="Name successfully set.", status=status.HTTP_200_OK)
+        with player.lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT):
+            if not player.name or force_update:
+                player.name = name
+            else:
+                return "A player-name is already set", 409
+
+        return "Name successfully set.", 200
     except KeyError:
-        return Response(
-            response="Invalid form detected. Unable to resolve attribute 'name'.",
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return "Invalid form detected. Unable to resolve attribute 'name'.", 400
 
 
 @api.get("/scenario/start-time")
@@ -88,7 +92,4 @@ def get_current_exec_status():
                 "travel_time": player.activation_delay_sec
             }
     except KeyError:
-        return Response(
-            response="Invalid execution id or TAN provided. Unable to resolve data.",
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return "Invalid execution id or TAN provided. Unable to resolve data.", 400

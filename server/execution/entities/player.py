@@ -2,6 +2,7 @@ import json
 
 from execution.entities.location import Location
 from execution.entities.role import Role
+from execution.utils.timeoutlock import TimeoutLock
 
 
 class Player:
@@ -15,6 +16,8 @@ class Player:
         self.activation_delay_sec = activation_delay_sec
         self.location = location
         self.accessible_locations = accessible_locations
+
+        self.lock = TimeoutLock()
 
     def __repr__(self):
         return (f"Player(tan={self.tan!r}, name={self.name!r}, alerted={self.alerted!r}, "
