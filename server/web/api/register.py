@@ -112,10 +112,13 @@ def stop_execution(id: int):
 @required("id", int, RequiredValueSource.ARGS)
 @required("tan", str, RequiredValueSource.ARGS)
 @required("alerted", booleanize, RequiredValueSource.FORM)
-# @admin_only
-@csrf.exempt
+@admin_only
 def change_player_status(id: int, tan: str, alerted: bool):
     execution = try_get_execution(id)
-    player = execution.players[tan]
+    try:
+        player = execution.players[tan]
+    except KeyError:
+        raise NotFound(
+            f"Player with TAN '{tan}' does not exist for execution with id {id}")
     player.alerted = not alerted
     return Response(status=200)
