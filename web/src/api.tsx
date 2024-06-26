@@ -81,14 +81,14 @@ export async function getAuthToken(
 }
 
 export async function getExecutionStatus(id: string): Promise<object> {
-  return tryFetchJson(`execution/${id}`)
+  return tryFetchJson(`execution?id=${id}`)
 }
 
 export async function startExecution(
   id: string,
   formData: FormData,
 ): Promise<Response> {
-  return tryFetchApi(`execution/${id}/start`, {
+  return tryFetchApi(`execution/start?id=${id}`, {
     method: "POST",
     body: formData,
   })
@@ -98,7 +98,7 @@ export async function stopExecution(
   id: string,
   formData: FormData,
 ): Promise<Response> {
-  return tryFetchApi(`execution/${id}/stop`, {
+  return tryFetchApi(`execution/stop?id=${id}`, {
     method: "POST",
     body: formData,
   })
@@ -109,8 +109,11 @@ export async function togglePlayerStatus(
   playerTan: string,
   formData: FormData,
 ): Promise<Response> {
-  return tryFetchApi(`execution/${executionId}/player/${playerTan}/status`, {
-    method: "POST",
-    body: formData,
-  })
+  return tryFetchApi(
+    `execution/player/status?id=${executionId}&tan=${playerTan}`,
+    {
+      method: "POST",
+      body: formData,
+    },
+  )
 }

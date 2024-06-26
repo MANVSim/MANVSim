@@ -77,7 +77,7 @@ def get_templates():
 
 
 @api.post("/scenario/start")
-@required("id", int, RequiredValueSource.ARGS)
+@required("id", int, RequiredValueSource.FORM)
 @admin_only
 def start_scenario(id: int):
     if load_execution(id):
