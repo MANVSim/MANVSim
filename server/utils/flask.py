@@ -1,6 +1,6 @@
 from enum import StrEnum
 from functools import wraps
-from typing import Callable
+from typing import Any, Callable
 
 from flask import abort, request
 from flask_api import status
@@ -16,7 +16,7 @@ class RequiredValueSource(StrEnum):
     ARGS = "query parameters"
 
 
-def required(arg: str, converter: Callable, source_enum: RequiredValueSource):
+def required(arg: str, converter: Callable[[str], Any], source_enum: RequiredValueSource):
     """
     Decorator to ensure that the given parameter is part of the request. The following sources can be used:
     - `~flask.request.form`
