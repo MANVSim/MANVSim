@@ -1,64 +1,40 @@
-from functools import wraps
-from flask import Response, abort, make_response, request, Blueprint
+import json
+
+from flask import Blueprint, Response, make_response, request
 from flask_api import status
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import create_access_token
 from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
-from werkzeug.exceptions import BadRequestKeyError
-from execution.entities.execution import Execution
-from execution.services.entityloader import load_execution
+from werkzeug.exceptions import BadRequestKeyError, HTTPException, NotFound
+
 import models
 from app_config import csrf
+from execution.entities.execution import Execution
 from execution.run import active_executions
+from execution.services.entityloader import load_execution
+from utils.flask import RequiredValueSource, admin_only, required, try_get_execution
 
 # FIXME sollten wir zusammen mit dem Web package iwann mal umbenennen
 api = Blueprint("api-web", __name__)
 
 
-class ExecutionIdNotFound(Exception):
-    status_code = 404
-    execution_id: int
-
-    def __init__(self, id: int) -> None:
-        super().__init__()
-        self.execution_id = id
-
-    def to_dict(self):
-        return {
-            "error": f"The given execution with id {self.execution_id} does not exist"
-        }
-
-
-@api.errorhandler(ExecutionIdNotFound)
-def execution_not_found(e: ExecutionIdNotFound):
-    return e.to_dict(), e.status_code
+@api.errorhandler(HTTPException)
+def http_exception_handler(e: HTTPException):
+    """Return JSON instead of HTML for HTTP errors."""
+    # start with the correct headers and status code from the error
+    response = make_response(e.get_response())
+    # replace the body with JSON
+    response.data = json.dumps({
+        "error": e.description,
+    })
+    response.content_type = "application/json"
+    return response
 
 
 @api.errorhandler(CSRFError)
 def handle_csrf_error(error: CSRFError):
     status = error.response or 400
     return make_response(({"error": error.description}, status))
-
-
-def try_get_execution(id: int):
-    try:
-        execution = active_executions[id]
-    except KeyError:
-        raise ExecutionIdNotFound(id)
-
-    return execution
-
-
-def admin_only(func):
-    @wraps(func)  # https://stackoverflow.com/a/64534085/11370741
-    @jwt_required()
-    def wrapper(*args, **kwargs):
-        identity = get_jwt_identity()
-        if identity != "admin":
-            abort(status.HTTP_401_UNAUTHORIZED)
-        return func(*args, **kwargs)
-
-    return wrapper
 
 
 @api.get("/csrf")
@@ -101,29 +77,27 @@ def get_templates():
 
 
 @api.post("/scenario/start")
+@required("id", int, RequiredValueSource.ARGS)
 @admin_only
-@csrf.exempt
-def start_scenario():
-    try:
-        id = int(request.form["id"])
-    except KeyError:
-        return {"error": "Missing id in request"}, 400
-
+def start_scenario(id: int):
     if load_execution(id):
         return active_executions[id].to_dict()
 
     # Failure
-    raise Exception(f"Could not load execution with id {id}")
+    raise NotFound(f"Execution with id={id} does not exist")
 
 
-@api.get("/execution/<int:id>")
-@admin_only
+@api.get("/execution")
+@required("id", int, RequiredValueSource.ARGS)
+# @admin_only
+@csrf.exempt
 def get_execution_status(id: int):
     execution = try_get_execution(id)
     return execution.to_dict()
 
 
-@api.post("/execution/<int:id>/start")
+@api.post("/execution/start")
+@required("id", int, RequiredValueSource.ARGS)
 @admin_only
 def start_execution(id: int):
     execution = try_get_execution(id)
@@ -131,7 +105,8 @@ def start_execution(id: int):
     return Response(status=200)
 
 
-@api.post("/execution/<int:id>/stop")
+@api.post("/execution/stop")
+@required("id", int, RequiredValueSource.ARGS)
 @admin_only
 def stop_execution(id: int):
     execution = try_get_execution(id)
@@ -139,8 +114,11 @@ def stop_execution(id: int):
     return Response(status=200)
 
 
-@api.post("/execution/<int:id>/player/<tan>/status")
-@admin_only
+@api.post("/execution/player/status")
+@required("id", int, RequiredValueSource.ARGS)
+@required("tan", str, RequiredValueSource.ARGS)
+# @admin_only
+@csrf.exempt
 def change_player_status(id: int, tan: str):
     try:
         status: bool = request.form["alerted"] == "1"
