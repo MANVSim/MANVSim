@@ -70,7 +70,7 @@ def get_templates():
             for scenario in models.Scenario.query]
 
 
-@api.post("/scenario/start")
+@api.post("/scenario")
 @required("id", int, RequiredValueSource.FORM)
 @admin_only
 def start_scenario(id: int):
@@ -90,25 +90,17 @@ def get_execution_status(id: int):
     return execution.to_dict()
 
 
-@api.post("/execution/start")
+@api.patch("/execution")
 @required("id", int, RequiredValueSource.ARGS)
+@required("running", booleanize, RequiredValueSource.FORM)
 @admin_only
-def start_execution(id: int):
+def change_execution_status(id: int, running: bool):
     execution = try_get_execution(id)
-    execution.status = Execution.Status.RUNNING
+    execution.status = Execution.Status.RUNNING if not running else Execution.Status.PENDING
     return Response(status=200)
 
 
-@api.post("/execution/stop")
-@required("id", int, RequiredValueSource.ARGS)
-@admin_only
-def stop_execution(id: int):
-    execution = try_get_execution(id)
-    execution.status = Execution.Status.FINISHED
-    return Response(status=200)
-
-
-@api.post("/execution/player/status")
+@api.patch("/execution/player/status")
 @required("id", int, RequiredValueSource.ARGS)
 @required("tan", str, RequiredValueSource.ARGS)
 @required("alerted", booleanize, RequiredValueSource.FORM)

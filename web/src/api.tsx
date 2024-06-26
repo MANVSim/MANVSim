@@ -51,7 +51,7 @@ export async function getCsrfToken(): Promise<string> {
 export async function startScenario(
   formData: FormData,
 ): Promise<StartResponse> {
-  const json = await tryFetchJson("scenario/start", {
+  const json = await tryFetchJson("scenario", {
     method: "POST",
     body: formData,
   })
@@ -84,22 +84,12 @@ export async function getExecutionStatus(id: string): Promise<object> {
   return tryFetchJson(`execution?id=${id}`)
 }
 
-export async function startExecution(
+export async function toggleExecution(
   id: string,
   formData: FormData,
 ): Promise<Response> {
-  return tryFetchApi(`execution/start?id=${id}`, {
-    method: "POST",
-    body: formData,
-  })
-}
-
-export async function stopExecution(
-  id: string,
-  formData: FormData,
-): Promise<Response> {
-  return tryFetchApi(`execution/stop?id=${id}`, {
-    method: "POST",
+  return tryFetchApi(`execution?id=${id}`, {
+    method: "PATCH",
     body: formData,
   })
 }
@@ -112,7 +102,7 @@ export async function togglePlayerStatus(
   return tryFetchApi(
     `execution/player/status?id=${executionId}&tan=${playerTan}`,
     {
-      method: "POST",
+      method: "PATCH",
       body: formData,
     },
   )

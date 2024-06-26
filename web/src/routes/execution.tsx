@@ -7,12 +7,7 @@ import {
   useParams,
 } from "react-router"
 import { ReactElement, useEffect, useState } from "react"
-import {
-  getExecutionStatus,
-  startExecution,
-  stopExecution,
-  togglePlayerStatus,
-} from "../api"
+import { getExecutionStatus, toggleExecution, togglePlayerStatus } from "../api"
 import _ from "lodash"
 import { config } from "../config"
 import {
@@ -73,11 +68,7 @@ function ToggleExecution({
     <div className="mt-5">
       <CsrfForm method="POST">
         <input type="hidden" name="id" value="toggle-execution" />
-        <Button
-          name="toggle"
-          value={executionActive ? "stop" : "start"}
-          type="submit"
-        >
+        <Button name="running" value={executionActive.toString()} type="submit">
           {executionActive ? "Beenden" : "Starten"}
         </Button>
       </CsrfForm>
@@ -165,9 +156,7 @@ Execution.action = async function ({ params, request }: ActionFunctionArgs) {
   const id = formData.get("id")
   formData.delete("id")
   if (id === "toggle-execution") {
-    const fExec =
-      formData.get("toggle") === "start" ? startExecution : stopExecution
-    return fExec(params.executionId, formData)
+    return toggleExecution(params.executionId, formData)
   } else if (id === "player-status") {
     const playerTan = formData.get("tan") as string | null
     if (playerTan === null) return null
