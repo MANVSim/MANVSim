@@ -1,11 +1,12 @@
 import json
 
-from flask import Blueprint, Response, make_response, request
+from flask import Blueprint, Response, make_response
 from flask_api import status
 from flask_jwt_extended import create_access_token
 from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
-from werkzeug.exceptions import BadRequestKeyError, HTTPException, NotFound
+from werkzeug.exceptions import HTTPException, NotFound
+from string_utils import booleanize
 
 import models
 from app_config import csrf
@@ -44,16 +45,9 @@ def get_csrf():
 
 
 @api.post("/login")
-def login():
-    # Extract data from request
-    try:
-        username = request.form["username"]
-        password = request.form["password"]
-    except KeyError:
-        return {
-            "error": "Missing username or password in request"
-        }, status.HTTP_400_BAD_REQUEST
-
+@required("username", str, RequiredValueSource.FORM)
+@required("password", str, RequiredValueSource.FORM)
+def login(username: str, password: str):
     # Get user object from database
     user = models.WebUser.get_by_username(username)
     if user is None:
@@ -117,14 +111,11 @@ def stop_execution(id: int):
 @api.post("/execution/player/status")
 @required("id", int, RequiredValueSource.ARGS)
 @required("tan", str, RequiredValueSource.ARGS)
+@required("alerted", booleanize, RequiredValueSource.FORM)
 # @admin_only
 @csrf.exempt
-def change_player_status(id: int, tan: str):
-    try:
-        status: bool = request.form["alerted"] == "1"
-    except BadRequestKeyError:
-        return {"error": "Missing 'alerted' attribute in request data"}, 400
+def change_player_status(id: int, tan: str, alerted: bool):
     execution = try_get_execution(id)
     player = execution.players[tan]
-    player.alerted = not status
+    player.alerted = not alerted
     return Response(status=200)
