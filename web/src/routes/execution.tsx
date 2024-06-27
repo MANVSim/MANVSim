@@ -1,4 +1,4 @@
-import { Button, Card, Container } from "react-bootstrap"
+import { Button, Card, Container, Form } from "react-bootstrap"
 import QRCode from "react-qr-code"
 import {
   ActionFunctionArgs,
@@ -7,7 +7,11 @@ import {
   useParams,
 } from "react-router"
 import { ReactElement, useEffect, useState } from "react"
-import { getExecutionStatus, toggleExecution, togglePlayerStatus } from "../api"
+import {
+  getExecutionStatus,
+  changeExecutionStatus,
+  togglePlayerStatus,
+} from "../api"
 import _ from "lodash"
 import { config } from "../config"
 import {
@@ -50,7 +54,7 @@ function PlayerStatus({ player }: { player: Player }): ReactElement {
             title="Zum Ändern klicken"
           >
             {player.alerted ? "Alarmiert" : "Bereit"}
-          </Button>
+          </Button>{" "}
         </CsrfForm>
       </td>
       <td>{player.name}</td>
@@ -58,19 +62,37 @@ function PlayerStatus({ player }: { player: Player }): ReactElement {
   )
 }
 
-function ToggleExecution({
-  execution,
-}: {
-  execution: ExecutionData
-}): ReactElement {
-  const executionActive = execution.status === ExecutionStatusEnum.enum.RUNNING
+function Status({ execution }: { execution: ExecutionData }): ReactElement {
+  const submit = useSubmit()
+  const [status, setStatus] = useState(execution.status)
+  useEffect(() => {
+    setStatus(execution.status)
+  }, [execution])
+
   return (
     <div className="mt-5">
-      <CsrfForm method="POST">
-        <input type="hidden" name="id" value="toggle-execution" />
-        <Button name="running" value={executionActive.toString()} type="submit">
-          {executionActive ? "Beenden" : "Starten"}
-        </Button>
+      <CsrfForm method="POST" onChange={(e) => submit(e.currentTarget)}>
+        <input type="hidden" name="id" value="change-status" />
+        <Form.Label>Status</Form.Label>
+        <Form.Select
+          name="new_status"
+          value={status}
+          onChange={(e) =>
+            setStatus(
+              ExecutionStatusEnum.safeParse(e.currentTarget.value).data ||
+                "UNKNOWN",
+            )
+          }
+        >
+          <option value="PENDING">Vorbereitung</option>
+          <option value="RUNNING">Laufend</option>
+          <option value="FINISHED">Beendet</option>
+          {execution.status === "UNKNOWN" && (
+            <option value="UNKNOWN" disabled>
+              Unbekannt
+            </option>
+          )}
+        </Form.Select>
       </CsrfForm>
     </div>
   )
@@ -119,7 +141,7 @@ export default function Execution(): ReactElement {
               <TanCard key={player.tan} tan={player.tan} />
             ))}
           </Container>
-          <ToggleExecution execution={execution} />
+          <Status execution={execution} />
           <h3 className="mt-5">Aktive TANs:</h3>
           <table className="table">
             <thead>
@@ -155,8 +177,8 @@ Execution.action = async function ({ params, request }: ActionFunctionArgs) {
   const formData = await request.formData()
   const id = formData.get("id")
   formData.delete("id")
-  if (id === "toggle-execution") {
-    return toggleExecution(params.executionId, formData)
+  if (id === "change-status") {
+    return changeExecutionStatus(params.executionId, formData)
   } else if (id === "player-status") {
     const playerTan = formData.get("tan") as string | null
     if (playerTan === null) return null

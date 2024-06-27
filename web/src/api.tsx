@@ -84,7 +84,7 @@ export async function getExecutionStatus(id: string): Promise<object> {
   return tryFetchJson(`execution?id=${id}`)
 }
 
-export async function toggleExecution(
+export async function changeExecutionStatus(
   id: string,
   formData: FormData,
 ): Promise<Response> {

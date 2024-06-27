@@ -5,7 +5,7 @@ from flask_api import status
 from flask_jwt_extended import create_access_token
 from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
-from werkzeug.exceptions import HTTPException, NotFound
+from werkzeug.exceptions import BadRequest, HTTPException, NotFound
 from string_utils import booleanize
 
 import models
@@ -92,11 +92,15 @@ def get_execution_status(id: int):
 
 @api.patch("/execution")
 @required("id", int, RequiredValueSource.ARGS)
-@required("running", booleanize, RequiredValueSource.FORM)
+@required("new_status", str.upper, RequiredValueSource.FORM)
 @admin_only
-def change_execution_status(id: int, running: bool):
+def change_execution_status(id: int, new_status: str):
     execution = try_get_execution(id)
-    execution.status = Execution.Status.RUNNING if not running else Execution.Status.PENDING
+    try:
+        execution.status = Execution.Status[new_status]
+    except KeyError:
+        raise BadRequest(
+            f"Not an option for the execution status: '{new_status}'. Possible values are: {str.join(", ", [e.name for e in Execution.Status])}")
     return Response(status=200)
 
 
