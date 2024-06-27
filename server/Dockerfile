@@ -1,9 +1,11 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 WORKDIR /usr/src/app
 
 RUN apt-get update && \
     apt-get install -y make dos2unix
+
+RUN pip3 install pipenv
 
 COPY ../server server
 COPY ../web web
@@ -15,5 +17,5 @@ RUN chmod +x scripts/*.sh
 RUN make setup
 
 EXPOSE 5000
-CMD scripts/start-server.sh --host=0.0.0.0 --port=5000
+CMD pipenv run scripts/start-server.sh --host=0.0.0.0 --port=5000
 

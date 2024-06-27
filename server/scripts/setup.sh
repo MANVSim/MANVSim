@@ -1,9 +1,9 @@
 #!/bin/bash
 
 echo "Installing required dependencies..."
-pip3 install -r requirements.txt
 
 echo "Performing needed migrations..."
+pipenv install --deploy --ignore-pipfile
 flask --app main db init 2>/dev/null
 flask --app main db upgrade
 
