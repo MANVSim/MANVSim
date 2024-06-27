@@ -1,11 +1,10 @@
 name: Server Lint & Code Quality & Test
-on: 
+on:
   push:
     branches:
       - main
       - feature/server/**
       - bug/server/**
-
 
 jobs:
   test:
@@ -36,7 +35,12 @@ jobs:
         working-directory: server
         run: |
           pipenv run lint
-  
+
+      - name: Run Type Checker
+        working-directory: server
+        run: |
+          pipenv run typecheck
+
       - name: Initialize database
         working-directory: server
         run: |
@@ -47,7 +51,7 @@ jobs:
         working-directory: server
         run: |
           pipenv run python dbsetup.py
-    
+
       # Test execution component
       - name: Run pytest
         working-directory: server/execution
