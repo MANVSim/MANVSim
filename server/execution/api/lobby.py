@@ -35,12 +35,13 @@ def login():
         expires = datetime.timedelta(hours=12)
         additional_claims = {"exec_id": exec_id}
         access_token = create_access_token(identity=tan, expires_delta=expires, additional_claims=additional_claims)
-        userCreationRequired = player.name is None or player.name == ""
+        user_creation_required = player.name is None or player.name == ""
+        player.logged_in = True
         return {
             "jwt_token": access_token,
             "csrf_token": generate_csrf(),
-            "user_creation_required": userCreationRequired,
-            "user_name": "" if userCreationRequired else player.name,
+            "user_creation_required": user_creation_required,
+            "user_name": "" if user_creation_required else player.name,
             "user_role": (player.role if player.role is None else player.role.name)
         }
     except KeyError:
