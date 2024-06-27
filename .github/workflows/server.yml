@@ -5,6 +5,7 @@ on:
       - main
       - feature/server/**
       - bug/server/**
+      - feature/chore/**
 
 jobs:
   test:
