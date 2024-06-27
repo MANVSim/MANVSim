@@ -7,6 +7,8 @@ import {
   StartResponse,
   isStartResponse,
   isLoginResponse,
+  CsrfToken,
+  ExecutionData,
 } from "./types"
 
 const api = "/web/"
@@ -24,16 +26,16 @@ export async function tryFetchApi(
   return fetch(apiRequest)
 }
 
-export async function tryFetchJson(
+export async function tryFetchJson<T = object>(
   url: string,
   body: RequestInit = {},
-): Promise<object> {
+): Promise<T> {
   const response = await tryFetchApi(url, body)
   return response.json()
 }
 
 export async function getTemplates(): Promise<Template[]> {
-  const templates = await tryFetchJson("templates")
+  const templates = await tryFetchJson<Template[]>("templates")
   if (Array.isArray(templates) && templates.every(isTemplate)) {
     return templates
   }
@@ -41,7 +43,7 @@ export async function getTemplates(): Promise<Template[]> {
 }
 
 export async function getCsrfToken(): Promise<string> {
-  const json = await tryFetchJson("csrf")
+  const json = await tryFetchJson<CsrfToken>("csrf")
   if (!isCsrfToken(json)) {
     throw new Error("Fetched json does not contain a CSRF Token!")
   }
@@ -51,7 +53,7 @@ export async function getCsrfToken(): Promise<string> {
 export async function startScenario(
   formData: FormData,
 ): Promise<StartResponse> {
-  const json = await tryFetchJson("scenario", {
+  const json = await tryFetchJson<StartResponse>("scenario", {
     method: "POST",
     body: formData,
   })
@@ -80,8 +82,8 @@ export async function getAuthToken(
   return redirect("/")
 }
 
-export async function getExecutionStatus(id: string): Promise<object> {
-  return tryFetchJson(`execution?id=${id}`)
+export async function getExecutionStatus(id: string): Promise<ExecutionData> {
+  return tryFetchJson<ExecutionData>(`execution?id=${id}`)
 }
 
 export async function changeExecutionStatus(
