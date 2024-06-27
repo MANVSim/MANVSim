@@ -28,6 +28,7 @@ class Execution(db.Model):
 
     scenario: Mapped["Scenario"] = relationship(back_populates="executions")
     players: Mapped[List["Player"]] = relationship(back_populates="execution")
+    name: Mapped[str] = mapped_column(nullable=False)
 
 
 class Location(db.Model):

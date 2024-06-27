@@ -37,10 +37,6 @@ paths:
                     type: string
                     description: JWT-Token, maps game and player
                     example: "<JWT-Token>"
-                  csrf_token:
-                    type: string
-                    description: CSRF Token to be used in future requests.
-                    example: "<CSRF-Token>"
                   user_creation_required:
                     type: boolean
                     description: indicates if name for the TAN was already set.
@@ -61,13 +57,6 @@ paths:
     post:
       summary: Set username for the TAN
       description: Sets the name for the TAN provided in JWT.
-      parameters:
-        - in: header
-          name: X-CSRFToken
-          required: true
-          schema:
-            type: string
-            example: "token"
       requestBody:
         required: true
         content:
@@ -79,6 +68,9 @@ paths:
                   type: string
                   description: username to be set.
                   example: "John Doe"
+                force_update:
+                  type: boolean
+                  description: An optional flag to indicate an overwrite. 
       responses:
         '200':
           description: Name successfully set.
@@ -86,6 +78,8 @@ paths:
           description: Invalid form detected. Unable to resolve attribute 'name'.
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Name was already set and no force flag was found in the request.
 
       security:
         - bearerAuth: [ ]
@@ -149,13 +143,6 @@ paths:
   /run/patient/arrive:
     post:
       summary: Returns a specified patient.
-      parameters:
-        - in: header
-          name: X-CSRFToken
-          required: true
-          schema:
-            type: string
-            example: "token"
       requestBody:
         required: true
         content:
@@ -191,13 +178,6 @@ paths:
     post:
       summary: Leaves a patient.
       description: Closes a patient profile and leaves the patients location.
-      parameters:
-        - in: header
-          name: X-CSRFToken
-          required: true
-          schema:
-            type: string
-            example: "token"
       responses:
         '200':
           description: success.
@@ -288,13 +268,6 @@ paths:
     post:
       summary: Leaves a location.
       description: The current location of the player is resetted. Used initially to leave the arriving RTW.
-      parameters:
-        - in: header
-          name: X-CSRFToken
-          required: true
-          schema:
-            type: string
-            example: "token"
       responses:
         '200':
           description: success.
@@ -360,13 +333,6 @@ paths:
   /run/action/perform:
     post:
       summary: Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
-      parameters:
-        - in: header
-          name: X-CSRFToken
-          required: true
-          schema:
-            type: string
-            example: "token"
       requestBody:
         required: true
         content:
@@ -539,9 +505,9 @@ components:
           type: integer
         name:
           type: string
-        durationInSeconds:
+        duration_in_seconds:
           type: integer
-        resourceNamesNeeded:
+        resource_names_needed:
           type: array
           items:
             type: string

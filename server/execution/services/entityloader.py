@@ -179,7 +179,8 @@ def load_execution(exec_id: int) -> bool:
             if player.location and player.location.id not in scenario.locations:
                 scenario.locations[player.location.id] = player.location
 
-        execution = Execution(id=ex.id, scenario=scenario, players=players, status=Execution.Status.PENDING)
+        execution = Execution(id=ex.id, name=ex.name, scenario=scenario, players=players,
+                              status=Execution.Status.PENDING)
         # Activate execution (makes it accessible by API)
         run.activate_execution(execution)
         return True
