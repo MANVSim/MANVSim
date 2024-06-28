@@ -4,7 +4,7 @@ import pytest
 from app import create_app
 from app_config import csrf, db
 from execution import run
-from execution.tests.entities.dummy_entities import create_test_execution
+from execution.tests.entities import dummy_entities
 
 """
 If you’re using an application factory, define an app fixture to create and configure an app instance. 
@@ -16,32 +16,19 @@ database.
 @pytest.fixture()
 def app():
     app = create_app(csrf=csrf, db=db)
+
+    # Set up
     app.config.update({
         "TESTING": True,
     })
 
-    # Set up
-    test = create_test_execution()
-    test.id = 2
-    player_a = test.players.pop("123ABC")
-    player_b = test.players.pop("456DEF")
-    player_a.tan = "987ZYX"
-    player_b.tan = "654WVU"
-    test.players["987ZYX"] = player_a
-    test.players["654WVU"] = player_b
-    exec_before = len(run.active_executions)
-    player_before = len(run.registered_players)
-    run.activate_execution(test)
-
-    assert len(run.active_executions) == exec_before + 1
-    assert len(run.registered_players) == player_before + len(test.players)
-
     yield app
 
     # Clean up
-    run.deactivate_execution(test.id)
-    assert len(run.active_executions) == exec_before
-    assert len(run.registered_players) == player_before
+    run.deactivate_execution(1)
+    run.deactivate_execution(2)
+    run.activate_execution(dummy_entities.create_test_execution())
+    run.activate_execution(dummy_entities.create_test_execution(pending=False))
 
 
 @pytest.fixture()
@@ -54,10 +41,10 @@ def runner(app):
     return app.test_cli_runner()
 
 
-def generate_token(app, valid_payload=True, running=False, plid="123ABC"):
+def generate_token(app, valid_payload=True, pending=False, plid="123ABC"):
     payload = {
-        "sub": (plid if running else "654WVU"),
-        "exec_id": ("1" if running else "2"),
+        "sub": (plid if pending else "654WVU"),
+        "exec_id": ("1" if pending else "2"),
     }
     payload_invalid = {
         "sub": plid,

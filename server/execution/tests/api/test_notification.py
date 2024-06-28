@@ -3,8 +3,8 @@ from execution.tests.conftest import generate_token
 
 
 def test_get_notifications(client):
-    auth_header = generate_token(client.application, running=True)
-    execution = run.active_executions[1]
+    auth_header = generate_token(client.application)
+    execution = run.active_executions[2]
 
     messageA = "I am the first test-message."
     messageB = "I am the second test-message."
