@@ -19,7 +19,7 @@ function isTypeFactory<T>(
 const template = z.object({
   id: z.number(),
   name: z.string(),
-  players: z.number(),
+  executions: z.array(z.number()),
 })
 
 export type Template = z.infer<typeof template>
@@ -80,17 +80,27 @@ export const isLoginResponse = isTypeFactory<LoginResponse>(loginResponse)
 // Player
 const player = z.object({
   tan: z.string(),
-  name: z.string(),
-  status: z.string(),
-  action: z.string(),
+  name: z.string().or(z.null()),
+  role: z.string().or(z.null()),
+  alerted: z.boolean(),
 })
 
 export type Player = z.infer<typeof player>
 
+export const isPlayer = isTypeFactory<Player>(player)
+
+export const ExecutionStatusEnum = z.enum([
+  "RUNNING",
+  "PENDING",
+  "FINISHED",
+  "UNKNOWN",
+])
+
 const executionData = z.object({
   id: z.number(),
-  status: z.string(),
+  starting_time: z.number(),
   players: z.array(player),
+  status: ExecutionStatusEnum,
 })
 
 export type ExecutionData = z.infer<typeof executionData>
@@ -112,3 +122,19 @@ export interface AuthValue {
   authToken: NullableString
   setAuthToken: SetAuthTokenType
 }
+
+// Error Response
+const errorResponse = z.object({
+  error: z.string(),
+})
+
+export type ErrorResponse = z.infer<typeof errorResponse>
+
+/**
+ * Checks if a variable matches the ErrorResponse interface
+ *
+ * @param {unknown} x - Variable to check
+ * @returns {x is ErrorResponse} true when variable is an ErrorResponse
+ * @function
+ */
+export const isErrorResponse = isTypeFactory<ErrorResponse>(errorResponse)
