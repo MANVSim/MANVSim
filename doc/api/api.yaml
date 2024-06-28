@@ -68,6 +68,9 @@ paths:
                   type: string
                   description: username to be set.
                   example: "John Doe"
+                force_update:
+                  type: boolean
+                  description: An optional flag to indicate an overwrite. 
       responses:
         '200':
           description: Name successfully set.
@@ -75,6 +78,8 @@ paths:
           description: Invalid form detected. Unable to resolve attribute 'name'.
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Name was already set and no force flag was found in the request.
 
       security:
         - bearerAuth: [ ]

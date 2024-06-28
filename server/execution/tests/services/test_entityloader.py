@@ -39,6 +39,7 @@ def _check_players(players: list[Player], execution: Execution):
         _check_location(player.location, execution.scenario)
         assert player.name is None
         assert not player.accessible_locations
+        assert not player.logged_in
 
 
 def _check_scenario(scenario: Scenario):
@@ -137,4 +138,5 @@ def test_load_execution():
             _check_patients(ex.scenario)
             _check_actions(ex.scenario)
             assert ex.status == Execution.Status.PENDING
+            assert ex.name is not None
             assert ex.starting_time == -1

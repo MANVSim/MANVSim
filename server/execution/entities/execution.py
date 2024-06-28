@@ -16,9 +16,10 @@ class Execution:
         def __repr__(self):
             return self.name
 
-    def __init__(self, id: int, scenario: Scenario, players: dict[str, Player], status: Status,
+    def __init__(self, id: int, name: str, scenario: Scenario, players: dict[str, Player], status: Status,
                  starting_time: int = -1):
         self.id = id
+        self.name = name
         self.scenario = scenario
         self.players = players
         self.status = status

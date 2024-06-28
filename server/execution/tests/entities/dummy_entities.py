@@ -97,7 +97,7 @@ def create_test_execution():
         "123ABC": player_1,
         "456DEF": player_2
     }
-    execution = Execution(id=1, scenario=scenario, starting_time=-1, players=player_dict,
+    execution = Execution(id=1, name="Dummy Execution 2024", scenario=scenario, starting_time=-1, players=player_dict,
                           status=Execution.Status.PENDING)
 
     return execution
