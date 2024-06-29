@@ -78,11 +78,11 @@ bash ./scripts/create-migration.sh
 Initially no test data are loaded into the memory. If you require sample data provided by the app you can set a 
 flag to your environment `LOAD_TEST_DATA` or change the boolean flag [here](vars.py). Additionally, the test-data can
 be modified with a patient containing a time-limited state. The timelimit of the state can also be configured [here](vars.py).
-Loading test data creates two execution in the memory containing the same content despite the players' id. The details 
+Loading test data creates two execution in memory containing the same content except the players' IDs. The details 
 are as follows:
 
-| status  | id | player ids             |
-|---------|----|------------------------| 
-| Pending | 1  | - 123ABC<br/>- 456DEF  |
-| Running | 2  | - 987ZYX<br/>- 654WVU) |
+| status  | ID | player IDs            |
+|---------|----|-----------------------| 
+| Pending | 1  | - 123ABC<br/>- 456DEF |
+| Running | 2  | - 987ZYX<br/>- 654WVU |
 
