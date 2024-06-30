@@ -1,4 +1,5 @@
 import json
+from os import stat
 
 from flask import Blueprint, Response, make_response
 from flask_api import status
@@ -117,4 +118,12 @@ def change_player_status(id: int, tan: str, alerted: bool):
         raise NotFound(
             f"Player with TAN '{tan}' does not exist for execution with id {id}")
     player.alerted = not alerted
+    return Response(status=200)
+
+
+@api.post("/execution")
+@required("id", int, RequiredValueSource.ARGS)
+def add_new_player(id: int):
+    execution = try_get_execution(id)
+    # TODO: Create new player
     return Response(status=200)

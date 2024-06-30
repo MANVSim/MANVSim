@@ -11,6 +11,7 @@ import {
   getExecutionStatus,
   changeExecutionStatus,
   togglePlayerStatus,
+  createNewPlayer,
 } from "../api"
 import _ from "lodash"
 import { config } from "../config"
@@ -107,7 +108,7 @@ export default function Execution(): ReactElement {
 
   const [tansAvailable, tansUsed] = _.partition(
     execution?.players,
-    (): boolean => false, // TODO: Determine if TAN is used or not
+    (): boolean => true, // TODO: Determine if TAN is used or not
   )
 
   const { executionId } = useParams<{ executionId: string }>()
@@ -136,6 +137,10 @@ export default function Execution(): ReactElement {
           <h2>Ausführung</h2>
           <p>ID: {execution.id}</p>
           <h3>Verfügbare TANs:</h3>
+          <CsrfForm method="POST">
+            <input type="hidden" name="id" value="new-player" />
+            <Button type="submit">Neuen Spieler erstellen</Button>
+          </CsrfForm>
           <Container fluid className="d-flex flex-wrap">
             {tansAvailable.map((player) => (
               <TanCard key={player.tan} tan={player.tan} />
@@ -177,13 +182,19 @@ Execution.action = async function ({ params, request }: ActionFunctionArgs) {
   const formData = await request.formData()
   const id = formData.get("id")
   formData.delete("id")
-  if (id === "change-status") {
-    return changeExecutionStatus(params.executionId, formData)
-  } else if (id === "player-status") {
-    const playerTan = formData.get("tan") as string | null
-    if (playerTan === null) return null
-    formData.delete("tan")
-    return togglePlayerStatus(params.executionId, playerTan, formData)
+
+  switch (id) {
+    case "change-status":
+      return changeExecutionStatus(params.executionId, formData)
+    case "player-status": {
+      const playerTan = formData.get("tan") as string | null
+      if (playerTan === null) return null
+      formData.delete("tan")
+      return togglePlayerStatus(params.executionId, playerTan, formData)
+    }
+    case "new-player":
+      return createNewPlayer(params.executionId, formData)
+    default:
+      throw new Error(`Case '${id}' is not covered in Execution.action`)
   }
-  return null
 }
