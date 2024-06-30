@@ -17,5 +17,5 @@ RUN chmod +x scripts/*.sh
 RUN make setup
 
 EXPOSE 5000
-CMD pipenv run scripts/start-server.sh --host=0.0.0.0 --port=5000
+CMD pipenv run flask --app main --debug run --host=0.0.0.0 --port=5000
 
