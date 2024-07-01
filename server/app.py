@@ -2,15 +2,12 @@ import json
 import logging
 import os
 
-from flask import Flask, send_from_directory, redirect, request, make_response, jsonify
-from flask_jwt_extended import JWTManager, jwt_required
+from flask import Flask, send_from_directory, redirect, make_response, jsonify
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect, CSRFError
-from flask_cors import CORS
-from werkzeug.exceptions import BadRequestKeyError, HTTPException
-
-from execution.utils import util
-from execution.entities.execution import Execution
+from werkzeug.exceptions import HTTPException
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -45,28 +42,6 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     execution.api.setup.setup(app)
 
     CORS(app, resources={r"/*": {"origins": "*"}})
-
-    # -- Pre Request Handler
-    @app.before_request
-    def return_empty_if_not_running():
-        """ Blocks all run-request on an execution which is still in status pending. """
-        @jwt_required()
-        def check_for_exec_status():
-            try:
-                exc, _ = util.get_execution_and_player()
-                if exc.status != Execution.Status.RUNNING:
-                    return "", 204
-
-            except BadRequestKeyError:
-                return f"Incorrect JWT detected.", 400
-            except KeyError:
-                return (
-                    f"Invalid Execution ID sent. Unable to resolve running instance",
-                    400,
-                )
-
-        if "/api/run" in request.path:
-            return check_for_exec_status()
 
     # -- FE Routes
     @app.route("/", defaults={"path": ""})
