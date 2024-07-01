@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manvsim/widgets/tan_input.dart';
 
 class TanScreen extends StatelessWidget {
   const TanScreen({super.key});
@@ -19,12 +20,17 @@ class TanScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextField(
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.homeTAN,
-                ),
+              Text(AppLocalizations.of(context)!.homeTAN),
+              TanInputField(controller: TanInputController(),
+                decoration: const InputDecoration(
+              labelText: "",
+              fillColor:  null,
+              filled: false,
+              border: UnderlineInputBorder(),
+            ),
+                onChanged: (value) {},
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
               ElevatedButton.icon(
                 icon: const Icon(Icons.qr_code_scanner),
                 label: Text(AppLocalizations.of(context)!.qrCodeScanButton),
