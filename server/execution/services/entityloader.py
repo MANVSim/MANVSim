@@ -33,7 +33,7 @@ def load_location(location_id: int) -> Location | None:
     Returns Location object or None (in case of an error).
     """
     with create_app(csrf, db).app_context():
-        loc: models.Location = db.session.query(models.Location).filter(models.Location.id == location_id).first()
+        loc: models.Location = db.session.query(models.Location).filter(models.Location.id == location_id).first()  # type: ignore
         if not loc:
             return None
 
@@ -71,7 +71,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_ad = ActivityDiagram()  # empty diagram with an empty root state
 
         patients[p.id] = Patient(id=p.id, name=p.name, injuries=p.injuries, activity_diagram=p_ad,
-                                 location=p_loc, performed_actions=[])
+                                 location=p_loc, performed_actions=[])  # type: ignore
 
     return patients
 
@@ -136,7 +136,7 @@ def __load_role(role_id: int) -> Role | None:
     return Role(role.id, role.name, role.short_name, role.power)
 
 
-def __load_players(exec_id: id) -> dict[str, Player] | None:
+def __load_players(exec_id: int) -> dict[str, Player] | None:
     """ Loads all players of the given Execution from the database and returns them in a dictionary or None."""
     ps: list[models.Player] = db.session.query(models.Player).filter_by(execution_id=exec_id).all()
     if not ps:
@@ -159,7 +159,7 @@ def load_execution(exec_id: int) -> bool:
     Returns True for success, False otherwise.
     """
     with create_app(csrf, db).app_context():
-        ex: models.Execution = db.session.query(models.Execution).filter_by(id=exec_id).first()
+        ex: models.Execution = db.session.query(models.Execution).filter_by(id=exec_id).first()  # type: ignore
         # If query yields no result, report failure
         if not ex:
             return False

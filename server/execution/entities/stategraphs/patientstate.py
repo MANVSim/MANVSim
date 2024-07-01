@@ -7,9 +7,9 @@ from utils import time
 
 class PatientState:
 
-    def __init__(self, state_uuid: str = str(uuid.uuid4()), treatments: dict[str, str] = None,
+    def __init__(self, state_uuid: str = str(uuid.uuid4()), treatments: dict[str, str] | None = None,
                  start_time: int = -1, timelimit: int = -1, after_time_state_uuid="",
-                 conditions: dict[str, str] = None):
+                 conditions: dict[str, str] | None = None):
         if not treatments:
             treatments = {}
         if not conditions:

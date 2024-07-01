@@ -6,7 +6,7 @@ class TimeoutLock(object):
     def __init__(self):
         self._lock = threading.Lock()
 
-    def acquire(self, blocking=True, timeout=-1):
+    def acquire(self, blocking=True, timeout: int | float = -1):
         return self._lock.acquire(blocking, timeout)
 
     @contextmanager

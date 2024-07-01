@@ -11,10 +11,10 @@ from execution.entities.scenario import Scenario
 from execution.services import entityloader
 
 
-def _check_role(role: Role):
+def _check_role(role: Role | None):
     assert role
 
-    db_role: models.Role = db.session.query(models.Role).filter_by(id=role.id).first()
+    db_role: models.Role = db.session.query(models.Role).filter_by(id=role.id).first()  # type: ignore
     assert db_role
     assert db_role.name == role.name
     assert db_role.short_name == role.short_name
@@ -33,9 +33,9 @@ def _check_players(players: list[Player], execution: Execution):
         assert db_player.alerted == player.alerted
         assert db_player.execution_id == execution.id
         assert db_player.activation_delay_sec == player.activation_delay_sec
-        assert db_player.role_id == player.role.id
+        assert db_player.role_id == player.role.id if player.role else False
         _check_role(player.role)
-        assert db_player.location_id == player.location.id
+        assert db_player.location_id == player.location.id if player.location else False
         _check_location(player.location, execution.scenario)
         assert player.name is None
         assert not player.accessible_locations
@@ -54,7 +54,7 @@ def _check_scenario(scenario: Scenario):
 def _check_resource(resource: Resource, location: Location):
     assert resource
 
-    db_resource: models.Resource = db.session.query(models.Resource).filter_by(id=resource.id).first()
+    db_resource: models.Resource = db.session.query(models.Resource).filter_by(id=resource.id).first()  # type: ignore
     assert db_resource
     assert db_resource.name == resource.name
     assert db_resource.picture_ref == resource.picture_ref
@@ -62,11 +62,11 @@ def _check_resource(resource: Resource, location: Location):
     assert db_resource.quantity == resource.quantity
 
 
-def _check_location(location: Location, scenario: Scenario):
+def _check_location(location: Location | None, scenario: Scenario):
     assert location
     assert scenario
 
-    db_location: models.Location = db.session.query(models.Location).filter_by(id=location.id).first()
+    db_location: models.Location = db.session.query(models.Location).filter_by(id=location.id).first()  # type: ignore
     assert db_location is not None
     assert db_location.name == location.name
     assert db_location.picture_ref == location.picture_ref
@@ -74,9 +74,10 @@ def _check_location(location: Location, scenario: Scenario):
     if location.resources:
         map(lambda r: _check_resource(r, location), location.resources)
     if db_location.location_id is not None:
-        db_parent: models.Location = db.session.query(models.Location).filter_by(id=db_location.location_id).first()
+        db_parent: models.Location = db.session.query(models.Location).filter_by(id=db_location.location_id).first()  # type: ignore
         assert db_parent is not None
         exec_parent = scenario.locations.get(db_parent.id)
+        assert exec_parent
         assert location in exec_parent.sub_locations
 
 
