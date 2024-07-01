@@ -23,6 +23,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     import models  # noqa: F401
     import execution.web_api.setup
     import scenario.web_api.setup
+    import administration.web_api.setup
     import execution.api.setup
 
     app = Flask(__name__, static_folder="../web/dist")
@@ -40,20 +41,21 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     # -- Endpoint connection
     execution.web_api.setup.setup(app)
     scenario.web_api.setup.setup(app)
+    administration.web_api.setup.setup(app)
     execution.api.setup.setup(app)
 
     CORS(app, resources={r"/*": {"origins": "*"}})
 
     # -- Pre Request Handler
     @app.before_request
-    def return_hold_if_not_running():
+    def return_empty_if_not_running():
         """ Blocks all run-request on an execution which is still in status pending. """
         @jwt_required()
         def check_for_exec_status():
             try:
                 exc, _ = util.get_execution_and_player()
                 if exc.status != Execution.Status.RUNNING:
-                    return "No running execution detected", 204
+                    return "", 204
 
             except BadRequestKeyError:
                 return f"Incorrect JWT detected.", 400

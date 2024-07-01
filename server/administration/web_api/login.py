@@ -6,7 +6,7 @@ from flask_login import login_user
 import models
 from utils.decorator import required, RequiredValueSource
 
-web_api = Blueprint("web_api-scenario", __name__)
+web_api = Blueprint("web_api-login", __name__)
 
 
 @web_api.post("/login")
