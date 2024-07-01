@@ -22,7 +22,7 @@ class PatientState:
         self.treatments = treatments
         self.conditions = conditions
 
-    def add_treatment(self, treatment: str, new_state_uuid: str, reveals: list[str], force_update: bool = False):
+    def add_treatment(self, treatment: str, new_state_uuid: str, force_update: bool = False):
         """
             Inserts an additional treatment, that leads to a state change. If the treatment is already
             provided it keeps the old state unless the force_update flags allows an overwrite.

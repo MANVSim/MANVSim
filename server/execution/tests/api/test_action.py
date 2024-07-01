@@ -20,10 +20,10 @@ def test_perform_action(client):
     on their own.
     """
     # Player 1
-    headers = generate_token(client.application, running=True)
+    headers = generate_token(client.application)
     headers["Content-Type"] = "application/json"
     # Player 2
-    headers_p2 = generate_token(client.application, running=True)
+    headers_p2 = generate_token(client.application)
     headers_p2["Content-Type"] = "application/json"
 
     # Player 1: leave location
@@ -116,7 +116,7 @@ def test_perform_action_but_blocked_to_leaving(client):
     form = {
         "TAN": list(player_ids)[-1]
     }
-    headers = generate_token(client.application, running=True)
+    headers = generate_token(client.application)
     headers["Content-Type"] = "application/json"
     response = client.post(f"/api/login", data=json.dumps(form), headers=headers)
     assert response.status_code == http.HTTPStatus.OK
