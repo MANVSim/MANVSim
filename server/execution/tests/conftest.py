@@ -12,19 +12,20 @@ You can add code before and after the yield to set up and tear down other resour
 database.
 """
 
+flask_app = create_app(csrf=csrf, db=db)
+
 
 @pytest.fixture()
 def app():
-    app = create_app(csrf=csrf, db=db)
 
     # Set up
-    app.config.update({
+    flask_app.config.update({
         "TESTING": True,
     })
     run.activate_execution(dummy_entities.create_test_execution())
     run.activate_execution(dummy_entities.create_test_execution(pending=False))
 
-    yield app
+    yield flask_app
 
     # Clean up
     run.deactivate_execution(1)

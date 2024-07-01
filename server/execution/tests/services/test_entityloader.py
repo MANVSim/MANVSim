@@ -9,6 +9,7 @@ from execution.entities.resource import Resource
 from execution.entities.role import Role
 from execution.entities.scenario import Scenario
 from execution.services import entityloader
+from execution.tests.conftest import flask_app
 
 
 def _check_role(role: Role):
@@ -123,7 +124,7 @@ def test_load_execution():
     run.active_executions = {}
     run.registered_players = {}
 
-    with create_app(csrf, db).app_context():
+    with flask_app.app_context():
         # Load Executions from DB
         db_execs = db.session.query(models.Execution).all()
         for ex in db_execs:
