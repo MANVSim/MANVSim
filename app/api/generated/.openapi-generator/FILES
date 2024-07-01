@@ -10,7 +10,6 @@ doc/Location.md
 doc/LoginPost200Response.md
 doc/LoginPostRequest.md
 doc/NotificationsGet200Response.md
-doc/NotificationsGet200ResponseNotificationsInner.md
 doc/Patient.md
 doc/PlayerSetNamePost401Response.md
 doc/PlayerSetNamePostRequest.md
@@ -43,7 +42,6 @@ lib/model/location.dart
 lib/model/login_post200_response.dart
 lib/model/login_post_request.dart
 lib/model/notifications_get200_response.dart
-lib/model/notifications_get200_response_notifications_inner.dart
 lib/model/patient.dart
 lib/model/player_set_name_post401_response.dart
 lib/model/player_set_name_post_request.dart
@@ -66,7 +64,6 @@ test/error_test.dart
 test/location_test.dart
 test/login_post200_response_test.dart
 test/login_post_request_test.dart
-test/notifications_get200_response_notifications_inner_test.dart
 test/notifications_get200_response_test.dart
 test/patient_test.dart
 test/player_set_name_post401_response_test.dart

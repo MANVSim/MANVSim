@@ -82,7 +82,6 @@ Class | Method | HTTP request | Description
  - [LoginPost200Response](doc//LoginPost200Response.md)
  - [LoginPostRequest](doc//LoginPostRequest.md)
  - [NotificationsGet200Response](doc//NotificationsGet200Response.md)
- - [NotificationsGet200ResponseNotificationsInner](doc//NotificationsGet200ResponseNotificationsInner.md)
  - [Patient](doc//Patient.md)
  - [PlayerSetNamePost401Response](doc//PlayerSetNamePost401Response.md)
  - [PlayerSetNamePostRequest](doc//PlayerSetNamePostRequest.md)

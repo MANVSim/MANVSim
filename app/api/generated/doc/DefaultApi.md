@@ -68,7 +68,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **notificationsGet**
-> NotificationsGet200Response notificationsGet(lastPollTime)
+> NotificationsGet200Response notificationsGet(nextId)
 
 notification polling
 
@@ -85,10 +85,10 @@ import 'package:manv_api/api.dart';
 //defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
 
 final api_instance = DefaultApi();
-final lastPollTime = 2023-01-01T12:00Z; // DateTime | 
+final nextId = 2; // int | 
 
 try {
-    final result = api_instance.notificationsGet(lastPollTime);
+    final result = api_instance.notificationsGet(nextId);
     print(result);
 } catch (e) {
     print('Exception when calling DefaultApi->notificationsGet: $e\n');
@@ -99,7 +99,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **lastPollTime** | **DateTime**|  | [optional] 
+ **nextId** | **int**|  | 
 
 ### Return type
 

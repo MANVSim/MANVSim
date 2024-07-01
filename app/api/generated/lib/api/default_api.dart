@@ -80,8 +80,8 @@ class DefaultApi {
   ///
   /// Parameters:
   ///
-  /// * [DateTime] lastPollTime:
-  Future<Response> notificationsGetWithHttpInfo({ DateTime? lastPollTime, }) async {
+  /// * [int] nextId (required):
+  Future<Response> notificationsGetWithHttpInfo(int nextId,) async {
     // ignore: prefer_const_declarations
     final path = r'/notifications';
 
@@ -92,9 +92,7 @@ class DefaultApi {
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-    if (lastPollTime != null) {
-      queryParams.addAll(_queryParams('', 'lastPollTime', lastPollTime));
-    }
+      queryParams.addAll(_queryParams('', 'next_id', nextId));
 
     const contentTypes = <String>[];
 
@@ -116,9 +114,9 @@ class DefaultApi {
   ///
   /// Parameters:
   ///
-  /// * [DateTime] lastPollTime:
-  Future<NotificationsGet200Response?> notificationsGet({ DateTime? lastPollTime, }) async {
-    final response = await notificationsGetWithHttpInfo( lastPollTime: lastPollTime, );
+  /// * [int] nextId (required):
+  Future<NotificationsGet200Response?> notificationsGet(int nextId,) async {
+    final response = await notificationsGetWithHttpInfo(nextId,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }

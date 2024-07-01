@@ -194,8 +194,6 @@ class ApiClient {
           return LoginPostRequest.fromJson(value);
         case 'NotificationsGet200Response':
           return NotificationsGet200Response.fromJson(value);
-        case 'NotificationsGet200ResponseNotificationsInner':
-          return NotificationsGet200ResponseNotificationsInner.fromJson(value);
         case 'Patient':
           return Patient.fromJson(value);
         case 'PlayerSetNamePost401Response':

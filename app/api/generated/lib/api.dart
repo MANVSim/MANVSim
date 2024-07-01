@@ -36,7 +36,6 @@ part 'model/location.dart';
 part 'model/login_post200_response.dart';
 part 'model/login_post_request.dart';
 part 'model/notifications_get200_response.dart';
-part 'model/notifications_get200_response_notifications_inner.dart';
 part 'model/patient.dart';
 part 'model/player_set_name_post401_response.dart';
 part 'model/player_set_name_post_request.dart';
