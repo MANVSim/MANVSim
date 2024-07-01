@@ -70,7 +70,7 @@ class NameScreenState extends State<NameScreen> {
 
       try {
         ApiService apiService = GetIt.instance.get<ApiService>();
-        await apiService.api.playerSetNamePost(PlayerSetNamePostRequest(name: name), apiService.csrfToken);
+        await apiService.api.playerSetNamePost(PlayerSetNamePostRequest(name: name));
       } catch (e) {
         failureMessage = e.toString();
       }

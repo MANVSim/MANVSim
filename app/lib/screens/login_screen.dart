@@ -66,7 +66,10 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   void _navigateToNext() {
-    if(ApiService().isNameSet) {
+
+    ApiService apiService = GetIt.instance.get<ApiService>();
+
+    if(apiService.isNameSet) {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const WaitScreen()),
@@ -104,8 +107,8 @@ class LoginScreenState extends State<LoginScreen> {
       String? failureMessage;
 
       try {
-        ApiService authenticationService = GetIt.instance.get<ApiService>();
-        await authenticationService.login(tan, url);
+        ApiService apiService = GetIt.instance.get<ApiService>();
+        await apiService.login(tan, url);
       } catch (e) {
         failureMessage = e.toString();
       }

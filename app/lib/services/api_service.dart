@@ -47,10 +47,14 @@ class ApiService {
       throw Exception("Login failed: No JWT token received");
     }
 
+    if (loginResponse.userCreationRequired == null) {
+      throw Exception("Login failed: User information missing: userCreationRequired");
+    }
+
     final Authentication auth = _JwtCsrfAuth(loginResponse.jwtToken!);
     _apiClient = DefaultApi(ApiClient(basePath: url, authentication: auth));
 
-    _isNameSet = loginResponse.userCreationRequired ?? false;
+    _isNameSet = !loginResponse.userCreationRequired!;
 
   }
 }
