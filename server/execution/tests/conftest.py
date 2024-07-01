@@ -21,14 +21,14 @@ def app():
     app.config.update({
         "TESTING": True,
     })
+    run.activate_execution(dummy_entities.create_test_execution())
+    run.activate_execution(dummy_entities.create_test_execution(pending=False))
 
     yield app
 
     # Clean up
     run.deactivate_execution(1)
     run.deactivate_execution(2)
-    run.activate_execution(dummy_entities.create_test_execution())
-    run.activate_execution(dummy_entities.create_test_execution(pending=False))
 
 
 @pytest.fixture()

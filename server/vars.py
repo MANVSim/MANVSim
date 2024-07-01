@@ -6,7 +6,7 @@ ACQUIRE_TIMEOUT = 3  # The timeout used to time out a locking-request
 
 LOAD_TEST_DATA = os.getenv('LOAD_TEST_DATA')
 if not LOAD_TEST_DATA:
-    LOAD_TEST_DATA = True  # If LOAD_TEST_DATA is not set, assign a default boolean value
+    LOAD_TEST_DATA = False  # If LOAD_TEST_DATA is not set, assign a default boolean value
 
 # a patient will be assigned with a time dependent activity diagram
 INCLUDE_TIMELIMIT = True
