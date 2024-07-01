@@ -4,7 +4,12 @@ from app_config import db
 
 from models import LoggedEvent
 
+
 class Event:
+    """
+    Represents an event relevant during an execution of the simulation.
+    This includes events like the start and end of an execution, as well as actions performed by players.
+    """
 
     class Type(Enum):
         PERFORMED_ACTION = "performed_action"
@@ -19,15 +24,24 @@ class Event:
 
     @staticmethod
     def execution_started(execution_id: int, time: int):
-        return Event(execution_id, Event.Type.EXECUTION_STARTED, time, {})
+        """
+        Creates an event representing the start of an execution.
+        """
+        return Event(execution=execution_id, type=Event.Type.EXECUTION_STARTED, time=time, data={})
 
     @staticmethod
     def execution_finished(execution_id: int, time: int):
-        return Event(execution_id, Event.Type.EXECUTION_FINISHED, time, {})
+        """
+        Creates an event representing the end of an execution.
+        """
+        return Event(execution=execution_id, type=Event.Type.EXECUTION_FINISHED, time=time, data={})
 
     @staticmethod
     def action_performed(execution_id: int, time: int, player: str, action: int, patient: int, duration_s: int):
-        return Event(execution_id, Event.Type.PERFORMED_ACTION, time, {
+        """
+        Creates an event representing an action performed by a player.
+        """
+        return Event(execution=execution_id, type=Event.Type.PERFORMED_ACTION, time=time, data={
             "action": action,
             "player": player,
             "patient": patient,
@@ -47,15 +61,15 @@ class Event:
 
     @staticmethod
     def from_logged_event(logged_event: LoggedEvent):
-        return Event(logged_event.execution, Event.Type[logged_event.type], logged_event.time, logged_event.data)
+        return Event(execution=logged_event.execution, type=Event.Type[logged_event.type], time=logged_event.time, data=logged_event.data)
 
     @staticmethod
     def from_json(json_str: str):
         data = json.loads(json_str)
-        return Event(data["execution"], Event.Type[data["type"]], data["time"], data["data"])
+        return Event(execution=data["execution"], type=Event.Type[data["type"]], time=data["time"], data=data["data"])
 
     def log(self):
-        evt = LoggedEvent(execution=self.execution, type=self.type.name, time=self.time, data=self.data)
+        evt = LoggedEvent(execution=self.execution,
+                          type=self.type.name, time=self.time, data=self.data)  # type: ignore
         db.session.add(evt)
         db.session.commit()
-        pass
