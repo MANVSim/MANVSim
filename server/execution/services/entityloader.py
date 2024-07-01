@@ -1,8 +1,9 @@
 from json import JSONDecodeError
 
+from flask import current_app
+
 import models
-from app import create_app
-from app_config import db, csrf
+from app_config import db
 from execution import run
 from execution.entities.action import Action
 from execution.entities.execution import Execution
@@ -13,7 +14,6 @@ from execution.entities.resource import Resource
 from execution.entities.role import Role
 from execution.entities.scenario import Scenario
 from execution.entities.stategraphs.activity_diagram import ActivityDiagram
-from execution.tests.conftest import flask_app
 
 
 def __load_resources(location_id: int) -> list[Resource]:
@@ -33,7 +33,7 @@ def load_location(location_id: int) -> Location | None:
 
     Returns Location object or None (in case of an error).
     """
-    with flask_app.app_context():
+    with current_app.app_context():
         loc: models.Location = db.session.query(models.Location).filter(models.Location.id == location_id).first()
         if not loc:
             return None
@@ -159,7 +159,7 @@ def load_execution(exec_id: int) -> bool:
 
     Returns True for success, False otherwise.
     """
-    with flask_app.app_context():
+    with current_app.app_context():
         ex: models.Execution = db.session.query(models.Execution).filter_by(id=exec_id).first()
         # If query yields no result, report failure
         if not ex:
