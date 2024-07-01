@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 
 from execution import run
-from web.api.register import admin_only
+from utils.decorator import admin_only
 
 web_api = Blueprint("web_api-notification", __name__)
 
