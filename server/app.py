@@ -21,7 +21,6 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     """
     # asynchronously import local packages
     import models  # noqa: F401
-    import web.setup
     import execution.web_api.setup
     import scenario.web_api.setup
     import execution.api.setup
@@ -39,7 +38,6 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     jwt = JWTManager(app)
 
     # -- Endpoint connection
-    web.setup(app)      # FIXME deprecated package
     execution.web_api.setup.setup(app)
     scenario.web_api.setup.setup(app)
     execution.api.setup.setup(app)
