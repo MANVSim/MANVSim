@@ -108,7 +108,10 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
         return jsonify(error=str(e)), e.code
 
     for code in range(400, 600):
-        # Register all client-/server error to be handled as json response
-        app.register_error_handler(code, handle_error)
+        # Register all client-/server error to be handled as json response.
+        try:
+            app.register_error_handler(code, handle_error)
+        except ValueError:
+            continue  # continue if code is not a valid HTTP status code.
 
     return app
