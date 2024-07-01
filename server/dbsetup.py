@@ -1,4 +1,4 @@
-from flask import current_app
+from app import create_app
 from bcrypt import gensalt, hashpw
 from app_config import db, csrf
 from models import (
@@ -23,7 +23,7 @@ def insert(data):
 # The following statements are excluded from pyright, due to ORM specifics. Additionally, the sample data is not
 # required for production.
 
-with current_app.app_context():
+with create_app(csrf=csrf, db=db).app_context():
     insert(Scenario(id=0, name="Busunglück"))  # type: ignore
     insert(Scenario(id=1, name="Autounfall"))  # type: ignore
     insert(Scenario(id=3, name="Gasexplosion"))  # type: ignore
