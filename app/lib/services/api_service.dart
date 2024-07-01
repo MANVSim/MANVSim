@@ -3,15 +3,13 @@ import 'package:manv_api/api.dart';
 
 class _JwtCsrfAuth implements Authentication {
 
-  _JwtCsrfAuth(this.jwtToken, this.csrfToken);
+  _JwtCsrfAuth(this.jwtToken);
 
   final String jwtToken;
-  final String csrfToken;
 
   @override
   Future<void> applyToParams(List<QueryParam> queryParams, Map<String, String> headerParams) async {
     headerParams['Authorization'] = 'Bearer $jwtToken';
-    headerParams['X-CSRF-Token'] = csrfToken;
   }
 }
 
@@ -49,12 +47,7 @@ class ApiService {
       throw Exception("Login failed: No JWT token received");
     }
 
-    if (loginResponse.csrfToken == null) {
-      throw Exception("Login failed: No CSRF token received");
-    }
-
-
-    final Authentication auth = _JwtCsrfAuth(loginResponse.jwtToken!, loginResponse.csrfToken!);
+    final Authentication auth = _JwtCsrfAuth(loginResponse.jwtToken!);
     _apiClient = DefaultApi(ApiClient(basePath: url, authentication: auth));
 
     _isNameSet = loginResponse.userCreationRequired ?? false;

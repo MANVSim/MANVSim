@@ -1,4 +1,4 @@
-# manv_api.model.RunLocationArriveGet200Response
+# manv_api.model.RunLocationTakeFromPostRequest
 
 ## Load the model package
 ```dart
@@ -8,7 +8,8 @@ import 'package:manv_api/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**playerLocation** | [**Location**](Location.md) |  | [optional] 
+**takeLocationId** | **int** |  | [optional] 
+**fromLocationId** | **int** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

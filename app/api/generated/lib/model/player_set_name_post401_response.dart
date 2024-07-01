@@ -10,10 +10,10 @@
 
 part of manv_api;
 
-class RunActionPerformResultGet200Response {
-  /// Returns a new [RunActionPerformResultGet200Response] instance.
-  RunActionPerformResultGet200Response({
-    this.result,
+class PlayerSetNamePost401Response {
+  /// Returns a new [PlayerSetNamePost401Response] instance.
+  PlayerSetNamePost401Response({
+    this.msg,
   });
 
   ///
@@ -22,34 +22,34 @@ class RunActionPerformResultGet200Response {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  String? result;
+  String? msg;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is RunActionPerformResultGet200Response &&
-    other.result == result;
+  bool operator ==(Object other) => identical(this, other) || other is PlayerSetNamePost401Response &&
+    other.msg == msg;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (result == null ? 0 : result!.hashCode);
+    (msg == null ? 0 : msg!.hashCode);
 
   @override
-  String toString() => 'RunActionPerformResultGet200Response[result=$result]';
+  String toString() => 'PlayerSetNamePost401Response[msg=$msg]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.result != null) {
-      json[r'result'] = this.result;
+    if (this.msg != null) {
+      json[r'msg'] = this.msg;
     } else {
-      json[r'result'] = null;
+      json[r'msg'] = null;
     }
     return json;
   }
 
-  /// Returns a new [RunActionPerformResultGet200Response] instance and imports its values from
+  /// Returns a new [PlayerSetNamePost401Response] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static RunActionPerformResultGet200Response? fromJson(dynamic value) {
+  static PlayerSetNamePost401Response? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -58,24 +58,24 @@ class RunActionPerformResultGet200Response {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "RunActionPerformResultGet200Response[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "RunActionPerformResultGet200Response[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "PlayerSetNamePost401Response[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "PlayerSetNamePost401Response[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return RunActionPerformResultGet200Response(
-        result: mapValueOfType<String>(json, r'result'),
+      return PlayerSetNamePost401Response(
+        msg: mapValueOfType<String>(json, r'msg'),
       );
     }
     return null;
   }
 
-  static List<RunActionPerformResultGet200Response> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <RunActionPerformResultGet200Response>[];
+  static List<PlayerSetNamePost401Response> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <PlayerSetNamePost401Response>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = RunActionPerformResultGet200Response.fromJson(row);
+        final value = PlayerSetNamePost401Response.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -84,12 +84,12 @@ class RunActionPerformResultGet200Response {
     return result.toList(growable: growable);
   }
 
-  static Map<String, RunActionPerformResultGet200Response> mapFromJson(dynamic json) {
-    final map = <String, RunActionPerformResultGet200Response>{};
+  static Map<String, PlayerSetNamePost401Response> mapFromJson(dynamic json) {
+    final map = <String, PlayerSetNamePost401Response>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = RunActionPerformResultGet200Response.fromJson(entry.value);
+        final value = PlayerSetNamePost401Response.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -98,14 +98,14 @@ class RunActionPerformResultGet200Response {
     return map;
   }
 
-  // maps a json object with a list of RunActionPerformResultGet200Response-objects as value to a dart map
-  static Map<String, List<RunActionPerformResultGet200Response>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<RunActionPerformResultGet200Response>>{};
+  // maps a json object with a list of PlayerSetNamePost401Response-objects as value to a dart map
+  static Map<String, List<PlayerSetNamePost401Response>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<PlayerSetNamePost401Response>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = RunActionPerformResultGet200Response.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = PlayerSetNamePost401Response.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;
