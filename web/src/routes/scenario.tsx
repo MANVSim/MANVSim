@@ -13,12 +13,13 @@ import CsrfForm from "../components/CsrfForm"
 
 function ExecutionEntry({
   execution,
-}: Readonly<{ execution: number }>): ReactElement {
+  name,
+}: Readonly<{ execution: number; name: string }>): ReactElement {
   return (
     <CsrfForm className="my-1" method="post">
       <input type="hidden" name="id" value={execution} />
       <div className="d-grid gap-2">
-        <Button type="submit">{execution}</Button>
+        <Button type="submit">{name}</Button>
       </div>
     </CsrfForm>
   )
@@ -35,8 +36,8 @@ function TemplateEntry({
       <AccordionHeader>{name}</AccordionHeader>
       <AccordionBody>
         {executions.length ? (
-          executions.map((execution: number) => (
-            <ExecutionEntry key={execution} execution={execution} />
+          executions.map(({ id, name }) => (
+            <ExecutionEntry key={id} execution={id} name={name} />
           ))
         ) : (
           <div className="fw-light fst-italic">Keine Ausführungen</div>

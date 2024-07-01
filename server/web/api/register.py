@@ -66,7 +66,7 @@ def login(username: str, password: str):
 @api.get("/templates")
 @admin_only
 def get_templates():
-    return [{"id": scenario.id, "name": scenario.name, "executions": [execution.id for execution in scenario.executions]}
+    return [{"id": scenario.id, "name": scenario.name, "executions": [{ "id": execution.id, "name": execution.name } for execution in scenario.executions]}
             for scenario in models.Scenario.query]
 
 
