@@ -9,7 +9,6 @@ import 'package:manv_api/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **jwtToken** | **String** | JWT-Token, maps game and player | [optional] 
-**csrfToken** | **String** | CSRF Token to be used in future requests. | [optional] 
 **userCreationRequired** | **bool** | indicates if name for the TAN was already set. | [optional] 
 **userName** | **String** | name for the TAN, if userCreationRequired is false. Otherwise empty. | [optional] 
 **userRole** | **String** | role of the user. | [optional] 

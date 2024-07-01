@@ -7,6 +7,8 @@ import {
   StartResponse,
   isStartResponse,
   isLoginResponse,
+  CsrfToken,
+  ExecutionData,
 } from "./types"
 
 const api = "/web/"
@@ -24,13 +26,16 @@ export async function tryFetchApi(
   return fetch(apiRequest)
 }
 
-export async function tryFetchJson(url: string, body = {}): Promise<object> {
+export async function tryFetchJson<T = object>(
+  url: string,
+  body: RequestInit = {},
+): Promise<T> {
   const response = await tryFetchApi(url, body)
   return response.json()
 }
 
 export async function getTemplates(): Promise<Template[]> {
-  const templates = await tryFetchJson("templates")
+  const templates = await tryFetchJson<Template[]>("templates")
   if (Array.isArray(templates) && templates.every(isTemplate)) {
     return templates
   }
@@ -38,7 +43,7 @@ export async function getTemplates(): Promise<Template[]> {
 }
 
 export async function getCsrfToken(): Promise<string> {
-  const json = await tryFetchJson("csrf")
+  const json = await tryFetchJson<CsrfToken>("csrf")
   if (!isCsrfToken(json)) {
     throw new Error("Fetched json does not contain a CSRF Token!")
   }
@@ -48,7 +53,7 @@ export async function getCsrfToken(): Promise<string> {
 export async function startScenario(
   formData: FormData,
 ): Promise<StartResponse> {
-  const json = await tryFetchJson("scenario/start", {
+  const json = await tryFetchJson<StartResponse>("scenario", {
     method: "POST",
     body: formData,
   })
@@ -77,26 +82,30 @@ export async function getAuthToken(
   return redirect("/")
 }
 
-export async function getExecutionStatus(id: string): Promise<object> {
-  return tryFetchJson(`execution/${id}`)
+export async function getExecutionStatus(id: string): Promise<ExecutionData> {
+  return tryFetchJson<ExecutionData>(`execution?id=${id}`)
 }
 
-export async function startExecution(
+export async function changeExecutionStatus(
   id: string,
   formData: FormData,
-): Promise<object> {
-  return tryFetchJson(`execution/${id}/start`, {
-    method: "POST",
+): Promise<Response> {
+  return tryFetchApi(`execution?id=${id}`, {
+    method: "PATCH",
     body: formData,
   })
 }
 
-export async function stopExecution(
-  id: string,
+export async function togglePlayerStatus(
+  executionId: string,
+  playerTan: string,
   formData: FormData,
-): Promise<object> {
-  return tryFetchJson(`execution/${id}/stop`, {
-    method: "POST",
-    body: formData,
-  })
+): Promise<Response> {
+  return tryFetchApi(
+    `execution/player/status?id=${executionId}&tan=${playerTan}`,
+    {
+      method: "PATCH",
+      body: formData,
+    },
+  )
 }

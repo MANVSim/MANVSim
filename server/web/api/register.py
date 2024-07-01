@@ -1,37 +1,41 @@
-from functools import wraps
-import math
-from random import random, choice
-from flask import abort, make_response, request, Blueprint
+import json
+
+from flask import Blueprint, Response, make_response
 from flask_api import status
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import create_access_token
 from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
-from execution.entities.execution import Execution
-from models import WebUser
+from werkzeug.exceptions import BadRequest, HTTPException, NotFound
+from string_utils import booleanize
+
+import models
 from app_config import csrf
-from utils.tans import uniques
-from .test_data import test_execution
+from execution.entities.execution import Execution
+from execution.run import active_executions
+from execution.services.entityloader import load_execution
+from utils.flask import RequiredValueSource, admin_only, required, try_get_execution
 
 # FIXME sollten wir zusammen mit dem Web package iwann mal umbenennen
 api = Blueprint("api-web", __name__)
+
+
+@api.errorhandler(HTTPException)
+def http_exception_handler(e: HTTPException):
+    """Return JSON instead of HTML for HTTP errors."""
+    # start with the correct headers and status code from the error
+    response = make_response(e.get_response())
+    # replace the body with JSON
+    response.data = json.dumps({
+        "error": e.description,
+    })
+    response.content_type = "application/json"
+    return response
 
 
 @api.errorhandler(CSRFError)
 def handle_csrf_error(error: CSRFError):
     status = error.response or 400
     return make_response(({"error": error.description}, status))
-
-
-def admin_only(func):
-    @wraps(func)  # https://stackoverflow.com/a/64534085/11370741
-    @jwt_required()
-    def wrapper(*args, **kwargs):
-        identity = get_jwt_identity()
-        if identity != "admin":
-            abort(status.HTTP_401_UNAUTHORIZED)
-        return func(*args, **kwargs)
-
-    return wrapper
 
 
 @api.get("/csrf")
@@ -41,18 +45,11 @@ def get_csrf():
 
 
 @api.post("/login")
-def login():
-    # Extract data from request
-    try:
-        username = request.form["username"]
-        password = request.form["password"]
-    except KeyError:
-        return {
-            "error": "Missing username or password in request"
-        }, status.HTTP_400_BAD_REQUEST
-
+@required("username", str, RequiredValueSource.FORM)
+@required("password", str, RequiredValueSource.FORM)
+def login(username: str, password: str):
     # Get user object from database
-    user = WebUser.get_by_username(username)
+    user = models.WebUser.get_by_username(username)
     if user is None:
         return {
             "error": f"User with user name '{username}' does not exist"
@@ -69,58 +66,55 @@ def login():
 @api.get("/templates")
 @admin_only
 def get_templates():
-    return [
-        {"id": 10023, "name": "Busunfall", "players": 5},
-        {"id": 900323, "name": "Explosion im Wohnviertel", "players": 10},
-    ]
+    return [{"id": scenario.id, "name": scenario.name, "executions": [execution.id for execution in scenario.executions]}
+            for scenario in models.Scenario.query]
 
 
-@api.post("/scenario/start")
+@api.post("/scenario")
+@required("id", int, RequiredValueSource.FORM)
 @admin_only
-def start_scenario():
-    try:
-        id = request.form["id"]
-    except KeyError:
-        return {"error": "Missing id in request"}, 400
+def start_scenario(id: int):
+    if load_execution(id):
+        return active_executions[id].to_dict()
 
-    # TODO: Create actual execution
-    exec_id = math.floor(random() * 1000)
-    test_execution.update({
-        "id": exec_id,
-        "status": "",
-        "players": [
-            {
-                "tan": x,
-                "name": "Max Mustermann",
-                "status": choice(["", "In Vorbereitung"]),
-                "action": "Legt Zugang",
-            }
-            for x in [str(x) for x in uniques(5)]
-        ],
-    })
-    return {
-        "id": exec_id,
-    }
+    # Failure
+    raise NotFound(f"Execution with id={id} does not exist")
 
 
-@api.get("/execution/<int:id>")
-@admin_only
+@api.get("/execution")
+@required("id", int, RequiredValueSource.ARGS)
+# @admin_only
+@csrf.exempt
 def get_execution_status(id: int):
-    test_execution["id"] = id
-    random_player = choice(test_execution["players"])
-    random_player["status"] = "In Vorbereitung" if random_player["status"] == "" else ""
-    return test_execution
+    execution = try_get_execution(id)
+    return execution.to_dict()
 
 
-@api.post("/execution/<int:id>/start")
+@api.patch("/execution")
+@required("id", int, RequiredValueSource.ARGS)
+@required("new_status", str.upper, RequiredValueSource.FORM)
 @admin_only
-def start_execution(id: int):
-    test_execution["status"] = "Aktiv"
-    return test_execution
+def change_execution_status(id: int, new_status: str):
+    execution = try_get_execution(id)
+    try:
+        execution.status = Execution.Status[new_status]
+    except KeyError:
+        raise BadRequest(
+            f"Not an option for the execution status: '{new_status}'. Possible values are: {str.join(", ", [e.name for e in Execution.Status])}")
+    return Response(status=200)
 
 
-@api.post("/execution/<int:id>/stop")
+@api.patch("/execution/player/status")
+@required("id", int, RequiredValueSource.ARGS)
+@required("tan", str, RequiredValueSource.ARGS)
+@required("alerted", booleanize, RequiredValueSource.FORM)
 @admin_only
-def stop_execution(id: int):
-    test_execution["status"] = ""
-    return test_execution
+def change_player_status(id: int, tan: str, alerted: bool):
+    execution = try_get_execution(id)
+    try:
+        player = execution.players[tan]
+    except KeyError:
+        raise NotFound(
+            f"Player with TAN '{tan}' does not exist for execution with id {id}")
+    player.alerted = not alerted
+    return Response(status=200)

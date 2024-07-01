@@ -7,31 +7,17 @@ separate file (FIXME: docu update @Louis)
 import logging
 
 from execution.entities.execution import Execution
-from execution.entities.player import Player
-from execution.entities.scenario import Scenario
 from execution.tests.entities import dummy_entities
-
-# FIXME: Remove hardcoded test data
-# TEST DATA
-player_a = Player("69", "Finn Bartels", False, 10,  None, set())
-
-test_a = Execution(1337, "ExcName", Scenario(17, "Test-Scenario-Pending", {}, {}, {}), {"69": player_a}, Execution.Status.PENDING)
-test_b = dummy_entities.create_test_execution()
-test_b.status = Execution.Status.RUNNING
+from vars import LOAD_TEST_DATA
 
 # Dictionary storing the currently available executions, whether they are PENDING, RUNNING or about to FINISH
 active_executions: dict[int, Execution] = {
     # "exec_id": "exec: execution_dbo"
-    1337: test_a,
-    test_b.id: test_b,
 }
 
 # Dictionary storing all active players in an execution
 registered_players: dict[str, int] = {
     # "TAN" : "exec_uuid"
-    "69": 1337,
-    "123ABC": test_b.id,
-    "456DEF": test_b.id,
 }
 
 
@@ -61,3 +47,12 @@ def remove_player(players):
             registered_players.pop(player.tan)
         except KeyError:
             logging.info(f"{player.tan} already removed")
+
+
+# TEST DATA
+if LOAD_TEST_DATA:
+    test_pending = dummy_entities.create_test_execution()
+    test_running = dummy_entities.create_test_execution(pending=False)
+
+    activate_execution(test_pending)
+    activate_execution(test_running)

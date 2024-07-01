@@ -63,14 +63,14 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**notificationsGet**](doc//DefaultApi.md#notificationsget) | **GET** /notifications | notification polling
 *DefaultApi* | [**playerSetNamePost**](doc//DefaultApi.md#playersetnamepost) | **POST** /player/set-name | Set username for the TAN
 *DefaultApi* | [**runActionAllGet**](doc//DefaultApi.md#runactionallget) | **GET** /run/action/all | Returns a list of actions available to the user.
-*DefaultApi* | [**runActionPerformPost**](doc//DefaultApi.md#runactionperformpost) | **POST** /run/action/perform | Performs an action.
-*DefaultApi* | [**runActionPerformResultGet**](doc//DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action.
-*DefaultApi* | [**runLocationAllGet**](doc//DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of locations.
-*DefaultApi* | [**runLocationArriveGet**](doc//DefaultApi.md#runlocationarriveget) | **GET** /run/location/arrive | Simulates the arrival of a player at a certain location.
-*DefaultApi* | [**runLocationTakeFromGet**](doc//DefaultApi.md#runlocationtakefromget) | **GET** /run/location/take-from | A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
-*DefaultApi* | [**runPatientAllIdsGet**](doc//DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patients ids.
+*DefaultApi* | [**runActionPerformPost**](doc//DefaultApi.md#runactionperformpost) | **POST** /run/action/perform | Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
+*DefaultApi* | [**runActionPerformResultGet**](doc//DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action and officially finishes/dequeues the action of the patient.
+*DefaultApi* | [**runLocationAllGet**](doc//DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of  top-level accessible locations.
+*DefaultApi* | [**runLocationLeavePost**](doc//DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
+*DefaultApi* | [**runLocationTakeFromPost**](doc//DefaultApi.md#runlocationtakefrompost) | **POST** /run/location/take-from | A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+*DefaultApi* | [**runPatientAllTansGet**](doc//DefaultApi.md#runpatientalltansget) | **GET** /run/patient/all-tans | Returns a list of all patients.
 *DefaultApi* | [**runPatientArrivePost**](doc//DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
-*DefaultApi* | [**runPatientsLeavePost**](doc//DefaultApi.md#runpatientsleavepost) | **POST** /run/patients/leave | Leaves a patient.
+*DefaultApi* | [**runPatientLeavePost**](doc//DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
 *DefaultApi* | [**scenarioStartTimeGet**](doc//DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
 
 
@@ -82,17 +82,20 @@ Class | Method | HTTP request | Description
  - [LoginPost200Response](doc//LoginPost200Response.md)
  - [LoginPostRequest](doc//LoginPostRequest.md)
  - [NotificationsGet200Response](doc//NotificationsGet200Response.md)
- - [NotificationsGet200ResponseNotificationsInner](doc//NotificationsGet200ResponseNotificationsInner.md)
  - [Patient](doc//Patient.md)
+ - [PlayerSetNamePost401Response](doc//PlayerSetNamePost401Response.md)
  - [PlayerSetNamePostRequest](doc//PlayerSetNamePostRequest.md)
  - [Resource](doc//Resource.md)
  - [RunActionPerformPost200Response](doc//RunActionPerformPost200Response.md)
  - [RunActionPerformPostRequest](doc//RunActionPerformPostRequest.md)
- - [RunActionPerformResultGet200Response](doc//RunActionPerformResultGet200Response.md)
  - [RunLocationAllGet200Response](doc//RunLocationAllGet200Response.md)
- - [RunLocationArriveGet200Response](doc//RunLocationArriveGet200Response.md)
- - [RunPatientAllIdsGet200Response](doc//RunPatientAllIdsGet200Response.md)
+ - [RunLocationLeavePost200Response](doc//RunLocationLeavePost200Response.md)
+ - [RunLocationTakeFromPost200Response](doc//RunLocationTakeFromPost200Response.md)
+ - [RunLocationTakeFromPostRequest](doc//RunLocationTakeFromPostRequest.md)
+ - [RunPatientAllTansGet200Response](doc//RunPatientAllTansGet200Response.md)
  - [RunPatientArrivePost200Response](doc//RunPatientArrivePost200Response.md)
+ - [RunPatientArrivePostRequest](doc//RunPatientArrivePostRequest.md)
+ - [RunPatientLeavePost200Response](doc//RunPatientLeavePost200Response.md)
  - [ScenarioStartTimeGet200Response](doc//ScenarioStartTimeGet200Response.md)
 
 

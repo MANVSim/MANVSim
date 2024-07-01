@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "Installing required dependencies..."
-pipenv install
+echo "Installing dependencies from pipfile.."
+pipenv install --deploy --ignore-pipfile
 
 echo "Performing needed migrations..."
 flask --app main db init 2>/dev/null

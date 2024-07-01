@@ -1,19 +1,27 @@
-import { Button, Card, Container } from "react-bootstrap"
+import { Button, Card, Container, Form } from "react-bootstrap"
 import QRCode from "react-qr-code"
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
-  useActionData,
   useLoaderData,
   useParams,
 } from "react-router"
 import { ReactElement, useEffect, useState } from "react"
-import { getExecutionStatus, startExecution, stopExecution } from "../api"
+import {
+  getExecutionStatus,
+  changeExecutionStatus,
+  togglePlayerStatus,
+} from "../api"
 import _ from "lodash"
 import { config } from "../config"
-import { Form } from "react-router-dom"
-import { CsrfInput } from "../contexts/csrf"
-import { Player, ExecutionData, isExecutionData } from "../types"
+import {
+  Player,
+  ExecutionData,
+  isExecutionData,
+  ExecutionStatusEnum,
+} from "../types"
+import CsrfForm from "../components/CsrfForm"
+import { useSubmit } from "react-router-dom"
 
 function TanCard({ tan }: { tan: string }): ReactElement {
   return (
@@ -27,46 +35,89 @@ function TanCard({ tan }: { tan: string }): ReactElement {
 }
 
 function PlayerStatus({ player }: { player: Player }): ReactElement {
+  const submit = useSubmit()
   return (
     <tr>
       <td>{player.tan}</td>
-      <td>{player.status}</td>
+      <td>
+        <CsrfForm
+          onChange={(event) => submit(event.currentTarget)}
+          method="POST"
+        >
+          <input type="hidden" name="id" value="player-status" />
+          <input type="hidden" name="tan" value={player.tan} />
+          <Button
+            id={"toggle-status-" + player.tan}
+            name="alerted"
+            type="submit"
+            value={Number(player.alerted)}
+            title="Zum Ändern klicken"
+          >
+            {player.alerted ? "Alarmiert" : "Bereit"}
+          </Button>{" "}
+        </CsrfForm>
+      </td>
       <td>{player.name}</td>
-      <td>{player.action}</td>
     </tr>
   )
 }
 
-function ToggleExecution({ execution }: { execution: ExecutionData }): ReactElement {
-  const executionActive = execution.status !== ""
+function Status({ execution }: { execution: ExecutionData }): ReactElement {
+  const submit = useSubmit()
+  const [status, setStatus] = useState(execution.status)
+  useEffect(() => {
+    setStatus(execution.status)
+  }, [execution])
+
   return (
     <div className="mt-5">
-      <Form method="POST">
-        <CsrfInput />
-        <Button
-          name="toggle"
-          value={executionActive ? "stop" : "start"}
-          type="submit"
+      <CsrfForm method="POST" onChange={(e) => submit(e.currentTarget)}>
+        <input type="hidden" name="id" value="change-status" />
+        <Form.Label>Status</Form.Label>
+        <Form.Select
+          name="new_status"
+          value={status}
+          onChange={(e) =>
+            setStatus(
+              ExecutionStatusEnum.safeParse(e.currentTarget.value).data ||
+                "UNKNOWN",
+            )
+          }
         >
-          {executionActive ? "Beenden" : "Starten"}
-        </Button>
-      </Form>
+          <option value="PENDING">Vorbereitung</option>
+          <option value="RUNNING">Laufend</option>
+          <option value="FINISHED">Beendet</option>
+          {execution.status === "UNKNOWN" && (
+            <option value="UNKNOWN" disabled>
+              Unbekannt
+            </option>
+          )}
+        </Form.Select>
+      </CsrfForm>
     </div>
   )
 }
 
 export default function Execution(): ReactElement {
   const loaderData = useLoaderData()
-  const actionData = useActionData()
-  useEffect(() => {
-    if (isExecutionData(actionData)) {
-      setExecution(actionData)
-    }
-  }, [actionData])
+
   const [execution, setExecution] = useState<null | ExecutionData>(
     isExecutionData(loaderData) ? loaderData : null,
   )
+
+  const [tansAvailable, tansUsed] = _.partition(
+    execution?.players,
+    (): boolean => false, // TODO: Determine if TAN is used or not
+  )
+
   const { executionId } = useParams<{ executionId: string }>()
+
+  useEffect(() => {
+    if (isExecutionData(loaderData)) {
+      setExecution(loaderData)
+    }
+  }, [loaderData])
+
   useEffect(() => {
     const intervalId = setInterval(async () => {
       if (typeof executionId === "undefined") return
@@ -76,16 +127,11 @@ export default function Execution(): ReactElement {
       }
     }, config.pollingRate)
     return () => clearInterval(intervalId)
-  })
-
-  const [tansAvailable, tansUsed] = _.partition(
-    execution?.players,
-    (player) => player.status === "",
-  )
+  }, [executionId])
 
   return (
     <div>
-      {execution && (
+      {execution ? (
         <div>
           <h2>Ausführung</h2>
           <p>ID: {execution.id}</p>
@@ -95,7 +141,7 @@ export default function Execution(): ReactElement {
               <TanCard key={player.tan} tan={player.tan} />
             ))}
           </Container>
-          <ToggleExecution execution={execution} />
+          <Status execution={execution} />
           <h3 className="mt-5">Aktive TANs:</h3>
           <table className="table">
             <thead>
@@ -103,7 +149,6 @@ export default function Execution(): ReactElement {
                 <th>TAN</th>
                 <th>Status</th>
                 <th>Name</th>
-                <th>Maßnahme</th>
               </tr>
             </thead>
             <tbody>
@@ -113,6 +158,8 @@ export default function Execution(): ReactElement {
             </tbody>
           </table>
         </div>
+      ) : (
+        <div>Loading...</div>
       )}
     </div>
   )
@@ -128,11 +175,15 @@ Execution.loader = async function ({
 Execution.action = async function ({ params, request }: ActionFunctionArgs) {
   if (params.executionId === undefined) return null
   const formData = await request.formData()
-  console.log(formData)
-
-  if (formData.get("toggle") === "start") {
-    return startExecution(params.executionId, formData)
-  } else {
-    return stopExecution(params.executionId, formData)
+  const id = formData.get("id")
+  formData.delete("id")
+  if (id === "change-status") {
+    return changeExecutionStatus(params.executionId, formData)
+  } else if (id === "player-status") {
+    const playerTan = formData.get("tan") as string | null
+    if (playerTan === null) return null
+    formData.delete("tan")
+    return togglePlayerStatus(params.executionId, playerTan, formData)
   }
+  return null
 }
