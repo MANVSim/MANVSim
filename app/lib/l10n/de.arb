@@ -6,7 +6,10 @@
   "frameNotifications": "Benachrichtigungen",
 
   "loginScreenName": "Anmeldung",
-  "loginTAN"     : "TAN",
+  "loginHideAdvancedSettings": "Erweiterte Einstellungen ausblenden",
+  "loginShowAdvancedSettings": "Erweiterte Einstellungen anzeigen",
+  "loginTANText"     : "Bitte TAN eingeben oder QR Code Scannen",
+  "loginTANHeader"     : "TAN Anmeldung",
   "loginServerUrl": "Server URL",
   "loginSubmit"  : "Anmelden",
   "loginWarningEmptyFields": "Bitte füllen Sie alle Felder aus",
@@ -19,6 +22,11 @@
         }
         }
     },
+
+
+  "unauthorizedBearerAlertBody": "Du bist nicht berechtigt, diese Aktion auszuführen. Bitte logge dich erneut ein.",
+  "unauthorizedBearerAlertHeader": "Login abgelaufen",
+  "unauthorizedBearerAlertButton": "Ausloggen",
 
   "waitText": "Warten auf Start der Simulation",
   "waitSkip": "Überspringen",
