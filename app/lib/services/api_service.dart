@@ -1,4 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:manv_api/api.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../screens/login_screen.dart';
 
 
 class _JwtCsrfAuth implements Authentication {
@@ -57,5 +62,39 @@ class ApiService {
     _isNameSet = !loginResponse.userCreationRequired!;
 
   }
+
+  handleErrorCode(ApiException e, BuildContext context) {
+    if (e.code == 401) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.unauthorizedBearerAlertHeader),
+            content: Text(AppLocalizations.of(context)!.unauthorizedBearerAlertBody),
+            actions: <Widget>[
+              TextButton(
+                child: Text(AppLocalizations.of(context)!.unauthorizedBearerAlertButton),
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        (Route<dynamic> route) => false, // Removes all previous routes
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
+
+      return true;
+
+    }
+
+    return false;
+  }
+
 }
+
+
 

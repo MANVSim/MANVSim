@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
 
 import '../services/api_service.dart';
+import '../widgets/logout_button.dart';
 import 'wait_screen.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -60,17 +61,20 @@ class NameScreenState extends State<NameScreen> {
         _errorMessage = AppLocalizations.of(context)!.nameWarningEmptyFields;
       });
     } else {
-
-
       setState(() {
         _isLoading = true;
       });
 
       String? failureMessage;
 
+      ApiService apiService = GetIt.instance.get<ApiService>();
+
       try {
-        ApiService apiService = GetIt.instance.get<ApiService>();
-        await apiService.api.playerSetNamePost(PlayerSetNamePostRequest(name: name));
+        await apiService.api.playerSetNamePost(
+            PlayerSetNamePostRequest(name: name));
+      } on ApiException catch (e) {
+        apiService.handleErrorCode(e, context);
+        failureMessage = e.toString();
       } catch (e) {
         failureMessage = e.toString();
       }
@@ -80,10 +84,16 @@ class NameScreenState extends State<NameScreen> {
         _errorMessage = failureMessage;
         _isLoading = false;
       });
+
+      if (failureMessage == null) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const WaitScreen()),
+              (Route<dynamic> route) =>
+          false,
+        );
+      }
     }
-
-
-
   }
 
 
@@ -93,6 +103,7 @@ class NameScreenState extends State<NameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: const <Widget>[LogoutButton()],
         title: Text(AppLocalizations.of(context)!.nameScreenName),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
