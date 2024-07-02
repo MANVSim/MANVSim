@@ -1,15 +1,13 @@
+import json
 import logging
 import os
 
-from flask import Flask, send_from_directory, redirect, request
-from flask_jwt_extended import JWTManager, jwt_required
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CSRFProtect
+from flask import Flask, send_from_directory, redirect, make_response, jsonify
 from flask_cors import CORS
-from werkzeug.exceptions import BadRequestKeyError
-
-from execution.utils import util
-from execution.entities.execution import Execution
+from flask_jwt_extended import JWTManager
+from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect, CSRFError
+from werkzeug.exceptions import HTTPException
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -18,12 +16,12 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     """
     Create the app instance, register all URLs and the database to the app
     """
-    import models  # noqa: F401
-
     # asynchronously import local packages
-    import web.setup
-    import execution.web.setup
-    from execution.api import lobby, location, patient, action, notification
+    import models  # noqa: F401
+    import execution.web_api.setup
+    import scenario.web_api.setup
+    import administration.web_api.setup
+    import execution.api.setup
 
     app = Flask(__name__, static_folder="../web/dist")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
@@ -36,35 +34,20 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     db.init_app(app)
     csrf.init_app(app)
     jwt = JWTManager(app)
-    web.setup(app)      # FIXME deprecated package
-    execution.web.setup.setup(app)
+
+    # -- Endpoint connection
+    execution.web_api.setup.setup(app)
+    scenario.web_api.setup.setup(app)
+    administration.web_api.setup.setup(app)
+    execution.api.setup.setup(app)
+
     CORS(app, resources={r"/*": {"origins": "*"}})
 
-    # define run request blocker
-    @app.before_request
-    def return_hold_if_not_running():
-        @jwt_required()
-        def check_for_exec_status():
-            try:
-                execution, _ = util.get_execution_and_player()
-                if execution.status != Execution.Status.RUNNING:
-                    return "No running execution detected", 204
-
-            except BadRequestKeyError:
-                return f"Incorrect JWT detected.", 400
-            except KeyError:
-                return (
-                    f"Invalid Execution ID sent. Unable to resolve running instance",
-                    400,
-                )
-
-        if "/api/run" in request.path:
-            return check_for_exec_status()
-
-    # register paths required for serving frontend
+    # -- FE Routes
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve(path):
+        """ Registers paths required for serving frontend. """
         if path != "" and os.path.exists(app.static_folder + "/" + path):  # type: ignore
             return send_from_directory(app.static_folder, path)  # type: ignore
         elif path == "/" or path == "":
@@ -79,10 +62,33 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
         else:
             return redirect("/")
 
-    app.register_blueprint(lobby.api, url_prefix="/api")
-    app.register_blueprint(notification.api, url_prefix="/api")
-    app.register_blueprint(patient.api, url_prefix="/api/run")
-    app.register_blueprint(location.api, url_prefix="/api/run")
-    app.register_blueprint(action.api, url_prefix="/api/run")
+    # -- ERROR Handling
+    @app.errorhandler(HTTPException)
+    def http_exception_handler(e: HTTPException):
+        """ Return JSON instead of HTML for HTTP errors. """
+        # start with the correct headers and status code from the error
+        response = make_response(e.get_response())
+        # replace the body with JSON
+        response.data = json.dumps({
+            "error": e.description,
+        })
+        response.content_type = "application/json"
+        return response
+
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error(error: CSRFError):
+        """ Defines a specific handling for CSRF Errors"""
+        status = error.response or 400
+        return make_response(({"error": error.description}, status))
+
+    def handle_error(e):
+        return jsonify(error=str(e)), e.code
+
+    for code in range(400, 600):
+        # Register all client-/server error to be handled as json response.
+        try:
+            app.register_error_handler(code, handle_error)
+        except ValueError:
+            continue  # continue if code is not a valid HTTP status code.
 
     return app
