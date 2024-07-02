@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import secrets
 
 from flask import Flask, send_from_directory, redirect, make_response, jsonify
 from flask_cors import CORS
@@ -9,7 +10,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from werkzeug.exceptions import HTTPException
 
-logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+from vars import LOG_LEVEL
+
+logging.basicConfig(format="%(levelname)s:%(message)s", level=LOG_LEVEL)
 
 
 def create_app(csrf: CSRFProtect, db: SQLAlchemy):
@@ -25,15 +28,12 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
 
     app = Flask(__name__, static_folder="../web/dist")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
-    app.config["SECRET_KEY"] = (
-        "APP_DEBUG_DO_NOT_USE_IN_PROD_20556f99182444688d9bc48cc456e99031cd39c391accd9ea2e1ff1b500405358c999c50eafe"
-        + "8c6d8fe61a148850e658374d42592f81e411e652fb3ee6839e76"
-    )  # FIXME
-    app.config["JWT_SECRET_KEY"] = "!ichsolltenichtinPROD!"
+    app.config["SECRET_KEY"] = secrets.token_urlsafe(32)
+    app.config["JWT_SECRET_KEY"] = secrets.token_urlsafe(32)
 
     db.init_app(app)
     csrf.init_app(app)
-    jwt = JWTManager(app)
+    JWTManager(app)
 
     # -- Endpoint connection
     execution.web_api.setup.setup(app)
