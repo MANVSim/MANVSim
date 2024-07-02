@@ -1,5 +1,5 @@
 import json
-from os import stat
+from itertools import groupby
 
 from flask import Blueprint, Response, make_response
 from flask_api import status
@@ -67,8 +67,36 @@ def login(username: str, password: str):
 @api.get("/templates")
 @admin_only
 def get_templates():
-    return [{"id": scenario.id, "name": scenario.name, "executions": [execution.id for execution in scenario.executions]}
-            for scenario in models.Scenario.query]
+    result = dict()
+
+    def key_func(execution: Execution) -> int:
+        return execution.scenario.id
+
+    active = sorted(active_executions.values(), key=key_func)
+    for scenario_id, execution_iterator in groupby(active, key=key_func):
+        executions = list(execution_iterator)
+        result[scenario_id] = {
+            "name": executions[0].name,
+            "executions": [execution.id for execution in executions]
+        }
+
+    for scenario in models.Scenario.query:
+        executions = [e.id for e in scenario.executions]
+        try:
+            result[scenario.id]["executions"] += executions
+        except KeyError:
+            result[scenario.id] = {
+                "name": scenario.name,
+                "executions": executions
+            }
+
+    return [
+        {
+            "id": id,
+            "name": x["name"],
+            "executions": x["executions"]
+        } for id, x in result.items()
+    ]
 
 
 @api.post("/scenario")
