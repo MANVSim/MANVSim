@@ -15,6 +15,10 @@ class Event:
         PERFORMED_ACTION = "performed_action"
         EXECUTION_STARTED = "execution_started"
         EXECUTION_FINISHED = "execution_finished"
+        LOCATION_TAKE_FROM = "location_take_from"
+        LOCATION_LEAVE = "location_leave"
+        PATIENT_ARRIVE = "patient_arrive"
+        PATIENT_LEAVE = "patient_leave"
 
     def __init__(self, execution: int, type: Type, time: int, data):
         self.execution = execution
@@ -46,6 +50,47 @@ class Event:
             "player": player,
             "patient": patient,
             "duration_s": duration_s
+        })
+
+    @staticmethod
+    def location_take_from(execution_id: int, time: int, player: str, take_location_id: int, from_location_id: int):
+        """
+        Creates an event representing the action of taking a location from another location.
+        """
+        return Event(execution=execution_id, type=Event.Type.LOCATION_TAKE_FROM, time=time, data={
+            "player": player,
+            "take_location_id": take_location_id,
+            "from_location_id": from_location_id
+        })
+
+    @staticmethod
+    def location_leave(execution_id: int, time: int, player: str, leave_location_id: int):
+        """
+        Creates an event representing the action of leaving a location.
+        """
+        return Event(execution=execution_id, type=Event.Type.LOCATION_LEAVE, time=time, data={
+            "player": player,
+            "leave_location_id": leave_location_id
+        })
+
+    @staticmethod
+    def patient_arrive(execution_id: int, time: int, player: str, patient_id: int):
+        """
+        Creates an event representing the action of a player arriving at a patient.
+        """
+        return Event(execution=execution_id, type=Event.Type.PATIENT_ARRIVE, time=time, data={
+            "player": player,
+            "patient_id": patient_id
+        })
+
+    @staticmethod
+    def patient_leave(execution_id: int, time: int, player: str, patient_id: int):
+        """
+        Creates an event representing the action of a player leaving a patient.
+        """
+        return Event(execution=execution_id, type=Event.Type.PATIENT_LEAVE, time=time, data={
+            "player": player,
+            "patient_id": patient_id
         })
 
     def to_dict(self):
