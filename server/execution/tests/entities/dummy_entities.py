@@ -69,13 +69,13 @@ def create_test_execution(pending: bool = True):
     ads = get_activity_diagrams()
 
     # Patients
-    patient_1 = Patient(id=1, name="Holger Hooligan", injuries="UNDEFINED", activity_diagram=ads[0],
+    patient_1 = Patient(id=1, name="Holger Hooligan", activity_diagram=ads[0],
                         location=loc_5, performed_actions=[p_act_1])
-    patient_2 = Patient(id=2, name="Stefan Schiri", injuries="UNDEFINED", activity_diagram=ads[1],
+    patient_2 = Patient(id=2, name="Stefan Schiri", activity_diagram=ads[1],
                         location=loc_5)
-    patient_3 = Patient(id=3, name="Hoff Nungs Loserfall", injuries="UNDEFINED", activity_diagram=ads[2],
+    patient_3 = Patient(id=3, name="Hoff Nungs Loserfall", activity_diagram=ads[2],
                         location=loc_5)
-    patient_4 = Patient(id=3, name="Hoff Nungs Vollerfall", injuries="UNDEFINED", activity_diagram=ads[3],
+    patient_4 = Patient(id=3, name="Hoff Nungs Vollerfall", activity_diagram=ads[3],
                         location=loc_5)
 
     # Scenario

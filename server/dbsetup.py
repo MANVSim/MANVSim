@@ -56,7 +56,7 @@ def __create_locations():
                     picture_ref="dummy_location.png"))
 
 
-def __create_action():
+def __create_actions():
     insert(Action(id=0, name="Verband anlegen", required_power=100,
                   picture_ref="verbandanlegen.jpg", results="",
                   duration_secs=60))
@@ -68,17 +68,17 @@ def __create_action():
                   picture_ref="pflaster.jpg", results="", duration_secs=120))
 
     insert(Action(id=4, name="EKG schreiben", picture_ref="placeholder.png",
-                  duration_sec=2, results=f"EKG{DELIMITER}12-Kanal-EKG",
+                  duration_secs=2, results=f"EKG{DELIMITER}12-Kanal-EKG",
                   required_power=200))
     insert(Action(id=5, name="Pflaster kleben", picture_ref="placeholder.png",
-                  duration_sec=10, results="", required_power=300))
+                  duration_secs=10, results="", required_power=300))
     insert(Action(id=6, name="Beatmen", picture_ref="placeholder.png",
-                  duration_sec=300, results="", required_power=200))
-    insert(Action(id=4, name="Betrachten", picture_ref="placeholder.png",
-                  duration_sec=5, required_power=100,
+                  duration_secs=300, results="", required_power=200))
+    insert(Action(id=7, name="Betrachten", picture_ref="placeholder.png",
+                  duration_secs=5, required_power=100,
                   results=f"Verletzung{DELIMITER}Haut{DELIMITER}Bewusstsein"))
-    insert(Action(id=5, name="Wunderheilung", picture_ref="placeholder.png",
-                  duration_sec=5, results="", required_power=300))
+    insert(Action(id=8, name="Wunderheilung", picture_ref="placeholder.png",
+                  duration_secs=5, results="", required_power=300))
 
 
 def __resource_needed():
@@ -127,7 +127,7 @@ def __create_patients():
     insert(Patient(id=5, name="Gisela", activity_diagram=()))
 
 
-def __create_scenario():
+def __create_scenarios():
     insert(Scenario(id=0, name="Busunglück"))
     insert(Scenario(id=1, name="Autounfall"))
     insert(Scenario(id=2, name="Schlägerei"))
@@ -143,7 +143,7 @@ def __takes_part_in():
     insert(TakesPartIn(scenario_id=2, patient_id=4))
 
 
-def __create_execution():
+def __create_executions():
     insert(Execution(id=1, name="Übungssimulation \"Busunglück\" 2024",
                      scenario_id=0))
     insert(Execution(id=23456, name="Kreativer Name", scenario_id=1))
@@ -156,13 +156,16 @@ def insert(data):
 
 with create_app(csrf=csrf, db=db).app_context():
 
-    __create_execution()
-    __create_scenario()
+    __create_executions()
+    __create_scenarios()
     __create_players()
+    __create_roles()
     __create_patients()
-    __takes_part_in()
     __create_locations()
     __create_resources()
+    __create_actions()
+    __takes_part_in()
+    __resource_needed()
 
     insert(WebUser(username="Terra", password=hashpw(b"pw1234",
                                                      gensalt()).decode()))
