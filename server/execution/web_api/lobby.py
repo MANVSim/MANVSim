@@ -4,9 +4,9 @@ from werkzeug.exceptions import NotFound, BadRequest
 
 from app_config import csrf
 from execution import run
+from execution.entities.execution import Execution
 from execution.services import entityloader
 from execution.utils.util import try_get_execution
-from models import Execution
 from utils.decorator import required, admin_only, RequiredValueSource
 
 web_api = Blueprint("web_api-lobby", __name__)
