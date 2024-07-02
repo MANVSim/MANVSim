@@ -10,6 +10,7 @@ from werkzeug.exceptions import BadRequestKeyError
 
 from execution.utils import util
 from execution.entities.execution import Execution
+from media import media
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -79,6 +80,10 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
         else:
             return redirect("/")
 
+    # Media-API
+    os.makedirs(os.path.join(app.root_path, 'media/instance'), exist_ok=True)
+    app.register_blueprint(media.api, url_prefix="/media")
+    # Simulation-API
     app.register_blueprint(lobby.api, url_prefix="/api")
     app.register_blueprint(notification.api, url_prefix="/api")
     app.register_blueprint(patient.api, url_prefix="/api/run")
