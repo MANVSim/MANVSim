@@ -48,13 +48,17 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     @app.route("/<path:path>")
     def serve(path):
         """ Registers paths required for serving frontend. """
+        if not app.static_folder:
+            app.static_folder = ""
+
         if path != "" and os.path.exists(app.static_folder + "/" + path):
             return send_from_directory(app.static_folder, path)
         elif path == "/" or path == "":
             return send_from_directory(app.static_folder, "index.html")
         elif path.startswith("/api"):
             return (
-                "API Endpoint not found. Please refactor your request or contact the admin",
+                "API Endpoint not found. Please refactor your request or "
+                "contact the admin",
                 404,
             )
         elif path.startswith("web/"):

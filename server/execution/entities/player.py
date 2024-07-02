@@ -36,7 +36,8 @@ class Player:
             'role': self.role if self.role is None else self.role.name,
             'alerted': self.alerted,
             'activation_delay_sec': self.activation_delay_sec,
-            'location': self.location.id if shallow else self.location.to_dict(),
+            'location': self.location if not self.location else
+            (self.location.id if shallow else self.location.to_dict()),
             'accessible_locations': [location.id if shallow else location.to_dict() for location in
                                      self.accessible_locations],
             'logged_in': self.logged_in

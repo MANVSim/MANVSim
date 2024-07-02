@@ -15,6 +15,10 @@ from models import (
     WebUser,
 )
 
+# pyright: reportCallIssue=false
+# The following statements are excluded from pyright, due to ORM specifics.
+# Additionally, the sample data is not required for production.
+
 
 def insert(data):
     db.session.add(data)

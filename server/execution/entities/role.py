@@ -14,7 +14,7 @@ class Role:
     def __lt__(self, other: 'Role'):
         return self.power < other.power
 
-    def __eq__(self, other: 'Role'):
+    def __eq__(self, other):
         return self.power == other.power
 
     def __repr__(self):
