@@ -1,5 +1,6 @@
-from app import create_app
 from bcrypt import gensalt, hashpw
+
+from app import create_app
 from app_config import db, csrf
 from models import (
     Scenario,
@@ -25,20 +26,25 @@ with create_app(csrf=csrf, db=db).app_context():
     insert(Scenario(id=1, name="Autounfall"))
     insert(Scenario(id=3, name="Gasexplosion"))
 
-    insert(Execution(id=1, name="Übungssimulation \"Busunglück\" 2024", scenario_id=0))
+    insert(Execution(id=1, name="Übungssimulation \"Busunglück\" 2024",
+                     scenario_id=0))
     insert(Execution(id=23456, name="Kreativer Name", scenario_id=1))
 
     insert(Location(id=0, name="RTW", picture_ref="rtw.jpg"))
-    insert(Location(id=1, name="Rucksack", picture_ref="rucksack.jpg", location_id=0))
+    insert(Location(id=1, name="Rucksack",
+                    picture_ref="media/static/rucksack_rot.jpg", location_id=0))
     insert(
         Location(
-            id=2, name="Verbandskasten", picture_ref="Verbandskasten.jpg", location_id=1
+            id=2, name="Verbandskasten",
+            picture_ref="media/static/tasche_rot.jpg",
+            location_id=1
         )
     )
 
     insert(Role(id=0, name="Passant", power=0))
     insert(Role(id=1, name="Rettungsanitäter", short_name="Sani", power=100))
-    insert(Role(id=2, name="Rettungsassistent", short_name="Assistent", power=200))
+    insert(
+        Role(id=2, name="Rettungsassistent", short_name="Assistent", power=200))
     insert(Role(id=3, name="Notarzt", short_name="Arzt", power=300))
 
     insert(
@@ -70,7 +76,8 @@ with create_app(csrf=csrf, db=db).app_context():
 
     insert(
         Resource(
-            id=0, name="Verband", picture_ref="verband.jpg", quantity=10, location_id=2
+            id=0, name="Verband", picture_ref="verband.jpg", quantity=10,
+            location_id=2
         )
     )
     insert(
@@ -93,7 +100,8 @@ with create_app(csrf=csrf, db=db).app_context():
     )
     insert(
         Resource(
-            id=3, name="Knochensäge", picture_ref="saege.jpg", quantity=1, location_id=0
+            id=3, name="Knochensäge", picture_ref="saege.jpg", quantity=1,
+            location_id=0
         )
     )
 
@@ -142,6 +150,7 @@ with create_app(csrf=csrf, db=db).app_context():
     insert(ResourcesNeeded(action_id=1, resource_id=2))
     insert(ResourcesNeeded(action_id=2, resource_id=1))
     insert(ResourcesNeeded(action_id=3, resource_id=3))
-    insert(WebUser(username="Terra", password=hashpw(b"pw1234", gensalt()).decode()))
+    insert(WebUser(username="Terra",
+                   password=hashpw(b"pw1234", gensalt()).decode()))
 
     db.session.commit()

@@ -16,7 +16,7 @@ def setup(app: Flask):
 
 def is_allowed_format(filename: str):
     """ Checks if the filename has an allowed file extension. """
-    return os.path.splitext(filename) in ALLOWED_EXTENSIONS
+    return os.path.splitext(filename)[1] in ALLOWED_EXTENSIONS
 
 
 @api.get("/static/<path:filename>")
@@ -33,7 +33,7 @@ def get_instance_media(filename):
 
 # TODO: Restrict to logged-in scenario creators
 @api.post("/instance/<path:filename>")
-def post_instance_media():
+def post_instance_media(filename):
     """ Allows users to upload images to the server. """
     if "file" not in request.files:
         return "No file part in request", 400
