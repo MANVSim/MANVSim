@@ -66,7 +66,6 @@ class Patient(db.Model):
     # If no location is set, one is generated at runtime
     location: Mapped[int] = mapped_column(
         ForeignKey("location.id"), nullable=True)
-    injuries = db.Column(db.JSON(), nullable=False)
     activity_diagram = db.Column(db.JSON(), nullable=False)
 
 
@@ -85,6 +84,7 @@ class Resource(db.Model):
     quantity: Mapped[int] = mapped_column(nullable=False)
     location_id: Mapped[int] = mapped_column(
         ForeignKey("location.id"), nullable=False)
+    consumable: Mapped[bool] = mapped_column(nullable=False)
 
 
 class Action(db.Model):
@@ -93,7 +93,7 @@ class Action(db.Model):
     required_power: Mapped[int] = mapped_column(nullable=False)
     picture_ref: Mapped[str] = mapped_column(nullable=False)
     duration_secs: Mapped[int] = mapped_column(nullable=False)
-    results = db.Column(db.JSON(), nullable=False)
+    results: Mapped[str] = mapped_column(nullable=False)
 
 
 class ResourcesNeeded(db.Model):

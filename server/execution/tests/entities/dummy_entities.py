@@ -59,14 +59,14 @@ def create_test_execution(pending: bool = True):
                       resources_needed=["Beatmungsgerät"], required_power=300)
     action_4 = Action(id=4, name="Betrachten", picture_ref="placeholder.png", duration_sec=5,
                       results=["Verletzung", "Haut", "Bewusstsein"], resources_needed=[], required_power=200)
-    action_5 = Action(id=4, name="Wunderheilung", picture_ref="placeholder.png", duration_sec=5, results=[],
+    action_5 = Action(id=5, name="Wunderheilung", picture_ref="placeholder.png", duration_sec=5, results=[],
                       resources_needed=[], required_power=400)
 
     # Performed Actions
     p_act_1 = PerformedAction(id="1", time=1715459280000, execution_id=1, action=action_2, resources_used=[res_4],
                               player_tan="123ABC")
 
-    ads = __get_activity_diagrams()
+    ads = get_activity_diagrams()
 
     # Patients
     patient_1 = Patient(id=1, name="Holger Hooligan", injuries="UNDEFINED", activity_diagram=ads[0],
@@ -120,7 +120,7 @@ def create_test_execution(pending: bool = True):
     return execution
 
 
-def __get_activity_diagrams():
+def get_activity_diagrams():
     conditions_s1 = {
         "RR": "120/80mmHg",
         "HF": "80/min",
