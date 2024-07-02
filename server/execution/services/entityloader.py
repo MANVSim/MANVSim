@@ -139,8 +139,6 @@ def __load_role(role_id: int) -> Role | None:
 def __load_players(exec_id: id) -> dict[str, Player] | None:
     """ Loads all players of the given Execution from the database and returns them in a dictionary or None."""
     ps: list[models.Player] = db.session.query(models.Player).filter_by(execution_id=exec_id).all()
-    if not ps:
-        return None
 
     players = dict()
     for p in ps:

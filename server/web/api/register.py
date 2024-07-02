@@ -10,7 +10,7 @@ from werkzeug.exceptions import BadRequest, HTTPException, NotFound
 from string_utils import booleanize
 
 import models
-from app_config import csrf
+from app_config import csrf, db
 from execution.entities.execution import Execution
 from execution.run import active_executions
 from execution.services.entityloader import load_execution
@@ -103,11 +103,16 @@ def get_templates():
 @required("id", int, RequiredValueSource.FORM)
 @admin_only
 def start_scenario(id: int):
-    if load_execution(id):
-        return active_executions[id].to_dict()
+    scenario: models.Scenario = models.Scenario.query.get_or_404(
+        id, f"The Scenario with id {id} does not exist")
 
-    # Failure
-    raise NotFound(f"Execution with id={id} does not exist")
+    execution = models.Execution(
+        scenario_id=scenario.id, name="")  # type: ignore
+    db.session.add(execution)
+    db.session.commit()
+    if not load_execution(execution.id):
+        return {"error": f"Could not load execution {execution.id}"}, 500
+    return {"id": execution.id}
 
 
 @api.get("/execution")
