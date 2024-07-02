@@ -1,11 +1,12 @@
 from flask import Flask
 from flask_login import LoginManager
+
+from administration.web_api import security, login
 from models import WebUser
-from .api.register import api
 
 
 def setup(app: Flask):
-    app.register_blueprint(api, url_prefix="/web")
+    """ Connects each implemented endpoint to flask environment and configures a login manager. """
 
     login_manager = LoginManager()
     login_manager.init_app(app)
@@ -14,4 +15,5 @@ def setup(app: Flask):
     def load_user(username):
         return WebUser.get_by_username(username)
 
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False  # TODO: Remove
+    app.register_blueprint(security.web_api, url_prefix="/web")
+    app.register_blueprint(login.web_api, url_prefix="/web")
