@@ -81,7 +81,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
             return redirect("/")
 
     # Media-API
-    os.makedirs(os.path.join(app.root_path, 'media/instance'), exist_ok=True)
+    media.setup(app)
     app.register_blueprint(media.api, url_prefix="/media")
     # Simulation-API
     app.register_blueprint(lobby.api, url_prefix="/api")

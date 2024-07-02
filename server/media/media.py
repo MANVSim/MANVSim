@@ -1,6 +1,6 @@
 import os
 
-from flask import send_from_directory, request, Blueprint, current_app
+from flask import send_from_directory, request, Blueprint, current_app, Flask
 from werkzeug.utils import secure_filename
 
 
@@ -9,7 +9,13 @@ api = Blueprint("api-media", __name__)
 ALLOWED_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
 
 
-def is_allowed_format(filename):
+def setup(app: Flask):
+    """ Execute this before using the API to ensure full functionality. """
+    os.makedirs(os.path.join(app.root_path, 'media/instance'), exist_ok=True)
+
+
+def is_allowed_format(filename: str):
+    """ Checks if the filename has an allowed file extension. """
     return os.path.splitext(filename) in ALLOWED_EXTENSIONS
 
 
