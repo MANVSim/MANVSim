@@ -15,7 +15,7 @@ from execution.tests.conftest import flask_app
 def _check_role(role: Role | None):
     assert role
 
-    db_role: models.Role = db.session.query(models.Role).filter_by(id=role.id).first()  # type: ignore
+    db_role = db.session.query(models.Role).filter_by(id=role.id).first()
     assert db_role
     assert db_role.name == role.name
     assert db_role.short_name == role.short_name
@@ -55,7 +55,7 @@ def _check_scenario(scenario: Scenario):
 def _check_resource(resource: Resource, location: Location):
     assert resource
 
-    db_resource: models.Resource = db.session.query(models.Resource).filter_by(id=resource.id).first()  # type: ignore
+    db_resource = db.session.query(models.Resource).filter_by(id=resource.id).first()
     assert db_resource
     assert db_resource.name == resource.name
     assert db_resource.picture_ref == resource.picture_ref
@@ -67,7 +67,7 @@ def _check_location(location: Location | None, scenario: Scenario):
     assert location
     assert scenario
 
-    db_location: models.Location = db.session.query(models.Location).filter_by(id=location.id).first()  # type: ignore
+    db_location = db.session.query(models.Location).filter_by(id=location.id).first()
     assert db_location is not None
     assert db_location.name == location.name
     assert db_location.picture_ref == location.picture_ref
@@ -75,7 +75,7 @@ def _check_location(location: Location | None, scenario: Scenario):
     if location.resources:
         map(lambda r: _check_resource(r, location), location.resources)
     if db_location.location_id is not None:
-        db_parent: models.Location = db.session.query(models.Location).filter_by(id=db_location.location_id).first()  # type: ignore
+        db_parent = db.session.query(models.Location).filter_by(id=db_location.location_id).first()
         assert db_parent is not None
         exec_parent = scenario.locations.get(db_parent.id)
         assert exec_parent

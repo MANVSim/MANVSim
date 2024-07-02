@@ -34,7 +34,7 @@ def load_location(location_id: int) -> Location | None:
     Returns Location object or None (in case of an error).
     """
     with current_app.app_context():
-        loc: models.Location = db.session.query(models.Location).filter(models.Location.id == location_id).first()  # type: ignore
+        loc = db.session.query(models.Location).filter(models.Location.id == location_id).first()
         if not loc:
             return None
 
@@ -160,7 +160,7 @@ def load_execution(exec_id: int) -> bool:
     Returns True for success, False otherwise.
     """
     with current_app.app_context():
-        ex: models.Execution = db.session.query(models.Execution).filter_by(id=exec_id).first()  # type: ignore
+        ex = db.session.query(models.Execution).filter_by(id=exec_id).first()
         # If query yields no result, report failure
         if not ex:
             return False
