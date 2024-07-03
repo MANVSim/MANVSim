@@ -1,5 +1,12 @@
 import "./execution.css"
-import { Button, Card, Container, FloatingLabel, Form } from "react-bootstrap"
+import {
+  Button,
+  Card,
+  Collapse,
+  Container,
+  FloatingLabel,
+  Form,
+} from "react-bootstrap"
 import QRCode from "react-qr-code"
 import {
   ActionFunctionArgs,
@@ -113,6 +120,8 @@ export default function Execution(): ReactElement {
     isExecutionData(loaderData) ? loaderData : null,
   )
 
+  const [open, setOpen] = useState(false)
+
   const [tansAvailable, tansUsed] = _.partition(
     execution?.players,
     (player: Player): boolean => player.name === null,
@@ -143,39 +152,47 @@ export default function Execution(): ReactElement {
         <div>
           <h2>Ausführung</h2>
           <p>ID: {executionId}</p>
-          <h3>Neuer Spieler</h3>
-          <CsrfForm method="POST" className="d-grid gap-2">
-            <input type="hidden" name="id" value="new-player" />
-            <FloatingLabel label="Rolle">
-              <Form.Select name="role">
-                {execution.roles.map((role: Role) => {
-                  return (
-                    <option key={role.id} value={role.id}>
-                      {role.name}
-                    </option>
-                  )
-                })}
-              </Form.Select>
-            </FloatingLabel>
-            <FloatingLabel label="Ort">
-              <Form.Select name="location">
-                {execution.locations.map((location: Location) => {
-                  return (
-                    <option key={location.id} value={location.id}>
-                      {location.name}
-                    </option>
-                  )
-                })}
-              </Form.Select>
-            </FloatingLabel>
-            <Button type="submit">Neuen Spieler erstellen</Button>
-          </CsrfForm>
           <h3>Verfügbare TANs:</h3>
-          <Container fluid className="d-flex flex-wrap">
+          <Container fluid className="d-flex flex-wrap my-3">
             {tansAvailable.map((player) => (
               <TanCard key={player.tan} player={player} />
             ))}
           </Container>
+          <div className="d-grid border rounded">
+            <Button className="rounded-top" onClick={() => setOpen(!open)}>
+              {open ? "Schließen" : "Weiteren Spieler hinzufügen"}
+            </Button>
+            <Collapse in={open}>
+              <div>
+                <CsrfForm method="POST" className="d-grid gap-2 p-3">
+                  <input type="hidden" name="id" value="new-player" />
+                  <FloatingLabel label="Rolle">
+                    <Form.Select name="role">
+                      {execution.roles.map((role: Role) => {
+                        return (
+                          <option key={role.id} value={role.id}>
+                            {role.name}
+                          </option>
+                        )
+                      })}
+                    </Form.Select>
+                  </FloatingLabel>
+                  <FloatingLabel label="Ort">
+                    <Form.Select name="location">
+                      {execution.locations.map((location: Location) => {
+                        return (
+                          <option key={location.id} value={location.id}>
+                            {location.name}
+                          </option>
+                        )
+                      })}
+                    </Form.Select>
+                  </FloatingLabel>
+                  <Button type="submit">Neuen Spieler erstellen</Button>
+                </CsrfForm>
+              </div>
+            </Collapse>
+          </div>
           <Status execution={execution} />
           <h3 className="mt-5">Aktive TANs:</h3>
           <table className="table">
