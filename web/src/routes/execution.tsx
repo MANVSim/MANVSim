@@ -86,9 +86,9 @@ function Status({ execution }: { execution: ExecutionData }): ReactElement {
 
   return (
     <div className="mt-5">
+      <h3>Status</h3>
       <CsrfForm method="POST" onChange={(e) => submit(e.currentTarget)}>
         <input type="hidden" name="id" value="change-status" />
-        <Form.Label>Status</Form.Label>
         <Form.Select
           name="new_status"
           value={status}
@@ -152,6 +152,7 @@ export default function Execution(): ReactElement {
         <div>
           <h2>Ausführung</h2>
           <p>ID: {executionId}</p>
+          <Status execution={execution} />
           <h3>Verfügbare TANs:</h3>
           <Container fluid className="d-flex flex-wrap my-3">
             {tansAvailable.map((player) => (
@@ -193,7 +194,6 @@ export default function Execution(): ReactElement {
               </div>
             </Collapse>
           </div>
-          <Status execution={execution} />
           <h3 className="mt-5">Aktive TANs:</h3>
           <table className="table">
             <thead>
