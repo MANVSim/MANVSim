@@ -2,7 +2,6 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 
 from app_config import csrf
-from execution.api.location import location_arrive
 from execution.utils import util
 
 api = Blueprint("api-patient", __name__)
@@ -29,12 +28,11 @@ def get_patient():
             return (f"Player already set to another location: "
                     f"{player.location.id}"), 405
 
-        form["location_id"] = patient.location.id
-        redirect = location_arrive()
+        player.location = patient.location
+        player.location.add_locations(player.accessible_locations)
 
         return {
-            "player_location": (redirect["player_location"] if
-                                isinstance(redirect, dict) else redirect),
+            "player_location": player.location.to_dict(),
             "patient": patient.to_dict(shallow=False)
         }
     except KeyError:

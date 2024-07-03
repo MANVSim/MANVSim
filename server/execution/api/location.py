@@ -71,29 +71,6 @@ def get_location_out_of_location():
         return "Unable to access runtime object. A timeout-error occurred.", 409
 
 
-@api.post("/location/arrive")
-@jwt_required()
-@csrf.exempt
-def location_arrive():
-    try:
-        execution, player = util.get_execution_and_player()
-        form = request.get_json()
-        location_id = int(form["location_id"])
-        scenario = execution.scenario
-        location = scenario.locations[location_id]
-
-        if player.location is not None:
-            return (f"Player already set to another location: "
-                    f"{player.location.id}"), 405
-
-        player.location = location
-        player.location.add_locations(player.accessible_locations)
-
-        return {"player_location": player.location.to_dict()}
-    except KeyError:
-        return "Missing or invalid request parameter detected.", 400
-
-
 @api.post("/location/leave")
 @jwt_required()
 @csrf.exempt
