@@ -120,11 +120,23 @@ def start_scenario(id: int):
 
 @api.get("/execution")
 @required("id", int, RequiredValueSource.ARGS)
-# @admin_only
-@csrf.exempt
+@admin_only
 def get_execution_status(id: int):
     execution = try_get_execution(id)
-    return execution.to_dict()
+    return {
+        "status": execution.status.value,
+        "players": [{
+            "tan": player.tan,
+            "name": player.name,
+            "alerted": player.alerted,
+            "logged_in": player.logged_in
+        } for player in execution.players.values()],
+        "roles": [{
+            "id": x.id,
+            "name": x.name
+        } for x in models.Role.query]  # TODO: Don't use DB
+        # TODO: Send locations
+    }
 
 
 @api.patch("/execution")
@@ -159,7 +171,8 @@ def change_player_status(id: int, tan: str, alerted: bool):
 
 @api.post("/execution")
 @required("id", int, RequiredValueSource.ARGS)
-def add_new_player(id: int):
+@required("role", int, RequiredValueSource.FORM)
+def add_new_player(id: int, role: int):
     execution = try_get_execution(id)
-    # TODO: Create new player
+    execution.add_new_player(role)
     return Response(status=200)

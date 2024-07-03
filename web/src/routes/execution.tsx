@@ -20,6 +20,7 @@ import {
   ExecutionData,
   isExecutionData,
   ExecutionStatusEnum,
+  Role,
 } from "../types"
 import CsrfForm from "../components/CsrfForm"
 import { useSubmit } from "react-router-dom"
@@ -81,14 +82,14 @@ function Status({ execution }: { execution: ExecutionData }): ReactElement {
           onChange={(e) =>
             setStatus(
               ExecutionStatusEnum.safeParse(e.currentTarget.value).data ||
-                "UNKNOWN",
+                "unknown",
             )
           }
         >
           <option value="PENDING">Vorbereitung</option>
           <option value="RUNNING">Laufend</option>
           <option value="FINISHED">Beendet</option>
-          {execution.status === "UNKNOWN" && (
+          {execution.status === "unknown" && (
             <option value="UNKNOWN" disabled>
               Unbekannt
             </option>
@@ -108,7 +109,7 @@ export default function Execution(): ReactElement {
 
   const [tansAvailable, tansUsed] = _.partition(
     execution?.players,
-    (): boolean => true, // TODO: Determine if TAN is used or not
+    (player: Player): boolean => player.name !== null,
   )
 
   const { executionId } = useParams<{ executionId: string }>()
@@ -135,10 +136,19 @@ export default function Execution(): ReactElement {
       {execution ? (
         <div>
           <h2>Ausführung</h2>
-          <p>ID: {execution.id}</p>
+          <p>ID: {executionId}</p>
           <h3>Verfügbare TANs:</h3>
           <CsrfForm method="POST">
             <input type="hidden" name="id" value="new-player" />
+            <Form.Select name="role">
+              {execution.roles.map((role: Role) => {
+                return (
+                  <option key={role.id} value={role.id}>
+                    {role.name}
+                  </option>
+                )
+              })}
+            </Form.Select>
             <Button type="submit">Neuen Spieler erstellen</Button>
           </CsrfForm>
           <Container fluid className="d-flex flex-wrap">

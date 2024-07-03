@@ -3,6 +3,8 @@ from enum import Enum
 
 from execution.entities.player import Player
 from execution.entities.scenario import Scenario
+from app_config import db
+import models
 
 
 class Execution:
@@ -49,3 +51,11 @@ class Execution:
         only the object reference in form of a unique identifier is included.
         """
         return json.dumps(self.to_dict(shallow))
+
+    def add_new_player(self, role: int):
+        from utils.tans import uniques
+        tan = str(uniques(1)[0])
+        db.session.add(models.Player(tan=tan, execution_id=self.id,
+                                     location_id=0, role_id=role, alerted=False, activation_delay_sec=0))  # pyright: ignore [reportCallIssue]
+        db.session.commit()
+        self.players[tan] = Player(tan, None, False, 0, None, set(), None)
