@@ -1,4 +1,4 @@
-from ..event import Event
+from event_logging.event import Event
 
 
 def test_factory_methods():
