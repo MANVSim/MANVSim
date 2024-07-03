@@ -86,12 +86,12 @@ def get_templates():
         result[scenario_id] = IntermediateResult(
             executions[0].name, set(execution.id for execution in executions))
 
-    for scenario in models.Scenario.query:
-        executions = set(e.id for e in scenario.executions)
-        try:
-            result[scenario.id].executions.update(executions)
-        except KeyError:
-            result[scenario.id] = IntermediateResult(scenario.name, executions)
+    # for scenario in models.Scenario.query:
+    #     executions = set(e.id for e in scenario.executions)
+    #     try:
+    #         result[scenario.id].executions.update(executions)
+    #     except KeyError:
+    #         result[scenario.id] = IntermediateResult(scenario.name, executions)
 
     return [
         {
