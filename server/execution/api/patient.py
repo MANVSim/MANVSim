@@ -32,7 +32,7 @@ def get_patient():
 
         player.location.add_locations(player.accessible_locations)
 
-        Event.patient_arrive(execution_id=execution.id,
+        Event.location_arrive(execution_id=execution.id,
                              time=time.current_time_s(),
                              player=player.tan, patient_id=patient.id).log()
 
@@ -69,10 +69,10 @@ def leave_patient_location():
 
         if player.location.leave_location(player.accessible_locations):
 
-            Event.patient_leave(execution_id=exec.id,
+            Event.location_leave(execution_id=exec.id,
                                 time=time.current_time_s(),
                                 player=player.tan,
-                                patient_id=player.location.id).log()
+                                leave_location_id=player.location.id).log()
 
             player.location = None
         else:

@@ -16,9 +16,9 @@ class Event:
         EXECUTION_STARTED = "execution_started"
         EXECUTION_FINISHED = "execution_finished"
         LOCATION_TAKE_FROM = "location_take_from"
+        LOCATION_ARRIVE = "patient_arrive"
         LOCATION_LEAVE = "location_leave"
-        PATIENT_ARRIVE = "patient_arrive"
-        PATIENT_LEAVE = "patient_leave"
+        PLAYER_ALERTED = "player_alerted"
 
     def __init__(self, execution: int, type: Type, time: int, data):
         self.execution = execution
@@ -74,23 +74,22 @@ class Event:
         })
 
     @staticmethod
-    def patient_arrive(execution_id: int, time: int, player: str, patient_id: int):
+    def location_arrive(execution_id: int, time: int, player: str, patient_id: int):
         """
         Creates an event representing the action of a player arriving at a patient.
         """
-        return Event(execution=execution_id, type=Event.Type.PATIENT_ARRIVE, time=time, data={
+        return Event(execution=execution_id, type=Event.Type.LOCATION_ARRIVE, time=time, data={
             "player": player,
             "patient_id": patient_id
         })
 
     @staticmethod
-    def patient_leave(execution_id: int, time: int, player: str, patient_id: int):
+    def player_alerted(execution_id: int, time: int, player: str):
         """
-        Creates an event representing the action of a player leaving a patient.
+        Creates an event representing the alerting of a player.
         """
-        return Event(execution=execution_id, type=Event.Type.PATIENT_LEAVE, time=time, data={
+        return Event(execution=execution_id, type=Event.Type.PLAYER_ALERTED, time=time, data={
             "player": player,
-            "patient_id": patient_id
         })
 
     def to_dict(self):
