@@ -36,6 +36,7 @@ function TemplateEntry({
           <input type="hidden" name="id" value={id} />
           <Button type="submit">Neue Ausführung</Button>
         </CsrfForm>
+        <hr />
         {executions.length ? (
           executions.map((execution: number) => (
             <ExecutionEntry key={execution} execution={execution} />
