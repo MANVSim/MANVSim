@@ -16,7 +16,8 @@ def get_all_toplevel_location():
         """ Returns all locations stored in the scenario. """
         execution, _ = util.get_execution_and_player()
         return {
-            "locations": [location.to_dict() for location in list(execution.scenario.locations.values())]
+            "locations": [location.to_dict() for location
+                          in list(execution.scenario.locations.values())]
         }
     except KeyError:
         return f"Missing or invalid request parameter detected.", 400
@@ -27,10 +28,11 @@ def get_all_toplevel_location():
 @csrf.exempt
 def get_location_out_of_location():
     """
-    Releases a sub location of the players current location. Afterward the location is an accessible location for the
-    player.
+    Releases a sub location of the players current location. Afterward the
+    location is an accessible location for the player.
     Required Request Param:
-        required_loc_id:    location identifier that shall be added to the players inventory
+        required_loc_id:    location identifier that shall be added to the
+                            players inventory
     """
     args: dict = request.get_json()
     try:
@@ -42,11 +44,13 @@ def get_location_out_of_location():
         # locate required parent location
         from_location: Location = execution.scenario.locations[from_loc_id]
         if from_location is None:
-            return "From-Location not found. Update your current location-access.", 404
+            return ("From-Location not found. Update your current "
+                    "location-access."), 404
 
         parent_location, required_location = from_location.get_child_location_by_id(required_loc_id)
         if required_location is None:
-            return "Take-Location not found. Update your current location-access.", 404
+            return ("Take-Location not found. Update your current "
+                    "location-access."), 404
 
         assert parent_location  # pyright
 
@@ -67,11 +71,37 @@ def get_location_out_of_location():
         return "Unable to access runtime object. A timeout-error occurred.", 409
 
 
+@api.post("/location/arrive")
+@jwt_required()
+@csrf.exempt
+def location_arrive():
+    try:
+        execution, player = util.get_execution_and_player()
+        form = request.get_json()
+        location_id = int(form["location_id"])
+        scenario = execution.scenario
+        location = scenario.locations[location_id]
+
+        if player.location is not None:
+            return (f"Player already set to another location: "
+                    f"{player.location.id}"), 405
+
+        player.location = location
+        player.location.add_locations(player.accessible_locations)
+
+        return {"player_location": player.location.to_dict()}
+    except KeyError:
+        return "Missing or invalid request parameter detected.", 400
+
+
 @api.post("/location/leave")
 @jwt_required()
 @csrf.exempt
 def leave_location():
-    """ Leaves a location. Required for the initial arrival. The players inventory will not be edited. """
+    """
+    Leaves a location. Required for the initial arrival. The players
+    inventory will not be edited.
+    """
     _, player = util.get_execution_and_player()
 
     if player.location is None:

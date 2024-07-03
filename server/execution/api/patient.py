@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 
 from app_config import csrf
+from execution.api.location import location_arrive
 from execution.utils import util
 
 api = Blueprint("api-patient", __name__)
@@ -12,8 +13,10 @@ api = Blueprint("api-patient", __name__)
 @csrf.exempt
 def get_patient():
     """
-    Assigns the requesting player to the patients location and makes the players inventory accessible, iff the player
-    has no current location assigned. Further it returns the updated player location and the patients' data.
+    Assigns the requesting player to the patients location and makes the players
+    inventory accessible, iff the player
+    has no current location assigned. Further it returns the updated player
+    location and the patients' data.
     """
     try:
         execution, player = util.get_execution_and_player()
@@ -23,15 +26,15 @@ def get_patient():
         patient = scenario.patients[patient_id]
 
         if player.location is not None:
-            return f"Player already set to another location: {player.location.id}", 405
+            return (f"Player already set to another location: "
+                    f"{player.location.id}"), 405
 
-        # Assign player to patient location
-        player.location = patient.location
-
-        player.location.add_locations(player.accessible_locations)
+        form["location_id"] = patient.location.id
+        redirect = location_arrive()
 
         return {
-            "player_location": player.location.to_dict(),
+            "player_location": (redirect["player_location"] if
+                                isinstance(redirect, dict) else redirect),
             "patient": patient.to_dict(shallow=False)
         }
     except KeyError:
@@ -47,24 +50,5 @@ def get_all_patient():
         return {
             "tans": list(execution.scenario.patients.keys())
         }
-    except KeyError:
-        return "Missing or invalid request parameter detected.", 400
-
-
-@api.post("/patient/leave")
-@jwt_required()
-@csrf.exempt
-def leave_patient_location():
-    _, player = util.get_execution_and_player()
-
-    try:
-        if player.location is None:
-            return "Player is not assigned to any patient/location", 405
-
-        if player.location.leave_location(player.accessible_locations):
-            player.location = None
-        else:
-            return "Unable to access runtime object. A timeout-error occurred.", 409
-
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
