@@ -1,0 +1,64 @@
+openapi: 3.0.1
+
+info:
+  title: MANVSim Media API
+  description: Specification of the MANVSim servers' media API, that provides access to standard and user-uploaded static media files.
+  version: 0.1.0
+
+paths:
+
+  /media/static/{filename}:
+    get:
+      summary: Get predefined static media files
+      description: This endpoint retrieves **predefined** media files.
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Media file in format `{.png, .jpg, .jpeg, .gif, .webp}`
+        '404':
+          description: File not found.
+
+
+  /media/instance/{filename}:
+    get:
+      summary: Get user-uploaded static media files
+      description: This endpoint retrieves **user-uploaded** media files.
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Media file in format `{.png, .jpg, .jpeg, .gif, .webp}`
+        '404':
+          description: File not found.
+    post:
+      summary: Allows users to upload media files to the server
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Allowed extensions `{.png, .jpg, .jpeg, .gif, .webp}`
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: File uploaded successfully
+        '400':
+          description: No file part in request or No file provided or Forbidden file format
