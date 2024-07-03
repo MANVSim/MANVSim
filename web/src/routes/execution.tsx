@@ -64,6 +64,8 @@ function PlayerStatus({ player }: { player: Player }): ReactElement {
         </CsrfForm>
       </td>
       <td>{player.name}</td>
+      <td>{player.role?.name ?? "Unbekannt"}</td>
+      <td>{player.location?.name ?? "Unbekannt"}</td>
     </tr>
   )
 }
@@ -182,6 +184,8 @@ export default function Execution(): ReactElement {
                 <th>TAN</th>
                 <th>Status</th>
                 <th>Name</th>
+                <th>Rolle</th>
+                <th>Ort</th>
               </tr>
             </thead>
             <tbody>
