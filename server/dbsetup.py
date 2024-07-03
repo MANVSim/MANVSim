@@ -15,7 +15,7 @@ from models import (
     ResourcesNeeded,
     WebUser,
 )
-from vars import DELIMITER
+from vars import RESULT_DELIMITER
 
 
 def __create_resources():
@@ -68,7 +68,7 @@ def __create_actions():
                   picture_ref="pflaster.jpg", results="", duration_secs=120))
 
     insert(Action(id=4, name="EKG schreiben", picture_ref="placeholder.png",
-                  duration_secs=2, results=f"EKG{DELIMITER}12-Kanal-EKG",
+                  duration_secs=2, results=f"EKG{RESULT_DELIMITER}12-Kanal-EKG",
                   required_power=200))
     insert(Action(id=5, name="Pflaster kleben", picture_ref="placeholder.png",
                   duration_secs=10, results="", required_power=300))
@@ -76,7 +76,7 @@ def __create_actions():
                   duration_secs=300, results="", required_power=200))
     insert(Action(id=7, name="Betrachten", picture_ref="placeholder.png",
                   duration_secs=5, required_power=100,
-                  results=f"Verletzung{DELIMITER}Haut{DELIMITER}Bewusstsein"))
+                  results=f"Verletzung{RESULT_DELIMITER}Haut{RESULT_DELIMITER}Bewusstsein"))
     insert(Action(id=8, name="Wunderheilung", picture_ref="placeholder.png",
                   duration_secs=5, results="", required_power=300))
 

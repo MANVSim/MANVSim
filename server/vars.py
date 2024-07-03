@@ -1,7 +1,7 @@
 import os
 
 ACQUIRE_TIMEOUT = 3  # The timeout used to time out a locking-request
-DELIMITER = ","  # delimiter to parse csv strings
+RESULT_DELIMITER = ","  # delimiter to parse csv strings
 
 # -- TESTING
 

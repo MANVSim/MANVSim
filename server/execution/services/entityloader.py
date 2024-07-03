@@ -14,7 +14,7 @@ from execution.entities.resource import Resource
 from execution.entities.role import Role
 from execution.entities.scenario import Scenario
 from execution.entities.stategraphs.activity_diagram import ActivityDiagram
-from vars import DELIMITER
+from vars import RESULT_DELIMITER
 
 
 def __load_resources(location_id: int) -> list[Resource]:
@@ -117,7 +117,7 @@ def __load_actions() -> dict[int, Action] | None:
     for ac in acs:
         resources_needed = __get_needed_resource_names(ac.id)
         actions[ac.id] = Action(id=ac.id, name=ac.name,
-                                results=ac.results.split(DELIMITER),
+                                results=ac.results.split(RESULT_DELIMITER),
                                 picture_ref=ac.picture_ref,
                                 duration_sec=ac.duration_secs,
                                 resources_needed=resources_needed,
