@@ -134,8 +134,11 @@ def get_execution_status(id: int):
         "roles": [{
             "id": x.id,
             "name": x.name
-        } for x in models.Role.query]  # TODO: Don't use DB
-        # TODO: Send locations
+        } for x in models.Role.query],  # TODO: Don't use DB
+        "locations": [{
+            "id": x.id,
+            "name": x.name
+        } for x in models.Location.query.where(models.Location.location_id.is_(None))]
     }
 
 
@@ -172,7 +175,8 @@ def change_player_status(id: int, tan: str, alerted: bool):
 @api.post("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 @required("role", int, RequiredValueSource.FORM)
-def add_new_player(id: int, role: int):
+@required("location", int, RequiredValueSource.FORM)
+def add_new_player(id: int, role: int, location: int):
     execution = try_get_execution(id)
-    execution.add_new_player(role)
+    execution.add_new_player(role, location)
     return Response(status=200)

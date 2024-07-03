@@ -1,4 +1,5 @@
-import { Button, Card, Container, Form } from "react-bootstrap"
+import "./execution.css"
+import { Button, Card, Container, FloatingLabel, Form } from "react-bootstrap"
 import QRCode from "react-qr-code"
 import {
   ActionFunctionArgs,
@@ -21,6 +22,7 @@ import {
   isExecutionData,
   ExecutionStatusEnum,
   Role,
+  Location,
 } from "../types"
 import CsrfForm from "../components/CsrfForm"
 import { useSubmit } from "react-router-dom"
@@ -28,7 +30,7 @@ import { useSubmit } from "react-router-dom"
 function TanCard({ tan }: { tan: string }): ReactElement {
   return (
     <Card className="d-flex m-1">
-      <QRCode value={tan} className="align-self-center p-3" />
+      <QRCode value={tan} className="align-self-center p-3 w-100" />
       <Card.Body>
         <Card.Title className="text-center">{tan}</Card.Title>
       </Card.Body>
@@ -109,7 +111,7 @@ export default function Execution(): ReactElement {
 
   const [tansAvailable, tansUsed] = _.partition(
     execution?.players,
-    (player: Player): boolean => player.name !== null,
+    (player: Player): boolean => player.name === null,
   )
 
   const { executionId } = useParams<{ executionId: string }>()
@@ -137,20 +139,34 @@ export default function Execution(): ReactElement {
         <div>
           <h2>Ausführung</h2>
           <p>ID: {executionId}</p>
-          <h3>Verfügbare TANs:</h3>
-          <CsrfForm method="POST">
+          <h3>Neuer Spieler</h3>
+          <CsrfForm method="POST" className="d-grid gap-2">
             <input type="hidden" name="id" value="new-player" />
-            <Form.Select name="role">
-              {execution.roles.map((role: Role) => {
-                return (
-                  <option key={role.id} value={role.id}>
-                    {role.name}
-                  </option>
-                )
-              })}
-            </Form.Select>
+            <FloatingLabel label="Rolle">
+              <Form.Select name="role">
+                {execution.roles.map((role: Role) => {
+                  return (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  )
+                })}
+              </Form.Select>
+            </FloatingLabel>
+            <FloatingLabel label="Ort">
+              <Form.Select name="location">
+                {execution.locations.map((location: Location) => {
+                  return (
+                    <option key={location.id} value={location.id}>
+                      {location.name}
+                    </option>
+                  )
+                })}
+              </Form.Select>
+            </FloatingLabel>
             <Button type="submit">Neuen Spieler erstellen</Button>
           </CsrfForm>
+          <h3>Verfügbare TANs:</h3>
           <Container fluid className="d-flex flex-wrap">
             {tansAvailable.map((player) => (
               <TanCard key={player.tan} tan={player.tan} />

@@ -103,10 +103,18 @@ const role = z.object({
 
 export type Role = z.infer<typeof role>
 
+const location = z.object({
+  id: z.number(),
+  name: z.string(),
+})
+
+export type Location = z.infer<typeof role>
+
 const executionData = z.object({
   players: z.array(player),
   status: ExecutionStatusEnum,
   roles: z.array(role),
+  locations: z.array(location),
 })
 
 export type ExecutionData = z.infer<typeof executionData>
