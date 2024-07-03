@@ -85,7 +85,7 @@ function Status({ execution }: { execution: ExecutionData }): ReactElement {
   }, [execution])
 
   return (
-    <div className="mt-5">
+    <div>
       <h3>Status</h3>
       <CsrfForm method="POST" onChange={(e) => submit(e.currentTarget)}>
         <input type="hidden" name="id" value="change-status" />
