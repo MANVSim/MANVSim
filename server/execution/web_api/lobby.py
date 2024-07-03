@@ -3,10 +3,12 @@ from string_utils import booleanize
 from werkzeug.exceptions import NotFound, BadRequest
 
 from app_config import csrf
+from event_logging.event import Event
 from execution import run
 from execution.entities.execution import Execution
 from execution.services import entityloader
 from execution.utils.util import try_get_execution
+from utils import time
 from utils.decorator import required, admin_only, RequiredValueSource
 
 web_api = Blueprint("web_api-lobby", __name__)
@@ -57,5 +59,9 @@ def change_player_status(id: int, tan: str, alerted: bool):
     except KeyError:
         raise NotFound(
             f"Player with TAN '{tan}' does not exist for execution with id {id}")
+    if alerted:
+        Event.player_alerted(execution_id=execution.id,
+                             time=time.current_time_s(),
+                             player=player.tan).log()
     player.alerted = not alerted
     return Response(status=200)
