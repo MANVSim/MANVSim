@@ -67,7 +67,15 @@ def login(username: str, password: str):
 @api.get("/templates")
 @admin_only
 def get_templates():
-    result = dict()
+    class IntermediateResult:
+        name: str
+        executions: set[int]
+
+        def __init__(self, name: str, executions: set[int]) -> None:
+            self.name = name
+            self.executions = executions
+
+    result: dict[int, IntermediateResult] = dict()
 
     def key_func(execution: Execution) -> int:
         return execution.scenario.id
@@ -75,26 +83,21 @@ def get_templates():
     active = sorted(active_executions.values(), key=key_func)
     for scenario_id, execution_iterator in groupby(active, key=key_func):
         executions = list(execution_iterator)
-        result[scenario_id] = {
-            "name": executions[0].name,
-            "executions": [execution.id for execution in executions]
-        }
+        result[scenario_id] = IntermediateResult(
+            executions[0].name, set(execution.id for execution in executions))
 
     for scenario in models.Scenario.query:
-        executions = [e.id for e in scenario.executions]
+        executions = set(e.id for e in scenario.executions)
         try:
-            result[scenario.id]["executions"] += executions
+            result[scenario.id].executions.update(executions)
         except KeyError:
-            result[scenario.id] = {
-                "name": scenario.name,
-                "executions": executions
-            }
+            result[scenario.id] = IntermediateResult(scenario.name, executions)
 
     return [
         {
             "id": id,
-            "name": x["name"],
-            "executions": x["executions"]
+            "name": x.name,
+            "executions": list(x.executions)
         } for id, x in result.items()
     ]
 
