@@ -11,7 +11,8 @@ ALLOWED_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
 
 def setup(app: Flask):
     """ Execute this before using the API to ensure full functionality. """
-    os.makedirs(os.path.join(app.root_path, 'media/instance'), exist_ok=True)
+    os.makedirs(os.path.join(app.root_path, "media/instance"), exist_ok=True)
+    app.register_blueprint(api, url_prefix="/media")
 
 
 def is_allowed_format(filename: str):

@@ -10,7 +10,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from werkzeug.exceptions import HTTPException
 
-from media import media
 from vars import LOG_LEVEL
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=LOG_LEVEL)
@@ -26,6 +25,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     import scenario.web_api.setup
     import administration.web_api.setup
     import execution.api.setup
+    import media.media_api
 
     app = Flask(__name__, static_folder="../web/dist")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
@@ -41,7 +41,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     scenario.web_api.setup.setup(app)
     administration.web_api.setup.setup(app)
     execution.api.setup.setup(app)
-    media.setup()
+    media.media_api.setup(app)
 
     CORS(app, resources={r"/*": {"origins": "*"}})
 
