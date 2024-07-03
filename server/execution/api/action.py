@@ -45,7 +45,7 @@ def perform_action():
         patient = execution.scenario.patients[patient_id]
 
         # check permission and parameters
-        if player.role.power < action.required_power:
+        if not player.role or player.role.power < action.required_power:
             return "Missing right detected. You need a higher role to perform that action", 403
 
         if len(resource_ids_used) < len(action.resources_needed):
@@ -54,7 +54,7 @@ def perform_action():
         # get objects from ids
         resources_used = {}
         for res_id in resource_ids_used:
-            loc, res = player.location.get_resource_by_id(res_id)
+            loc, res = player.location.get_resource_by_id(res_id) if player.location else (None, None)
             if res is None:
                 return "Unable to identify resource. Please update your location-access.", 404
             if loc not in resources_used.keys():

@@ -5,10 +5,7 @@ from typing import Any, Callable
 from flask import abort, request
 from flask_api import status
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from werkzeug.exceptions import BadRequest, NotFound
-
-from execution.entities.execution import Execution
-from execution.run import active_executions
+from werkzeug.exceptions import BadRequest
 
 
 class RequiredValueSource(StrEnum):
@@ -74,19 +71,3 @@ def admin_only(func: Callable):
         return func(*args, **kwargs)
 
     return wrapper
-
-
-def try_get_execution(id: int) -> Execution:
-    """
-    Tries to return the execution from the runtime. If the execution does not exist a 404 Error is raised.
-
-    :param id: ID of the execution
-    :return: The execution object
-    :raises NotFound: Error when execution does not exist
-    """
-    try:
-        execution = active_executions[id]
-    except KeyError:
-        raise NotFound(f"Execution with id {id} does not exist")
-
-    return execution

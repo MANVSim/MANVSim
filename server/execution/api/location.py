@@ -16,7 +16,7 @@ def get_all_toplevel_location():
         """ Returns all locations stored in the scenario. """
         execution, _ = util.get_execution_and_player()
         return {
-            "locations": [location.to_dict() for location in list(execution.scenario.sub_locations.values())]
+            "locations": [location.to_dict() for location in list(execution.scenario.locations.values())]
         }
     except KeyError:
         return f"Missing or invalid request parameter detected.", 400
@@ -40,7 +40,7 @@ def get_location_out_of_location():
         from_loc_id = int(args["from_location_id"])
 
         # locate required parent location
-        from_location: Location = execution.scenario[from_loc_id]
+        from_location: Location = execution.scenario.locations[from_loc_id]
         if from_location is None:
             return "From-Location not found. Update your current location-access.", 404
 
@@ -48,13 +48,17 @@ def get_location_out_of_location():
         if required_location is None:
             return "Take-Location not found. Update your current location-access.", 404
 
+        assert parent_location  # pyright
+
         # no lock needed, because only the requesting player can edit its own inventory
         player.accessible_locations.add(required_location)
         parent_location.remove_location_by_id(required_location.id)
-        # add location back to first children of the tree, to make it reachable for the leave-operation.
-        player.location.add_locations({required_location})
-
-        return {"player_location": player.location.to_dict()}
+        if player.location:
+            # add location back to first children of the tree, to make it reachable for the leave-operation.
+            player.location.add_locations({required_location})
+            return {"player_location": player.location.to_dict()}
+        else:
+            return "Invalid state detected. Player has no location assigned", 418
 
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
