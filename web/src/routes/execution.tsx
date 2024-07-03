@@ -27,12 +27,14 @@ import {
 import CsrfForm from "../components/CsrfForm"
 import { useSubmit } from "react-router-dom"
 
-function TanCard({ tan }: { tan: string }): ReactElement {
+function TanCard({ player }: { player: Player }): ReactElement {
   return (
     <Card className="d-flex m-1">
-      <QRCode value={tan} className="align-self-center p-3 w-100" />
+      <QRCode value={player.tan} className="align-self-center p-3 w-100" />
       <Card.Body>
-        <Card.Title className="text-center">{tan}</Card.Title>
+        <Card.Title className="text-center">{player.tan}</Card.Title>
+        <div>Rolle: {player.role?.name ?? "Unbekannt"}</div>
+        <div>Ort: {player.location?.name ?? "Unbekannt"}</div>
       </Card.Body>
     </Card>
   )
@@ -169,7 +171,7 @@ export default function Execution(): ReactElement {
           <h3>Verfügbare TANs:</h3>
           <Container fluid className="d-flex flex-wrap">
             {tansAvailable.map((player) => (
-              <TanCard key={player.tan} tan={player.tan} />
+              <TanCard key={player.tan} player={player} />
             ))}
           </Container>
           <Status execution={execution} />

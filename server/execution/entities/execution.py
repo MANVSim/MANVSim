@@ -55,10 +55,13 @@ class Execution:
     def add_new_player(self, role: int, location: int):
         from utils.tans import uniques
         from execution.run import register_player
+        from execution.services.entityloader import load_location
+        from execution.services.entityloader import load_role
         tan = str(uniques(1)[0])
         db.session.add(models.Player(tan=tan, execution_id=self.id,
                                      location_id=0, role_id=role, alerted=False, activation_delay_sec=0))  # pyright: ignore [reportCallIssue]
         db.session.commit()
-        new_player = Player(tan, None, False, 0, None, set(), None)
+        new_player = Player(tan, None, False, 0,
+                            load_location(location), set(), load_role(role))
         self.players[tan] = new_player
-        register_player(self.id, [])
+        register_player(self.id, [new_player])

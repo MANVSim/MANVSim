@@ -129,7 +129,9 @@ def get_execution_status(id: int):
             "tan": player.tan,
             "name": player.name,
             "alerted": player.alerted,
-            "logged_in": player.logged_in
+            "logged_in": player.logged_in,
+            "role": {"id": player.role.id, "name": player.role.name} if player.role else None,
+            "location": {"id": player.location.id, "name": player.location.name} if player.location else None
         } for player in execution.players.values()],
         "roles": [{
             "id": x.id,

@@ -17,11 +17,13 @@ from execution.entities.stategraphs.activity_diagram import ActivityDiagram
 
 def __load_resources(location_id: int) -> list[Resource]:
     """ Creates a list of resources located at the given location. """
-    rs = db.session.query(models.Resource).filter(models.Resource.location_id == location_id).all()
+    rs = db.session.query(models.Resource).filter(
+        models.Resource.location_id == location_id).all()
 
     resources = []
     for r in rs:
-        resources.append(Resource(id=r.id, name=r.name, quantity=r.quantity, picture_ref=r.picture_ref))
+        resources.append(Resource(id=r.id, name=r.name,
+                         quantity=r.quantity, picture_ref=r.picture_ref))
 
     return resources
 
@@ -33,13 +35,15 @@ def load_location(location_id: int) -> Location | None:
     Returns Location object or None (in case of an error).
     """
     with create_app(csrf, db).app_context():
-        loc: models.Location = db.session.query(models.Location).filter(models.Location.id == location_id).first()
+        loc: models.Location = db.session.query(models.Location).filter(
+            models.Location.id == location_id).first()
         if not loc:
             return None
 
         resources = __load_resources(loc.id)
 
-        children_locs = db.session.query(models.Location).filter(models.Location.location_id == loc.id).all()
+        children_locs = db.session.query(models.Location).filter(
+            models.Location.location_id == loc.id).all()
         sub_locs = set()
         for child in children_locs:
             sub_locs.add(load_location(child.id))
@@ -52,12 +56,14 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
     """ Loads all patients associated with the given scenario from the database and returns them in a dictionary. """
     patient_ids = [participation.patient_id for participation in
                    db.session.query(models.TakesPartIn).filter(models.TakesPartIn.scenario_id == scenario_id).all()]
-    ps = db.session.query(models.Patient).filter(models.Patient.id.in_(patient_ids)).all()
+    ps = db.session.query(models.Patient).filter(
+        models.Patient.id.in_(patient_ids)).all()
     patients = dict()
     for p in ps:
         p_loc = p.location
         if p_loc is None:
-            p_loc = Location(id=hash(p), name=f"Patient with ID {p.id}", picture_ref=None, resources=[])
+            p_loc = Location(
+                id=hash(p), name=f"Patient with ID {p.id}", picture_ref=None, resources=[])
         else:
             p_loc = load_location(p.location)
 
@@ -83,7 +89,8 @@ def __load_actions() -> dict[int, Action] | None:
         """ Returns a list of the names of all resources needed for the given action. """
         resource_ids = [r.resource_id for r in
                         db.session.query(models.ResourcesNeeded).filter_by(action_id=action_id).all()]
-        resources = db.session.query(models.Resource).filter(models.Resource.id.in_(resource_ids)).all()
+        resources = db.session.query(models.Resource).filter(
+            models.Resource.id.in_(resource_ids)).all()
         return [r.name for r in resources]
 
     acs = db.session.query(models.Action).all()
@@ -103,7 +110,8 @@ def __load_actions() -> dict[int, Action] | None:
 def __load_scenario(scenario_id: int) -> Scenario | None:
     """ Loads the scenario with the given id from the database and returns it or None (in case of an error). """
     # Load scenario data
-    scenario = db.session.query(models.Scenario).filter_by(id=scenario_id).first()
+    scenario = db.session.query(
+        models.Scenario).filter_by(id=scenario_id).first()
     if not scenario:
         return None
 
@@ -129,7 +137,8 @@ def __load_scenario(scenario_id: int) -> Scenario | None:
 
 def __load_role(role_id: int) -> Role | None:
     """ Loads and returns the a Role object for a given role ID. """
-    role = db.session.query(models.Role).filter(models.Role.id == role_id).first()
+    role = db.session.query(models.Role).filter(
+        models.Role.id == role_id).first()
     if not role:
         return None
 
@@ -138,7 +147,8 @@ def __load_role(role_id: int) -> Role | None:
 
 def __load_players(exec_id: id) -> dict[str, Player] | None:
     """ Loads all players of the given Execution from the database and returns them in a dictionary or None."""
-    ps: list[models.Player] = db.session.query(models.Player).filter_by(execution_id=exec_id).all()
+    ps: list[models.Player] = db.session.query(
+        models.Player).filter_by(execution_id=exec_id).all()
 
     players = dict()
     for p in ps:
@@ -157,7 +167,8 @@ def load_execution(exec_id: int) -> bool:
     Returns True for success, False otherwise.
     """
     with create_app(csrf, db).app_context():
-        ex: models.Execution = db.session.query(models.Execution).filter_by(id=exec_id).first()
+        ex: models.Execution = db.session.query(
+            models.Execution).filter_by(id=exec_id).first()
         # If query yields no result, report failure
         if not ex:
             return False
@@ -182,3 +193,10 @@ def load_execution(exec_id: int) -> bool:
         # Activate execution (makes it accessible by API)
         run.activate_execution(execution)
         return True
+
+
+def load_role(id: int) -> Role | None:
+    db_role: models.Role | None = models.Role.query.get(id)
+    if db_role is None:
+        return None
+    return Role(db_role.id, db_role.name, db_role.short_name, db_role.power)
