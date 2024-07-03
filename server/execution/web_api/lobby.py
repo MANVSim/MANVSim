@@ -23,6 +23,12 @@ def start_scenario(id: int):
     raise NotFound(f"Execution with id={id} does not exist")
 
 
+@web_api.get("/execution/active")
+def get_all_active_executions():
+    """ Endpoint to return all currently active executions. """
+    return {"active_executions": run.active_executions.values()}
+
+
 @web_api.get("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 @csrf.exempt
