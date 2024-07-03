@@ -16,7 +16,7 @@ class Event:
         EXECUTION_STARTED = "execution_started"
         EXECUTION_FINISHED = "execution_finished"
         LOCATION_TAKE_FROM = "location_take_from"
-        LOCATION_ARRIVE = "patient_arrive"
+        LOCATION_ARRIVE = "location_arrive"
         LOCATION_LEAVE = "location_leave"
         PLAYER_ALERTED = "player_alerted"
 
