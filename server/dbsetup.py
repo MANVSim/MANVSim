@@ -1,7 +1,9 @@
-from app import create_app
 from bcrypt import gensalt, hashpw
+
+from app import create_app
 from app_config import db, csrf
 from execution.tests.entities.dummy_entities import get_activity_diagrams
+from vars import RESULT_DELIMITER
 from models import (
     Scenario,
     Execution,
@@ -15,7 +17,11 @@ from models import (
     ResourcesNeeded,
     WebUser,
 )
-from vars import RESULT_DELIMITER
+
+# pyright: reportCallIssue=false
+# The following statements are excluded from pyright, due to ORM specifics.
+# Additionally, the sample data is not required for production.
+
 
 
 def __create_resources():
@@ -42,14 +48,14 @@ def __create_resources():
 
 def __create_locations():
     insert(Location(id=0, name="RTW", picture_ref="rtw.jpg"))
-    insert(Location(id=1, name="Sichtungstasche", picture_ref="rucksack.jpg",
+    insert(Location(id=1, name="Sichtungstasche", picture_ref="media/static/rtw_sh.png",
                     location_id=0))
     insert(Location(id=2, name="Verbandskasten",
-                    picture_ref="Verbandskasten.jpg", location_id=1))
+                    picture_ref="media/static/tasche_rot.jpg", location_id=1))
     insert(Location(id=3, name="Roter Rucksack",
-                    picture_ref="dummy_rot.png", location_id=0))
+                    picture_ref="media/static/rucksack_rot.jpg", location_id=0))
     insert(Location(id=4, name="Blauer Rucksack",
-                    picture_ref="dummy_blau.png", location_id=0))
+                    picture_ref="media/static/rucksack_blau.jpg", location_id=0))
     insert(Location(id=5, name="EKG", picture_ref="dummy_ekg.png",
                     location_id=0))
     insert(Location(id=6, name="Holstein Stadion",
@@ -171,5 +177,3 @@ with create_app(csrf=csrf, db=db).app_context():
                                                      gensalt()).decode()))
 
     db.session.commit()
-
-

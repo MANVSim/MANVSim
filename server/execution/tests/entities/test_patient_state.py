@@ -22,7 +22,7 @@ def test_from_json():
     assert state.treatments["infusion"] == "569f58d7-6cbb-4fde-97ae-f6b9f597c219"
 
     # Special Case: officially no attribute of PatientState but without any errors assigned as new variable.
-    assert state.hello == "world"
+    assert state.hello == "world"  # type: ignore
 
 
 def test_to_json():

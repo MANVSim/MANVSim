@@ -7,7 +7,7 @@ from utils import time
 
 class ActivityDiagram:
 
-    def __init__(self, root: PatientState = None, states: list[PatientState] = None):
+    def __init__(self, root: PatientState | None = None, states: list[PatientState] | None = None):
         if not states:
             states = []
 

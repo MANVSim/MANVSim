@@ -4,16 +4,6 @@ from app_config import db
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-
-# just a dummy model
-#
-# can be created like this:
-#
-# user = User(name="foo")
-# db.session.add(user)
-# db.session.commit()
-
-
 class Scenario(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
@@ -102,6 +92,14 @@ class ResourcesNeeded(db.Model):
         ForeignKey("action.id"), nullable=False)
     resource_id: Mapped[int] = mapped_column(
         ForeignKey("resource.id"), nullable=False)
+
+
+class LoggedEvent(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    execution: Mapped[int] = mapped_column(nullable=False)
+    time: Mapped[int] = mapped_column(nullable=False)
+    type: Mapped[str] = mapped_column(nullable=False)
+    data = db.Column(db.JSON(), nullable=False)
 
 
 class WebUser(db.Model):

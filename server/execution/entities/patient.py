@@ -29,7 +29,7 @@ class Patient:
 
     def __init__(self, id: int, name: str, activity_diagram: ActivityDiagram, location: Location,
                  classification: Classification = Classification.NOT_CLASSIFIED,
-                 performed_actions: list[PerformedAction] = None):
+                 performed_actions: list[PerformedAction] | None = None):
 
         if performed_actions is None:
             performed_actions = []
