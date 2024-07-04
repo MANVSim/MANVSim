@@ -14,6 +14,7 @@ class PlayerSetNamePostRequest {
   /// Returns a new [PlayerSetNamePostRequest] instance.
   PlayerSetNamePostRequest({
     this.name,
+    this.forceUpdate,
   });
 
   /// username to be set.
@@ -25,17 +26,28 @@ class PlayerSetNamePostRequest {
   ///
   String? name;
 
+  /// An optional flag to indicate an overwrite.
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  bool? forceUpdate;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is PlayerSetNamePostRequest &&
-    other.name == name;
+    other.name == name &&
+    other.forceUpdate == forceUpdate;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (name == null ? 0 : name!.hashCode);
+    (name == null ? 0 : name!.hashCode) +
+    (forceUpdate == null ? 0 : forceUpdate!.hashCode);
 
   @override
-  String toString() => 'PlayerSetNamePostRequest[name=$name]';
+  String toString() => 'PlayerSetNamePostRequest[name=$name, forceUpdate=$forceUpdate]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -43,6 +55,11 @@ class PlayerSetNamePostRequest {
       json[r'name'] = this.name;
     } else {
       json[r'name'] = null;
+    }
+    if (this.forceUpdate != null) {
+      json[r'force_update'] = this.forceUpdate;
+    } else {
+      json[r'force_update'] = null;
     }
     return json;
   }
@@ -67,6 +84,7 @@ class PlayerSetNamePostRequest {
 
       return PlayerSetNamePostRequest(
         name: mapValueOfType<String>(json, r'name'),
+        forceUpdate: mapValueOfType<bool>(json, r'force_update'),
       );
     }
     return null;

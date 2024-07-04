@@ -14,25 +14,41 @@ class NotificationsGet200Response {
   /// Returns a new [NotificationsGet200Response] instance.
   NotificationsGet200Response({
     this.notifications = const [],
+    this.nextId,
   });
 
-  List<NotificationsGet200ResponseNotificationsInner> notifications;
+  List<String> notifications;
+
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  int? nextId;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is NotificationsGet200Response &&
-    _deepEquality.equals(other.notifications, notifications);
+    _deepEquality.equals(other.notifications, notifications) &&
+    other.nextId == nextId;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (notifications.hashCode);
+    (notifications.hashCode) +
+    (nextId == null ? 0 : nextId!.hashCode);
 
   @override
-  String toString() => 'NotificationsGet200Response[notifications=$notifications]';
+  String toString() => 'NotificationsGet200Response[notifications=$notifications, nextId=$nextId]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'notifications'] = this.notifications;
+    if (this.nextId != null) {
+      json[r'next_id'] = this.nextId;
+    } else {
+      json[r'next_id'] = null;
+    }
     return json;
   }
 
@@ -55,7 +71,10 @@ class NotificationsGet200Response {
       }());
 
       return NotificationsGet200Response(
-        notifications: NotificationsGet200ResponseNotificationsInner.listFromJson(json[r'notifications']),
+        notifications: json[r'notifications'] is Iterable
+            ? (json[r'notifications'] as Iterable).cast<String>().toList(growable: false)
+            : const [],
+        nextId: mapValueOfType<int>(json, r'next_id'),
       );
     }
     return null;

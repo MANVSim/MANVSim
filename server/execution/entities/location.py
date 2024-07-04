@@ -11,8 +11,8 @@ from vars import ACQUIRE_TIMEOUT
 # noinspection PyArgumentList
 class Location:
 
-    def __init__(self, id: int, name: str, picture_ref: str | None, resources: list[Resource] = None,
-                 sub_locations: set['Location'] = None):
+    def __init__(self, id: int, name: str, picture_ref: str | None, resources: list[Resource] | None = None,
+                 sub_locations: set['Location'] | None = None):
         if resources is None:
             resources = []
         if sub_locations is None:
@@ -93,7 +93,7 @@ class Location:
         """
         with self.res_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
-                self.sub_locations = [resource for resource in self.resources if resource not in old_resources]
+                self.resources = [resource for resource in self.resources if resource not in old_resources]
             else:
                 raise TimeoutError
 
@@ -212,7 +212,7 @@ class Location:
         return json.dumps(self.to_dict(shallow))
 
 
-def release_all_locations(locations: ['Location'], include_resource=False):
+def release_all_locations(locations: list['Location'], include_resource=False):
     for loc in locations:
         if include_resource:
             release_all_resources(loc.resources)

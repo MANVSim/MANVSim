@@ -16,7 +16,6 @@ class Patient {
     this.id,
     this.name,
     this.injuries,
-    this.treatingUsers = const [],
   });
 
   ///
@@ -43,25 +42,21 @@ class Patient {
   ///
   String? injuries;
 
-  List<String> treatingUsers;
-
   @override
   bool operator ==(Object other) => identical(this, other) || other is Patient &&
     other.id == id &&
     other.name == name &&
-    other.injuries == injuries &&
-    _deepEquality.equals(other.treatingUsers, treatingUsers);
+    other.injuries == injuries;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (id == null ? 0 : id!.hashCode) +
     (name == null ? 0 : name!.hashCode) +
-    (injuries == null ? 0 : injuries!.hashCode) +
-    (treatingUsers.hashCode);
+    (injuries == null ? 0 : injuries!.hashCode);
 
   @override
-  String toString() => 'Patient[id=$id, name=$name, injuries=$injuries, treatingUsers=$treatingUsers]';
+  String toString() => 'Patient[id=$id, name=$name, injuries=$injuries]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -80,7 +75,6 @@ class Patient {
     } else {
       json[r'injuries'] = null;
     }
-      json[r'treatingUsers'] = this.treatingUsers;
     return json;
   }
 
@@ -106,9 +100,6 @@ class Patient {
         id: mapValueOfType<int>(json, r'id'),
         name: mapValueOfType<String>(json, r'name'),
         injuries: mapValueOfType<String>(json, r'injuries'),
-        treatingUsers: json[r'treatingUsers'] is Iterable
-            ? (json[r'treatingUsers'] as Iterable).cast<String>().toList(growable: false)
-            : const [],
       );
     }
     return null;

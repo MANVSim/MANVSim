@@ -3,6 +3,8 @@ from flask_jwt_extended import jwt_required
 
 from app_config import csrf
 from execution.utils import util
+from event_logging.event import Event
+from utils import time
 
 api = Blueprint("api-patient", __name__)
 
@@ -30,6 +32,10 @@ def get_patient():
 
         player.location.add_locations(player.accessible_locations)
 
+        Event.location_arrive(execution_id=execution.id,
+                             time=time.current_time_s(),
+                             player=player.tan, patient_id=patient.id).log()
+
         return {
             "player_location": player.location.to_dict(),
             "patient": patient.to_dict(shallow=False)
@@ -55,13 +61,19 @@ def get_all_patient():
 @jwt_required()
 @csrf.exempt
 def leave_patient_location():
-    _, player = util.get_execution_and_player()
+    exec, player = util.get_execution_and_player()
 
     try:
         if player.location is None:
             return "Player is not assigned to any patient/location", 405
 
         if player.location.leave_location(player.accessible_locations):
+
+            Event.location_leave(execution_id=exec.id,
+                                time=time.current_time_s(),
+                                player=player.tan,
+                                leave_location_id=player.location.id).log()
+
             player.location = None
         else:
             return "Unable to access runtime object. A timeout-error occurred.", 409

@@ -31,7 +31,7 @@ def test_active_player(client):
 def test_current_exec_status(client):
     execution_id = list(execution_ids)[-1]
     test_execution: Execution = run.active_executions[execution_id]
-    headers = generate_token(client.application)
+    headers = generate_token(client.application, pending=True)
     headers_invalid_payload = generate_token(client.application, valid_payload=False)
 
     # status independent check
@@ -39,7 +39,7 @@ def test_current_exec_status(client):
     assert response.status_code == 204
 
     # status is RUNNING
-    headers = generate_token(client.application, running=True)
+    headers = generate_token(client.application)
     response = client.get("/api/scenario/start-time", headers=headers)
     assert response.status_code == 200
     assert response.json["starting_time"] == test_execution.starting_time
@@ -53,13 +53,12 @@ def test_current_exec_status(client):
 
 
 def test_set_name(client):
-    player_id = "654WVU"
+    player_id = "123ABC"
     exec_id = run.registered_players[player_id]
     execution = run.active_executions[exec_id]
     player = execution.players[player_id]
-    player.name = None
 
-    auth_header = generate_token(client.application)
+    auth_header = generate_token(client.application, pending=True)
     auth_header["Content-Type"] = "application/json"
     # initial set-name
     form = {

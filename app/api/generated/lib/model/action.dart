@@ -76,11 +76,11 @@ class Action {
       json[r'name'] = null;
     }
     if (this.durationInSeconds != null) {
-      json[r'durationInSeconds'] = this.durationInSeconds;
+      json[r'duration_in_seconds'] = this.durationInSeconds;
     } else {
-      json[r'durationInSeconds'] = null;
+      json[r'duration_in_seconds'] = null;
     }
-      json[r'resourceNamesNeeded'] = this.resourceNamesNeeded;
+      json[r'resource_names_needed'] = this.resourceNamesNeeded;
     return json;
   }
 
@@ -105,9 +105,9 @@ class Action {
       return Action(
         id: mapValueOfType<int>(json, r'id'),
         name: mapValueOfType<String>(json, r'name'),
-        durationInSeconds: mapValueOfType<int>(json, r'durationInSeconds'),
-        resourceNamesNeeded: json[r'resourceNamesNeeded'] is Iterable
-            ? (json[r'resourceNamesNeeded'] as Iterable).cast<String>().toList(growable: false)
+        durationInSeconds: mapValueOfType<int>(json, r'duration_in_seconds'),
+        resourceNamesNeeded: json[r'resource_names_needed'] is Iterable
+            ? (json[r'resource_names_needed'] as Iterable).cast<String>().toList(growable: false)
             : const [],
       );
     }

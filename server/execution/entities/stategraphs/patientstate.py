@@ -7,9 +7,9 @@ from utils import time
 
 class PatientState:
 
-    def __init__(self, state_uuid: str = str(uuid.uuid4()), treatments: dict[str, str] = None,
+    def __init__(self, state_uuid: str = str(uuid.uuid4()), treatments: dict[str, str] | None = None,
                  start_time: int = -1, timelimit: int = -1, after_time_state_uuid="",
-                 conditions: dict[str, str] = None):
+                 conditions: dict[str, str] | None = None):
         if not treatments:
             treatments = {}
         if not conditions:
@@ -22,7 +22,7 @@ class PatientState:
         self.treatments = treatments
         self.conditions = conditions
 
-    def add_treatment(self, treatment: str, new_state_uuid: str, reveals: list[str], force_update: bool = False):
+    def add_treatment(self, treatment: str, new_state_uuid: str, force_update: bool = False):
         """
             Inserts an additional treatment, that leads to a state change. If the treatment is already
             provided it keeps the old state unless the force_update flags allows an overwrite.

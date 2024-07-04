@@ -15,8 +15,10 @@ pytest = "*"
 flask-jwt-extended = "*"
 bcrypt = "*"
 flask-login = "*"
+pyright = "*"
 python-string-utils = "*"
 cachetools = "*"
+flask-cors = "*"
 
 [dev-packages]
 
@@ -25,3 +27,4 @@ python_version = "3.12"
 
 [scripts]
 lint = "pylint *.py -E"
+typecheck = "pyright"

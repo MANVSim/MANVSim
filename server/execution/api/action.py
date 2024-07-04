@@ -8,6 +8,7 @@ from execution.entities.performed_action import PerformedAction
 from execution.entities.resource import Resource, try_lock_all, release_all_resources
 from execution.utils import util
 from utils import time
+from event_logging.event import Event
 
 api = Blueprint("api-action", __name__)
 
@@ -45,7 +46,7 @@ def perform_action():
         patient = execution.scenario.patients[patient_id]
 
         # check permission and parameters
-        if player.role.power < action.required_power:
+        if not player.role or player.role.power < action.required_power:
             return "Missing right detected. You need a higher role to perform that action", 403
 
         if len(resource_ids_used) < len(action.resources_needed):
@@ -54,7 +55,7 @@ def perform_action():
         # get objects from ids
         resources_used = {}
         for res_id in resource_ids_used:
-            loc, res = player.location.get_resource_by_id(res_id)
+            loc, res = player.location.get_resource_by_id(res_id) if player.location else (None, None)
             if res is None:
                 return "Unable to identify resource. Please update your location-access.", 404
             if loc not in resources_used.keys():
@@ -103,7 +104,13 @@ def perform_action():
             return "Missmatch detected. Less resources used than required", 418
 
         # store success
-        performed_action = PerformedAction(str(uuid.uuid4()), time.current_time_s() + action.duration_sec,
+
+        start_time = time.current_time_s()
+
+        Event.action_performed(execution_id=execution.id, time=start_time,
+            player=player.tan, action=action.id, patient=patient_id, duration_s=action.duration_sec).log()
+
+        performed_action = PerformedAction(str(uuid.uuid4()), start_time + action.duration_sec,
                                            execution.id, action, resources_locked, player.tan)
         patient.action_queue[performed_action.id] = performed_action
         return {"performed_action_id": performed_action.id}
