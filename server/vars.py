@@ -9,6 +9,8 @@ DB_CACHE_TTL = 10
 Used by the `@utils.db.cache` decorator to determine after how many seconds the
 database should be queried again instead of returning a cached result
 """
+
+
 # -- TESTING
 
 LOAD_TEST_DATA = os.getenv('LOAD_TEST_DATA')
