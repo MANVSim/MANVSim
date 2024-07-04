@@ -1,5 +1,6 @@
 import json
 from itertools import groupby
+from typing import List
 
 from flask import Blueprint, Response, make_response
 from flask_api import status
@@ -15,6 +16,7 @@ from execution.entities.execution import Execution
 from execution.run import active_executions
 from execution.services.entityloader import load_execution
 from utils.flask import RequiredValueSource, admin_only, required, try_get_execution
+from utils.db import cache
 
 # FIXME sollten wir zusammen mit dem Web package iwann mal umbenennen
 api = Blueprint("api-web", __name__)
@@ -118,6 +120,24 @@ def start_scenario(id: int):
     return {"id": execution.id}
 
 
+@cache
+def __get_roles() -> List[models.Role]:
+    """
+    Gets all roles currently stored in the database. For efficient access the
+    result is cached for subsequent function calls as the DB is not expected to
+    change during 
+
+    :return: List of roles
+    """
+    print("Called __get_roles")
+    return models.Role.query.all()
+
+
+@cache
+def __get_top_level_locations() -> List[models.Location]:
+    return models.Location.query.where(models.Location.location_id.is_(None)).all()
+
+
 @api.get("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 @admin_only
@@ -136,11 +156,11 @@ def get_execution_status(id: int):
         "roles": [{
             "id": x.id,
             "name": x.name
-        } for x in models.Role.query],  # TODO: Don't use DB
+        } for x in __get_roles()],
         "locations": [{
             "id": x.id,
             "name": x.name
-        } for x in models.Location.query.where(models.Location.location_id.is_(None))]
+        } for x in __get_top_level_locations()]
     }
 
 
