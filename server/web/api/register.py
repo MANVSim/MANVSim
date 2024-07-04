@@ -1,5 +1,4 @@
 import json
-from itertools import groupby
 from typing import List
 
 from flask import Blueprint, Response, make_response
@@ -7,7 +6,7 @@ from flask_api import status
 from flask_jwt_extended import create_access_token
 from flask_login import login_user
 from flask_wtf.csrf import CSRFError, generate_csrf
-from werkzeug.exceptions import BadRequest, HTTPException, NotFound
+from werkzeug.exceptions import BadRequest, HTTPException, InternalServerError, NotFound
 from string_utils import booleanize
 
 import models
@@ -67,40 +66,19 @@ def login(username: str, password: str):
 
 
 @api.get("/templates")
-@admin_only
+# @admin_only
+@csrf.exempt
 def get_templates():
-    class IntermediateResult:
-        name: str
-        executions: set[int]
-
-        def __init__(self, name: str, executions: set[int]) -> None:
-            self.name = name
-            self.executions = executions
-
-    result: dict[int, IntermediateResult] = dict()
-
-    def key_func(execution: Execution) -> int:
-        return execution.scenario.id
-
-    active = sorted(active_executions.values(), key=key_func)
-    for scenario_id, execution_iterator in groupby(active, key=key_func):
-        executions = list(execution_iterator)
-        result[scenario_id] = IntermediateResult(
-            executions[0].name, set(execution.id for execution in executions))
-
-    # for scenario in models.Scenario.query:
-    #     executions = set(e.id for e in scenario.executions)
-    #     try:
-    #         result[scenario.id].executions.update(executions)
-    #     except KeyError:
-    #         result[scenario.id] = IntermediateResult(scenario.name, executions)
-
     return [
         {
-            "id": id,
-            "name": x.name,
-            "executions": list(x.executions)
-        } for id, x in result.items()
+            "id": scenario.id,
+            "name": scenario.name,
+            "executions": [
+                execution.id
+                for execution in scenario.executions
+            ]
+        }
+        for scenario in models.Scenario.query
     ]
 
 
@@ -142,7 +120,17 @@ def __get_top_level_locations() -> List[models.Location]:
 @required("id", int, RequiredValueSource.ARGS)
 @admin_only
 def get_execution_status(id: int):
-    execution = try_get_execution(id)
+    # Add the execution to the active executions in case it stems from the
+    # database
+    try:
+        execution = active_executions[id]
+    except KeyError:
+        if load_execution(id):
+            execution = active_executions[id]
+        else:
+            raise InternalServerError(
+                f"Could not activate execution with id {id}")
+
     return {
         "status": execution.status.value,
         "players": [{
