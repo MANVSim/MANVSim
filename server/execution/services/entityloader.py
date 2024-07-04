@@ -136,7 +136,7 @@ def __load_scenario(scenario_id: int) -> Scenario | None:
     return Scenario(id=scenario.id, name=scenario.name, patients=patients, actions=actions, locations=locations)
 
 
-def __load_role(role_id: int) -> Role | None:
+def load_role(role_id: int) -> Role | None:
     """ Loads and returns the a Role object for a given role ID. """
     role = db.session.query(models.Role).filter(
         models.Role.id == role_id).first()
@@ -153,7 +153,7 @@ def __load_players(exec_id: int) -> dict[str, Player] | None:
 
     players = dict()
     for p in ps:
-        player_role = __load_role(p.role_id)
+        player_role = load_role(p.role_id)
         player_loc = load_location(p.location_id)
         players[p.tan] = Player(tan=p.tan, name=None, location=player_loc, accessible_locations=set(),
                                 alerted=p.alerted, activation_delay_sec=p.activation_delay_sec, role=player_role)
@@ -194,10 +194,3 @@ def load_execution(exec_id: int) -> bool:
         # Activate execution (makes it accessible by API)
         run.activate_execution(execution)
         return True
-
-
-def load_role(id: int) -> Role | None:
-    db_role: models.Role | None = models.Role.query.get(id)
-    if db_role is None:
-        return None
-    return Role(db_role.id, db_role.name, db_role.short_name, db_role.power)
