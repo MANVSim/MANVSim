@@ -3,6 +3,8 @@ from flask_jwt_extended import jwt_required
 
 from app_config import csrf
 from execution.utils import util
+from event_logging.event import Event
+from utils import time
 
 api = Blueprint("api-patient", __name__)
 
@@ -30,6 +32,10 @@ def get_patient():
 
         player.location = patient.location
         player.location.add_locations(player.accessible_locations)
+
+        Event.location_arrive(execution_id=execution.id,
+                             time=time.current_time_s(),
+                             player=player.tan, patient_id=patient.id).log()
 
         return {
             "player_location": player.location.to_dict(),
