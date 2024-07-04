@@ -1,11 +1,11 @@
 import json
 from enum import Enum
 
+from execution.entities.action import Action
 from execution.entities.location import Location
 from execution.entities.performed_action import PerformedAction
 from execution.entities.stategraphs.activity_diagram import ActivityDiagram
 from execution.utils.timeoutlock import TimeoutLock
-from models import Action
 from vars import ACQUIRE_TIMEOUT
 
 
