@@ -59,23 +59,23 @@ def create_test_execution(pending: bool = True):
                       resources_needed=["Beatmungsgerät"], required_power=300)
     action_4 = Action(id=4, name="Betrachten", picture_ref="placeholder.png", duration_sec=5,
                       results=["Verletzung", "Haut", "Bewusstsein"], resources_needed=[], required_power=200)
-    action_5 = Action(id=4, name="Wunderheilung", picture_ref="placeholder.png", duration_sec=5, results=[],
+    action_5 = Action(id=5, name="Wunderheilung", picture_ref="placeholder.png", duration_sec=5, results=[],
                       resources_needed=[], required_power=400)
 
     # Performed Actions
     p_act_1 = PerformedAction(id="1", time=1715459280000, execution_id=1, action=action_2, resources_used=[res_4],
                               player_tan="123ABC")
 
-    ads = __get_activity_diagrams()
+    ads = get_activity_diagrams()
 
     # Patients
-    patient_1 = Patient(id=1, name="Holger Hooligan", injuries="UNDEFINED", activity_diagram=ads[0],
+    patient_1 = Patient(id=1, name="Holger Hooligan", activity_diagram=ads[0],
                         location=loc_5, performed_actions=[p_act_1])
-    patient_2 = Patient(id=2, name="Stefan Schiri", injuries="UNDEFINED", activity_diagram=ads[1],
+    patient_2 = Patient(id=2, name="Stefan Schiri", activity_diagram=ads[1],
                         location=loc_5)
-    patient_3 = Patient(id=3, name="Hoff Nungs Loserfall", injuries="UNDEFINED", activity_diagram=ads[2],
+    patient_3 = Patient(id=3, name="Hoff Nungs Loserfall", activity_diagram=ads[2],
                         location=loc_5)
-    patient_4 = Patient(id=3, name="Hoff Nungs Vollerfall", injuries="UNDEFINED", activity_diagram=ads[3],
+    patient_4 = Patient(id=3, name="Hoff Nungs Vollerfall", activity_diagram=ads[3],
                         location=loc_5)
 
     # Scenario
@@ -120,7 +120,7 @@ def create_test_execution(pending: bool = True):
     return execution
 
 
-def __get_activity_diagrams():
+def get_activity_diagrams():
     conditions_s1 = {
         "RR": "120/80mmHg",
         "HF": "80/min",

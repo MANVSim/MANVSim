@@ -3,6 +3,7 @@ import os
 
 LOG_LEVEL = logging.DEBUG
 ACQUIRE_TIMEOUT = 3  # The timeout used to time out a locking-request
+RESULT_DELIMITER = ","  # delimiter to parse csv strings
 
 # -- TESTING
 

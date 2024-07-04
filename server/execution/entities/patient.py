@@ -1,11 +1,11 @@
 import json
 from enum import Enum
 
+from execution.entities.action import Action
 from execution.entities.location import Location
 from execution.entities.performed_action import PerformedAction
 from execution.entities.stategraphs.activity_diagram import ActivityDiagram
 from execution.utils.timeoutlock import TimeoutLock
-from models import Action
 from vars import ACQUIRE_TIMEOUT
 
 
@@ -27,7 +27,7 @@ class Patient:
         BLUE = "blue"
         BLACK = "black"
 
-    def __init__(self, id: int, name: str, injuries: str, activity_diagram: ActivityDiagram, location: Location,
+    def __init__(self, id: int, name: str, activity_diagram: ActivityDiagram, location: Location,
                  classification: Classification = Classification.NOT_CLASSIFIED,
                  performed_actions: list[PerformedAction] | None = None):
 
@@ -36,7 +36,6 @@ class Patient:
 
         self.id = id
         self.name = name
-        self.injuries = injuries  # FIXME: Maybe replace by JSON datatype
         self.activity_diagram = activity_diagram
         self.location = location
         self.classification = classification
@@ -62,7 +61,6 @@ class Patient:
         return {
             'id': self.id,
             'name': self.name,
-            'injuries': self.injuries,
             'location': self.location.id if shallow else self.location.to_dict(),
             'classification': self.classification.name,
             'performed_actions': [performed_action.id if shallow else performed_action.to_dict() for performed_action in
