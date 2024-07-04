@@ -2,10 +2,13 @@ from enum import StrEnum
 from functools import wraps
 from typing import Any, Callable
 
+from cachetools.func import ttl_cache
 from flask import abort, request
 from flask_api import status
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from werkzeug.exceptions import BadRequest
+
+from vars import DB_CACHE_TTL
 
 
 class RequiredValueSource(StrEnum):
@@ -71,3 +74,20 @@ def admin_only(func: Callable):
         return func(*args, **kwargs)
 
     return wrapper
+
+
+def cache(f: Callable):
+    """
+    Decorator that caches a single result for the time set in vars.py. Most
+    useful for functions that access the database periodically and do not expect
+    the content of the database to change.
+
+    :param f: The function whose result should be cached
+    :return: The decorated function
+    """
+    @wraps(f)
+    @ttl_cache(maxsize=1, ttl=DB_CACHE_TTL)
+    def wrapper(*args, **kwargs):
+        return f(*args, **kwargs)
+    return wrapper
+
