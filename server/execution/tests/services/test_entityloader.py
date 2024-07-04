@@ -95,8 +95,6 @@ def _check_patients(scenario: Scenario):
         exec_patient = scenario.patients.get(db_patient.id)
         assert exec_patient
         assert db_patient.name == exec_patient.name
-        assert True if db_patient.injuries is not None and exec_patient.injuries is not None \
-            else db_patient.injuries is None
         assert True if db_patient.activity_diagram is not None and exec_patient.activity_diagram is not None \
             else db_patient.activity_diagram is None
         # If a patient has no location, a generic one is created at runtime, so this check does not need to be applied

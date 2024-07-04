@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 53a3f9ceba2d
+Revision ID: c61745be7662
 Revises: 
-Create Date: 2024-06-18 17:20:58.148187
+Create Date: 2024-07-04 16:19:24.292563
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '53a3f9ceba2d'
+revision = 'c61745be7662'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,7 +24,7 @@ def upgrade():
     sa.Column('required_power', sa.Integer(), nullable=False),
     sa.Column('picture_ref', sa.String(), nullable=False),
     sa.Column('duration_secs', sa.Integer(), nullable=False),
-    sa.Column('results', sa.JSON(), nullable=False),
+    sa.Column('results', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_action'))
     )
     op.create_table('location',
@@ -34,6 +34,14 @@ def upgrade():
     sa.Column('location_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['location_id'], ['location.id'], name=op.f('fk_location_location_id_location')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_location'))
+    )
+    op.create_table('logged_event',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('execution', sa.Integer(), nullable=False),
+    sa.Column('time', sa.Integer(), nullable=False),
+    sa.Column('type', sa.String(), nullable=False),
+    sa.Column('data', sa.JSON(), nullable=False),
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_logged_event'))
     )
     op.create_table('role',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -47,9 +55,15 @@ def upgrade():
     sa.Column('name', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_scenario'))
     )
+    op.create_table('web_user',
+    sa.Column('username', sa.String(), nullable=False),
+    sa.Column('password', sa.String(), nullable=False),
+    sa.PrimaryKeyConstraint('username', name=op.f('pk_web_user'))
+    )
     op.create_table('execution',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('scenario_id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['scenario_id'], ['scenario.id'], name=op.f('fk_execution_scenario_id_scenario')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_execution'))
     )
@@ -57,7 +71,6 @@ def upgrade():
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('location', sa.Integer(), nullable=True),
-    sa.Column('injuries', sa.JSON(), nullable=False),
     sa.Column('activity_diagram', sa.JSON(), nullable=False),
     sa.ForeignKeyConstraint(['location'], ['location.id'], name=op.f('fk_patient_location_location')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_patient'))
@@ -68,6 +81,7 @@ def upgrade():
     sa.Column('picture_ref', sa.String(), nullable=False),
     sa.Column('quantity', sa.Integer(), nullable=False),
     sa.Column('location_id', sa.Integer(), nullable=False),
+    sa.Column('consumable', sa.Boolean(), nullable=False),
     sa.ForeignKeyConstraint(['location_id'], ['location.id'], name=op.f('fk_resource_location_id_location')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_resource'))
     )
@@ -110,8 +124,10 @@ def downgrade():
     op.drop_table('resource')
     op.drop_table('patient')
     op.drop_table('execution')
+    op.drop_table('web_user')
     op.drop_table('scenario')
     op.drop_table('role')
+    op.drop_table('logged_event')
     op.drop_table('location')
     op.drop_table('action')
     # ### end Alembic commands ###

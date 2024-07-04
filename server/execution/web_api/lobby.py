@@ -33,6 +33,12 @@ def start_scenario(id: int):
     return {"id": execution.id}
 
 
+@web_api.get("/execution/active")
+def get_all_active_executions():
+    """ Endpoint to return all currently active executions. """
+    return {"active_executions": run.active_executions.values()}
+
+
 @web_api.get("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 @admin_only
