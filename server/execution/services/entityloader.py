@@ -84,7 +84,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_ad = ActivityDiagram()  # empty diagram with an empty root state
 
         patients[p.id] = Patient(id=p.id, name=p.name, activity_diagram=p_ad,
-                                 location=p_loc, performed_actions=[]) # type: ignore
+                                 location=p_loc, performed_actions=[])  # type: ignore
 
     return patients
 
@@ -175,9 +175,6 @@ def __load_players(exec_id: int) -> dict[str, Player] | None:
     """
     ps: list[models.Player] = (db.session.query(models.Player)
                                .filter_by(execution_id=exec_id).all())
-    if not ps:
-        return None
-
     players = dict()
     for p in ps:
         player_role = load_role(p.role_id)
@@ -198,8 +195,8 @@ def load_execution(exec_id: int) -> bool:
     Returns True for success, False otherwise.
     """
     with current_app.app_context():
-        ex= (db.session.query(models.Execution)
-                                .filter_by(id=exec_id).first())
+        ex = (db.session.query(models.Execution)
+              .filter_by(id=exec_id).first())
         # If query yields no result, report failure
         if not ex:
             return False
