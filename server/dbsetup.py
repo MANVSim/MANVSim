@@ -23,7 +23,6 @@ from models import (
 # Additionally, the sample data is not required for production.
 
 
-
 def __create_resources():
     insert(Resource(id=0, name="Verband", picture_ref="verband.png",
                     quantity=10, location_id=2, consumable=True))
@@ -48,8 +47,8 @@ def __create_resources():
 
 def __create_locations():
     insert(Location(id=0, name="RTW", picture_ref="rtw.jpg"))
-    insert(Location(id=1, name="Sichtungstasche", picture_ref="media/static/rtw_sh.png",
-                    location_id=0))
+    insert(Location(id=1, name="Sichtungstasche",
+                    picture_ref="media/static/rtw_sh.png", location_id=0))
     insert(Location(id=2, name="Verbandskasten",
                     picture_ref="media/static/tasche_rot.jpg", location_id=1))
     insert(Location(id=3, name="Roter Rucksack",
