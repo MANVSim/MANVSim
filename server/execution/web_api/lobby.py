@@ -1,3 +1,5 @@
+from typing import List
+
 from flask import Blueprint, Response
 from string_utils import booleanize
 from werkzeug.exceptions import NotFound, BadRequest, InternalServerError
