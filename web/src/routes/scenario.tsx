@@ -10,15 +10,17 @@ import {
 import { Template } from "../types"
 import { ReactElement } from "react"
 import CsrfForm from "../components/CsrfForm"
-import { LinkContainer } from "react-router-bootstrap"
 
 function ExecutionEntry({
   execution,
 }: Readonly<{ execution: number }>): ReactElement {
   return (
-    <LinkContainer to={`/execution/${execution}`} className="d-grid">
-      <Button>{execution}</Button>
-    </LinkContainer>
+    <CsrfForm className="my-1" method="post">
+      <input type="hidden" name="id" value={execution} />
+      <div className="d-grid gap-2">
+        <Button type="submit">{execution}</Button>
+      </div>
+    </CsrfForm>
   )
 }
 
@@ -26,18 +28,12 @@ function TemplateEntry({
   template,
   index,
 }: Readonly<{ template: Template; index: number }>): ReactElement {
-  const { name, executions, id } = template
+  const { name, executions } = template
 
   return (
     <AccordionItem eventKey={index.toString()}>
       <AccordionHeader>{name}</AccordionHeader>
-      <AccordionBody className="d-grid gap-2">
-        <CsrfForm method="post" className="d-grid">
-          <input type="hidden" name="id" value={id} />
-          <Button type="submit">Neue Ausführung</Button>
-        </CsrfForm>
-        <hr />
-        <div className="">Bestehende Ausführungen</div>
+      <AccordionBody>
         {executions.length ? (
           executions.map((execution: number) => (
             <ExecutionEntry key={execution} execution={execution} />

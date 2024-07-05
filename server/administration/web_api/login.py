@@ -25,7 +25,4 @@ def login(username: str, password: str):
         return {"error": "Incorrect password"}, status.HTTP_401_UNAUTHORIZED
 
     login_user(user)
-    return {
-        "token": create_access_token(identity="admin"),
-        "username": username
-    }, 200
+    return {"token": create_access_token(identity="admin"), "username": username}, 200

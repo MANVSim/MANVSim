@@ -17,7 +17,6 @@ bcrypt = "*"
 flask-login = "*"
 pyright = "*"
 python-string-utils = "*"
-cachetools = "*"
 flask-cors = "*"
 
 [dev-packages]
