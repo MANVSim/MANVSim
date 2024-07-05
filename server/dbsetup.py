@@ -149,10 +149,10 @@ def __takes_part_in():
 
 
 def __create_executions():
-    insert(Execution(id=1, name="Übungssimulation \"Busunglück\" 2024",
+    insert(Execution(id=3, name="Übungssimulation \"Busunglück\" 2024",
                      scenario_id=0))
     insert(Execution(id=23456, name="Kreativer Name", scenario_id=1))
-    insert(Execution(id=2, name="Dummy Execution 2024", scenario_id=2))
+    insert(Execution(id=4, name="Dummy Execution 2024", scenario_id=2))
 
 
 def insert(data):
