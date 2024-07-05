@@ -37,6 +37,7 @@ class Execution:
         """
         return {
             'id': self.id,
+            'name': self.name,
             'scenario': self.scenario.id if shallow else self.scenario.to_dict(),
             'starting_time': self.starting_time,
             'players': [player.tan if shallow else player.to_dict() for player in list(self.players.values())],
