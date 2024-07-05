@@ -9,6 +9,7 @@ import {
   isLoginResponse,
   CsrfToken,
   ExecutionData,
+  isExecutionData,
 } from "./types"
 
 const api = "/web/"
@@ -80,6 +81,23 @@ export async function getAuthToken(
   }
 
   return redirect("/")
+}
+export async function createExecution(formData: FormData): Promise<Response> {
+  const response = await fetch(api + "execution/create", {
+    method: "POST",
+    body: formData,
+  })
+  if ([404].includes(response.status)) {
+    return redirect("/scenario") // TODO
+  }
+  return redirect("/scenario")
+}
+export async function getActiveExecutions(): Promise<ExecutionData[]> {
+  const activeExecutions = await tryFetchJson<ExecutionData[]>(`execution/active`)
+  if (Array.isArray(activeExecutions) && activeExecutions.every(isExecutionData)) {
+    return activeExecutions
+  }
+  throw Error(`Could not load templates!`)
 }
 
 export async function getExecutionStatus(id: string): Promise<ExecutionData> {

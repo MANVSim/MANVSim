@@ -1,0 +1,21 @@
+#active-execution-status {
+    width: 15%
+}
+
+.btn.btn-outline-primary {
+    padding: 0px 10px 1px 10px;
+    margin: 0px;
+}
+
+.accordion-body {
+    background-color: #f7f7f7;
+}
+
+#lobby-hover {
+    background-color: white !important;
+}
+
+#lobby-hover:hover {
+    background-color: #cfe2ff !important;
+    cursor: pointer;
+}
