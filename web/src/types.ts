@@ -98,6 +98,7 @@ export const ExecutionStatusEnum = z.enum([
 
 const executionData = z.object({
   id: z.number(),
+  name: z.string(),
   starting_time: z.number(),
   players: z.array(player),
   status: ExecutionStatusEnum,
