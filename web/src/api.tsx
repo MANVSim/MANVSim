@@ -4,8 +4,6 @@ import {
   Template,
   isTemplate,
   isCsrfToken,
-  StartResponse,
-  isStartResponse,
   isLoginResponse,
   CsrfToken,
   ExecutionData,
@@ -51,19 +49,6 @@ export async function getCsrfToken(): Promise<string> {
   return json.csrf_token
 }
 
-export async function startScenario(
-  formData: FormData,
-): Promise<StartResponse> {
-  const json = await tryFetchJson<StartResponse>("scenario", {
-    method: "POST",
-    body: formData,
-  })
-  if (!isStartResponse(json)) {
-    throw new Error("Unexpected response")
-  }
-  return json
-}
-
 export async function getAuthToken(
   formData: FormData,
 ): Promise<string | Response> {
@@ -91,6 +76,15 @@ export async function createExecution(formData: FormData): Promise<Response> {
     return redirect("/scenario") // TODO
   }
   return redirect("/scenario")
+}
+export async function postActivateExecution(id: number): Promise<Response> {
+  const formData = new FormData()
+  formData.append("id", `${id}`)
+
+  return await fetch(api + "execution/activate", {
+    method: "POST",
+    body: formData,
+  })
 }
 export async function getActiveExecutions(): Promise<ExecutionData[]> {
   const activeExecutions = await tryFetchJson<ExecutionData[]>(`execution/active`)

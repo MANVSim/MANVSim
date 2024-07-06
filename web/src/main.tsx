@@ -25,7 +25,10 @@ const router = createBrowserRouter([
         path: "/scenario",
         element: <Scenario />,
         loader: Scenario.loader,
-        action: Scenario.action,
+      },
+      {
+        path: "/execution",
+        action: Scenario.action
       },
       {
         path: "/execution/:executionId",

@@ -1,8 +1,11 @@
-from flask import Blueprint, Response
+import logging
+
+from flask import Blueprint, Response, jsonify
 from string_utils import booleanize
 from werkzeug.exceptions import NotFound, BadRequest
 
-from app_config import csrf
+import models
+from app_config import csrf, db
 from event_logging.event import Event
 from execution import run
 from execution.entities.execution import Execution
@@ -14,12 +17,15 @@ from utils.decorator import required, admin_only, RequiredValueSource
 web_api = Blueprint("web_api-lobby", __name__)
 
 
-@web_api.post("/scenario")
+@web_api.post("/execution/activate")
 @required("id", int, RequiredValueSource.FORM)
-@admin_only
-def start_scenario(id: int):
+# @admin_only
+@csrf.exempt
+def activate_execution(id: int):
+    if id in run.active_executions.keys():
+        return run.active_executions[id].to_dict(), 200
     if entityloader.load_execution(id):
-        return run.active_executions[id].to_dict()
+        return run.active_executions[id].to_dict(), 201
 
     # Failure
     raise NotFound(f"Execution with id={id} does not exist")
@@ -34,10 +40,27 @@ def get_all_active_executions():
 
 @web_api.get("/execution")
 @required("id", int, RequiredValueSource.ARGS)
-@csrf.exempt
 def get_execution_status(id: int):
+    print(id)
     execution = try_get_execution(id)
     return execution.to_dict()
+
+
+@web_api.post("/execution")
+@required("scenario_id", int, RequiredValueSource.FORM)
+@required("name", str, RequiredValueSource.FORM)
+def create_execution(scenario_id: int, name: str):
+    try:
+        new_execution = models.Execution(scenario_id=scenario_id, name=name)
+        db.session.add(new_execution)
+        db.session.commit()
+        print(f"new execution created with id: {new_execution.id}")
+        return {"id": new_execution.id}, 201
+    except Exception:
+        message = ("Unable to save execution. "
+                   "Possibly invalid parameter provided")
+        logging.error(message)
+        return message, 400
 
 
 @web_api.patch("/execution")
