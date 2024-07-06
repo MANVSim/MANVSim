@@ -72,9 +72,18 @@ class TanInputFieldState extends State<TanInputField> {
       controller.dispose();
     }
 
-    widget.controller.dispose();
-
     super.dispose();
+  }
+
+  void _handleInputChange(int index, String value) {
+    if (value.isNotEmpty) {
+      widget.controller.updateValue(index, value);
+      if (index + 1 < TAN_LENGTH) {
+        FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
+      } else {
+        FocusScope.of(context).unfocus();
+      }
+    }
   }
 
   @override
@@ -103,14 +112,7 @@ class TanInputFieldState extends State<TanInputField> {
               border: widget.decoration?.border ?? const OutlineInputBorder(),
             ),
             onChanged: (value) {
-              if (value.isNotEmpty) {
-                widget.controller.updateValue(index, value);
-                if (index + 1 < TAN_LENGTH) {
-                  FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
-                } else {
-                  FocusScope.of(context).unfocus();
-                }
-              }
+               _handleInputChange(index, value);
             },
           ),
         );

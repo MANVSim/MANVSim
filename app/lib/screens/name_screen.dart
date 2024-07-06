@@ -53,8 +53,6 @@ class NameScreenState extends State<NameScreen> {
   void _handleSetName() async {
     String name = _nameController.text;
 
-    print(name);
-
     if (name.isEmpty) {
       setState(() {
         _nameInputFailure = true;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:manvsim/models/tan_user.dart';
 import 'package:manvsim/widgets/tan_input.dart';
+import 'package:provider/provider.dart';
 
 import '../services/api_service.dart';
 import 'name_screen.dart';
@@ -69,22 +71,46 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   void _navigateToNext() {
+    TanUser user = Provider.of<TanUser>(context, listen: false);
 
-    ApiService apiService = GetIt.instance.get<ApiService>();
-
-    if(apiService.isNameSet) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const WaitScreen()),
-            (Route<dynamic> route) =>
-        false,
+    if (user.name != null && user.name!.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title:
+                Text(AppLocalizations.of(context)!.loginAlreadyLoggedInHeader),
+            content: Text(AppLocalizations.of(context)!
+                .loginAlreadyLoggedInText(user.name!)),
+            actions: <Widget>[
+              TextButton(
+                child: Text(AppLocalizations.of(context)!
+                    .loginAlreadyLoggedInButtonCancel),
+                onPressed: () {
+                  ApiService apiService = GetIt.instance.get<ApiService>();
+                  apiService.logout(context);
+                },
+              ),
+              TextButton(
+                child: Text(AppLocalizations.of(context)!
+                    .loginAlreadyLoggedInButtonContinue),
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const WaitScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+              ),
+            ],
+          );
+        },
       );
     } else {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const NameScreen()),
-            (Route<dynamic> route) =>
-        false,
+        (Route<dynamic> route) => false,
       );
     }
   }
@@ -108,12 +134,14 @@ class LoginScreenState extends State<LoginScreen> {
       });
 
       String? failureMessage;
+      bool failureOccurred = false;
 
+      ApiService apiService = GetIt.instance.get<ApiService>();
       try {
-        ApiService apiService = GetIt.instance.get<ApiService>();
-        await apiService.login(tan, url);
+        await apiService.login(tan, url, context);
       } catch (e) {
         failureMessage = e.toString();
+        failureOccurred = true;
       }
 
       int maxLength = 80;
@@ -124,13 +152,13 @@ class LoginScreenState extends State<LoginScreen> {
       shortFailureMessage = shortFailureMessage?.replaceAll(RegExp(r'[\n\t]'), ' ');
 
       setState(() {
-        _errorMessage = AppLocalizations.of(context)!.loginWarningRequestFailed(shortFailureMessage??'unknown error');
+        _errorMessage = failureOccurred ? AppLocalizations.of(context)!.loginWarningRequestFailed(shortFailureMessage??'unknown error') : null;
         _isLoading = false;
         _tanInputFailure = false;
         _urlInputFailure = false;
       });
 
-      if (failureMessage == null) {
+      if (!failureOccurred) {
         _navigateToNext();
       }
     }
