@@ -67,16 +67,6 @@ export async function getAuthToken(
 
   return redirect("/")
 }
-export async function createExecution(formData: FormData): Promise<Response> {
-  const response = await fetch(api + "execution/create", {
-    method: "POST",
-    body: formData,
-  })
-  if ([404].includes(response.status)) {
-    return redirect("/scenario") // TODO
-  }
-  return redirect("/scenario")
-}
 export async function postActivateExecution(id: number): Promise<Response> {
   const formData = new FormData()
   formData.append("id", `${id}`)
@@ -91,7 +81,7 @@ export async function getActiveExecutions(): Promise<ExecutionData[]> {
   if (Array.isArray(activeExecutions) && activeExecutions.every(isExecutionData)) {
     return activeExecutions
   }
-  throw Error(`Could not load templates!`)
+  throw Error(`Could not load active executions!`)
 }
 
 export async function getExecutionStatus(id: string): Promise<ExecutionData> {

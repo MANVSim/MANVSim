@@ -19,7 +19,7 @@ web_api = Blueprint("web_api-lobby", __name__)
 
 @web_api.post("/execution/activate")
 @required("id", int, RequiredValueSource.FORM)
-# @admin_only
+# @admin_only //FIXME enable me as soon as role management is working
 @csrf.exempt
 def activate_execution(id: int):
     if id in run.active_executions.keys():
@@ -41,7 +41,6 @@ def get_all_active_executions():
 @web_api.get("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 def get_execution_status(id: int):
-    print(id)
     execution = try_get_execution(id)
     return execution.to_dict()
 

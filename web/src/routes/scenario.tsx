@@ -54,9 +54,9 @@ function TemplateEntry({
         {executions.length ? (
           executions.map((execution: number) => (
             <li key={execution} className="w-100 d-flex mb-2">
-              <div id="lobby-hover" className="bg-light rounded flex-fill me-2 d-flex justify-content-center" onClick={() => navigate(`/execution/${execution}`)}>
+              <button id="lobby-hover" className="btn btn-light flex-fill me-2 d-flex justify-content-center" onClick={() => navigate(`/execution/${execution}`)}>
                 <div className="align-self-center">{execution}</div>
-              </div>
+              </button>
               <div className="w-25">
                 <button className="btn btn-success me-2 w-100" onClick={() => activateExecution(execution, navigate)}>Aktivieren</button>
               </div>
@@ -93,30 +93,6 @@ function TemplateEntry({
   )
 }
 
-function getColor(status: string) {
-  switch (status) {
-    case 'PENDING':
-      return 'orange';
-    case 'RUNNING':
-      return 'green';
-    case 'FINISHED':
-      return 'red';
-    default:
-      return 'black';
-  }
-}
-
-async function activateExecution(exec_id: number, navigate: NavigateFunction) {
-  const response = postActivateExecution(exec_id)
-
-  if ([200, 201].includes((await response).status)) {
-    navigate(`/execution/${exec_id}`)
-  } else {
-    console.error("Unable to start execution. Response status:", (await response).status);
-    throw new Error("Unable to start execution.")
-  }
-}
-
 
 export default function Scenario(): ReactElement {
   const loaderData = useLoaderData() as { templates: Array<Template>, activeExecutions: Array<ExecutionData> };
@@ -129,7 +105,7 @@ export default function Scenario(): ReactElement {
         <p>Die folgenden Scenarios sind gestartet:</p>
         {activeExecutions.length ? (
           <div className="mb-5">
-            {activeExecutions.map((item, index) => (
+            {activeExecutions.map((item) => (
               <li className="d-flex border p-1" key={item.id}>
                 <div className="mt-1 ms-2 me-auto">
                   <span>{item.name}</span>
@@ -190,5 +166,30 @@ Scenario.action = async function ({
   else {
     alert(`No execution created due to input/db error.`)
     return redirect("/scenario")
+  }
+}
+
+
+function getColor(status: string) {
+  switch (status) {
+    case 'PENDING':
+      return 'orange';
+    case 'RUNNING':
+      return 'green';
+    case 'FINISHED':
+      return 'red';
+    default:
+      return 'black';
+  }
+}
+
+async function activateExecution(exec_id: number, navigate: NavigateFunction) {
+  const response = postActivateExecution(exec_id)
+
+  if ([200, 201].includes((await response).status)) {
+    navigate(`/execution/${exec_id}`)
+  } else {
+    console.error("Unable to start execution. Response status:", (await response).status);
+    throw new Error("Unable to start execution.")
   }
 }
