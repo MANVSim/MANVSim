@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
+import 'package:manvsim/models/tan_user.dart';
+import 'package:provider/provider.dart';
 
 import '../services/api_service.dart';
 import '../widgets/logout_button.dart';
@@ -84,6 +86,11 @@ class NameScreenState extends State<NameScreen> {
       });
 
       if (failureMessage == null) {
+
+        TanUser user = Provider.of<TanUser>(context, listen: false);
+        user.name = name;
+        await user.persist();
+
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const WaitScreen()),
