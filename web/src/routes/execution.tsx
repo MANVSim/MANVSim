@@ -99,11 +99,11 @@ function Status({ execution }: { execution: ExecutionData }): ReactElement {
             )
           }
         >
-          <option value="PENDING">Vorbereitung</option>
-          <option value="RUNNING">Laufend</option>
-          <option value="FINISHED">Beendet</option>
+          <option value="pending">Vorbereitung</option>
+          <option value="running">Laufend</option>
+          <option value="finished">Beendet</option>
           {execution.status === "unknown" && (
-            <option value="UNKNOWN" disabled>
+            <option value="unknown" disabled>
               Unbekannt
             </option>
           )}
