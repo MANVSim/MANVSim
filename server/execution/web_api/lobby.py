@@ -130,7 +130,6 @@ def __get_roles() -> List[models.Role]:
 
     :return: List of roles
     """
-    print("Called __get_roles")
     return models.Role.query.all()
 
 
