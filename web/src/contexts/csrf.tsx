@@ -7,6 +7,7 @@ import {
   useState,
 } from "react"
 import { getCsrfToken } from "../api"
+import { config } from "../config"
 
 export const CsrfContext = createContext("")
 
@@ -21,8 +22,12 @@ export function CsrfProvider({
   children: ReactNode
 }): ReactElement {
   const [csrfToken, setCsrfToken] = useState("")
+  if (csrfToken == "") getCsrfToken().then((token) => setCsrfToken(token))
   useEffect(() => {
-    getCsrfToken().then((token) => setCsrfToken(token))
+    const intervalId = setInterval(async () => {
+      getCsrfToken().then((token) => setCsrfToken(token))
+    }, config.csrfPollingRate)
+    return () => clearInterval(intervalId)
   }, [])
   return (
     <CsrfContext.Provider value={csrfToken}>{children}</CsrfContext.Provider>
