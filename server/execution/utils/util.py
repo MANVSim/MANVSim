@@ -3,6 +3,7 @@ from werkzeug.exceptions import NotFound
 
 from execution import run
 from execution.entities.execution import Execution
+from execution.services.entityloader import load_execution
 
 
 def __get_param_from_jwt(param):
@@ -28,9 +29,15 @@ def try_get_execution(id: int) -> Execution:
     :return: The execution object
     :raises NotFound: Error when execution does not exist
     """
-    try:
+    if id in run.active_executions.keys():
+        # execution already has been activated
         execution = run.active_executions[id]
-    except KeyError:
-        raise NotFound(f"Execution with id {id} does not exist")
+        return execution
 
-    return execution
+    execution = load_execution(id, save_in_memory=False)
+    if execution:
+        # execution not activated but stored in DB
+        return execution
+    else:
+        # no execution found with provided id parameter
+        raise NotFound(f"Execution with id {id} does not exist")

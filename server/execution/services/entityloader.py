@@ -175,8 +175,8 @@ def __load_players(exec_id: int) -> dict[str, Player] | None:
     """
     ps: list[models.Player] = (db.session.query(models.Player)
                                .filter_by(execution_id=exec_id).all())
-    if not ps:
-        return None
+    if ps is None:
+        return ps
 
     players = dict()
     for p in ps:
@@ -190,7 +190,7 @@ def __load_players(exec_id: int) -> dict[str, Player] | None:
     return players
 
 
-def load_execution(exec_id: int) -> bool:
+def load_execution(exec_id: int, save_in_memory=True) -> bool | Execution:
     """
     Loads an Execution (Simulation) and all associated data into memory and
     activates it to make it ready for execution.
@@ -222,5 +222,8 @@ def load_execution(exec_id: int) -> bool:
         execution = Execution(id=ex.id, name=ex.name, scenario=scenario,
                               players=players, status=Execution.Status.PENDING)
         # Activate execution (makes it accessible by API)
-        run.activate_execution(execution)
-        return True
+        if save_in_memory:
+            run.activate_execution(execution)
+            return True
+        else:
+            return execution
