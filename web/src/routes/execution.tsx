@@ -7,11 +7,6 @@ import {
   useParams,
 } from "react-router"
 import { ReactElement, useEffect, useState } from "react"
-import {
-  getExecutionStatus,
-  changeExecutionStatus,
-  togglePlayerStatus,
-} from "../api"
 import _ from "lodash"
 import { config } from "../config"
 import {
@@ -22,6 +17,7 @@ import {
 } from "../types"
 import CsrfForm from "../components/CsrfForm"
 import { useSubmit } from "react-router-dom"
+import { changeExecutionStatus, getExecution, togglePlayerStatus } from "../api"
 
 function TanCard({ tan }: { tan: string }): ReactElement {
   return (
@@ -80,7 +76,7 @@ function Status({ execution }: { execution: ExecutionData }): ReactElement {
           onChange={(e) =>
             setStatus(
               ExecutionStatusEnum.safeParse(e.currentTarget.value).data ||
-                "UNKNOWN",
+              "UNKNOWN",
             )
           }
         >
@@ -121,7 +117,7 @@ export default function Execution(): ReactElement {
   useEffect(() => {
     const intervalId = setInterval(async () => {
       if (typeof executionId === "undefined") return
-      const status = await getExecutionStatus(executionId)
+      const status = await getExecution(executionId)
       if (isExecutionData(status)) {
         setExecution(status)
       }
@@ -169,7 +165,7 @@ Execution.loader = async function ({
   params: { executionId },
 }: LoaderFunctionArgs) {
   if (executionId === undefined) return null
-  return getExecutionStatus(executionId)
+  return getExecution(executionId)
 }
 
 Execution.action = async function ({ params, request }: ActionFunctionArgs) {
