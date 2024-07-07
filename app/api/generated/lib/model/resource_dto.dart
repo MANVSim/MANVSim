@@ -10,9 +10,9 @@
 
 part of manv_api;
 
-class Resource {
-  /// Returns a new [Resource] instance.
-  Resource({
+class ResourceDTO {
+  /// Returns a new [ResourceDTO] instance.
+  ResourceDTO({
     this.id,
     this.name,
     this.quantity,
@@ -43,7 +43,7 @@ class Resource {
   int? quantity;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is Resource &&
+  bool operator ==(Object other) => identical(this, other) || other is ResourceDTO &&
     other.id == id &&
     other.name == name &&
     other.quantity == quantity;
@@ -56,7 +56,7 @@ class Resource {
     (quantity == null ? 0 : quantity!.hashCode);
 
   @override
-  String toString() => 'Resource[id=$id, name=$name, quantity=$quantity]';
+  String toString() => 'ResourceDTO[id=$id, name=$name, quantity=$quantity]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -78,10 +78,10 @@ class Resource {
     return json;
   }
 
-  /// Returns a new [Resource] instance and imports its values from
+  /// Returns a new [ResourceDTO] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static Resource? fromJson(dynamic value) {
+  static ResourceDTO? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -90,13 +90,13 @@ class Resource {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "Resource[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "Resource[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "ResourceDTO[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "ResourceDTO[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return Resource(
+      return ResourceDTO(
         id: mapValueOfType<int>(json, r'id'),
         name: mapValueOfType<String>(json, r'name'),
         quantity: mapValueOfType<int>(json, r'quantity'),
@@ -105,11 +105,11 @@ class Resource {
     return null;
   }
 
-  static List<Resource> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <Resource>[];
+  static List<ResourceDTO> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <ResourceDTO>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = Resource.fromJson(row);
+        final value = ResourceDTO.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -118,12 +118,12 @@ class Resource {
     return result.toList(growable: growable);
   }
 
-  static Map<String, Resource> mapFromJson(dynamic json) {
-    final map = <String, Resource>{};
+  static Map<String, ResourceDTO> mapFromJson(dynamic json) {
+    final map = <String, ResourceDTO>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = Resource.fromJson(entry.value);
+        final value = ResourceDTO.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -132,14 +132,14 @@ class Resource {
     return map;
   }
 
-  // maps a json object with a list of Resource-objects as value to a dart map
-  static Map<String, List<Resource>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<Resource>>{};
+  // maps a json object with a list of ResourceDTO-objects as value to a dart map
+  static Map<String, List<ResourceDTO>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<ResourceDTO>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = Resource.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = ResourceDTO.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;

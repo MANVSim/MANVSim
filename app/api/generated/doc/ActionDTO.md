@@ -1,4 +1,4 @@
-# manv_api.model.Action
+# manv_api.model.ActionDTO
 
 ## Load the model package
 ```dart

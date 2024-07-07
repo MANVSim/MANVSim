@@ -10,9 +10,9 @@
 
 part of manv_api;
 
-class Patient {
-  /// Returns a new [Patient] instance.
-  Patient({
+class PatientDTO {
+  /// Returns a new [PatientDTO] instance.
+  PatientDTO({
     this.id,
     this.name,
     this.injuries,
@@ -43,7 +43,7 @@ class Patient {
   String? injuries;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is Patient &&
+  bool operator ==(Object other) => identical(this, other) || other is PatientDTO &&
     other.id == id &&
     other.name == name &&
     other.injuries == injuries;
@@ -56,7 +56,7 @@ class Patient {
     (injuries == null ? 0 : injuries!.hashCode);
 
   @override
-  String toString() => 'Patient[id=$id, name=$name, injuries=$injuries]';
+  String toString() => 'PatientDTO[id=$id, name=$name, injuries=$injuries]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -78,10 +78,10 @@ class Patient {
     return json;
   }
 
-  /// Returns a new [Patient] instance and imports its values from
+  /// Returns a new [PatientDTO] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static Patient? fromJson(dynamic value) {
+  static PatientDTO? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -90,13 +90,13 @@ class Patient {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "Patient[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "Patient[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "PatientDTO[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "PatientDTO[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return Patient(
+      return PatientDTO(
         id: mapValueOfType<int>(json, r'id'),
         name: mapValueOfType<String>(json, r'name'),
         injuries: mapValueOfType<String>(json, r'injuries'),
@@ -105,11 +105,11 @@ class Patient {
     return null;
   }
 
-  static List<Patient> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <Patient>[];
+  static List<PatientDTO> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <PatientDTO>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = Patient.fromJson(row);
+        final value = PatientDTO.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -118,12 +118,12 @@ class Patient {
     return result.toList(growable: growable);
   }
 
-  static Map<String, Patient> mapFromJson(dynamic json) {
-    final map = <String, Patient>{};
+  static Map<String, PatientDTO> mapFromJson(dynamic json) {
+    final map = <String, PatientDTO>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = Patient.fromJson(entry.value);
+        final value = PatientDTO.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -132,14 +132,14 @@ class Patient {
     return map;
   }
 
-  // maps a json object with a list of Patient-objects as value to a dart map
-  static Map<String, List<Patient>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<Patient>>{};
+  // maps a json object with a list of PatientDTO-objects as value to a dart map
+  static Map<String, List<PatientDTO>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<PatientDTO>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = Patient.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = PatientDTO.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;

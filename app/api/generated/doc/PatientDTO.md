@@ -1,4 +1,4 @@
-# manv_api.model.Patient
+# manv_api.model.PatientDTO
 
 ## Load the model package
 ```dart

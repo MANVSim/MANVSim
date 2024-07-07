@@ -10,13 +10,13 @@
 
 part of manv_api;
 
-class Action {
-  /// Returns a new [Action] instance.
-  Action({
+class LocationDTO {
+  /// Returns a new [LocationDTO] instance.
+  LocationDTO({
     this.id,
     this.name,
-    this.durationInSeconds,
-    this.resourceNamesNeeded = const [],
+    this.resources = const [],
+    this.locations = const [],
   });
 
   ///
@@ -35,33 +35,27 @@ class Action {
   ///
   String? name;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? durationInSeconds;
+  List<ResourceDTO> resources;
 
-  List<String> resourceNamesNeeded;
+  List<LocationDTO> locations;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is Action &&
+  bool operator ==(Object other) => identical(this, other) || other is LocationDTO &&
     other.id == id &&
     other.name == name &&
-    other.durationInSeconds == durationInSeconds &&
-    _deepEquality.equals(other.resourceNamesNeeded, resourceNamesNeeded);
+    _deepEquality.equals(other.resources, resources) &&
+    _deepEquality.equals(other.locations, locations);
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (id == null ? 0 : id!.hashCode) +
     (name == null ? 0 : name!.hashCode) +
-    (durationInSeconds == null ? 0 : durationInSeconds!.hashCode) +
-    (resourceNamesNeeded.hashCode);
+    (resources.hashCode) +
+    (locations.hashCode);
 
   @override
-  String toString() => 'Action[id=$id, name=$name, durationInSeconds=$durationInSeconds, resourceNamesNeeded=$resourceNamesNeeded]';
+  String toString() => 'LocationDTO[id=$id, name=$name, resources=$resources, locations=$locations]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -75,19 +69,15 @@ class Action {
     } else {
       json[r'name'] = null;
     }
-    if (this.durationInSeconds != null) {
-      json[r'duration_in_seconds'] = this.durationInSeconds;
-    } else {
-      json[r'duration_in_seconds'] = null;
-    }
-      json[r'resource_names_needed'] = this.resourceNamesNeeded;
+      json[r'resources'] = this.resources;
+      json[r'locations'] = this.locations;
     return json;
   }
 
-  /// Returns a new [Action] instance and imports its values from
+  /// Returns a new [LocationDTO] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static Action? fromJson(dynamic value) {
+  static LocationDTO? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -96,29 +86,27 @@ class Action {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "Action[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "Action[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "LocationDTO[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "LocationDTO[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return Action(
+      return LocationDTO(
         id: mapValueOfType<int>(json, r'id'),
         name: mapValueOfType<String>(json, r'name'),
-        durationInSeconds: mapValueOfType<int>(json, r'duration_in_seconds'),
-        resourceNamesNeeded: json[r'resource_names_needed'] is Iterable
-            ? (json[r'resource_names_needed'] as Iterable).cast<String>().toList(growable: false)
-            : const [],
+        resources: ResourceDTO.listFromJson(json[r'resources']),
+        locations: LocationDTO.listFromJson(json[r'locations']),
       );
     }
     return null;
   }
 
-  static List<Action> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <Action>[];
+  static List<LocationDTO> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <LocationDTO>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = Action.fromJson(row);
+        final value = LocationDTO.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -127,12 +115,12 @@ class Action {
     return result.toList(growable: growable);
   }
 
-  static Map<String, Action> mapFromJson(dynamic json) {
-    final map = <String, Action>{};
+  static Map<String, LocationDTO> mapFromJson(dynamic json) {
+    final map = <String, LocationDTO>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = Action.fromJson(entry.value);
+        final value = LocationDTO.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -141,14 +129,14 @@ class Action {
     return map;
   }
 
-  // maps a json object with a list of Action-objects as value to a dart map
-  static Map<String, List<Action>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<Action>>{};
+  // maps a json object with a list of LocationDTO-objects as value to a dart map
+  static Map<String, List<LocationDTO>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<LocationDTO>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = Action.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = LocationDTO.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;
