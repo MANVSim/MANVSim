@@ -58,7 +58,12 @@ function TemplateEntry({
                 <div className="align-self-center">{execution}</div>
               </button>
               <div className="w-25">
-                <button className="btn btn-success me-2 w-100" onClick={() => activateExecution(execution, navigate)}>Aktivieren</button>
+                <button className="btn btn-success me-2 w-100" onClick={() => activateExecution(execution, navigate)}>
+                  <svg id="execution-play-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-play-fill d-none" viewBox="0 0 16 16">
+                    <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393" />
+                  </svg>
+                  <span id="execution-play-text">Aktivieren</span>
+                </button>
               </div>
             </li>
           ))
@@ -77,16 +82,25 @@ function TemplateEntry({
               readOnly
             />
           </FormBS.Group>
-          <FormBS.Group className="flex-fill me-3" controlId="formGroupName">
-            <FormBS.Control
-              required
-              type="text"
-              placeholder="Name der Execution"
-              name="name"
-              onChange={(e) => setFormData({ ...formDataTemp, name: e.target.value })}
-            />
-          </FormBS.Group>
-          <button className="btn btn-primary w-25" type="submit">Erstellen</button>
+          <li className="w-100 d-flex mb-2">
+            <FormBS.Group className="flex-fill me-2" controlId="formGroupName">
+              <FormBS.Control
+                required
+                type="text"
+                placeholder="Name der Execution"
+                name="name"
+                onChange={(e) => setFormData({ ...formDataTemp, name: e.target.value })}
+              />
+            </FormBS.Group>
+            <div className="w-25">
+              <button className="btn btn-primary w-100" type="submit">
+                <svg id="execution-save-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-check d-none" viewBox="0 0 16 16">
+                  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                </svg>
+                <span id="execution-save-text">Erstellen</span>
+              </button>
+            </div>
+          </li>
         </CsrfForm>
       </AccordionBody>
     </AccordionItem>
@@ -106,15 +120,15 @@ export default function Scenario(): ReactElement {
         {activeExecutions.length ? (
           <div className="mb-5">
             {activeExecutions.map((item) => (
-              <li className="d-flex border p-1" key={item.id}>
-                <div className="mt-1 ms-2 me-auto">
-                  <span>{item.name}</span>
+              <li className="d-flex border p-1 flex-row" key={item.id}>
+                <div id="active-execution-name" className="ms-2 me-auto d-flex">
+                  <span className="align-self-center">{item.name}</span>
                 </div>
-                <div id="active-execution-status" className="mt-1 me-5" >
-                  <span style={{ color: getColor(item.status) }}>{item.status}</span>
+                <div id="active-execution-status" className=" d-flex" >
+                  <span className="align-self-center" style={{ color: getColor(item.status) }}>{item.status}</span>
                 </div>
-                <div className="me-2 ms-5">
-                  <button className="btn btn-secondary me-2" onClick={() => navigate(`/execution/${item.id}`)}>Verwalten</button>
+                <div id="active-execution-button-manage" className="ms-5 d-flex">
+                  <button className="btn btn-secondary me-2 align-self-center" onClick={() => navigate(`/execution/${item.id}`)}>Verwalten</button>
                 </div>
               </li>
             ))}
