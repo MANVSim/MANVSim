@@ -271,7 +271,7 @@ import 'package:manv_api/api.dart';
 
 final api_instance = DefaultApi();
 final performedActionId = performedActionId_example; // String | 
-final patientId = patientId_example; // String | 
+final patientId = 56; // int | 
 
 try {
     final result = api_instance.runActionPerformResultGet(performedActionId, patientId);
@@ -286,7 +286,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **performedActionId** | **String**|  | 
- **patientId** | **String**|  | 
+ **patientId** | **int**|  | 
 
 ### Return type
 

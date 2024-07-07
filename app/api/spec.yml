@@ -390,7 +390,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         '200':
           description: The result of the performed action.

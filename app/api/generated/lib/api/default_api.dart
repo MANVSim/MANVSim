@@ -285,8 +285,8 @@ class DefaultApi {
   ///
   /// * [String] performedActionId (required):
   ///
-  /// * [String] patientId (required):
-  Future<Response> runActionPerformResultGetWithHttpInfo(String performedActionId, String patientId,) async {
+  /// * [int] patientId (required):
+  Future<Response> runActionPerformResultGetWithHttpInfo(String performedActionId, int patientId,) async {
     // ignore: prefer_const_declarations
     final path = r'/run/action/perform/result';
 
@@ -320,8 +320,8 @@ class DefaultApi {
   ///
   /// * [String] performedActionId (required):
   ///
-  /// * [String] patientId (required):
-  Future<String?> runActionPerformResultGet(String performedActionId, String patientId,) async {
+  /// * [int] patientId (required):
+  Future<String?> runActionPerformResultGet(String performedActionId, int patientId,) async {
     final response = await runActionPerformResultGetWithHttpInfo(performedActionId, patientId,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
