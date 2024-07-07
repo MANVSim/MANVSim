@@ -1,3 +1,5 @@
+import 'package:manv_api/api.dart';
+
 class PatientAction {
   final int id;
   final String name;
@@ -26,5 +28,10 @@ class PatientAction {
       _ =>
         throw const FormatException('Failed to parse patient action from JSON.')
     };
+  }
+
+  factory PatientAction.fromApi(Action action) {
+    // TODO
+    return PatientAction.fromJson(action.toJson());
   }
 }
