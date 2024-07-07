@@ -1,9 +1,15 @@
+import 'package:manv_api/api.dart';
+
 class Patient {
   final int id;
   final String name;
   final String injuries;
 
   Patient({required this.id, required this.name, required this.injuries});
+
+  factory Patient.fromApi(PatientDTO dto) {
+    return Patient.fromJson(dto.toJson());
+  }
 
   factory Patient.fromJson(Map<String, dynamic> json) {
     return switch (json) {

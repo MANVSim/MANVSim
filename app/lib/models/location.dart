@@ -1,3 +1,4 @@
+import 'package:manv_api/api.dart';
 import 'package:manvsim/models/resource.dart';
 
 class Location {
@@ -11,6 +12,11 @@ class Location {
       required this.name,
       required this.resources,
       required this.locations});
+
+  factory Location.fromApi(LocationDTO dto) {
+    // TODO
+    return Location.fromJson(dto.toJson());
+  }
 
   factory Location.fromJson(Map<String, dynamic> json) {
     return switch (json) {

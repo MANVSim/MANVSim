@@ -30,7 +30,7 @@ class PatientAction {
     };
   }
 
-  factory PatientAction.fromApi(Action action) {
+  factory PatientAction.fromApi(ActionDTO action) {
     // TODO
     return PatientAction.fromJson(action.toJson());
   }
