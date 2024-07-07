@@ -30,16 +30,16 @@ part 'auth/http_bearer_auth.dart';
 
 part 'api/default_api.dart';
 
-part 'model/action.dart';
+part 'model/action_dto.dart';
 part 'model/error.dart';
-part 'model/location.dart';
+part 'model/location_dto.dart';
 part 'model/login_post200_response.dart';
 part 'model/login_post_request.dart';
 part 'model/notifications_get200_response.dart';
-part 'model/patient.dart';
+part 'model/patient_dto.dart';
 part 'model/player_set_name_post401_response.dart';
 part 'model/player_set_name_post_request.dart';
-part 'model/resource.dart';
+part 'model/resource_dto.dart';
 part 'model/run_action_perform_post200_response.dart';
 part 'model/run_action_perform_post_request.dart';
 part 'model/run_location_all_get200_response.dart';

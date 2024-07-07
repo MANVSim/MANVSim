@@ -182,26 +182,26 @@ class ApiClient {
           return valueString == 'true' || valueString == '1';
         case 'DateTime':
           return value is DateTime ? value : DateTime.tryParse(value);
-        case 'Action':
-          return Action.fromJson(value);
+        case 'ActionDTO':
+          return ActionDTO.fromJson(value);
         case 'Error':
           return Error.fromJson(value);
-        case 'Location':
-          return Location.fromJson(value);
+        case 'LocationDTO':
+          return LocationDTO.fromJson(value);
         case 'LoginPost200Response':
           return LoginPost200Response.fromJson(value);
         case 'LoginPostRequest':
           return LoginPostRequest.fromJson(value);
         case 'NotificationsGet200Response':
           return NotificationsGet200Response.fromJson(value);
-        case 'Patient':
-          return Patient.fromJson(value);
+        case 'PatientDTO':
+          return PatientDTO.fromJson(value);
         case 'PlayerSetNamePost401Response':
           return PlayerSetNamePost401Response.fromJson(value);
         case 'PlayerSetNamePostRequest':
           return PlayerSetNamePostRequest.fromJson(value);
-        case 'Resource':
-          return Resource.fromJson(value);
+        case 'ResourceDTO':
+          return ResourceDTO.fromJson(value);
         case 'RunActionPerformPost200Response':
           return RunActionPerformPost200Response.fromJson(value);
         case 'RunActionPerformPostRequest':

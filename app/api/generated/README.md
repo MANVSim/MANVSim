@@ -76,16 +76,16 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
- - [Action](doc//Action.md)
+ - [ActionDTO](doc//ActionDTO.md)
  - [Error](doc//Error.md)
- - [Location](doc//Location.md)
+ - [LocationDTO](doc//LocationDTO.md)
  - [LoginPost200Response](doc//LoginPost200Response.md)
  - [LoginPostRequest](doc//LoginPostRequest.md)
  - [NotificationsGet200Response](doc//NotificationsGet200Response.md)
- - [Patient](doc//Patient.md)
+ - [PatientDTO](doc//PatientDTO.md)
  - [PlayerSetNamePost401Response](doc//PlayerSetNamePost401Response.md)
  - [PlayerSetNamePostRequest](doc//PlayerSetNamePostRequest.md)
- - [Resource](doc//Resource.md)
+ - [ResourceDTO](doc//ResourceDTO.md)
  - [RunActionPerformPost200Response](doc//RunActionPerformPost200Response.md)
  - [RunActionPerformPostRequest](doc//RunActionPerformPostRequest.md)
  - [RunLocationAllGet200Response](doc//RunLocationAllGet200Response.md)

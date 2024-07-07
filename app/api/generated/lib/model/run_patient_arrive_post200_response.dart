@@ -23,7 +23,7 @@ class RunPatientArrivePost200Response {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  Location? playerLocation;
+  LocationDTO? playerLocation;
 
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
@@ -31,7 +31,7 @@ class RunPatientArrivePost200Response {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  Patient? patient;
+  PatientDTO? patient;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunPatientArrivePost200Response &&
@@ -81,8 +81,8 @@ class RunPatientArrivePost200Response {
       }());
 
       return RunPatientArrivePost200Response(
-        playerLocation: Location.fromJson(json[r'player_location']),
-        patient: Patient.fromJson(json[r'patient']),
+        playerLocation: LocationDTO.fromJson(json[r'player_location']),
+        patient: PatientDTO.fromJson(json[r'patient']),
       );
     }
     return null;

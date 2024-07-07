@@ -207,7 +207,7 @@ class DefaultApi {
   }
 
   /// Returns a list of actions available to the user.
-  Future<List<Action>?> runActionAllGet() async {
+  Future<List<ActionDTO>?> runActionAllGet() async {
     final response = await runActionAllGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -217,8 +217,8 @@ class DefaultApi {
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       final responseBody = await _decodeBodyBytes(response);
-      return (await apiClient.deserializeAsync(responseBody, 'List<Action>') as List)
-        .cast<Action>()
+      return (await apiClient.deserializeAsync(responseBody, 'List<ActionDTO>') as List)
+        .cast<ActionDTO>()
         .toList(growable: false);
 
     }

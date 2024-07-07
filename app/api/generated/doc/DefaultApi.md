@@ -165,7 +165,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **runActionAllGet**
-> List<Action> runActionAllGet()
+> List<ActionDTO> runActionAllGet()
 
 Returns a list of actions available to the user.
 
@@ -194,7 +194,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**List<Action>**](Action.md)
+[**List<ActionDTO>**](ActionDTO.md)
 
 ### Authorization
 

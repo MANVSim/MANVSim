@@ -162,9 +162,9 @@ paths:
                 type: object
                 properties:
                   player_location:
-                    $ref: '#/components/schemas/Location'
+                    $ref: '#/components/schemas/LocationDTO'
                   patient:
-                    $ref: '#/components/schemas/Patient'
+                    $ref: '#/components/schemas/PatientDTO'
         '204':
           description: No running execution detected.
         '400':
@@ -217,7 +217,7 @@ paths:
                   locations:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Location'
+                      $ref: '#/components/schemas/LocationDTO'
         '204':
           description: No running execution detected.
         '400':
@@ -250,7 +250,7 @@ paths:
                 type: object
                 properties:
                   player_location:
-                      $ref: '#/components/schemas/Location'
+                      $ref: '#/components/schemas/LocationDTO'
         '204':
           description: No running execution detected.
         '400':
@@ -303,7 +303,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Action'
+                  $ref: '#/components/schemas/ActionDTO'
               example:
                 - id: 1
                   name: Pflaster anbringen
@@ -456,7 +456,7 @@ components:
 
   schemas:
 
-    Patient:
+    PatientDTO:
       type: object
       properties:
         id:
@@ -466,7 +466,7 @@ components:
         injuries:
           type: string
 
-    Location:
+    LocationDTO:
       type: object
       properties:
         id:
@@ -476,13 +476,13 @@ components:
         resources:
           type: array
           items:
-            $ref: '#/components/schemas/Resource'
+            $ref: '#/components/schemas/ResourceDTO'
         locations:
           type: array
           items:
-            $ref: '#/components/schemas/Location'
+            $ref: '#/components/schemas/LocationDTO'
 
-    Resource:
+    ResourceDTO:
       type: object
       properties:
         id:
@@ -492,7 +492,7 @@ components:
         quantity:
           type: integer
 
-    Action:
+    ActionDTO:
       type: object
       properties:
         id:

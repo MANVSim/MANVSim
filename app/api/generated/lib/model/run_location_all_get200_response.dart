@@ -16,7 +16,7 @@ class RunLocationAllGet200Response {
     this.locations = const [],
   });
 
-  List<Location> locations;
+  List<LocationDTO> locations;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunLocationAllGet200Response &&
@@ -55,7 +55,7 @@ class RunLocationAllGet200Response {
       }());
 
       return RunLocationAllGet200Response(
-        locations: Location.listFromJson(json[r'locations']),
+        locations: LocationDTO.listFromJson(json[r'locations']),
       );
     }
     return null;
