@@ -33,7 +33,7 @@ class PatientService {
             ));
   }
 
-  static Future<List<String>?> fetchPatientsTans(int patientId) async {
+  static Future<List<int>?> fetchPatientsTans() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api
         .runPatientAllTansGet()

@@ -21,7 +21,7 @@ class _PatientScreenState extends State<PatientScreen> {
 
   @override
   void initState() {
-    futurePatientLocation = arriveAtPatient(widget.patientId);
+    futurePatientLocation = PatientService.arriveAtPatient(widget.patientId);
     super.initState();
   }
 
@@ -60,7 +60,7 @@ class _PatientScreenState extends State<PatientScreen> {
 
   Future refresh() {
     setState(() {
-      futurePatientLocation = arriveAtPatient(widget.patientId);
+      futurePatientLocation = PatientService.arriveAtPatient(widget.patientId);
     });
     return futurePatientLocation;
   }

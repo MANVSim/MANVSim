@@ -16,7 +16,7 @@ class RunPatientAllTansGet200Response {
     this.tans = const [],
   });
 
-  List<String> tans;
+  List<int> tans;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunPatientAllTansGet200Response &&
@@ -56,7 +56,7 @@ class RunPatientAllTansGet200Response {
 
       return RunPatientAllTansGet200Response(
         tans: json[r'tans'] is Iterable
-            ? (json[r'tans'] as Iterable).cast<String>().toList(growable: false)
+            ? (json[r'tans'] as Iterable).cast<int>().toList(growable: false)
             : const [],
       );
     }

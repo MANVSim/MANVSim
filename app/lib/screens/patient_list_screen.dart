@@ -14,11 +14,11 @@ class PatientListScreen extends StatefulWidget {
 }
 
 class _PatientListScreenState extends State<PatientListScreen> {
-  late Future<List<Patient>> futurePatientList;
+  late Future<List<int>?> futurePatientTanList;
 
   @override
   void initState() {
-    futurePatientList = fetchPatientList();
+    futurePatientTanList = PatientService.fetchPatientsTans();
     super.initState();
   }
 
@@ -33,12 +33,12 @@ class _PatientListScreenState extends State<PatientListScreen> {
         body: RefreshIndicator(
           onRefresh: () {
             setState(() {
-              futurePatientList = fetchPatientList();
+              futurePatientTanList = PatientService.fetchPatientsTans();
             });
-            return futurePatientList;
+            return futurePatientTanList;
           },
-          child: FutureBuilder<List<Patient>>(
-              future: futurePatientList,
+          child: FutureBuilder<List<int>?>(
+              future: futurePatientTanList,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text('${snapshot.error}');
@@ -46,26 +46,23 @@ class _PatientListScreenState extends State<PatientListScreen> {
                     snapshot.connectionState != ConnectionState.done) {
                   return const Center(child: CircularProgressIndicator());
                 }
+                var patientTanList = snapshot.data ?? [];
                 return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    final patient = snapshot.data![index];
-                    return Card(
-                        child: ListTile(
-                      leading: const Icon(Icons.person),
-                      title: Text(patient.name),
-                      subtitle: Text(patient.injuries),
-                      trailing: Text(patient.id.toString()),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    PatientScreen(patientId: patient.id)));
-                      },
-                    ));
-                  },
-                );
+                    itemCount: patientTanList.length,
+                    itemBuilder: (context, index) => Card(
+                            child: ListTile(
+                          leading: const Icon(Icons.person),
+                          title: Text(patientTanList[index].toString()),
+                          // TODO
+                          //trailing: Text(patient.id.toString()),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PatientScreen(
+                                        patientId: patientTanList[index])));
+                          },
+                        )));
               }),
         ));
   }

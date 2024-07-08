@@ -130,7 +130,7 @@ paths:
                   tans:
                     type: array
                     items:
-                      type: string
+                      type: integer
                     example: [ 1, 12, 42 ]
 
         '204':

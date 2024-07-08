@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manvsim/screens/patient_screen.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/widgets/tan_input.dart';
@@ -34,7 +35,13 @@ class TanScreen extends StatelessWidget {
               ElevatedButton.icon(
                 icon: const Icon(Icons.qr_code_scanner),
                 label: Text(AppLocalizations.of(context)!.qrCodeScanButton),
-                onPressed: () {},
+                onPressed: () {
+                  // TODO
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PatientScreen(patientId: 0)));
+                },
               ),
             ],
           ),
