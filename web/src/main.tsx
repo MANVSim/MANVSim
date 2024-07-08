@@ -27,7 +27,7 @@ const router = createBrowserRouter([
         loader: Scenario.loader,
       },
       {
-        path: "/execution",
+        path: "/execution/create",
         action: Scenario.action
       },
       {

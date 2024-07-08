@@ -106,14 +106,15 @@ export type Player = z.infer<typeof player>
 export const isPlayer = isTypeFactory<Player>(player)
 
 export const ExecutionStatusEnum = z.enum([
-  "running",
-  "pending",
-  "finished",
-  "unknown",
+  "RUNNING",
+  "PENDING",
+  "FINISHED",
+  "UNKNOWN",
 ])
 
 const executionData = z.object({
-  name: z.string(),
+  id: z.number(),
+  name: z.string().or(z.null()),
   players: z.array(player),
   status: ExecutionStatusEnum,
   roles: z.array(role),

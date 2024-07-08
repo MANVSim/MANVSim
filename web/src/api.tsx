@@ -78,14 +78,15 @@ export async function postActivateExecution(id: number): Promise<Response> {
 }
 export async function getActiveExecutions(): Promise<ExecutionData[]> {
   const activeExecutions = await tryFetchJson<ExecutionData[]>(`execution/active`)
-  if (Array.isArray(activeExecutions) && activeExecutions.every(isExecutionData)) {
+  if (Array.isArray(activeExecutions)) {
     return activeExecutions
   }
   throw Error(`Could not load active executions!`)
 }
 
 export async function getExecution(id: string): Promise<ExecutionData> {
-  return tryFetchJson<ExecutionData>(`execution?id=${id}`)
+  const result = tryFetchJson<ExecutionData>(`execution?id=${id}`)
+  return result
 }
 
 export async function changeExecutionStatus(

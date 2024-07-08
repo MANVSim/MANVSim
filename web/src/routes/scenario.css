@@ -22,12 +22,12 @@
 @media screen and (max-width:769px) {
 
     #active-execution-status {
-        margin-right: 2rem !important
+        margin-right: 2rem !important;
+        margin-left: 10px
     }
 
     #active-execution-name {
         padding-right: 10px !important;
-        max-width: 30px;
         overflow: scroll;
     }
 

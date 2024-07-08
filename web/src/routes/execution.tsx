@@ -27,7 +27,7 @@ import {
 } from "../types"
 import CsrfForm from "../components/CsrfForm"
 import { useSubmit } from "react-router-dom"
-import { changeExecutionStatus, getExecution, togglePlayerStatus createNewPlayer,} from "../api"
+import { changeExecutionStatus, getExecution, togglePlayerStatus, createNewPlayer, } from "../api"
 
 function TanCard({ player }: { player: Player }): ReactElement {
   return (
@@ -90,15 +90,15 @@ function Status({ execution }: { execution: ExecutionData }): ReactElement {
           onChange={(e) =>
             setStatus(
               ExecutionStatusEnum.safeParse(e.currentTarget.value).data ||
-                "unknown",
+              "UNKNOWN",
             )
           }
         >
-          <option value="pending">Vorbereitung</option>
-          <option value="running">Laufend</option>
-          <option value="finished">Beendet</option>
-          {execution.status === "unknown" && (
-            <option value="unknown" disabled>
+          <option value="PENDING">Vorbereitung</option>
+          <option value="RUNNING">Laufend</option>
+          <option value="FINISHED">Beendet</option>
+          {execution.status === "UNKNOWN" && (
+            <option value="UNKNOWN" disabled>
               Unbekannt
             </option>
           )}
@@ -110,7 +110,6 @@ function Status({ execution }: { execution: ExecutionData }): ReactElement {
 
 export default function Execution(): ReactElement {
   const loaderData = useLoaderData()
-
   const [execution, setExecution] = useState<null | ExecutionData>(
     isExecutionData(loaderData) ? loaderData : null,
   )

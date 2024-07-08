@@ -70,7 +70,7 @@ function TemplateEntry({
         ) : (
           <div className="fw-light fst-italic">Keine Ausführungen</div>
         )}
-        <CsrfForm className={`d-flex mt-2 ${isVisible ? '' : 'd-none'}`} method="post" action="/execution">
+        <CsrfForm className={`d-flex mt-2 ${isVisible ? '' : 'd-none'}`} method="post" action="/execution/create">
           <FormBS.Group className="d-none" controlId="formGroupScenarioId">
             <FormBS.Label>Scenario-ID</FormBS.Label>
             <FormBS.Control
@@ -175,7 +175,7 @@ Scenario.action = async function ({
   request,
 }: ActionFunctionArgs<Request>) {
   const formData = await request.formData()
-  const id_json = await tryFetchJson<ExecutionData>("execution", { body: formData, method: "POST" })
+  const id_json = await tryFetchJson<ExecutionData>("execution/create", { body: formData, method: "POST" })
   if (id_json.id) return redirect(`/execution/${id_json.id}`)
   else {
     alert(`No execution created due to input/db error.`)

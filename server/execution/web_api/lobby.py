@@ -1,7 +1,7 @@
 from typing import List
 import logging
 
-from flask import Blueprint, Response, jsonify
+from flask import Blueprint, Response
 from string_utils import booleanize
 from werkzeug.exceptions import NotFound, BadRequest, InternalServerError
 
@@ -10,6 +10,7 @@ from app_config import csrf, db
 from event_logging.event import Event
 from execution import run
 from execution.entities.execution import Execution
+from execution.services import entityloader
 from execution.services.entityloader import load_execution
 from execution.utils.util import try_get_execution
 from utils import time
@@ -35,27 +36,25 @@ def activate_execution(id: int):
 @web_api.get("/execution/active")
 def get_all_active_executions():
     """ Endpoint to return all currently active executions. """
-    return [execution.to_dict() for execution
+    return [execution.to_dict(shallow=True) for execution
             in run.active_executions.values()]
 
 
 @web_api.get("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 @admin_only
-def get_execution_status(id: int):
+def get_execution(id: int):
     # Add the execution to the active executions in case it stems from the
     # database
-    try:
+    if id in run.active_executions.keys():
         execution = run.active_executions[id]
-    except KeyError:
-        if load_execution(id):
-            execution = run.active_executions[id]
-        else:
-            raise InternalServerError(
-                f"Could not activate execution with id {id}")
+    else:
+        execution = entityloader.load_execution(id, save_in_memory=False)
 
     return {
-        "status": execution.status.value,
+        "id": execution.id,
+        "name": execution.name,
+        "status": execution.status.name,
         "players": [{
             "tan": player.tan,
             "name": player.name,
@@ -75,7 +74,7 @@ def get_execution_status(id: int):
     }
 
 
-@web_api.post("/execution")
+@web_api.post("/execution/create")
 @required("scenario_id", int, RequiredValueSource.FORM)
 @required("name", str, RequiredValueSource.FORM)
 def create_execution(scenario_id: int, name: str):
