@@ -96,7 +96,7 @@ class TanInputFieldState extends State<TanInputField> {
           child: TextField(
             controller: _controllers[index],
             focusNode: _focusNodes[index],
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.text,
             textAlign: TextAlign.center,
             inputFormatters: [
               LengthLimitingTextInputFormatter(1),
