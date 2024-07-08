@@ -227,8 +227,7 @@ class LoginScreenState extends State<LoginScreen> {
                 onChanged: (value) => _resetErrorMessage(_LoginInputType.URL),
 
               ),
-              const SizedBox(height: 16),
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
               if (_isLoading)
                 const CircularProgressIndicator(),
               if (!_isLoading)

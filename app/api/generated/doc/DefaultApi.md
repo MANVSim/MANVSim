@@ -18,7 +18,7 @@ Method | HTTP request | Description
 [**runLocationAllGet**](DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of  top-level accessible locations.
 [**runLocationLeavePost**](DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
 [**runLocationTakeFromPost**](DefaultApi.md#runlocationtakefrompost) | **POST** /run/location/take-from | A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
-[**runPatientAllTansGet**](DefaultApi.md#runpatientalltansget) | **GET** /run/patient/all-tans | Returns a list of all patients.
+[**runPatientAllIdsGet**](DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 [**runPatientArrivePost**](DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
 [**runPatientLeavePost**](DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
 [**scenarioStartTimeGet**](DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
@@ -438,10 +438,10 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **runPatientAllTansGet**
-> RunPatientAllTansGet200Response runPatientAllTansGet()
+# **runPatientAllIdsGet**
+> RunPatientAllIdsGet200Response runPatientAllIdsGet()
 
-Returns a list of all patients.
+Returns a list of all patient ids.
 
 ### Example
 ```dart
@@ -456,10 +456,10 @@ import 'package:manv_api/api.dart';
 final api_instance = DefaultApi();
 
 try {
-    final result = api_instance.runPatientAllTansGet();
+    final result = api_instance.runPatientAllIdsGet();
     print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->runPatientAllTansGet: $e\n');
+    print('Exception when calling DefaultApi->runPatientAllIdsGet: $e\n');
 }
 ```
 
@@ -468,7 +468,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**RunPatientAllTansGet200Response**](RunPatientAllTansGet200Response.md)
+[**RunPatientAllIdsGet200Response**](RunPatientAllIdsGet200Response.md)
 
 ### Authorization
 

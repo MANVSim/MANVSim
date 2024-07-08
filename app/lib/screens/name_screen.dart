@@ -18,16 +18,11 @@ class NameScreen extends StatefulWidget {
 }
 
 class NameScreenState extends State<NameScreen> {
-
-
   final TextEditingController _nameController = TextEditingController();
-
 
   String? _errorMessage;
   bool _nameInputFailure = false;
   bool _isLoading = false;
-
-
 
   InputDecoration _textFieldDecoration(bool hasInputFailure, String text) {
     return InputDecoration(
@@ -36,14 +31,13 @@ class NameScreenState extends State<NameScreen> {
       filled: hasInputFailure,
       border: hasInputFailure
           ? const OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.red),
-      )
+              borderSide: BorderSide(color: Colors.red),
+            )
           : null,
     );
   }
 
   void _resetErrorMessage() {
-
     if (_errorMessage != null || _nameInputFailure) {
       setState(() {
         _errorMessage = null;
@@ -70,8 +64,8 @@ class NameScreenState extends State<NameScreen> {
       ApiService apiService = GetIt.instance.get<ApiService>();
 
       try {
-        await apiService.api.playerSetNamePost(
-            PlayerSetNamePostRequest(name: name));
+        await apiService.api
+            .playerSetNamePost(PlayerSetNamePostRequest(name: name));
       } on ApiException catch (e) {
         apiService.handleErrorCode(e, context);
         failureMessage = e.toString();
@@ -86,7 +80,6 @@ class NameScreenState extends State<NameScreen> {
       });
 
       if (failureMessage == null) {
-
         TanUser user = Provider.of<TanUser>(context, listen: false);
         user.name = name;
         await user.persist();
@@ -94,15 +87,11 @@ class NameScreenState extends State<NameScreen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const WaitScreen()),
-              (Route<dynamic> route) =>
-          false,
+          (Route<dynamic> route) => false,
         );
       }
     }
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -137,18 +126,14 @@ class NameScreenState extends State<NameScreen> {
                 ),
               const SizedBox(height: 8),
               TextField(
-                  controller: _nameController,
-                  decoration: _textFieldDecoration(_nameInputFailure,
-                      AppLocalizations.of(context)!.nameName),
-                  onChanged: (value) => _resetErrorMessage(),
+                controller: _nameController,
+                decoration: _textFieldDecoration(
+                    _nameInputFailure, AppLocalizations.of(context)!.nameName),
+                onChanged: (value) => _resetErrorMessage(),
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: () {
-
-                  _handleSetName();
-
-                },
+                onPressed: _handleSetName,
                 icon: const Icon(Icons.start),
                 label: Text(AppLocalizations.of(context)!.nameSubmit),
               ),

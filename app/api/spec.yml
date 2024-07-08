@@ -116,12 +116,12 @@ paths:
         - bearerAuth: [ ]
 
 
-  /run/patient/all-tans:
+  /run/patient/all-ids:
     get:
-      summary: Returns a list of all patients.
+      summary: Returns a list of all patient ids.
       responses:
         '200':
-          description: A JSON array of patients
+          description: A JSON array of patient ids
           content:
             application/json:
               schema:

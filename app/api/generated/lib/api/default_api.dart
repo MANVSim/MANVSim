@@ -480,12 +480,12 @@ class DefaultApi {
     return null;
   }
 
-  /// Returns a list of all patients.
+  /// Returns a list of all patient ids.
   ///
   /// Note: This method returns the HTTP [Response].
-  Future<Response> runPatientAllTansGetWithHttpInfo() async {
+  Future<Response> runPatientAllIdsGetWithHttpInfo() async {
     // ignore: prefer_const_declarations
-    final path = r'/run/patient/all-tans';
+    final path = r'/run/patient/all-ids';
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -508,9 +508,9 @@ class DefaultApi {
     );
   }
 
-  /// Returns a list of all patients.
-  Future<RunPatientAllTansGet200Response?> runPatientAllTansGet() async {
-    final response = await runPatientAllTansGetWithHttpInfo();
+  /// Returns a list of all patient ids.
+  Future<RunPatientAllIdsGet200Response?> runPatientAllIdsGet() async {
+    final response = await runPatientAllIdsGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -518,7 +518,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientAllTansGet200Response',) as RunPatientAllTansGet200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientAllIdsGet200Response',) as RunPatientAllIdsGet200Response;
     
     }
     return null;

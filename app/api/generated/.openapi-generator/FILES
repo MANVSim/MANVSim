@@ -19,7 +19,7 @@ doc/RunLocationAllGet200Response.md
 doc/RunLocationLeavePost200Response.md
 doc/RunLocationTakeFromPost200Response.md
 doc/RunLocationTakeFromPostRequest.md
-doc/RunPatientAllTansGet200Response.md
+doc/RunPatientAllIdsGet200Response.md
 doc/RunPatientArrivePost200Response.md
 doc/RunPatientArrivePostRequest.md
 doc/RunPatientLeavePost200Response.md
@@ -51,13 +51,9 @@ lib/model/run_location_all_get200_response.dart
 lib/model/run_location_leave_post200_response.dart
 lib/model/run_location_take_from_post200_response.dart
 lib/model/run_location_take_from_post_request.dart
-lib/model/run_patient_all_tans_get200_response.dart
+lib/model/run_patient_all_ids_get200_response.dart
 lib/model/run_patient_arrive_post200_response.dart
 lib/model/run_patient_arrive_post_request.dart
 lib/model/run_patient_leave_post200_response.dart
 lib/model/scenario_start_time_get200_response.dart
 pubspec.yaml
-test/action_dto_test.dart
-test/location_dto_test.dart
-test/patient_dto_test.dart
-test/resource_dto_test.dart

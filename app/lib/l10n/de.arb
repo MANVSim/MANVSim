@@ -107,8 +107,9 @@
 
   "notificationScreenName": "Benachrichtigungen",
 
-  "homeScreenName": "Home",
-  "homeTAN": "Patienten TAN",
+  "patientSelectScreenName": "Home",
+  "patientSelectTextField": "Patienten ID",
+  "patientSelectSubmit": "Patient anzeigen",
 
   "qrCodeScanButton"  : "QR Code scannen",
 

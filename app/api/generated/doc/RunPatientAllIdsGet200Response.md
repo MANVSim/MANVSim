@@ -1,4 +1,4 @@
-# manv_api.model.RunPatientAllTansGet200Response
+# manv_api.model.RunPatientAllIdsGet200Response
 
 ## Load the model package
 ```dart

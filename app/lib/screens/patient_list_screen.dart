@@ -14,11 +14,11 @@ class PatientListScreen extends StatefulWidget {
 }
 
 class _PatientListScreenState extends State<PatientListScreen> {
-  late Future<List<int>?> futurePatientTanList;
+  late Future<List<int>?> futurePatientIdList;
 
   @override
   void initState() {
-    futurePatientTanList = PatientService.fetchPatientsTans();
+    futurePatientIdList = PatientService.fetchPatientsIDs();
     super.initState();
   }
 
@@ -33,12 +33,12 @@ class _PatientListScreenState extends State<PatientListScreen> {
         body: RefreshIndicator(
           onRefresh: () {
             setState(() {
-              futurePatientTanList = PatientService.fetchPatientsTans();
+              futurePatientIdList = PatientService.fetchPatientsIDs();
             });
-            return futurePatientTanList;
+            return futurePatientIdList;
           },
           child: FutureBuilder<List<int>?>(
-              future: futurePatientTanList,
+              future: futurePatientIdList,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text('${snapshot.error}');
@@ -46,13 +46,13 @@ class _PatientListScreenState extends State<PatientListScreen> {
                     snapshot.connectionState != ConnectionState.done) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                var patientTanList = snapshot.data ?? [];
+                var patientIds = snapshot.data ?? [];
                 return ListView.builder(
-                    itemCount: patientTanList.length,
+                    itemCount: patientIds.length,
                     itemBuilder: (context, index) => Card(
                             child: ListTile(
                           leading: const Icon(Icons.person),
-                          title: Text(patientTanList[index].toString()),
+                          title: Text(patientIds[index].toString()),
                           // TODO
                           //trailing: Text(patient.id.toString()),
                           onTap: () {
@@ -60,7 +60,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => PatientScreen(
-                                        patientId: patientTanList[index])));
+                                        patientId: patientIds[index])));
                           },
                         )));
               }),
