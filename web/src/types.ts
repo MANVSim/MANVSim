@@ -77,12 +77,28 @@ export type LoginResponse = z.infer<typeof loginResponse>
  */
 export const isLoginResponse = isTypeFactory<LoginResponse>(loginResponse)
 
+const role = z.object({
+  id: z.number(),
+  name: z.string(),
+})
+
+export type Role = z.infer<typeof role>
+
+const location = z.object({
+  id: z.number(),
+  name: z.string(),
+})
+
+export type Location = z.infer<typeof role>
+
 // Player
 const player = z.object({
   tan: z.string(),
   name: z.string().or(z.null()),
-  role: z.string().or(z.null()),
   alerted: z.boolean(),
+  logged_in: z.boolean(),
+  role: role.or(z.null()),
+  location: location.or(z.null()),
 })
 
 export type Player = z.infer<typeof player>
@@ -90,18 +106,18 @@ export type Player = z.infer<typeof player>
 export const isPlayer = isTypeFactory<Player>(player)
 
 export const ExecutionStatusEnum = z.enum([
-  "RUNNING",
-  "PENDING",
-  "FINISHED",
-  "UNKNOWN",
+  "running",
+  "pending",
+  "finished",
+  "unknown",
 ])
 
 const executionData = z.object({
-  id: z.number(),
   name: z.string(),
-  starting_time: z.number(),
   players: z.array(player),
   status: ExecutionStatusEnum,
+  roles: z.array(role),
+  locations: z.array(location),
 })
 
 export type ExecutionData = z.infer<typeof executionData>

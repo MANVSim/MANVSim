@@ -1,6 +1,8 @@
 import random
 import string
 
+from flask import current_app
+
 import models
 from app import create_app
 from app_config import csrf, db
@@ -96,7 +98,7 @@ def uniques(n: int, length: int = 5) -> list[Tan]:
         )
     # Retrieve existing tans
     tans = set()
-    with create_app(csrf, db).app_context():
+    with current_app.app_context():
         db_tans = [tan for tan, in db.session.query(models.Player.tan)]
         tans.update(db_tans)
     existing_tans = set(tans)

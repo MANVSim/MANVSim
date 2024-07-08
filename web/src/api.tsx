@@ -111,3 +111,13 @@ export async function togglePlayerStatus(
     },
   )
 }
+
+export async function createNewPlayer(
+  executionId: string,
+  formData: FormData,
+): Promise<Response> {
+  return tryFetchApi(`execution?id=${executionId}`, {
+    method: "POST",
+    body: formData,
+  })
+}

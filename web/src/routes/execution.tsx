@@ -1,4 +1,12 @@
-import { Button, Card, Container, Form } from "react-bootstrap"
+import "./execution.css"
+import {
+  Button,
+  Card,
+  Collapse,
+  Container,
+  FloatingLabel,
+  Form,
+} from "react-bootstrap"
 import QRCode from "react-qr-code"
 import {
   ActionFunctionArgs,
@@ -14,17 +22,21 @@ import {
   ExecutionData,
   isExecutionData,
   ExecutionStatusEnum,
+  Role,
+  Location,
 } from "../types"
 import CsrfForm from "../components/CsrfForm"
 import { useSubmit } from "react-router-dom"
-import { changeExecutionStatus, getExecution, togglePlayerStatus } from "../api"
+import { changeExecutionStatus, getExecution, togglePlayerStatus createNewPlayer,} from "../api"
 
-function TanCard({ tan }: { tan: string }): ReactElement {
+function TanCard({ player }: { player: Player }): ReactElement {
   return (
     <Card className="d-flex m-1">
-      <QRCode value={tan} className="align-self-center p-3" />
+      <QRCode value={player.tan} className="align-self-center p-3 w-100" />
       <Card.Body>
-        <Card.Title className="text-center">{tan}</Card.Title>
+        <Card.Title className="text-center">{player.tan}</Card.Title>
+        <div>Rolle: {player.role?.name ?? "Unbekannt"}</div>
+        <div>Ort: {player.location?.name ?? "Unbekannt"}</div>
       </Card.Body>
     </Card>
   )
@@ -54,6 +66,8 @@ function PlayerStatus({ player }: { player: Player }): ReactElement {
         </CsrfForm>
       </td>
       <td>{player.name}</td>
+      <td>{player.role?.name ?? "Unbekannt"}</td>
+      <td>{player.location?.name ?? "Unbekannt"}</td>
     </tr>
   )
 }
@@ -66,25 +80,25 @@ function Status({ execution }: { execution: ExecutionData }): ReactElement {
   }, [execution])
 
   return (
-    <div className="mt-5">
+    <div>
+      <h3>Status</h3>
       <CsrfForm method="POST" onChange={(e) => submit(e.currentTarget)}>
         <input type="hidden" name="id" value="change-status" />
-        <Form.Label>Status</Form.Label>
         <Form.Select
           name="new_status"
           value={status}
           onChange={(e) =>
             setStatus(
               ExecutionStatusEnum.safeParse(e.currentTarget.value).data ||
-              "UNKNOWN",
+                "unknown",
             )
           }
         >
-          <option value="PENDING">Vorbereitung</option>
-          <option value="RUNNING">Laufend</option>
-          <option value="FINISHED">Beendet</option>
-          {execution.status === "UNKNOWN" && (
-            <option value="UNKNOWN" disabled>
+          <option value="pending">Vorbereitung</option>
+          <option value="running">Laufend</option>
+          <option value="finished">Beendet</option>
+          {execution.status === "unknown" && (
+            <option value="unknown" disabled>
               Unbekannt
             </option>
           )}
@@ -101,9 +115,11 @@ export default function Execution(): ReactElement {
     isExecutionData(loaderData) ? loaderData : null,
   )
 
+  const [open, setOpen] = useState(false)
+
   const [tansAvailable, tansUsed] = _.partition(
     execution?.players,
-    (): boolean => false, // TODO: Determine if TAN is used or not
+    (player: Player): boolean => player.name === null,
   )
 
   const { executionId } = useParams<{ executionId: string }>()
@@ -130,14 +146,49 @@ export default function Execution(): ReactElement {
       {execution ? (
         <div>
           <h2>Ausführung</h2>
-          <p>ID: {execution.id}</p>
+          <p>ID: {executionId}</p>
+          <Status execution={execution} />
           <h3>Verfügbare TANs:</h3>
-          <Container fluid className="d-flex flex-wrap">
+          <Container fluid className="d-flex flex-wrap my-3">
             {tansAvailable.map((player) => (
-              <TanCard key={player.tan} tan={player.tan} />
+              <TanCard key={player.tan} player={player} />
             ))}
           </Container>
-          <Status execution={execution} />
+          <div className="d-grid border rounded">
+            <Button className="rounded-top" onClick={() => setOpen(!open)}>
+              {open ? "Schließen" : "Weiteren Spieler hinzufügen"}
+            </Button>
+            <Collapse in={open}>
+              <div>
+                <CsrfForm method="POST" className="d-grid gap-2 p-3">
+                  <input type="hidden" name="id" value="new-player" />
+                  <FloatingLabel label="Rolle">
+                    <Form.Select name="role">
+                      {execution.roles.map((role: Role) => {
+                        return (
+                          <option key={role.id} value={role.id}>
+                            {role.name}
+                          </option>
+                        )
+                      })}
+                    </Form.Select>
+                  </FloatingLabel>
+                  <FloatingLabel label="Ort">
+                    <Form.Select name="location">
+                      {execution.locations.map((location: Location) => {
+                        return (
+                          <option key={location.id} value={location.id}>
+                            {location.name}
+                          </option>
+                        )
+                      })}
+                    </Form.Select>
+                  </FloatingLabel>
+                  <Button type="submit">Neuen Spieler erstellen</Button>
+                </CsrfForm>
+              </div>
+            </Collapse>
+          </div>
           <h3 className="mt-5">Aktive TANs:</h3>
           <table className="table">
             <thead>
@@ -145,6 +196,8 @@ export default function Execution(): ReactElement {
                 <th>TAN</th>
                 <th>Status</th>
                 <th>Name</th>
+                <th>Rolle</th>
+                <th>Ort</th>
               </tr>
             </thead>
             <tbody>
@@ -173,13 +226,19 @@ Execution.action = async function ({ params, request }: ActionFunctionArgs) {
   const formData = await request.formData()
   const id = formData.get("id")
   formData.delete("id")
-  if (id === "change-status") {
-    return changeExecutionStatus(params.executionId, formData)
-  } else if (id === "player-status") {
-    const playerTan = formData.get("tan") as string | null
-    if (playerTan === null) return null
-    formData.delete("tan")
-    return togglePlayerStatus(params.executionId, playerTan, formData)
+
+  switch (id) {
+    case "change-status":
+      return changeExecutionStatus(params.executionId, formData)
+    case "player-status": {
+      const playerTan = formData.get("tan") as string | null
+      if (playerTan === null) return null
+      formData.delete("tan")
+      return togglePlayerStatus(params.executionId, playerTan, formData)
+    }
+    case "new-player":
+      return createNewPlayer(params.executionId, formData)
+    default:
+      throw new Error(`Case '${id}' is not covered in Execution.action`)
   }
-  return null
 }
