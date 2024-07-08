@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:manvsim/screens/login_screen.dart';
+import 'package:get_it/get_it.dart';
+import 'package:manvsim/services/api_service.dart';
 
 class LogoutButton extends StatelessWidget {
   const LogoutButton({super.key});
@@ -9,11 +10,8 @@ class LogoutButton extends StatelessWidget {
     return IconButton(
       icon: const Icon(Icons.logout),
       onPressed: () {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-          (Route<dynamic> route) => false, // Removes all previous routes
-        );
+        ApiService apiService = GetIt.instance.get<ApiService>();
+        apiService.logout(context);
       },
     );
   }

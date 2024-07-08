@@ -5,8 +5,27 @@
   "framePatients": "Patienten",
   "frameNotifications": "Benachrichtigungen",
 
+  "startScreenAppName": "MANVSim",
+
   "loginScreenName": "Anmeldung",
-  "loginTAN"     : "TAN",
+  "loginHideAdvancedSettings": "Erweiterte Einstellungen ausblenden",
+  "loginShowAdvancedSettings": "Erweiterte Einstellungen anzeigen",
+  "loginTANText"     : "Bitte TAN eingeben oder QR Code Scannen",
+  "loginTANHeader"     : "TAN Anmeldung",
+  "loginAlreadyLoggedInHeader": "TAN bereits angemeldet",
+  "loginAlreadyLoggedInText": "Diese TAN wurde bereits verwendet. Der Name des Users lautet: {name}",
+    "@loginAlreadyLoggedInText": {
+        "placeholders": {
+        "name": {
+            "type": "String",
+            "example": "John Doe"
+        }
+        }
+    },
+  "loginAlreadyLoggedInButtonContinue": "Trotzdem anmelden",
+  "loginAlreadyLoggedInButtonCancel": "Abbrechen",
+
+
   "loginServerUrl": "Server URL",
   "loginSubmit"  : "Anmelden",
   "loginWarningEmptyFields": "Bitte füllen Sie alle Felder aus",
@@ -20,12 +39,21 @@
         }
     },
 
+
+  "unauthorizedBearerAlertBody": "Du bist nicht berechtigt, diese Aktion auszuführen. Bitte logge dich erneut ein.",
+  "unauthorizedBearerAlertHeader": "Login abgelaufen",
+  "logOutAlertOption": "Ausloggen",
+
+  "waitAlreadyLoggedInHeader": "TAN bereits angemeldet",
+  "waitAlreadyLoggedInText": "Für diese TAN wurde bereits ein Name gesetzt. Bitte loggen Sie sich erneut ein.",
+
   "waitText": "Warten auf Start der Simulation",
   "waitSkip": "Überspringen",
 
   "nameScreenName": "Namen festlegen",
   "nameName": "Name",
   "nameSubmit": "Simulation beitreten",
+  "nameWarningEmptyFields": "Bitte tragen Sie einen Namen ein",
 
   "patientListScreenName": "Patientenliste",
 
