@@ -30,7 +30,7 @@ def setup(app: Flask):
                     400,
                 )
 
-        if "/api/run" in request.path:
+        if "/api/run" in request.path and request.method != "OPTIONS":
             return check_for_exec_status()
 
     app.register_blueprint(lobby.api, url_prefix="/api")
