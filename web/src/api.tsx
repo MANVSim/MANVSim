@@ -7,7 +7,6 @@ import {
   isLoginResponse,
   CsrfToken,
   ExecutionData,
-  isExecutionData,
 } from "./types"
 
 const api = "/web/"
@@ -90,9 +89,11 @@ export async function getExecution(id: string): Promise<ExecutionData> {
 }
 
 export async function changeExecutionStatus(
-  id: string,
-  formData: FormData,
+  id: number,
+  new_status: string,
 ): Promise<Response> {
+  const formData = new FormData()
+  formData.append("new_status", new_status)
   return tryFetchApi(`execution?id=${id}`, {
     method: "PATCH",
     body: formData,

@@ -95,6 +95,7 @@ def create_execution(scenario_id: int, name: str):
 @required("id", int, RequiredValueSource.ARGS)
 @required("new_status", str.upper, RequiredValueSource.FORM)
 @admin_only
+@csrf.exempt  # changes are applied via buttons. Therefore, no CSRF required
 def change_execution_status(id: int, new_status: str):
     execution = try_get_execution(id)
     try:

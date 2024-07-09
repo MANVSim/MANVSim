@@ -1,3 +1,12 @@
 h3 {
   margin-top: 1em
 }
+
+#execution-name-header {
+  margin: 0;
+}
+
+.card button {
+  border-bottom: 1px #6c757d solid;
+  border-radius: 2px 2px 0px 0px;
+}
