@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:manvsim/models/patient.dart';
-import 'package:manvsim/screens/patient_screen.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

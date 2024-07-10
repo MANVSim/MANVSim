@@ -102,14 +102,13 @@ class ApiService {
 
   /// Handles some common error codes
   handleErrorCode(ApiException e, BuildContext context) {
-
-    if (e.code == 401 || e.code == 409) {
-
+    if (e.code == 401 || e.code == 409 || e.code == 422) {
       String? messageHeader;
       String? messageBody;
 
-      if (e.code == 401) {
-        messageHeader = AppLocalizations.of(context)!.unauthorizedBearerAlertHeader;
+      if (e.code == 401 || e.code == 422) {
+        messageHeader =
+            AppLocalizations.of(context)!.unauthorizedBearerAlertHeader;
         messageBody = AppLocalizations.of(context)!.unauthorizedBearerAlertBody;
       } else if (e.code == 409) {
         messageHeader = AppLocalizations.of(context)!.waitAlreadyLoggedInHeader;
@@ -120,21 +119,17 @@ class ApiService {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(
-                messageHeader!),
-            content:
-                Text(messageBody!),
+            title: Text(messageHeader!),
+            content: Text(messageBody!),
             actions: <Widget>[
               TextButton(
-                child: Text(AppLocalizations.of(context)!
-                    .logOutAlertOption),
+                child: Text(AppLocalizations.of(context)!.logOutAlertOption),
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const LoginScreen()),
-                    (Route<dynamic> route) =>
-                        false,
+                    (Route<dynamic> route) => false,
                   );
                 },
               ),
