@@ -40,7 +40,7 @@ class _ActionSelectionState extends State<ActionSelection> {
   @override
   void initState() {
     resources = Location.flattenResourcesFromList(widget.locations);
-    futureActions = fetchActions();
+    futureActions = ActionService.fetchActions();
     futureActions.then((actions) {
       // filter actions by available resources
       possibleActions = actions.where((action) => action.resourceNamesNeeded

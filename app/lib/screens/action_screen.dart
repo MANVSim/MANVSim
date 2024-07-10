@@ -25,12 +25,13 @@ class ActionScreen extends StatefulWidget {
 }
 
 class _ActionScreenState extends State<ActionScreen> {
-  late Future<int> futureActionId;
-  late Future<String> futureResult;
+  late Future<String?> futureActionId;
+  late Future<String?> futureResult;
 
   @override
   void initState() {
-    futureActionId = performAction(widget.action.id, widget.resourceIds);
+    futureActionId = ActionService.performAction(
+        widget.patient.id, widget.action.id, widget.resourceIds);
     super.initState();
   }
 
@@ -45,10 +46,10 @@ class _ActionScreenState extends State<ActionScreen> {
           automaticallyImplyLeading: false,
         ),
         body: Center(
-            child: FutureBuilder<int>(
+            child: FutureBuilder<String?>(
                 future: futureActionId,
                 builder: (context, snapshot) {
-                  if (snapshot.hasError) {
+                  if (snapshot.hasError || snapshot.data == null) {
                     Timer.run(() => showResultDialog(failureContent()));
                   } else if (!snapshot.hasData ||
                       snapshot.connectionState != ConnectionState.done) {
@@ -82,12 +83,13 @@ class _ActionScreenState extends State<ActionScreen> {
     });
   }
 
-  Widget successContent(int performedActionId) {
-    futureResult = fetchActionResult(performedActionId);
-    return FutureBuilder<String>(
+  Widget successContent(String performedActionId) {
+    futureResult =
+        ActionService.fetchActionResult(widget.patient.id, performedActionId);
+    return FutureBuilder<String?>(
         future: futureResult,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
+          if (snapshot.hasError || snapshot.data == null) {
             return Text('${snapshot.error}');
           } else if (!snapshot.hasData ||
               snapshot.connectionState != ConnectionState.done) {
