@@ -86,6 +86,7 @@ Class | Method | HTTP request | Description
  - [PlayerSetNamePost401Response](doc//PlayerSetNamePost401Response.md)
  - [PlayerSetNamePostRequest](doc//PlayerSetNamePostRequest.md)
  - [ResourceDTO](doc//ResourceDTO.md)
+ - [RunActionAllGet200Response](doc//RunActionAllGet200Response.md)
  - [RunActionPerformPost200Response](doc//RunActionPerformPost200Response.md)
  - [RunActionPerformPostRequest](doc//RunActionPerformPostRequest.md)
  - [RunLocationAllGet200Response](doc//RunLocationAllGet200Response.md)

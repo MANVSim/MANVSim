@@ -15,7 +15,7 @@ class PatientDTO {
   PatientDTO({
     this.id,
     this.name,
-    this.injuries,
+    this.location,
   });
 
   ///
@@ -40,23 +40,23 @@ class PatientDTO {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  String? injuries;
+  LocationDTO? location;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is PatientDTO &&
     other.id == id &&
     other.name == name &&
-    other.injuries == injuries;
+    other.location == location;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (id == null ? 0 : id!.hashCode) +
     (name == null ? 0 : name!.hashCode) +
-    (injuries == null ? 0 : injuries!.hashCode);
+    (location == null ? 0 : location!.hashCode);
 
   @override
-  String toString() => 'PatientDTO[id=$id, name=$name, injuries=$injuries]';
+  String toString() => 'PatientDTO[id=$id, name=$name, location=$location]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -70,10 +70,10 @@ class PatientDTO {
     } else {
       json[r'name'] = null;
     }
-    if (this.injuries != null) {
-      json[r'injuries'] = this.injuries;
+    if (this.location != null) {
+      json[r'location'] = this.location;
     } else {
-      json[r'injuries'] = null;
+      json[r'location'] = null;
     }
     return json;
   }
@@ -99,7 +99,7 @@ class PatientDTO {
       return PatientDTO(
         id: mapValueOfType<int>(json, r'id'),
         name: mapValueOfType<String>(json, r'name'),
-        injuries: mapValueOfType<String>(json, r'injuries'),
+        location: LocationDTO.fromJson(json[r'location']),
       );
     }
     return null;

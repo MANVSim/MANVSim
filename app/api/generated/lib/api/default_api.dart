@@ -207,7 +207,7 @@ class DefaultApi {
   }
 
   /// Returns a list of actions available to the user.
-  Future<List<ActionDTO>?> runActionAllGet() async {
+  Future<RunActionAllGet200Response?> runActionAllGet() async {
     final response = await runActionAllGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -216,11 +216,8 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      final responseBody = await _decodeBodyBytes(response);
-      return (await apiClient.deserializeAsync(responseBody, 'List<ActionDTO>') as List)
-        .cast<ActionDTO>()
-        .toList(growable: false);
-
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunActionAllGet200Response',) as RunActionAllGet200Response;
+    
     }
     return null;
   }

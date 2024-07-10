@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **id** | **int** |  | [optional] 
 **name** | **String** |  | [optional] 
 **resources** | [**List<ResourceDTO>**](ResourceDTO.md) |  | [optional] [default to const []]
-**locations** | [**List<LocationDTO>**](LocationDTO.md) |  | [optional] [default to const []]
+**subLocations** | [**List<LocationDTO>**](LocationDTO.md) |  | [optional] [default to const []]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -75,12 +75,12 @@
       }
     }
   },
-  "patientInjuries": "Verletzungen: {patientInjuries}",
-  "@patientInjuries": {
+  "patientLocation": "Position: {patientLocation}",
+  "@patientLocation": {
     "placeholders": {
-      "patientInjuries": {
+      "patientLocation": {
         "type": "String",
-        "example": "Schädelhirntrauma"
+        "example": "RTW"
       }
     }
   },

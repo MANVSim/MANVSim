@@ -13,6 +13,7 @@ doc/PatientDTO.md
 doc/PlayerSetNamePost401Response.md
 doc/PlayerSetNamePostRequest.md
 doc/ResourceDTO.md
+doc/RunActionAllGet200Response.md
 doc/RunActionPerformPost200Response.md
 doc/RunActionPerformPostRequest.md
 doc/RunLocationAllGet200Response.md
@@ -45,6 +46,7 @@ lib/model/patient_dto.dart
 lib/model/player_set_name_post401_response.dart
 lib/model/player_set_name_post_request.dart
 lib/model/resource_dto.dart
+lib/model/run_action_all_get200_response.dart
 lib/model/run_action_perform_post200_response.dart
 lib/model/run_action_perform_post_request.dart
 lib/model/run_location_all_get200_response.dart

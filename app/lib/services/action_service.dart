@@ -7,8 +7,8 @@ class ActionService {
   // TODO error handling?
   static Future<List<PatientAction>> fetchActions() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
-    return await apiService.api.runActionAllGet().then(
-        (value) => value?.map((e) => PatientAction.fromApi(e)).toList() ?? []);
+    return await apiService.api.runActionAllGet().then((value) =>
+        value?.actions.map((e) => PatientAction.fromApi(e)).toList() ?? []);
   }
 
   static Future<String?> performAction(

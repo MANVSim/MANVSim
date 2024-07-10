@@ -16,7 +16,7 @@ class LocationDTO {
     this.id,
     this.name,
     this.resources = const [],
-    this.locations = const [],
+    this.subLocations = const [],
   });
 
   ///
@@ -37,14 +37,14 @@ class LocationDTO {
 
   List<ResourceDTO> resources;
 
-  List<LocationDTO> locations;
+  List<LocationDTO> subLocations;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is LocationDTO &&
     other.id == id &&
     other.name == name &&
     _deepEquality.equals(other.resources, resources) &&
-    _deepEquality.equals(other.locations, locations);
+    _deepEquality.equals(other.subLocations, subLocations);
 
   @override
   int get hashCode =>
@@ -52,10 +52,10 @@ class LocationDTO {
     (id == null ? 0 : id!.hashCode) +
     (name == null ? 0 : name!.hashCode) +
     (resources.hashCode) +
-    (locations.hashCode);
+    (subLocations.hashCode);
 
   @override
-  String toString() => 'LocationDTO[id=$id, name=$name, resources=$resources, locations=$locations]';
+  String toString() => 'LocationDTO[id=$id, name=$name, resources=$resources, subLocations=$subLocations]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -70,7 +70,7 @@ class LocationDTO {
       json[r'name'] = null;
     }
       json[r'resources'] = this.resources;
-      json[r'locations'] = this.locations;
+      json[r'sub_locations'] = this.subLocations;
     return json;
   }
 
@@ -96,7 +96,7 @@ class LocationDTO {
         id: mapValueOfType<int>(json, r'id'),
         name: mapValueOfType<String>(json, r'name'),
         resources: ResourceDTO.listFromJson(json[r'resources']),
-        locations: LocationDTO.listFromJson(json[r'locations']),
+        subLocations: LocationDTO.listFromJson(json[r'sub_locations']),
       );
     }
     return null;

@@ -15,8 +15,9 @@ class ActionDTO {
   ActionDTO({
     this.id,
     this.name,
-    this.durationInSeconds,
-    this.resourceNamesNeeded = const [],
+    this.durationSec,
+    this.resourcesNeeded = const [],
+    this.pictureRef,
   });
 
   ///
@@ -41,27 +42,37 @@ class ActionDTO {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  int? durationInSeconds;
+  int? durationSec;
 
-  List<String> resourceNamesNeeded;
+  List<String> resourcesNeeded;
+
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? pictureRef;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ActionDTO &&
     other.id == id &&
     other.name == name &&
-    other.durationInSeconds == durationInSeconds &&
-    _deepEquality.equals(other.resourceNamesNeeded, resourceNamesNeeded);
+    other.durationSec == durationSec &&
+    _deepEquality.equals(other.resourcesNeeded, resourcesNeeded) &&
+    other.pictureRef == pictureRef;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (id == null ? 0 : id!.hashCode) +
     (name == null ? 0 : name!.hashCode) +
-    (durationInSeconds == null ? 0 : durationInSeconds!.hashCode) +
-    (resourceNamesNeeded.hashCode);
+    (durationSec == null ? 0 : durationSec!.hashCode) +
+    (resourcesNeeded.hashCode) +
+    (pictureRef == null ? 0 : pictureRef!.hashCode);
 
   @override
-  String toString() => 'ActionDTO[id=$id, name=$name, durationInSeconds=$durationInSeconds, resourceNamesNeeded=$resourceNamesNeeded]';
+  String toString() => 'ActionDTO[id=$id, name=$name, durationSec=$durationSec, resourcesNeeded=$resourcesNeeded, pictureRef=$pictureRef]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -75,12 +86,17 @@ class ActionDTO {
     } else {
       json[r'name'] = null;
     }
-    if (this.durationInSeconds != null) {
-      json[r'duration_in_seconds'] = this.durationInSeconds;
+    if (this.durationSec != null) {
+      json[r'duration_sec'] = this.durationSec;
     } else {
-      json[r'duration_in_seconds'] = null;
+      json[r'duration_sec'] = null;
     }
-      json[r'resource_names_needed'] = this.resourceNamesNeeded;
+      json[r'resources_needed'] = this.resourcesNeeded;
+    if (this.pictureRef != null) {
+      json[r'picture_ref'] = this.pictureRef;
+    } else {
+      json[r'picture_ref'] = null;
+    }
     return json;
   }
 
@@ -105,10 +121,11 @@ class ActionDTO {
       return ActionDTO(
         id: mapValueOfType<int>(json, r'id'),
         name: mapValueOfType<String>(json, r'name'),
-        durationInSeconds: mapValueOfType<int>(json, r'duration_in_seconds'),
-        resourceNamesNeeded: json[r'resource_names_needed'] is Iterable
-            ? (json[r'resource_names_needed'] as Iterable).cast<String>().toList(growable: false)
+        durationSec: mapValueOfType<int>(json, r'duration_sec'),
+        resourcesNeeded: json[r'resources_needed'] is Iterable
+            ? (json[r'resources_needed'] as Iterable).cast<String>().toList(growable: false)
             : const [],
+        pictureRef: mapValueOfType<String>(json, r'picture_ref'),
       );
     }
     return null;

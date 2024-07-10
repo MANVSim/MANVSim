@@ -77,7 +77,7 @@ class Resource:
         """
         return {
             'id': self.id,
-            'location': self.name,
+            'name': self.name,
             'quantity': self.quantity,
             'picture_ref': self.picture_ref
         }

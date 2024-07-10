@@ -40,6 +40,7 @@ part 'model/patient_dto.dart';
 part 'model/player_set_name_post401_response.dart';
 part 'model/player_set_name_post_request.dart';
 part 'model/resource_dto.dart';
+part 'model/run_action_all_get200_response.dart';
 part 'model/run_action_perform_post200_response.dart';
 part 'model/run_action_perform_post_request.dart';
 part 'model/run_location_all_get200_response.dart';

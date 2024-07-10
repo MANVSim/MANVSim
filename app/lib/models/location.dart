@@ -15,7 +15,7 @@ class Location {
 
   factory Location.fromApi(LocationDTO dto) {
     if (dto.id == null || dto.name == null) {
-      throw const FormatException('Failed to parse patient from JSON.');
+      throw const FormatException('Failed to parse location from JSON.');
     }
     return Location(
         id: dto.id!,
@@ -23,7 +23,7 @@ class Location {
         resources: dto.resources
             .map((resourceDto) => Resource.fromApi(resourceDto))
             .toList(),
-        locations: dto.locations
+        locations: dto.subLocations
             .map((locationDto) => Location.fromApi(locationDto))
             .toList());
   }

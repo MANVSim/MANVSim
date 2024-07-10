@@ -10,7 +10,7 @@ class Resource {
 
   factory Resource.fromApi(ResourceDTO dto) {
     if ([dto.id, dto.name, dto.quantity].contains(null)) {
-      throw const FormatException('Failed to parse patient from JSON.');
+      throw const FormatException('Failed to parse resource from JSON.');
     }
     return Resource(id: dto.id!, name: dto.name!, quantity: dto.quantity!);
   }

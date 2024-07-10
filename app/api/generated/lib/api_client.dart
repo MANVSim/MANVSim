@@ -202,6 +202,8 @@ class ApiClient {
           return PlayerSetNamePostRequest.fromJson(value);
         case 'ResourceDTO':
           return ResourceDTO.fromJson(value);
+        case 'RunActionAllGet200Response':
+          return RunActionAllGet200Response.fromJson(value);
         case 'RunActionPerformPost200Response':
           return RunActionPerformPost200Response.fromJson(value);
         case 'RunActionPerformPostRequest':
