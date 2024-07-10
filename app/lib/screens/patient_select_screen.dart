@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:manvsim/screens/patient_screen.dart';
+import 'package:manvsim/services/location_service.dart';
+import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -33,7 +35,8 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
               TextField(
                 controller: _idController,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.patientSelectTextField,
+                  labelText:
+                      AppLocalizations.of(context)!.patientSelectTextField,
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[
@@ -55,8 +58,12 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
                   builder: (context, value, child) => Expanded(
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.person),
-                      onPressed: value.text.isEmpty ? null : _goToPatientPage,
-                      label: Text(AppLocalizations.of(context)!.patientSelectSubmit),
+                      onPressed: value.text.isEmpty
+                          ? null
+                          : () => PatientService.goToPatientPage(
+                              int.parse(_idController.text), context),
+                      label: Text(
+                          AppLocalizations.of(context)!.patientSelectSubmit),
                     ),
                   ),
                 ),
@@ -66,13 +73,5 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
         ),
       ),
     );
-  }
-
-  void _goToPatientPage() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                PatientScreen(patientId: int.parse(_idController.text))));
   }
 }

@@ -9,4 +9,11 @@ class LocationService {
     return apiService.api.runLocationAllGet().then(
         (value) => value!.locations.map((e) => Location.fromApi(e)).toList());
   }
+
+  static Future<String?> leaveLocation() {
+    ApiService apiService = GetIt.instance.get<ApiService>();
+    return apiService.api
+        .runLocationLeavePost()
+        .then((value) => value?.message);
+  }
 }

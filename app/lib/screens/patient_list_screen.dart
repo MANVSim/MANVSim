@@ -50,18 +50,12 @@ class _PatientListScreenState extends State<PatientListScreen> {
                 return ListView.builder(
                     itemCount: patientIds.length,
                     itemBuilder: (context, index) => Card(
-                            child: ListTile(
-                          leading: const Icon(Icons.person),
-                          title: Text(AppLocalizations.of(context)!
-                              .patientScreenName(patientIds[index])),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PatientScreen(
-                                        patientId: patientIds[index])));
-                          },
-                        )));
+                        child: ListTile(
+                            leading: const Icon(Icons.person),
+                            title: Text(AppLocalizations.of(context)!
+                                .patientScreenName(patientIds[index])),
+                            onTap: () => PatientService.goToPatientPage(
+                                patientIds[index], context))));
               }),
         ));
   }

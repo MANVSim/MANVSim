@@ -1,9 +1,14 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
 import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/patient_location.dart';
 import 'package:manvsim/services/api_service.dart';
+import 'package:manvsim/services/location_service.dart';
+
+import '../screens/patient_screen.dart';
 
 class PatientService {
   static Future<PatientLocation> arriveAtPatient(int patientId) async {
@@ -21,5 +26,14 @@ class PatientService {
     return await apiService.api
         .runPatientAllIdsGet()
         .then((value) => value?.tans);
+  }
+
+  static void goToPatientPage(int patientId, BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                PatientScreen(patientId: patientId)))
+        .whenComplete(() => LocationService.leaveLocation());
   }
 }
