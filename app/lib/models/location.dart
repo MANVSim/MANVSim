@@ -14,29 +14,18 @@ class Location {
       required this.locations});
 
   factory Location.fromApi(LocationDTO dto) {
-    // TODO
-    return Location.fromJson(dto.toJson());
-  }
-
-  factory Location.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-        'id': int id,
-        'name': String name,
-        'resources': List<dynamic> resources,
-        'locations': List<dynamic> locations
-      } =>
-        Location(
-            id: id,
-            name: name,
-            resources: resources
-                .map((resource) => Resource.fromJson(resource))
-                .toList(),
-            locations: locations
-                .map((location) => Location.fromJson(location))
-                .toList()),
-      _ => throw const FormatException('Failed to parse patient from JSON.')
-    };
+    if (dto.id == null || dto.name == null) {
+      throw const FormatException('Failed to parse patient from JSON.');
+    }
+    return Location(
+        id: dto.id!,
+        name: dto.name!,
+        resources: dto.resources
+            .map((resourceDto) => Resource.fromApi(resourceDto))
+            .toList(),
+        locations: dto.locations
+            .map((locationDto) => Location.fromApi(locationDto))
+            .toList());
   }
 
   List<Resource> flattenResources() {

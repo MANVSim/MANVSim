@@ -12,26 +12,14 @@ class PatientAction {
       required this.durationInSeconds,
       required this.resourceNamesNeeded});
 
-  factory PatientAction.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-        'id': int id,
-        'name': String name,
-        'durationInSeconds': int durationInSeconds,
-        'resourceNamesNeeded': List<dynamic> resourceNamesNeeded
-      } =>
-        PatientAction(
-            id: id,
-            name: name,
-            durationInSeconds: durationInSeconds,
-            resourceNamesNeeded: resourceNamesNeeded.cast()),
-      _ =>
-        throw const FormatException('Failed to parse patient action from JSON.')
-    };
-  }
-
-  factory PatientAction.fromApi(ActionDTO action) {
-    // TODO
-    return PatientAction.fromJson(action.toJson());
+  factory PatientAction.fromApi(ActionDTO dto) {
+    if ([dto.id, dto.name, dto.durationInSeconds].contains(null)) {
+      throw const FormatException('Failed to parse patient from JSON.');
+    }
+    return PatientAction(
+        id: dto.id!,
+        name: dto.name!,
+        durationInSeconds: dto.durationInSeconds!,
+        resourceNamesNeeded: dto.resourceNamesNeeded);
   }
 }

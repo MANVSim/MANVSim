@@ -52,9 +52,8 @@ class _PatientListScreenState extends State<PatientListScreen> {
                     itemBuilder: (context, index) => Card(
                             child: ListTile(
                           leading: const Icon(Icons.person),
-                          title: Text(patientIds[index].toString()),
-                          // TODO
-                          //trailing: Text(patient.id.toString()),
+                          title: Text(AppLocalizations.of(context)!
+                              .patientScreenName(patientIds[index])),
                           onTap: () {
                             Navigator.push(
                                 context,
