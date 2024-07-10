@@ -4,8 +4,6 @@ import {
   Template,
   isTemplate,
   isCsrfToken,
-  StartResponse,
-  isStartResponse,
   isLoginResponse,
   CsrfToken,
   ExecutionData,
@@ -50,19 +48,6 @@ export async function getCsrfToken(): Promise<string> {
   return json.csrf_token
 }
 
-export async function startScenario(
-  formData: FormData,
-): Promise<StartResponse> {
-  const json = await tryFetchJson<StartResponse>("scenario", {
-    method: "POST",
-    body: formData,
-  })
-  if (!isStartResponse(json)) {
-    throw new Error("Unexpected response")
-  }
-  return json
-}
-
 export async function getAuthToken(
   formData: FormData,
 ): Promise<string | Response> {
@@ -81,15 +66,34 @@ export async function getAuthToken(
 
   return redirect("/")
 }
+export async function postActivateExecution(id: number): Promise<Response> {
+  const formData = new FormData()
+  formData.append("id", `${id}`)
 
-export async function getExecutionStatus(id: string): Promise<ExecutionData> {
-  return tryFetchJson<ExecutionData>(`execution?id=${id}`)
+  return await fetch(api + "execution/activate", {
+    method: "POST",
+    body: formData,
+  })
+}
+export async function getActiveExecutions(): Promise<ExecutionData[]> {
+  const activeExecutions = await tryFetchJson<ExecutionData[]>(`execution/active`)
+  if (Array.isArray(activeExecutions)) {
+    return activeExecutions
+  }
+  throw Error(`Could not load active executions!`)
+}
+
+export async function getExecution(id: string): Promise<ExecutionData> {
+  const result = tryFetchJson<ExecutionData>(`execution?id=${id}`)
+  return result
 }
 
 export async function changeExecutionStatus(
-  id: string,
-  formData: FormData,
+  id: number,
+  new_status: string,
 ): Promise<Response> {
+  const formData = new FormData()
+  formData.append("new_status", new_status)
   return tryFetchApi(`execution?id=${id}`, {
     method: "PATCH",
     body: formData,
@@ -108,4 +112,14 @@ export async function togglePlayerStatus(
       body: formData,
     },
   )
+}
+
+export async function createNewPlayer(
+  executionId: string,
+  formData: FormData,
+): Promise<Response> {
+  return tryFetchApi(`execution?id=${executionId}`, {
+    method: "POST",
+    body: formData,
+  })
 }

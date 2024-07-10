@@ -84,7 +84,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_ad = ActivityDiagram()  # empty diagram with an empty root state
 
         patients[p.id] = Patient(id=p.id, name=p.name, activity_diagram=p_ad,
-                                 location=p_loc, performed_actions=[]) # type: ignore
+                                 location=p_loc, performed_actions=[])  # type: ignore
 
     return patients
 
@@ -158,7 +158,7 @@ def __load_scenario(scenario_id: int) -> Scenario | None:
                     actions=actions, locations=locations)
 
 
-def __load_role(role_id: int) -> Role | None:
+def load_role(role_id: int) -> Role | None:
     """ Loads and returns the a Role object for a given role ID. """
     role = (db.session.query(models.Role)
             .filter(models.Role.id == role_id).first())
@@ -175,12 +175,12 @@ def __load_players(exec_id: int) -> dict[str, Player] | None:
     """
     ps: list[models.Player] = (db.session.query(models.Player)
                                .filter_by(execution_id=exec_id).all())
-    if not ps:
-        return None
+    if ps is None:
+        return ps
 
     players = dict()
     for p in ps:
-        player_role = __load_role(p.role_id)
+        player_role = load_role(p.role_id)
         player_loc = load_location(p.location_id)
         players[p.tan] = Player(tan=p.tan, name=None, location=player_loc,
                                 accessible_locations=set(), alerted=p.alerted,
@@ -190,7 +190,7 @@ def __load_players(exec_id: int) -> dict[str, Player] | None:
     return players
 
 
-def load_execution(exec_id: int) -> bool:
+def load_execution(exec_id: int, save_in_memory=True) -> bool | Execution:
     """
     Loads an Execution (Simulation) and all associated data into memory and
     activates it to make it ready for execution.
@@ -198,8 +198,8 @@ def load_execution(exec_id: int) -> bool:
     Returns True for success, False otherwise.
     """
     with current_app.app_context():
-        ex= (db.session.query(models.Execution)
-                                .filter_by(id=exec_id).first())
+        ex = (db.session.query(models.Execution)
+              .filter_by(id=exec_id).first())
         # If query yields no result, report failure
         if not ex:
             return False
@@ -222,5 +222,8 @@ def load_execution(exec_id: int) -> bool:
         execution = Execution(id=ex.id, name=ex.name, scenario=scenario,
                               players=players, status=Execution.Status.PENDING)
         # Activate execution (makes it accessible by API)
-        run.activate_execution(execution)
-        return True
+        if save_in_memory:
+            run.activate_execution(execution)
+            return True
+        else:
+            return execution
