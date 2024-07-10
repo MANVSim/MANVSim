@@ -20,7 +20,7 @@ class Location {
     return Location(
         id: dto.id!,
         name: dto.name!,
-        resources: dto.resources
+        resources: dto.resources // TODO filter quantity 0
             .map((resourceDto) => Resource.fromApi(resourceDto))
             .toList(),
         locations: dto.subLocations

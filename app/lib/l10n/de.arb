@@ -86,6 +86,7 @@
   },
   "patientResources": "Resourcen: ",
   "patientActions": "Maßnahmen: ",
+  "patientNoActions": "Keine Maßnahmen mit den ausgewählten Resourcen",
 
   "actionScreenTitle": "{action} bei {patientName}",
   "@actionScreenTitle": {
@@ -102,6 +103,7 @@
   },
 
   "actionNeededResources": "Benötigte Resourcen: ",
+  "actionNoNeededResources": "Keine Resourcen benötigt.",
   "actionPerform": "Durchführen",
   "actionFailure": "Leider konnte diese Maßnahme nicht ausgeführt werden.\nGehe sicher, dass genügend Resourcen verfügbar sind und versuche es erneut.",
 

@@ -60,7 +60,6 @@ class _ActionSelectionState extends State<ActionSelection> {
       Text(AppLocalizations.of(context)!.patientResources),
       ResourceDirectory(
           locations: widget.locations, resourceToggle: toggleResource),
-      Text(AppLocalizations.of(context)!.patientActions),
       FutureBuilder(
         future: futureActions,
         builder: (context, snapshot) {
@@ -72,6 +71,9 @@ class _ActionSelectionState extends State<ActionSelection> {
           }
           var selectedActions = getSelectedActions();
           return Column(children: [
+            Text(selectedActions.isNotEmpty
+                ? AppLocalizations.of(context)!.patientActions
+                : AppLocalizations.of(context)!.patientNoActions),
             ListView.builder(
                 shrinkWrap: true, // nested scrolling
                 physics: const ClampingScrollPhysics(),
@@ -82,7 +84,7 @@ class _ActionSelectionState extends State<ActionSelection> {
                       canBePerformed: true,
                       onPerform: () => performAction(selectedActions[index]),
                     )),
-            ListView.builder(
+            ListView.builder( // TODO show which resource you do have
                 shrinkWrap: true, // nested scrolling
                 physics: const ClampingScrollPhysics(),
                 itemCount: notPossibleActions.length,
