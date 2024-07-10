@@ -112,6 +112,8 @@ export const ExecutionStatusEnum = z.enum([
   "UNKNOWN",
 ])
 
+export type ExecutionStatus = z.infer<typeof ExecutionStatusEnum>
+
 const executionData = z.object({
   id: z.number(),
   name: z.string().or(z.null()),

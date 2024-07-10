@@ -10,3 +10,38 @@ h3 {
   border-bottom: 1px #6c757d solid;
   border-radius: 2px 2px 0px 0px;
 }
+
+@media screen and (max-width:769px) {
+
+  #btn-activate-icon {
+    display: inline !important;
+  }
+
+  #btn-activate-text {
+    display: none;
+  }
+
+  #btn-play-icon {
+    display: inline !important;
+  }
+
+  #btn-play-text {
+    display: none;
+  }
+
+  #btn-pause-icon {
+    display: inline !important;
+  }
+
+  #btn-pause-text {
+    display: none;
+  }
+
+  #btn-stop-icon {
+    display: inline !important;
+  }
+
+  #btn-stop-text {
+    display: none;
+  }
+}
