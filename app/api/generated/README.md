@@ -89,6 +89,7 @@ Class | Method | HTTP request | Description
  - [RunActionAllGet200Response](doc//RunActionAllGet200Response.md)
  - [RunActionPerformPost200Response](doc//RunActionPerformPost200Response.md)
  - [RunActionPerformPostRequest](doc//RunActionPerformPostRequest.md)
+ - [RunActionPerformResultGet200Response](doc//RunActionPerformResultGet200Response.md)
  - [RunLocationAllGet200Response](doc//RunLocationAllGet200Response.md)
  - [RunLocationLeavePost200Response](doc//RunLocationLeavePost200Response.md)
  - [RunLocationTakeFromPost200Response](doc//RunLocationTakeFromPost200Response.md)

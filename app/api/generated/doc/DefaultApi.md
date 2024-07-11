@@ -255,7 +255,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **runActionPerformResultGet**
-> String runActionPerformResultGet(performedActionId, patientId)
+> RunActionPerformResultGet200Response runActionPerformResultGet(performedActionId, patientId)
 
 Gets the result of a performed action and officially finishes/dequeues the action of the patient.
 
@@ -290,7 +290,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**String**
+[**RunActionPerformResultGet200Response**](RunActionPerformResultGet200Response.md)
 
 ### Authorization
 

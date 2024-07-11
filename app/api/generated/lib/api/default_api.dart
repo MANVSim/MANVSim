@@ -318,7 +318,7 @@ class DefaultApi {
   /// * [String] performedActionId (required):
   ///
   /// * [int] patientId (required):
-  Future<String?> runActionPerformResultGet(String performedActionId, int patientId,) async {
+  Future<RunActionPerformResultGet200Response?> runActionPerformResultGet(String performedActionId, int patientId,) async {
     final response = await runActionPerformResultGetWithHttpInfo(performedActionId, patientId,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -327,7 +327,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'String',) as String;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunActionPerformResultGet200Response',) as RunActionPerformResultGet200Response;
     
     }
     return null;

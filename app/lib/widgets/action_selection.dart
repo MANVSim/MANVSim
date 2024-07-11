@@ -113,8 +113,8 @@ class _ActionSelectionState extends State<ActionSelection> {
   Iterable<Resource> getNeededResources(PatientAction action) {
     // quantity validation missing
     // TODO: rework
-    var needed = action.resourceNamesNeeded;
-    var selected = getSelectedResources().toList();
+    var needed = List.from(action.resourceNamesNeeded);
+    var selected = List.from(getSelectedResources());
     selected.removeWhere((s) => !needed.any((n) => s.name == n));
     needed.removeWhere((name) => selected.any((s) => s.name == name));
     for (var n in needed) {

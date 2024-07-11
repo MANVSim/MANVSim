@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/models/patient.dart';
 
 import 'package:manvsim/models/patient_action.dart';
+import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
@@ -27,7 +28,7 @@ class ActionScreen extends StatefulWidget {
 
 class _ActionScreenState extends State<ActionScreen> {
   late Future<String?> futureActionId;
-  late Future<String?> futureResult;
+  late Future<ConditionPatient> futureResult;
 
   @override
   void initState() {
@@ -81,8 +82,10 @@ class _ActionScreenState extends State<ActionScreen> {
   Widget successContent(String performedActionId) {
     futureResult =
         ActionService.fetchActionResult(widget.patient.id, performedActionId);
-    return ApiFutureBuilder<String>(
-        future: futureResult, builder: (context, data) => Text(data));
+    // TODO use returned patient data
+    return ApiFutureBuilder<ConditionPatient>(
+        future: futureResult,
+        builder: (context, data) => Text(data.$1.toString()));
   }
 
   Widget failureContent() {

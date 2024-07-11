@@ -208,6 +208,8 @@ class ApiClient {
           return RunActionPerformPost200Response.fromJson(value);
         case 'RunActionPerformPostRequest':
           return RunActionPerformPostRequest.fromJson(value);
+        case 'RunActionPerformResultGet200Response':
+          return RunActionPerformResultGet200Response.fromJson(value);
         case 'RunLocationAllGet200Response':
           return RunLocationAllGet200Response.fromJson(value);
         case 'RunLocationLeavePost200Response':
