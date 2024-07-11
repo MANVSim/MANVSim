@@ -162,7 +162,7 @@ paths:
                 type: object
                 properties:
                   player_location:
-                    $ref: '#/components/schemas/Location'
+                    $ref: '#/components/schemas/LocationDTO'
                   patient:
                     $ref: '#/components/schemas/PatientDTO'
         '204':

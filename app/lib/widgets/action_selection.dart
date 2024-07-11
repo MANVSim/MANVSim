@@ -58,9 +58,6 @@ class _ActionSelectionState extends State<ActionSelection> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Text(AppLocalizations.of(context)!.patientResources),
-      ResourceDirectory(
-          locations: widget.locations, resourceToggle: toggleResource),
       ApiFutureBuilder<List<PatientAction>>(
         future: futureActions,
         builder: (context, data) {
@@ -89,6 +86,9 @@ class _ActionSelectionState extends State<ActionSelection> {
                       patient: widget.patient,
                       canBePerformed: false,
                     )),
+            Text(AppLocalizations.of(context)!.patientResources),
+            ResourceDirectory(
+                locations: widget.locations, resourceToggle: toggleResource),
           ]);
         },
       )
