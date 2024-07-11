@@ -5,6 +5,7 @@ import 'package:manvsim/models/patient.dart';
 
 import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/services/action_service.dart';
+import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -46,19 +47,13 @@ class _ActionScreenState extends State<ActionScreen> {
           automaticallyImplyLeading: false,
         ),
         body: Center(
-            child: FutureBuilder<String?>(
+            child: ApiFutureBuilder<String>(
                 future: futureActionId,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError || snapshot.data == null) {
-                    Timer.run(() => showResultDialog(failureContent()));
-                  } else if (!snapshot.hasData ||
-                      snapshot.connectionState != ConnectionState.done) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+                builder: (context, data) {
                   return TimerWidget(
                     duration: widget.action.durationInSeconds,
                     onTimerComplete: () =>
-                        showResultDialog(successContent(snapshot.data!)),
+                        showResultDialog(successContent(data)),
                   );
                 })));
   }
@@ -86,17 +81,8 @@ class _ActionScreenState extends State<ActionScreen> {
   Widget successContent(String performedActionId) {
     futureResult =
         ActionService.fetchActionResult(widget.patient.id, performedActionId);
-    return FutureBuilder<String?>(
-        future: futureResult,
-        builder: (context, snapshot) {
-          if (snapshot.hasError || snapshot.data == null) {
-            return Text('${snapshot.error}');
-          } else if (!snapshot.hasData ||
-              snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return Text(snapshot.data!);
-        });
+    return ApiFutureBuilder<String>(
+        future: futureResult, builder: (context, data) => Text(data));
   }
 
   Widget failureContent() {

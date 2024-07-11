@@ -10,6 +10,9 @@ import 'package:manvsim/services/location_service.dart';
 
 import '../screens/patient_screen.dart';
 
+/// Provides methods to manage [Patient].
+///
+/// Doesn't offer error handling.
 class PatientService {
   static Future<PatientLocation> arriveAtPatient(int patientId) async {
     ApiService apiService = GetIt.instance.get<ApiService>();

@@ -3,8 +3,10 @@ import 'package:manv_api/api.dart';
 import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/services/api_service.dart';
 
+/// Provides methods to manage [PatientAction].
+///
+/// Doesn't offer error handling.
 class ActionService {
-  // TODO error handling?
   static Future<List<PatientAction>> fetchActions() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api.runActionAllGet().then((value) =>

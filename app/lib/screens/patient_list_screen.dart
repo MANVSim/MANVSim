@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:manvsim/services/patient_service.dart';
+import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -35,26 +36,17 @@ class _PatientListScreenState extends State<PatientListScreen> {
             });
             return futurePatientIdList;
           },
-          child: FutureBuilder<List<int>?>(
+          child: ApiFutureBuilder<List<int>>(
               future: futurePatientIdList,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                } else if (!snapshot.hasData ||
-                    snapshot.connectionState != ConnectionState.done) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                var patientIds = snapshot.data ?? [];
-                return ListView.builder(
-                    itemCount: patientIds.length,
-                    itemBuilder: (context, index) => Card(
-                        child: ListTile(
-                            leading: const Icon(Icons.person),
-                            title: Text(AppLocalizations.of(context)!
-                                .patientScreenName(patientIds[index])),
-                            onTap: () => PatientService.goToPatientPage(
-                                patientIds[index], context))));
-              }),
+              builder: (context, patientIds) => ListView.builder(
+                  itemCount: patientIds.length,
+                  itemBuilder: (context, index) => Card(
+                      child: ListTile(
+                          leading: const Icon(Icons.person),
+                          title: Text(AppLocalizations.of(context)!
+                              .patientScreenName(patientIds[index])),
+                          onTap: () => PatientService.goToPatientPage(
+                              patientIds[index], context))))),
         ));
   }
 }

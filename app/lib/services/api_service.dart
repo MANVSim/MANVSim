@@ -28,13 +28,13 @@ class ApiService {
 
   DefaultApi? _apiClient;
 
-  /// The API client to use for all requests
-  /// Only available after a successful login
+  /// The API client to use for all requests.
+  /// Only available after a successful login.
   DefaultApi get api => _apiClient!;
 
-  /// Recovers the API client from the user's authentication information
-  /// Initializes the API client to use JWT and CSRF tokens
-  /// Is called when login screen is skipped
+  /// Recovers the API client from the user's authentication information.
+  /// Initializes the API client to use JWT and CSRF tokens.
+  /// Is called when login screen is skipped.
   recover(BuildContext context) async {
     TanUser user = Provider.of<TanUser>(context, listen: false);
 
@@ -45,8 +45,8 @@ class ApiService {
     }
   }
 
-  /// Logs in the user with the given TAN and URL
-  /// Initializes the API client to use JWT and CSRF tokens
+  /// Logs in the user with the given TAN and URL.
+  /// Initializes the API client to use JWT and CSRF tokens.
   login(String tan, String url, BuildContext context) async {
     DefaultApi apiClient = DefaultApi(ApiClient(basePath: url));
     LoginPost200Response? loginResponse =

@@ -6,6 +6,7 @@ import 'package:manvsim/models/resource.dart';
 import 'package:manvsim/screens/action_screen.dart';
 import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/action_card.dart';
+import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/resource_directory.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -60,15 +61,9 @@ class _ActionSelectionState extends State<ActionSelection> {
       Text(AppLocalizations.of(context)!.patientResources),
       ResourceDirectory(
           locations: widget.locations, resourceToggle: toggleResource),
-      FutureBuilder(
+      ApiFutureBuilder<List<PatientAction>>(
         future: futureActions,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          } else if (!snapshot.hasData ||
-              snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        builder: (context, data) {
           var selectedActions = getSelectedActions();
           return Column(children: [
             Text(selectedActions.isNotEmpty
@@ -84,7 +79,8 @@ class _ActionSelectionState extends State<ActionSelection> {
                       canBePerformed: true,
                       onPerform: () => performAction(selectedActions[index]),
                     )),
-            ListView.builder( // TODO show which resource you do have
+            ListView.builder(
+                // TODO show which resource you do have
                 shrinkWrap: true, // nested scrolling
                 physics: const ClampingScrollPhysics(),
                 itemCount: notPossibleActions.length,

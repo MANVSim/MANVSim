@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/models/patient_location.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/action_selection.dart';
+import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/patient_overview.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -36,16 +37,10 @@ class _PatientScreenState extends State<PatientScreen> {
         ),
         body: RefreshIndicator(
             onRefresh: refresh,
-            child: FutureBuilder(
+            child: ApiFutureBuilder(
                 future: futurePatientLocation,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
-                  } else if (!snapshot.hasData ||
-                      snapshot.connectionState != ConnectionState.done) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  var (patient, location) = snapshot.data!;
+                builder: (context, data) {
+                  var (patient, location) = data;
                   return SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Column(children: [
