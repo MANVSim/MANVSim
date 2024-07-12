@@ -4,8 +4,9 @@ on:
     branches:
       - main
       - feature/server/**
-      - bug/server/**
       - feature/chore/**
+      - feature/web/**
+      - bug/server/**
 
 jobs:
   test:
