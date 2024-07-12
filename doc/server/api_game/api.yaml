@@ -70,7 +70,7 @@ paths:
                   example: "John Doe"
                 force_update:
                   type: boolean
-                  description: An optional flag to indicate an overwrite. 
+                  description: An optional flag to indicate an overwrite.
       responses:
         '200':
           description: Name successfully set.
@@ -116,12 +116,12 @@ paths:
         - bearerAuth: [ ]
 
 
-  /run/patient/all-tans:
+  /run/patient/all-ids:
     get:
-      summary: Returns a list of all patients.
+      summary: Returns a list of all patient ids.
       responses:
         '200':
-          description: A JSON array of patients
+          description: A JSON array of patient ids
           content:
             application/json:
               schema:
@@ -130,7 +130,7 @@ paths:
                   tans:
                     type: array
                     items:
-                      type: string
+                      type: integer
                     example: [ 1, 12, 42 ]
 
         '204':
@@ -162,9 +162,9 @@ paths:
                 type: object
                 properties:
                   player_location:
-                    $ref: '#/components/schemas/Location'
+                    $ref: '#/components/schemas/LocationDTO'
                   patient:
-                    $ref: '#/components/schemas/Patient'
+                    $ref: '#/components/schemas/PatientDTO'
         '204':
           description: No running execution detected.
         '400':
@@ -217,7 +217,7 @@ paths:
                   locations:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Location'
+                      $ref: '#/components/schemas/LocationDTO'
         '204':
           description: No running execution detected.
         '400':
@@ -250,7 +250,7 @@ paths:
                 type: object
                 properties:
                   player_location:
-                      $ref: '#/components/schemas/Location'
+                    $ref: '#/components/schemas/LocationDTO'
         '204':
           description: No running execution detected.
         '400':
@@ -301,26 +301,26 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Action'
+                type: object
+                properties:
+                  actions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ActionDTO'
               example:
                 - id: 1
                   name: Pflaster anbringen
-                  required_role: "Notarzt"
-                  duration_msec: 10000
+                  duration_sec: 10000
                   resources_needed:
                     - Pflaster
                 - id: 2
                   name: Klamotten aufschneiden
-                  required_role: "Notarzt"
-                  duration_msec: 4
+                  duration_sec: 4
                   resources_needed:
                     - Schere
                 - id: 3
                   name: Schmerzmittel verabreichen
-                  required_role: "Notarzt"
-                  duration_msec: 20
+                  duration_sec: 20
                   resources_needed:
                     - Schmerzmittel
         '204':
@@ -390,7 +390,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         '200':
           description: The result of the performed action.
@@ -456,17 +456,17 @@ components:
 
   schemas:
 
-    Patient:
+    PatientDTO:
       type: object
       properties:
         id:
           type: integer
         name:
           type: string
-        injuries:
-          type: string
+        location:
+          $ref: '#/components/schemas/LocationDTO'
 
-    Location:
+    LocationDTO:
       type: object
       properties:
         id:
@@ -476,13 +476,13 @@ components:
         resources:
           type: array
           items:
-            $ref: '#/components/schemas/Resource'
-        locations:
+            $ref: '#/components/schemas/ResourceDTO'
+        sub_locations:
           type: array
           items:
-            $ref: '#/components/schemas/Location'
+            $ref: '#/components/schemas/LocationDTO'
 
-    Resource:
+    ResourceDTO:
       type: object
       properties:
         id:
@@ -492,19 +492,21 @@ components:
         quantity:
           type: integer
 
-    Action:
+    ActionDTO:
       type: object
       properties:
         id:
           type: integer
         name:
           type: string
-        duration_in_seconds:
+        duration_sec:
           type: integer
-        resource_names_needed:
+        resources_needed:
           type: array
           items:
             type: string
+        picture_ref:
+          type: string
 
     Error:
       type: object
