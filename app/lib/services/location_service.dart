@@ -8,15 +8,15 @@ import 'package:manvsim/services/api_service.dart';
 class LocationService {
   static Future<List<Location>> fetchLocations() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
-    // TODO
-    return apiService.api.runLocationAllGet().then(
-        (value) => value!.locations.map((e) => Location.fromApi(e)).toList());
+    // TODO method for getting apiService?
+    return apiService.api.runLocationAllGet().then((response) =>
+        response!.locations.map((dto) => Location.fromApi(dto)).toList());
   }
 
   static Future<String?> leaveLocation() {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return apiService.api
         .runLocationLeavePost()
-        .then((value) => value?.message);
+        .then((response) => response?.message);
   }
 }

@@ -53,12 +53,12 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
                 const SizedBox(width: 8),
                 ValueListenableBuilder(
                   valueListenable: _idController,
-                  builder: (context, value, child) => Expanded(
+                  builder: (context, patientIdValue, child) => Expanded(
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.person),
-                      onPressed: value.text.isEmpty
+                      onPressed: patientIdValue.text.isEmpty
                           ? null
-                          : () => PatientService.goToPatientPage(
+                          : () => PatientService.goToPatientScreen(
                               int.parse(_idController.text), context),
                       label: Text(
                           AppLocalizations.of(context)!.patientSelectSubmit),

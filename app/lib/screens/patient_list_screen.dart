@@ -45,7 +45,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                           leading: const Icon(Icons.person),
                           title: Text(AppLocalizations.of(context)!
                               .patientScreenName(patientIds[index])),
-                          onTap: () => PatientService.goToPatientPage(
+                          onTap: () => PatientService.goToPatientScreen(
                               patientIds[index], context))))),
         ));
   }

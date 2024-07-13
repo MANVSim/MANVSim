@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:manvsim/models/patient.dart';
 
-import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/action_selection.dart';
@@ -19,11 +19,11 @@ class PatientScreen extends StatefulWidget {
 }
 
 class _PatientScreenState extends State<PatientScreen> {
-  late Future<PatientLocation> futurePatientLocation;
+  late Future<Patient?> futurePatient;
 
   @override
   void initState() {
-    futurePatientLocation = PatientService.arriveAtPatient(widget.patientId);
+    futurePatient = PatientService.arriveAtPatient(widget.patientId);
     super.initState();
   }
 
@@ -37,29 +37,30 @@ class _PatientScreenState extends State<PatientScreen> {
           actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(
-            onRefresh: refresh,
-            child: ApiFutureBuilder(
-                future: futurePatientLocation,
-                builder: (context, data) {
-                  var (patient, location) = data;
+            onRefresh: () => refresh(null),
+            child: ApiFutureBuilder<Patient>(
+                future: futurePatient,
+                builder: (context, patient) {
                   return SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Column(children: [
                         Card(child: PatientOverview(patient: patient)),
                         ActionSelection(
                             patient: patient,
-                            locations: [location],
+                            locations: [patient.location],
                             refreshPatient: refresh)
                       ]));
                 })));
   }
 
-  Future refresh() {
+  Future refresh(Patient? patient) {
     setState(() {
-      // TODO necessary to leave before?
-      futurePatientLocation = LocationService.leaveLocation()
-          .then((v) => PatientService.arriveAtPatient(widget.patientId));
+      // TODO necessary to leave before every arrival?
+      futurePatient = patient != null
+          ? Future(() => patient)
+          : LocationService.leaveLocation()
+              .then((v) => PatientService.arriveAtPatient(widget.patientId));
     });
-    return futurePatientLocation;
+    return futurePatient;
   }
 }

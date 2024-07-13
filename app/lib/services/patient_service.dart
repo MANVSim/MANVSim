@@ -2,9 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
-import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/patient.dart';
-import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/services/location_service.dart';
 
@@ -14,29 +12,28 @@ import '../screens/patient_screen.dart';
 ///
 /// Doesn't offer error handling.
 class PatientService {
-  static Future<PatientLocation> arriveAtPatient(int patientId) async {
+  static Future<Patient?> arriveAtPatient(int patientId) async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api
         .runPatientArrivePost(RunPatientArrivePostRequest(patientId: patientId))
-        .then((value) => (
-              Patient.fromApi((value?.patient)!),
-              Location.fromApi((value?.playerLocation)!)
-            ));
+        .then((response) => (response?.patient != null
+            ? Patient.fromApi((response?.patient)!)
+            : null));
   }
 
   static Future<List<int>?> fetchPatientsIDs() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api
         .runPatientAllIdsGet()
-        .then((value) => value?.tans);
+        .then((response) => response?.tans);
   }
 
-  static void goToPatientPage(int patientId, BuildContext context) {
+  /// Navigates to [PatientScreen] and leaves location after.
+  static void goToPatientScreen(int patientId, BuildContext context) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                PatientScreen(patientId: patientId)))
+            context,
+            MaterialPageRoute(
+                builder: (context) => PatientScreen(patientId: patientId)))
         .whenComplete(() => LocationService.leaveLocation());
   }
 }

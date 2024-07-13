@@ -11,8 +11,8 @@ import 'package:manvsim/services/api_service.dart';
 class ActionService {
   static Future<List<PatientAction>> fetchActions() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
-    return await apiService.api.runActionAllGet().then((value) =>
-        value?.actions.map((e) => PatientAction.fromApi(e)).toList() ?? []);
+    return await apiService.api.runActionAllGet().then((response) =>
+        response?.actions.map((e) => PatientAction.fromApi(e)).toList() ?? []);
   }
 
   static Future<String?> performAction(
@@ -21,15 +21,16 @@ class ActionService {
     return await apiService.api
         .runActionPerformPost(RunActionPerformPostRequest(
             actionId: actionId, patientId: patientId, resources: resourceIds))
-        .then((value) => value?.performedActionId);
+        .then((response) => response?.performedActionId);
   }
 
-  static Future<ConditionPatient> fetchActionResult(
+  static Future<ConditionPatient?> fetchActionResult(
       int patientId, String performedActionId) async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api
         .runActionPerformResultGet(performedActionId, patientId)
-        .then( // TODO type safety
-            (value) => ((value?.conditions)!, Patient.fromApi((value?.patient)!)));
+        .then((response) => response?.patient != null
+            ? ((response?.conditions)!, Patient.fromApi((response?.patient)!))
+            : null);
   }
 }

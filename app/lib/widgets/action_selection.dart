@@ -13,7 +13,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ActionSelection extends StatefulWidget {
   final List<Location> locations;
   final Patient patient;
-  final Function() refreshPatient;
+  final Function(Patient?) refreshPatient;
 
   const ActionSelection(
       {super.key,
@@ -42,17 +42,17 @@ class _ActionSelectionState extends State<ActionSelection> {
   void initState() {
     resources = Location.flattenResourcesFromList(widget.locations);
     futureActions = ActionService.fetchActions();
-    futureActions.then((actions) {
-      // filter actions by available resources
-      possibleActions = actions.where((action) => action.resourceNamesNeeded
-          .every((resourceName) =>
-              resources.any((resource) => resource.name == resourceName)));
-      // Could be more efficient, but probably not needed here
-      notPossibleActions =
-          actions.where((action) => !possibleActions.contains(action)).toList();
-    });
-
     super.initState();
+  }
+
+  void setActions(List<PatientAction> actions) {
+    // filter actions by available resources
+    possibleActions = actions.where((action) => action.resourceNamesNeeded
+        .every((resourceName) =>
+        resources.any((resource) => resource.name == resourceName)));
+    // Could be more efficient, but probably not needed here
+    notPossibleActions =
+        actions.where((action) => !possibleActions.contains(action)).toList();
   }
 
   @override
@@ -60,7 +60,8 @@ class _ActionSelectionState extends State<ActionSelection> {
     return Column(children: [
       ApiFutureBuilder<List<PatientAction>>(
         future: futureActions,
-        builder: (context, data) {
+        builder: (context, actions) {
+          setActions(actions);
           var selectedActions = getSelectedActions();
           return Column(children: [
             Text(selectedActions.isNotEmpty
@@ -126,13 +127,13 @@ class _ActionSelectionState extends State<ActionSelection> {
   void performAction(PatientAction action) async {
     List<int> resourceIds =
         getNeededResources(action).map((resource) => resource.id).toList();
-    await Navigator.push(
+    Patient? patient = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => ActionScreen(
                 action: action,
                 patient: widget.patient,
                 resourceIds: resourceIds)));
-    widget.refreshPatient();
+    widget.refreshPatient(patient);
   }
 }

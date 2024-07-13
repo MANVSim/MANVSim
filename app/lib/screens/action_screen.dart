@@ -28,7 +28,8 @@ class ActionScreen extends StatefulWidget {
 
 class _ActionScreenState extends State<ActionScreen> {
   late Future<String?> futureActionId;
-  late Future<ConditionPatient> futureResult;
+  late Future<ConditionPatient?> futureResult;
+  Patient? patient;
 
   @override
   void initState() {
@@ -50,11 +51,11 @@ class _ActionScreenState extends State<ActionScreen> {
         body: Center(
             child: ApiFutureBuilder<String>(
                 future: futureActionId,
-                builder: (context, data) {
+                builder: (context, actionId) {
                   return TimerWidget(
                     duration: widget.action.durationInSeconds,
                     onTimerComplete: () =>
-                        showResultDialog(successContent(data)),
+                        showResultDialog(successContent(actionId)),
                   );
                 })));
   }
@@ -75,17 +76,29 @@ class _ActionScreenState extends State<ActionScreen> {
     );
     // close action_screen
     dialogFuture.whenComplete(() {
-      Navigator.pop(context);
+      Navigator.pop(context, patient);
     });
   }
 
   Widget successContent(String performedActionId) {
     futureResult =
         ActionService.fetchActionResult(widget.patient.id, performedActionId);
-    // TODO use returned patient data
     return ApiFutureBuilder<ConditionPatient>(
         future: futureResult,
-        builder: (context, data) => Text(data.$1.toString()));
+        builder: (context, conditionPatient) {
+          var (condition, patient) = conditionPatient;
+          this.patient = patient;
+          var conditionList = condition.entries.toList();
+          return ListView.builder(
+              shrinkWrap: true, // nested scrolling
+              physics: const ClampingScrollPhysics(),
+              itemCount: conditionList.length,
+              itemBuilder: (context, index) => Row(children: [
+                    Text("${conditionList[index].key}: ",
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(conditionList[index].value)
+                  ]));
+        });
   }
 
   Widget failureContent() {
