@@ -8,7 +8,7 @@ import 'package:manv_api/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**actions** | [**List<ActionDTO>**](ActionDTO.md) |  | [optional] [default to const []]
+**actions** | [**List<ActionDTO>**](ActionDTO.md) |  | [default to const []]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

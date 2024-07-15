@@ -13,36 +13,18 @@ part of manv_api;
 class ActionDTO {
   /// Returns a new [ActionDTO] instance.
   ActionDTO({
-    this.id,
-    this.name,
-    this.durationSec,
+    required this.id,
+    required this.name,
+    required this.durationSec,
     this.resourcesNeeded = const [],
     this.pictureRef,
   });
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? id;
+  int id;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? name;
+  String name;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? durationSec;
+  int durationSec;
 
   List<String> resourcesNeeded;
 
@@ -65,9 +47,9 @@ class ActionDTO {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (id == null ? 0 : id!.hashCode) +
-    (name == null ? 0 : name!.hashCode) +
-    (durationSec == null ? 0 : durationSec!.hashCode) +
+    (id.hashCode) +
+    (name.hashCode) +
+    (durationSec.hashCode) +
     (resourcesNeeded.hashCode) +
     (pictureRef == null ? 0 : pictureRef!.hashCode);
 
@@ -76,21 +58,9 @@ class ActionDTO {
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.id != null) {
       json[r'id'] = this.id;
-    } else {
-      json[r'id'] = null;
-    }
-    if (this.name != null) {
       json[r'name'] = this.name;
-    } else {
-      json[r'name'] = null;
-    }
-    if (this.durationSec != null) {
       json[r'duration_sec'] = this.durationSec;
-    } else {
-      json[r'duration_sec'] = null;
-    }
       json[r'resources_needed'] = this.resourcesNeeded;
     if (this.pictureRef != null) {
       json[r'picture_ref'] = this.pictureRef;
@@ -119,9 +89,9 @@ class ActionDTO {
       }());
 
       return ActionDTO(
-        id: mapValueOfType<int>(json, r'id'),
-        name: mapValueOfType<String>(json, r'name'),
-        durationSec: mapValueOfType<int>(json, r'duration_sec'),
+        id: mapValueOfType<int>(json, r'id')!,
+        name: mapValueOfType<String>(json, r'name')!,
+        durationSec: mapValueOfType<int>(json, r'duration_sec')!,
         resourcesNeeded: json[r'resources_needed'] is Iterable
             ? (json[r'resources_needed'] as Iterable).cast<String>().toList(growable: false)
             : const [],
@@ -173,6 +143,10 @@ class ActionDTO {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'id',
+    'name',
+    'duration_sec',
+    'resources_needed',
   };
 }
 

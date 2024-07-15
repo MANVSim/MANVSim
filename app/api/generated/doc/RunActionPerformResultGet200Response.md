@@ -8,8 +8,8 @@ import 'package:manv_api/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**conditions** | **Map<String, String>** |  | [optional] [default to const {}]
-**patient** | [**PatientDTO**](PatientDTO.md) |  | [optional] 
+**conditions** | **Map<String, String>** |  | [default to const {}]
+**patient** | [**PatientDTO**](PatientDTO.md) |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

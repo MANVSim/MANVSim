@@ -56,16 +56,7 @@ class ApiService {
       throw Exception("Login failed: No response body received");
     }
 
-    if (loginResponse.jwtToken == null) {
-      throw Exception("Login failed: No JWT token received");
-    }
-
-    if (loginResponse.userCreationRequired == null) {
-      throw Exception(
-          "Login failed: User information missing: userCreationRequired");
-    }
-
-    final Authentication auth = _JwtCsrfAuth(loginResponse.jwtToken!);
+    final Authentication auth = _JwtCsrfAuth(loginResponse.jwtToken);
     _apiClient = DefaultApi(ApiClient(basePath: url, authentication: auth));
 
     if (context.mounted) {

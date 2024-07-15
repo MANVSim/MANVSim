@@ -14,7 +14,7 @@ class RunPatientArrivePost200Response {
   /// Returns a new [RunPatientArrivePost200Response] instance.
   RunPatientArrivePost200Response({
     this.playerLocation,
-    this.patient,
+    required this.patient,
   });
 
   ///
@@ -25,13 +25,7 @@ class RunPatientArrivePost200Response {
   ///
   LocationDTO? playerLocation;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  PatientDTO? patient;
+  PatientDTO patient;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunPatientArrivePost200Response &&
@@ -42,7 +36,7 @@ class RunPatientArrivePost200Response {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (playerLocation == null ? 0 : playerLocation!.hashCode) +
-    (patient == null ? 0 : patient!.hashCode);
+    (patient.hashCode);
 
   @override
   String toString() => 'RunPatientArrivePost200Response[playerLocation=$playerLocation, patient=$patient]';
@@ -54,11 +48,7 @@ class RunPatientArrivePost200Response {
     } else {
       json[r'player_location'] = null;
     }
-    if (this.patient != null) {
       json[r'patient'] = this.patient;
-    } else {
-      json[r'patient'] = null;
-    }
     return json;
   }
 
@@ -82,7 +72,7 @@ class RunPatientArrivePost200Response {
 
       return RunPatientArrivePost200Response(
         playerLocation: LocationDTO.fromJson(json[r'player_location']),
-        patient: PatientDTO.fromJson(json[r'patient']),
+        patient: PatientDTO.fromJson(json[r'patient'])!,
       );
     }
     return null;
@@ -130,6 +120,7 @@ class RunPatientArrivePost200Response {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'patient',
   };
 }
 

@@ -14,12 +14,9 @@ class Location {
       required this.locations});
 
   factory Location.fromApi(LocationDTO dto) {
-    if (dto.id == null || dto.name == null) {
-      throw const FormatException('Failed to parse location from JSON.');
-    }
     return Location(
-        id: dto.id!,
-        name: dto.name!,
+        id: dto.id,
+        name: dto.name,
         resources: dto.resources // TODO filter quantity 0
             .map((resourceDto) => Resource.fromApi(resourceDto))
             .toList(),

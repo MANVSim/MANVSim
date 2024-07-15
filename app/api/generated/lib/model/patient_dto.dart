@@ -13,34 +13,16 @@ part of manv_api;
 class PatientDTO {
   /// Returns a new [PatientDTO] instance.
   PatientDTO({
-    this.id,
-    this.name,
-    this.location,
+    required this.id,
+    required this.name,
+    required this.location,
   });
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? id;
+  int id;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? name;
+  String name;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  LocationDTO? location;
+  LocationDTO location;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is PatientDTO &&
@@ -51,30 +33,18 @@ class PatientDTO {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (id == null ? 0 : id!.hashCode) +
-    (name == null ? 0 : name!.hashCode) +
-    (location == null ? 0 : location!.hashCode);
+    (id.hashCode) +
+    (name.hashCode) +
+    (location.hashCode);
 
   @override
   String toString() => 'PatientDTO[id=$id, name=$name, location=$location]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.id != null) {
       json[r'id'] = this.id;
-    } else {
-      json[r'id'] = null;
-    }
-    if (this.name != null) {
       json[r'name'] = this.name;
-    } else {
-      json[r'name'] = null;
-    }
-    if (this.location != null) {
       json[r'location'] = this.location;
-    } else {
-      json[r'location'] = null;
-    }
     return json;
   }
 
@@ -97,9 +67,9 @@ class PatientDTO {
       }());
 
       return PatientDTO(
-        id: mapValueOfType<int>(json, r'id'),
-        name: mapValueOfType<String>(json, r'name'),
-        location: LocationDTO.fromJson(json[r'location']),
+        id: mapValueOfType<int>(json, r'id')!,
+        name: mapValueOfType<String>(json, r'name')!,
+        location: LocationDTO.fromJson(json[r'location'])!,
       );
     }
     return null;
@@ -147,6 +117,9 @@ class PatientDTO {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'id',
+    'name',
+    'location',
   };
 }
 

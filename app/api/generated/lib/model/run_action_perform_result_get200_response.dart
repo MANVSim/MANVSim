@@ -14,18 +14,12 @@ class RunActionPerformResultGet200Response {
   /// Returns a new [RunActionPerformResultGet200Response] instance.
   RunActionPerformResultGet200Response({
     this.conditions = const {},
-    this.patient,
+    required this.patient,
   });
 
   Map<String, String> conditions;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  PatientDTO? patient;
+  PatientDTO patient;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunActionPerformResultGet200Response &&
@@ -36,7 +30,7 @@ class RunActionPerformResultGet200Response {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (conditions.hashCode) +
-    (patient == null ? 0 : patient!.hashCode);
+    (patient.hashCode);
 
   @override
   String toString() => 'RunActionPerformResultGet200Response[conditions=$conditions, patient=$patient]';
@@ -44,11 +38,7 @@ class RunActionPerformResultGet200Response {
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'conditions'] = this.conditions;
-    if (this.patient != null) {
       json[r'patient'] = this.patient;
-    } else {
-      json[r'patient'] = null;
-    }
     return json;
   }
 
@@ -71,8 +61,8 @@ class RunActionPerformResultGet200Response {
       }());
 
       return RunActionPerformResultGet200Response(
-        conditions: mapCastOfType<String, String>(json, r'conditions') ?? const {},
-        patient: PatientDTO.fromJson(json[r'patient']),
+        conditions: mapCastOfType<String, String>(json, r'conditions')!,
+        patient: PatientDTO.fromJson(json[r'patient'])!,
       );
     }
     return null;
@@ -120,6 +110,8 @@ class RunActionPerformResultGet200Response {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'conditions',
+    'patient',
   };
 }
 

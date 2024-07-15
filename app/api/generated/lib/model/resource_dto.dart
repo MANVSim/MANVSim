@@ -13,34 +13,16 @@ part of manv_api;
 class ResourceDTO {
   /// Returns a new [ResourceDTO] instance.
   ResourceDTO({
-    this.id,
-    this.name,
-    this.quantity,
+    required this.id,
+    required this.name,
+    required this.quantity,
   });
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? id;
+  int id;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? name;
+  String name;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? quantity;
+  int quantity;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ResourceDTO &&
@@ -51,30 +33,18 @@ class ResourceDTO {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (id == null ? 0 : id!.hashCode) +
-    (name == null ? 0 : name!.hashCode) +
-    (quantity == null ? 0 : quantity!.hashCode);
+    (id.hashCode) +
+    (name.hashCode) +
+    (quantity.hashCode);
 
   @override
   String toString() => 'ResourceDTO[id=$id, name=$name, quantity=$quantity]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.id != null) {
       json[r'id'] = this.id;
-    } else {
-      json[r'id'] = null;
-    }
-    if (this.name != null) {
       json[r'name'] = this.name;
-    } else {
-      json[r'name'] = null;
-    }
-    if (this.quantity != null) {
       json[r'quantity'] = this.quantity;
-    } else {
-      json[r'quantity'] = null;
-    }
     return json;
   }
 
@@ -97,9 +67,9 @@ class ResourceDTO {
       }());
 
       return ResourceDTO(
-        id: mapValueOfType<int>(json, r'id'),
-        name: mapValueOfType<String>(json, r'name'),
-        quantity: mapValueOfType<int>(json, r'quantity'),
+        id: mapValueOfType<int>(json, r'id')!,
+        name: mapValueOfType<String>(json, r'name')!,
+        quantity: mapValueOfType<int>(json, r'quantity')!,
       );
     }
     return null;
@@ -147,6 +117,9 @@ class ResourceDTO {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'id',
+    'name',
+    'quantity',
   };
 }
 

@@ -13,16 +13,10 @@ part of manv_api;
 class RunPatientArrivePostRequest {
   /// Returns a new [RunPatientArrivePostRequest] instance.
   RunPatientArrivePostRequest({
-    this.patientId,
+    required this.patientId,
   });
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? patientId;
+  int patientId;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunPatientArrivePostRequest &&
@@ -31,18 +25,14 @@ class RunPatientArrivePostRequest {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (patientId == null ? 0 : patientId!.hashCode);
+    (patientId.hashCode);
 
   @override
   String toString() => 'RunPatientArrivePostRequest[patientId=$patientId]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.patientId != null) {
       json[r'patient_id'] = this.patientId;
-    } else {
-      json[r'patient_id'] = null;
-    }
     return json;
   }
 
@@ -65,7 +55,7 @@ class RunPatientArrivePostRequest {
       }());
 
       return RunPatientArrivePostRequest(
-        patientId: mapValueOfType<int>(json, r'patient_id'),
+        patientId: mapValueOfType<int>(json, r'patient_id')!,
       );
     }
     return null;
@@ -113,6 +103,7 @@ class RunPatientArrivePostRequest {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'patient_id',
   };
 }
 
