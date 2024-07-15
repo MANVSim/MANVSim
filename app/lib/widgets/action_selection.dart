@@ -35,6 +35,7 @@ class _ActionSelectionState extends State<ActionSelection> {
   toggleResource(Resource resource) {
     setState(() {
       resource.selected = !resource.selected;
+      resources; // To update the view
     });
   }
 
@@ -49,7 +50,7 @@ class _ActionSelectionState extends State<ActionSelection> {
     // filter actions by available resources
     possibleActions = actions.where((action) => action.resourceNamesNeeded
         .every((resourceName) =>
-        resources.any((resource) => resource.name == resourceName)));
+            resources.any((resource) => resource.name == resourceName)));
     // Could be more efficient, but probably not needed here
     notPossibleActions =
         actions.where((action) => !possibleActions.contains(action)).toList();
@@ -111,19 +112,20 @@ class _ActionSelectionState extends State<ActionSelection> {
     return resources.where((r) => r.selected);
   }
 
+  /// Returns all resources needed for a possible [action] using [getSelectedResources] and auto selecting the missing ones.
   Iterable<Resource> getNeededResources(PatientAction action) {
-    // quantity validation missing
-    // TODO: rework
-    var needed = List.from(action.resourceNamesNeeded);
-    var selected = List.from(getSelectedResources());
-    selected.removeWhere((s) => !needed.any((n) => s.name == n));
+    // TODO: quantity validation, maybe rework
+    List<String> needed = List.from(action.resourceNamesNeeded);
+    List<Resource> selected = List.from(getSelectedResources());
+    selected.removeWhere((s) => needed.every((name) => s.name != name));
     needed.removeWhere((name) => selected.any((s) => s.name == name));
-    for (var n in needed) {
-      selected.add(resources.firstWhere((r) => r.name == n));
+    for (String name in needed) {
+      selected.add(resources.firstWhere((r) => r.name == name));
     }
-    return getSelectedResources();
+    return selected;
   }
 
+  /// Navigates to [ActionScreen] and tries to perform [action].
   void performAction(PatientAction action) async {
     List<int> resourceIds =
         getNeededResources(action).map((resource) => resource.id).toList();
