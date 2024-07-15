@@ -57,7 +57,9 @@ class _ActionScreenState extends State<ActionScreen> {
                     onTimerComplete: () =>
                         showResultDialog(successContent(actionId)),
                   );
-                })));
+                },
+                onError: () =>
+                    Timer.run(() => showResultDialog(failureContent())))));
   }
 
   void showResultDialog(Widget content) {

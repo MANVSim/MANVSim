@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
@@ -10,11 +9,17 @@ import 'package:manvsim/services/api_service.dart';
 ///
 /// Generic of type [T]. Future may be [T?], but if [T] is non nullable a null return value is seen as an error.
 class ApiFutureBuilder<T> extends StatelessWidget {
+  /// The future of type [T?] to which this [builder] is connected.
   final Future<T?> future;
-  final Function(BuildContext, T) builder;
+
+  /// Build strategy based on the [future]s (successful) result of type [T].
+  final Widget Function(BuildContext, T) builder;
+
+  /// To be called instead of default error handling.
+  final Function()? onError;
 
   const ApiFutureBuilder(
-      {super.key, required this.future, required this.builder});
+      {super.key, required this.future, required this.builder, this.onError});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,9 @@ class ApiFutureBuilder<T> extends StatelessWidget {
               snapshot.connectionState != ConnectionState.done) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError || snapshot.data is! T) {
-            if (snapshot.error case ApiException apiException) {
+            if (onError != null) {
+              onError!();
+            } else if (snapshot.error case ApiException apiException) {
               ApiService apiService = GetIt.instance.get<ApiService>();
               Timer.run(
                   () => apiService.handleErrorCode(apiException, context));
