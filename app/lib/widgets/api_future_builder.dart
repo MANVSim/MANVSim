@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
 import 'package:manvsim/services/api_service.dart';
+import 'package:manvsim/widgets/error_box.dart';
 
 /// Custom [FutureBuilder] which automatically displays loading spinner, error messages and  handles some API error codes.
 ///
@@ -37,23 +38,7 @@ class ApiFutureBuilder<T> extends StatelessWidget {
               Timer.run(
                   () => apiService.handleErrorCode(apiException, context));
             }
-            // TODO own component
-            return Container(
-              padding: const EdgeInsets.all(8),
-              color: Colors.red.shade100,
-              child: Row(
-                children: [
-                  const Icon(Icons.error, color: Colors.red),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      snapshot.error.toString(),
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                  ),
-                ],
-              ),
-            );
+            return ErrorBox(errorText: snapshot.error.toString());
           }
           return builder(context, snapshot.data!);
         });

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
 import 'package:manvsim/models/tan_user.dart';
+import 'package:manvsim/widgets/error_box.dart';
 import 'package:provider/provider.dart';
 
 import '../services/api_service.dart';
@@ -30,9 +32,7 @@ class NameScreenState extends State<NameScreen> {
       fillColor: hasInputFailure ? Colors.red.shade50 : null,
       filled: hasInputFailure,
       border: hasInputFailure
-          ? const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.red),
-            )
+          ? const OutlineInputBorder(borderSide: BorderSide(color: Colors.red),)
           : null,
     );
   }
@@ -87,7 +87,7 @@ class NameScreenState extends State<NameScreen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const WaitScreen()),
-          (Route<dynamic> route) => false,
+              (Route<dynamic> route) => false,
         );
       }
     }
@@ -99,7 +99,10 @@ class NameScreenState extends State<NameScreen> {
       appBar: AppBar(
         actions: const <Widget>[LogoutButton()],
         title: Text(AppLocalizations.of(context)!.nameScreenName),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .inversePrimary,
       ),
       body: Center(
         child: Padding(
@@ -108,22 +111,7 @@ class NameScreenState extends State<NameScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (_errorMessage != null) // Show error message if it's not null
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  color: Colors.red.shade100,
-                  child: Row(
-                    children: [
-                      const Icon(Icons.error, color: Colors.red),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          _errorMessage!,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                ErrorBox(errorText: _errorMessage!),
               const SizedBox(height: 8),
               TextField(
                 controller: _nameController,
