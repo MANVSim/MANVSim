@@ -11,6 +11,21 @@ h3 {
   border-radius: 2px 2px 0px 0px;
 }
 
+@media screen and (min-width:575px) {
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  #active-tan-player-table::-webkit-scrollbar {
+    display: none
+  }
+
+  #active-tam-player-table {
+    /* IE and Edge */
+    -ms-overflow-style: none;
+    /* Firefox */
+    scrollbar-width: none;
+  }
+}
+
 @media screen and (max-width:769px) {
 
   #btn-activate-icon {
