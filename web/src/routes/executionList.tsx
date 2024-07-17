@@ -9,14 +9,15 @@ import { Accordion } from "react-bootstrap"
 import { ExecutionData, Template } from "../types"
 import { ReactElement } from "react"
 import { TemplateEntry } from "../components/templateEntry"
-import "./executions.css"
+
+import "./executionList.css"
 
 type ExecutionsLoaderData = {
   templates: Array<Template>
   activeExecutions: Array<ExecutionData>
 }
 
-export function ExecutionsRoute(): ReactElement {
+export function ExecutionListRoute(): ReactElement {
   const loaderData = useLoaderData() as ExecutionsLoaderData
   const { templates, activeExecutions } = loaderData
   const navigate = useNavigate()
@@ -91,7 +92,7 @@ export function ExecutionsRoute(): ReactElement {
   )
 }
 
-ExecutionsRoute.loader = async function (): Promise<{
+ExecutionListRoute.loader = async function (): Promise<{
   templates: Template[]
   activeExecutions: ExecutionData[]
 }> {
@@ -100,7 +101,7 @@ ExecutionsRoute.loader = async function (): Promise<{
   return { templates, activeExecutions }
 }
 
-ExecutionsRoute.action = async function ({
+ExecutionListRoute.action = async function ({
   request,
 }: ActionFunctionArgs<Request>) {
   const formData = await request.formData()

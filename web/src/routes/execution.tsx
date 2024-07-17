@@ -1,4 +1,3 @@
-import "./execution.css"
 import {
   Button,
   Collapse,
@@ -12,7 +11,7 @@ import {
   useLoaderData,
   useParams,
 } from "react-router"
-import { ReactElement, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import _ from "lodash"
 import { config } from "../config"
 import {
@@ -28,7 +27,9 @@ import { TanCard } from "../components/TanCard"
 import { PlayerStatus } from "../components/PlayerStatus"
 import { ExecutionStatus } from "../components/ExecutionStatus"
 
-export function ExecutionRoute(): ReactElement {
+import "./executionList"
+
+export function ExecutionRoute() {
   const loaderData = useLoaderData()
 
   const [execution, setExecution] = useState<null | ExecutionData>(

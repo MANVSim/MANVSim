@@ -5,12 +5,13 @@ import {
   useActionData,
 } from "react-router-dom"
 import { Button, Collapse, Form as FormBS } from "react-bootstrap"
-import "./login.css"
 import { tryFetchApi } from "../api"
 import { isLoggedIn } from "../utils"
 import { setStorageItem } from "../storage"
 import { ReactElement } from "react"
 import { CsrfForm } from "../components/CsrfForm"
+
+import "./login.css"
 
 export function LoginRoute(): ReactElement {
   const error = useActionData() as string

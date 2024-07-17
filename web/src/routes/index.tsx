@@ -1,6 +1,7 @@
 import { ReactElement } from "react"
 import MANV from "../assets/MANV.png"
-import "../index.css"
+
+import "./index.css"
 
 export function IndexRoute(): ReactElement {
   return (

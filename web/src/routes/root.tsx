@@ -1,22 +1,13 @@
 import { Navigate, Outlet, useNavigate } from "react-router"
+
 // LinkContainer currently has a bug generating a deprecation warning in the
 // console
 // https://github.com/react-bootstrap/react-router-bootstrap/issues/317
 import { LinkContainer } from "react-router-bootstrap"
-import Container from "react-bootstrap/Container"
-import Nav from "react-bootstrap/Nav"
-import Navbar from "react-bootstrap/Navbar"
-import { NavDropdown } from "react-bootstrap"
+import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap"
 import { isLoggedIn } from "../utils"
 import { ReactElement } from "react"
-
-function NavLink({ to, name }: { to: string; name: string }): ReactElement {
-  return (
-    <LinkContainer to={to}>
-      <Nav.Link>{name}</Nav.Link>
-    </LinkContainer>
-  )
-}
+import { NavLink } from "../components/NavLink"
 
 export function Root(): ReactElement {
   const navigate = useNavigate()

@@ -1,10 +1,13 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
+
+// import bootstrap css _before_ all other components so they can overwrite styles
 import "bootstrap/dist/css/bootstrap.min.css"
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import { ErrorPage } from "./error-page"
+import { ErrorPage } from "./routes/error-page"
 import { Root } from "./routes/root"
-import { ExecutionsRoute } from "./routes/executions"
+import { ExecutionListRoute } from "./routes/executionList"
 import { IndexRoute } from "./routes"
 import { LoginRoute } from "./routes/login"
 import { CsrfProvider } from "./contexts/csrf"
@@ -23,9 +26,9 @@ const router = createBrowserRouter([
       },
       {
         path: "/executions",
-        element: <ExecutionsRoute />,
-        loader: ExecutionsRoute.loader,
-        action: ExecutionsRoute.action,
+        element: <ExecutionListRoute />,
+        loader: ExecutionListRoute.loader,
+        action: ExecutionListRoute.action,
       },
       {
         path: "/execution/:executionId",
