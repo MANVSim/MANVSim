@@ -17,10 +17,12 @@ api = Blueprint("api-action", __name__)
 @jwt_required()
 def get_all_actions():
     """ Returns all actions stored for an execution. """
-    execution, _ = util.get_execution_and_player()
-    return {
-        "actions": [action.to_dict() for action in list(execution.scenario.actions.values())]
-    }
+    execution, player = util.get_execution_and_player()
+    # all actions a player can perform
+    actions = [action.to_dict() for action in
+               list(execution.scenario.actions.values())
+               if action.required_power <= player.role.power]
+    return {"actions": actions}
 
 
 @api.post("/action/perform")
