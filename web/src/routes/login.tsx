@@ -9,9 +9,9 @@ import { tryFetchApi } from "../api"
 import { setStorageItem } from "../services/storage"
 import { ReactElement } from "react"
 import { CsrfForm } from "../components/CsrfForm"
+import { isLoggedIn } from "../services/auth"
 
 import "./login.css"
-import { isLoggedIn } from "../services/auth"
 
 export function LoginRoute(): ReactElement {
   const error = useActionData() as string

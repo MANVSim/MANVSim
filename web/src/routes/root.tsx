@@ -5,9 +5,9 @@ import { Navigate, Outlet, useNavigate } from "react-router"
 // https://github.com/react-bootstrap/react-router-bootstrap/issues/317
 import { LinkContainer } from "react-router-bootstrap"
 import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap"
-import { isLoggedIn } from "../utils"
 import { ReactElement } from "react"
 import { NavLink } from "../components/NavLink"
+import { isLoggedIn } from "../services/auth"
 
 export function Root(): ReactElement {
   const navigate = useNavigate()
