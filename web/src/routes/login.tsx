@@ -81,8 +81,6 @@ LoginRoute.action = async function ({
 
   setStorageItem("token", json.token)
   setStorageItem("user", json.username)
-  // localStorage.setItem("token", json.token)
-  // localStorage.setItem("user", json.username)
 
   return redirect("/")
 }
