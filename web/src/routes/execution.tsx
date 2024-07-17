@@ -1,13 +1,11 @@
 import "./execution.css"
 import {
   Button,
-  Card,
   Collapse,
   Container,
   FloatingLabel,
   Form,
 } from "react-bootstrap"
-import QRCode from "react-qr-code"
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
@@ -23,167 +21,16 @@ import {
   isExecutionData,
   Role,
   Location,
-  ExecutionStatus,
 } from "../types"
-import CsrfForm from "../components/CsrfForm"
-import { useSubmit } from "react-router-dom"
-import { changeExecutionStatus, getExecution, togglePlayerStatus, createNewPlayer, } from "../api"
+import { CsrfForm } from "../components/CsrfForm"
+import { getExecution, togglePlayerStatus, createNewPlayer } from "../api"
+import { TanCard } from "../components/TanCard"
+import { PlayerStatus } from "../components/PlayerStatus"
+import { ExecutionStatus } from "../components/ExecutionStatus"
 
-function TanCard({ player }: { player: Player }): ReactElement {
-  const [toggle, setToggle] = useState(true)
-  return (
-    <Card className="d-flex m-1">
-      <Button className={`btn-light btn-sm ${toggle ? "" : "d-none"}`} onClick={() => setToggle(!toggle)}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-down-fill" viewBox="0 0 16 16">
-          <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
-        </svg>
-      </Button>
-      <Button className={`btn-light btn-sm ${toggle ? "d-none" : ""}`} onClick={() => setToggle(!toggle)}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-up-fill" viewBox="0 0 16 16">
-          <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
-        </svg>
-      </Button>
-      <QRCode value={player.tan} className={`text-center align-self-center p-3 w-100 ${toggle ? "d-none" : ""}`} />
-      <Card.Body>
-        <Card.Title className={`text-center ${toggle ? "d-none" : ""}`}>{player.tan}</Card.Title>
-        <div>Rolle: {player.role?.name ?? "Unbekannt"}</div>
-        <div>Ort: {player.location?.name ?? "Unbekannt"}</div>
-      </Card.Body>
-    </Card>
-  )
-}
-
-function PlayerStatus({ player }: { player: Player }): ReactElement {
-  const submit = useSubmit()
-  return (
-    <tr>
-      <td>{player.tan}</td>
-      <td>
-        <CsrfForm
-          onChange={(event) => submit(event.currentTarget)}
-          method="POST"
-        >
-          <input type="hidden" name="id" value="player-status" />
-          <input type="hidden" name="tan" value={player.tan} />
-          <Button
-            id={"toggle-status-" + player.tan}
-            name="alerted"
-            type="submit"
-            value={Number(player.alerted)}
-            title="Zum Ändern klicken"
-          >
-            {player.alerted ? "Alarmiert" : "Bereit"}
-          </Button>{" "}
-        </CsrfForm>
-      </td>
-      <td>{player.name}</td>
-      <td>{player.role?.name ?? "Unbekannt"}</td>
-      <td>{player.location?.name ?? "Unbekannt"}</td>
-    </tr>
-  )
-}
-
-function StatusIcon({ status }: { status: ExecutionStatus }) {
-  let icon;
-
-  switch (status) {
-    case 'PENDING':
-      icon = (
-        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="orange" className="bi bi-slash-circle-fill" viewBox="0 0 16 16">
-          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.646-2.646a.5.5 0 0 0-.708-.708l-6 6a.5.5 0 0 0 .708.708z" />
-        </svg>
-      );
-      break;
-    case 'RUNNING':
-      icon = (
-        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="green" className="bi bi-circle-fill" viewBox="0 0 16 16">
-          <circle cx="8" cy="8" r="8" />
-        </svg>
-      );
-      break;
-    case 'FINISHED':
-      icon = (
-        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" className="bi bi-sign-stop-fill" viewBox="0 0 16 16">
-          <path d="M10.371 8.277v-.553c0-.827-.422-1.234-.987-1.234-.572 0-.99.407-.99 1.234v.553c0 .83.418 1.237.99 1.237.565 0 .987-.408.987-1.237m2.586-.24c.463 0 .735-.272.735-.744s-.272-.741-.735-.741h-.774v1.485z" />
-          <path d="M4.893 0a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146A.5.5 0 0 0 11.107 0zM3.16 10.08c-.931 0-1.447-.493-1.494-1.132h.653c.065.346.396.583.891.583.524 0 .83-.246.83-.62 0-.303-.203-.467-.637-.572l-.656-.164c-.61-.147-.978-.51-.978-1.078 0-.706.597-1.184 1.444-1.184.853 0 1.386.475 1.436 1.087h-.645c-.064-.32-.352-.542-.797-.542-.472 0-.77.246-.77.6 0 .261.196.437.553.522l.654.161c.673.164 1.06.487 1.06 1.11 0 .736-.574 1.228-1.544 1.228Zm3.427-3.51V10h-.665V6.57H4.753V6h3.006v.568H6.587Zm4.458 1.16v.544c0 1.131-.636 1.805-1.661 1.805-1.026 0-1.664-.674-1.664-1.805V7.73c0-1.136.638-1.807 1.664-1.807s1.66.674 1.66 1.807ZM11.52 6h1.535c.82 0 1.316.55 1.316 1.292 0 .747-.501 1.289-1.321 1.289h-.865V10h-.665V6.001Z" />
-        </svg>
-      );
-      break;
-    default:
-      icon = null;
-  }
-
-  return (icon);
-}
-
-
-function Status({ execution }: { execution: ExecutionData }): ReactElement {
-  const [status, setStatus] = useState(execution.status)
-  useEffect(() => {
-    setStatus(execution.status)
-  }, [execution])
-
-  return (
-    <div>
-      <div className="d-flex mt-5">
-        <span className="fs-4">
-          Aktueller Status:
-        </span>
-        <div className="d-flex ms-3 align-items-center">
-          <StatusIcon status={status} />
-        </div>
-        <div className="ms-auto ms-3">
-          <Button className={
-            `${status == "UNKNOWN" || status == "FINISHED" ? "" : "d-none"} btn-success`
-          } onClick={() => {
-            setStatus("PENDING")
-            changeExecutionStatus(execution.id, "PENDING")
-          }}>
-            <svg id="btn-activate-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-upload d-none" viewBox="0 0 16 16">
-              <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-              <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z" />
-            </svg>
-            <span id="btn-activate-text">Aktivieren</span>
-          </Button>
-          <Button className={`${status == "PENDING" ? "" : "d-none"}`} onClick={() => {
-            setStatus("RUNNING")
-            changeExecutionStatus(execution.id, "RUNNING")
-          }}>
-            <svg id="btn-play-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-play-fill d-none" viewBox="0 0 16 16">
-              <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393" />
-            </svg>
-            <span id="btn-play-text">Starten</span>
-          </Button>
-          <Button className={
-            `${status == "RUNNING" ? "" : "d-none"} btn-warning`
-          } onClick={() => {
-            setStatus("PENDING")
-            changeExecutionStatus(execution.id, "PENDING")
-          }}>
-            <svg id="btn-pause-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pause-fill d-none" viewBox="0 0 16 16">
-              <path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5m5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5" />
-            </svg>
-            <span id="btn-pause-text">Pause</span>
-          </Button>
-          <Button className={
-            `${status == "RUNNING" ? "" : "d-none"} btn-danger ms-2`
-          } onClick={() => {
-            setStatus("FINISHED")
-            changeExecutionStatus(execution.id, "FINISHED")
-          }}>
-            <svg id="btn-stop-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-stop-fill d-none" viewBox="0 0 16 16">
-              <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5" />
-            </svg>
-            <span id="btn-stop-text">Stoppen</span>
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default function Execution(): ReactElement {
+export function ExecutionRoute(): ReactElement {
   const loaderData = useLoaderData()
+
   const [execution, setExecution] = useState<null | ExecutionData>(
     isExecutionData(loaderData) ? loaderData : null,
   )
@@ -205,8 +52,12 @@ export default function Execution(): ReactElement {
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
-      if (typeof executionId === "undefined") return
+      if (typeof executionId === "undefined") {
+        return
+      }
+
       const status = await getExecution(executionId)
+
       if (isExecutionData(status)) {
         setExecution(status)
       }
@@ -218,15 +69,29 @@ export default function Execution(): ReactElement {
     <div>
       {execution ? (
         <div>
-          <h2 id="execution-name-header" className="align-self-center mt-3">{execution.name}-{executionId}</h2>
-          <Status execution={execution} />
+          <h2 id="execution-name-header" className="align-self-center mt-3">
+            {execution.name}-{executionId}
+          </h2>
+          <ExecutionStatus execution={execution} />
           <div className="d-grid border rounded mt-3">
-            <Button className={`rounded ${open ? "btn-light" : "btn-primary"}`} onClick={() => setOpen(!open)}>
-              {open ?
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-up-fill" viewBox="0 0 16 16">
+            <Button
+              className={`rounded ${open ? "btn-light" : "btn-primary"}`}
+              onClick={() => setOpen(!open)}
+            >
+              {open ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="bi bi-caret-up-fill"
+                  viewBox="0 0 16 16"
+                >
                   <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
                 </svg>
-                : "Weiteren Spieler hinzufügen"}
+              ) : (
+                "Weiteren Spieler hinzufügen"
+              )}
             </Button>
             <Collapse in={open}>
               <div>
@@ -259,18 +124,25 @@ export default function Execution(): ReactElement {
               </div>
             </Collapse>
           </div>
-          <h3>Verfügbare TANs:</h3>
-          <Container fluid className="d-flex flex-wrap my-3">
-            {tansAvailable.length ? (tansAvailable.map((player) => (
-              <TanCard key={player.tan} player={player} />
-            ))
-            ) : (
-              <span>Erstelle neue Spieler um neue Tans verfügbar zu haben.</span>
-            )
-            }
-          </Container>
-          <h3 className="mt-5">Aktive TANs:</h3>
-          <div id="active-tan-player-table" className="overflow-scroll w-100">
+          <section>
+            <h3>Verfügbare TANs:</h3>
+            <Container fluid className="d-flex flex-wrap my-3">
+              {tansAvailable.length ? (
+                tansAvailable.map((player) => (
+                  <TanCard key={player.tan} player={player} />
+                ))
+              ) : (
+                <span>
+                  Erstelle neue Spieler um neue Tans verfügbar zu haben.
+                </span>
+              )}
+            </Container>
+          </section>
+          <section
+            id="active-tan-player-table"
+            className="overflow-scroll w-100"
+          >
+            <h3 className="mt-5">Aktive TANs:</h3>
             <table id="active-tan-player" className="table">
               <thead>
                 <tr>
@@ -287,7 +159,7 @@ export default function Execution(): ReactElement {
                 ))}
               </tbody>
             </table>
-          </div>
+          </section>
         </div>
       ) : (
         <div>Loading...</div>
@@ -296,14 +168,17 @@ export default function Execution(): ReactElement {
   )
 }
 
-Execution.loader = async function ({
+ExecutionRoute.loader = async function ({
   params: { executionId },
 }: LoaderFunctionArgs) {
   if (executionId === undefined) return null
   return getExecution(executionId)
 }
 
-Execution.action = async function ({ params, request }: ActionFunctionArgs) {
+ExecutionRoute.action = async function ({
+  params,
+  request,
+}: ActionFunctionArgs) {
   if (params.executionId === undefined) return null
   const formData = await request.formData()
   const id = formData.get("id")

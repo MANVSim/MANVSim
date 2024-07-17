@@ -18,7 +18,7 @@ function NavLink({ to, name }: { to: string; name: string }): ReactElement {
   )
 }
 
-export default function Root(): ReactElement {
+export function Root(): ReactElement {
   const navigate = useNavigate()
 
   if (!isLoggedIn()) {
@@ -42,7 +42,7 @@ export default function Root(): ReactElement {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <NavLink to="/" name="Home" />
-              <NavLink to="/scenario" name="Szenario" />
+              <NavLink to="/executions" name="Ausführungen" />
               <NavDropdown title="Benutzer">
                 <NavDropdown.Header>
                   {localStorage.getItem("user")}

@@ -6,6 +6,7 @@ export const AuthContext = createContext<Nullable<AuthValue>>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [authToken, setAuthToken] = useState<NullableString>(null)
+
   return (
     <AuthContext.Provider value={{ authToken, setAuthToken }}>
       {children}

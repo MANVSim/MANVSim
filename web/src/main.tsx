@@ -1,15 +1,15 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import Root from "./routes/root"
-import ErrorPage from "./error-page"
-import Scenario from "./routes/scenario"
-import Index from "./routes"
 import "bootstrap/dist/css/bootstrap.min.css"
-import Login from "./routes/login"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { ErrorPage } from "./error-page"
+import { Root } from "./routes/root"
+import { ExecutionsRoute } from "./routes/executions"
+import { IndexRoute } from "./routes"
+import { LoginRoute } from "./routes/login"
 import { CsrfProvider } from "./contexts/csrf"
 import { AuthProvider } from "./contexts/auth"
-import Execution from "./routes/execution"
+import { ExecutionRoute } from "./routes/execution"
 
 const router = createBrowserRouter([
   {
@@ -19,29 +19,26 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Index />,
+        element: <IndexRoute />,
       },
       {
-        path: "/scenario",
-        element: <Scenario />,
-        loader: Scenario.loader,
-      },
-      {
-        path: "/execution/create",
-        action: Scenario.action
+        path: "/executions",
+        element: <ExecutionsRoute />,
+        loader: ExecutionsRoute.loader,
+        action: ExecutionsRoute.action,
       },
       {
         path: "/execution/:executionId",
-        element: <Execution />,
-        loader: Execution.loader,
-        action: Execution.action,
+        element: <ExecutionRoute />,
+        loader: ExecutionRoute.loader,
+        action: ExecutionRoute.action,
       },
     ],
   },
   {
     path: "/login",
-    element: <Login />,
-    action: Login.action,
+    element: <LoginRoute />,
+    action: LoginRoute.action,
   },
 ])
 

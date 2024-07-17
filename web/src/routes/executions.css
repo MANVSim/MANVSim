@@ -1,0 +1,44 @@
+#active-execution-status {
+  width: 15%;
+}
+
+.btn.btn-outline-primary {
+  padding: 0px 10px 1px 10px;
+  margin: 0px;
+}
+
+#lobby-hover {
+  background-color: white !important;
+}
+
+#lobby-hover:hover {
+  background-color: #cfe2ff !important;
+}
+
+@media screen and (max-width: 769px) {
+  #active-execution-status {
+    margin-right: 2rem !important;
+    margin-left: 10px;
+  }
+
+  #active-execution-name {
+    padding-right: 10px !important;
+    overflow: scroll;
+  }
+
+  #execution-play-icon {
+    display: inline !important;
+  }
+
+  .execution-play-text {
+    display: none !important;
+  }
+
+  #execution-save-icon {
+    display: inline !important;
+  }
+
+  #execution-save-text {
+    display: none !important;
+  }
+}
