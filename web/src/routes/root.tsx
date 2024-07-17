@@ -8,6 +8,7 @@ import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap"
 import { ReactElement } from "react"
 import { NavLink } from "../components/NavLink"
 import { isLoggedIn } from "../services/auth"
+import { deleteStorageItem } from "../services/storage"
 
 export function Root(): ReactElement {
   const navigate = useNavigate()
@@ -17,8 +18,8 @@ export function Root(): ReactElement {
   }
 
   function logout() {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
+    deleteStorageItem("token")
+    deleteStorageItem("user")
     navigate("login")
   }
 
