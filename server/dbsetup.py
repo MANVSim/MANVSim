@@ -111,7 +111,7 @@ def __create_players():
     insert(Player(tan="456DEF", execution_id=23456, location_id=0, role_id=2,
                   alerted=True, activation_delay_sec=120))
     insert(Player(tan="987ZYX", execution_id=2, location_id=0,
-                  role_id=1, alerted=True, activation_delay_sec=10))
+                  role_id=2, alerted=True, activation_delay_sec=10))
     insert(Player(tan="654WVU", execution_id=2, location_id=0, role_id=3,
                   alerted=False, activation_delay_sec=10))
 

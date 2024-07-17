@@ -1,12 +1,20 @@
-import http
 import json
 import time
 
 from execution import run
+from http import HTTPStatus
 from execution.entities.location import Location
 from execution.tests.conftest import generate_token
 
 player_ids = run.registered_players.keys()
+
+
+def test_get_actions(client):
+    auth_header = generate_token(client.application, pending=False, plid="987ZYX")
+    response = client.get("/api/run/action/all", headers=auth_header)
+    assert response.status_code == HTTPStatus.OK
+    actions = response.json["actions"]
+    assert False not in [action["required_role"] <= 200 for action in actions]
 
 
 def test_perform_action(client):
@@ -28,14 +36,14 @@ def test_perform_action(client):
 
     # Player 1: leave location
     response = client.post("/api/run/location/leave", headers=headers)
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == HTTPStatus.OK
 
     # Player 1: arrive at patient
     form = {
         "patient_id": 1,
     }
     response = client.post("/api/run/patient/arrive", headers=headers, data=json.dumps(form))
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == HTTPStatus.OK
 
     # Player 1: perform action
     form = {
@@ -44,19 +52,19 @@ def test_perform_action(client):
         "resources": [1]
     }
     response = client.post("/api/run/action/perform", headers=headers, data=json.dumps(form))
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == HTTPStatus.OK
     id = response.json["performed_action_id"]
 
     # Player 2: leave location
     response = client.post("/api/run/location/leave", headers=headers_p2)
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == HTTPStatus.OK
 
     # Player 2: arrive at patient
     form = {
         "patient_id": 1,
     }
     response = client.post("/api/run/patient/arrive", headers=headers_p2, data=json.dumps(form))
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == HTTPStatus.OK
 
     # Player 2: perform action
     form = {
@@ -65,12 +73,12 @@ def test_perform_action(client):
         "resources": [1]
     }
     response = client.post("/api/run/action/perform", headers=headers_p2, data=json.dumps(form))
-    assert response.status_code == http.HTTPStatus.CONFLICT
+    assert response.status_code == HTTPStatus.CONFLICT
     assert response.text == "Resource is not available"
 
     # Player 1: check for result
     response = client.get(f"/api/run/action/perform/result?performed_action_id={id}&patient_id=1", headers=headers)
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == HTTPStatus.OK
     response_json = response.json
     assert "conditions" in response_json
     assert "EKG" in response_json["conditions"]
@@ -88,12 +96,12 @@ def test_perform_action(client):
         "resources": [1]
     }
     response = client.post("/api/run/action/perform", headers=headers_p2, data=json.dumps(form))
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == HTTPStatus.OK
     id = response.json["performed_action_id"]
 
     # Player 2: check for result
     response = client.get(f"/api/run/action/perform/result?performed_action_id={id}&patient_id=1", headers=headers_p2)
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == HTTPStatus.OK
     patient = response.json["patient"]
     performed_action = list(patient["performed_actions"])
     assert len(performed_action) > 2
@@ -119,18 +127,18 @@ def test_perform_action_but_blocked_to_leaving(client):
     headers = generate_token(client.application)
     headers["Content-Type"] = "application/json"
     response = client.post(f"/api/login", data=json.dumps(form), headers=headers)
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == HTTPStatus.OK
 
     # leave location
     response = client.post("/api/run/location/leave", headers=headers)
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == HTTPStatus.OK
 
     # arrive patient
     form = {
         "patient_id": 1,
     }
     response = client.post("/api/run/patient/arrive", headers=headers, data=json.dumps(form))
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == HTTPStatus.OK
 
     # simulate leaving on the location
     location.res_lock.acquire()
@@ -141,5 +149,5 @@ def test_perform_action_but_blocked_to_leaving(client):
         "resources": [1]
     }
     response = client.post("/api/run/action/perform", headers=headers, data=json.dumps(form))
-    assert response.status_code == http.HTTPStatus.CONFLICT
+    assert response.status_code == HTTPStatus.CONFLICT
     location.res_lock.release()
