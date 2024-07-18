@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:manvsim/models/patient.dart';
-import 'package:manvsim/screens/patient_screen.dart';
 import 'package:manvsim/services/patient_service.dart';
+import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -14,11 +13,11 @@ class PatientListScreen extends StatefulWidget {
 }
 
 class _PatientListScreenState extends State<PatientListScreen> {
-  late Future<List<Patient>> futurePatientList;
+  late Future<List<int>?> futurePatientIdList;
 
   @override
   void initState() {
-    futurePatientList = fetchPatientList();
+    futurePatientIdList = PatientService.fetchPatientsIDs();
     super.initState();
   }
 
@@ -33,40 +32,21 @@ class _PatientListScreenState extends State<PatientListScreen> {
         body: RefreshIndicator(
           onRefresh: () {
             setState(() {
-              futurePatientList = fetchPatientList();
+              futurePatientIdList = PatientService.fetchPatientsIDs();
             });
-            return futurePatientList;
+            return futurePatientIdList;
           },
-          child: FutureBuilder<List<Patient>>(
-              future: futurePatientList,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                } else if (!snapshot.hasData ||
-                    snapshot.connectionState != ConnectionState.done) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    final patient = snapshot.data![index];
-                    return Card(
-                        child: ListTile(
-                      leading: const Icon(Icons.person),
-                      title: Text(patient.name),
-                      subtitle: Text(patient.injuries),
-                      trailing: Text(patient.id.toString()),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    PatientScreen(patientId: patient.id)));
-                      },
-                    ));
-                  },
-                );
-              }),
+          child: ApiFutureBuilder<List<int>>(
+              future: futurePatientIdList,
+              builder: (context, patientIds) => ListView.builder(
+                  itemCount: patientIds.length,
+                  itemBuilder: (context, index) => Card(
+                      child: ListTile(
+                          leading: const Icon(Icons.person),
+                          title: Text(AppLocalizations.of(context)!
+                              .patientScreenName(patientIds[index])),
+                          onTap: () => PatientService.goToPatientScreen(
+                              patientIds[index], context))))),
         ));
   }
 }

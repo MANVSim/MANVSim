@@ -13,26 +13,14 @@ part of manv_api;
 class RunActionPerformPostRequest {
   /// Returns a new [RunActionPerformPostRequest] instance.
   RunActionPerformPostRequest({
-    this.actionId,
-    this.patientId,
+    required this.actionId,
+    required this.patientId,
     this.resources = const [],
   });
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? actionId;
+  int actionId;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? patientId;
+  int patientId;
 
   /// Each quantity required, needs to be an id in the array. Saying resource 0 is required 3 times, then id '0' needs to occur three 3 times in the array.
   List<int> resources;
@@ -46,8 +34,8 @@ class RunActionPerformPostRequest {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (actionId == null ? 0 : actionId!.hashCode) +
-    (patientId == null ? 0 : patientId!.hashCode) +
+    (actionId.hashCode) +
+    (patientId.hashCode) +
     (resources.hashCode);
 
   @override
@@ -55,16 +43,8 @@ class RunActionPerformPostRequest {
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.actionId != null) {
       json[r'action_id'] = this.actionId;
-    } else {
-      json[r'action_id'] = null;
-    }
-    if (this.patientId != null) {
       json[r'patient_id'] = this.patientId;
-    } else {
-      json[r'patient_id'] = null;
-    }
       json[r'resources'] = this.resources;
     return json;
   }
@@ -88,8 +68,8 @@ class RunActionPerformPostRequest {
       }());
 
       return RunActionPerformPostRequest(
-        actionId: mapValueOfType<int>(json, r'action_id'),
-        patientId: mapValueOfType<int>(json, r'patient_id'),
+        actionId: mapValueOfType<int>(json, r'action_id')!,
+        patientId: mapValueOfType<int>(json, r'patient_id')!,
         resources: json[r'resources'] is Iterable
             ? (json[r'resources'] as Iterable).cast<int>().toList(growable: false)
             : const [],
@@ -140,6 +120,9 @@ class RunActionPerformPostRequest {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'action_id',
+    'patient_id',
+    'resources',
   };
 }
 

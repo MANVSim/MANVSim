@@ -1,3 +1,4 @@
+import 'package:manv_api/api.dart';
 import 'package:manvsim/models/resource.dart';
 
 class Location {
@@ -12,25 +13,16 @@ class Location {
       required this.resources,
       required this.locations});
 
-  factory Location.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-        'id': int id,
-        'name': String name,
-        'resources': List<dynamic> resources,
-        'locations': List<dynamic> locations
-      } =>
-        Location(
-            id: id,
-            name: name,
-            resources: resources
-                .map((resource) => Resource.fromJson(resource))
-                .toList(),
-            locations: locations
-                .map((location) => Location.fromJson(location))
-                .toList()),
-      _ => throw const FormatException('Failed to parse patient from JSON.')
-    };
+  factory Location.fromApi(LocationDTO dto) {
+    return Location(
+        id: dto.id,
+        name: dto.name,
+        resources: dto.resources // TODO filter quantity 0
+            .map((resourceDto) => Resource.fromApi(resourceDto))
+            .toList(),
+        locations: dto.subLocations
+            .map((locationDto) => Location.fromApi(locationDto))
+            .toList());
   }
 
   List<Resource> flattenResources() {

@@ -13,17 +13,11 @@ part of manv_api;
 class LoginPostRequest {
   /// Returns a new [LoginPostRequest] instance.
   LoginPostRequest({
-    this.TAN,
+    required this.TAN,
   });
 
   /// User TAN
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? TAN;
+  String TAN;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is LoginPostRequest &&
@@ -32,18 +26,14 @@ class LoginPostRequest {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (TAN == null ? 0 : TAN!.hashCode);
+    (TAN.hashCode);
 
   @override
   String toString() => 'LoginPostRequest[TAN=$TAN]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.TAN != null) {
       json[r'TAN'] = this.TAN;
-    } else {
-      json[r'TAN'] = null;
-    }
     return json;
   }
 
@@ -66,7 +56,7 @@ class LoginPostRequest {
       }());
 
       return LoginPostRequest(
-        TAN: mapValueOfType<String>(json, r'TAN'),
+        TAN: mapValueOfType<String>(json, r'TAN')!,
       );
     }
     return null;
@@ -114,6 +104,7 @@ class LoginPostRequest {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'TAN',
   };
 }
 

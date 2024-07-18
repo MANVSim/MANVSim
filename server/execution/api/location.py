@@ -101,4 +101,4 @@ def leave_location():
     else:
         return "Unable to access runtime object. A timeout-error occurred.", 409
 
-    return "Player successfully left location.", 200
+    return {"message": "Player successfully left location."}

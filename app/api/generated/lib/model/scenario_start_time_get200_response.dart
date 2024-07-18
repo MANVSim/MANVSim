@@ -13,18 +13,12 @@ part of manv_api;
 class ScenarioStartTimeGet200Response {
   /// Returns a new [ScenarioStartTimeGet200Response] instance.
   ScenarioStartTimeGet200Response({
-    this.scenarioStartTime,
+    required this.scenarioStartTime,
     this.travelTime,
   });
 
   /// Timestamp in ms since unix epoch.
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? scenarioStartTime;
+  int scenarioStartTime;
 
   /// Timestamp in ms since unix epoch. This parameter is only provided, if a player is alerted.
   ///
@@ -43,7 +37,7 @@ class ScenarioStartTimeGet200Response {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (scenarioStartTime == null ? 0 : scenarioStartTime!.hashCode) +
+    (scenarioStartTime.hashCode) +
     (travelTime == null ? 0 : travelTime!.hashCode);
 
   @override
@@ -51,11 +45,7 @@ class ScenarioStartTimeGet200Response {
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.scenarioStartTime != null) {
       json[r'scenario_start_time'] = this.scenarioStartTime;
-    } else {
-      json[r'scenario_start_time'] = null;
-    }
     if (this.travelTime != null) {
       json[r'travel_time'] = this.travelTime;
     } else {
@@ -83,7 +73,7 @@ class ScenarioStartTimeGet200Response {
       }());
 
       return ScenarioStartTimeGet200Response(
-        scenarioStartTime: mapValueOfType<int>(json, r'scenario_start_time'),
+        scenarioStartTime: mapValueOfType<int>(json, r'scenario_start_time')!,
         travelTime: mapValueOfType<int>(json, r'travel_time'),
       );
     }
@@ -132,6 +122,7 @@ class ScenarioStartTimeGet200Response {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'scenario_start_time',
   };
 }
 

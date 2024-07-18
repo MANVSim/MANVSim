@@ -45,7 +45,7 @@ def get_patient():
         return "Missing or invalid request parameter detected.", 400
 
 
-@api.get("/patient/all-tans")
+@api.get("/patient/all-ids")
 @jwt_required()
 def get_all_patient():
     """ Returns all patients stored in the scenario. """

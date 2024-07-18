@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manvsim/models/tan_user.dart';
+import 'package:manvsim/widgets/error_box.dart';
 import 'package:manvsim/widgets/tan_input.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +23,8 @@ enum _LoginInputType { TAN, URL }
 class LoginScreenState extends State<LoginScreen> {
 
   final TanInputController _tanInputController = TanInputController();
-  final TextEditingController _serverUrlController = TextEditingController(text: "http://localhost:5000/api");
+  final TextEditingController _serverUrlController =
+      TextEditingController(text: "http://localhost:5000/api");
 
   String? _errorMessage;
 
@@ -149,10 +151,14 @@ class LoginScreenState extends State<LoginScreen> {
           ? '${failureMessage?.substring(0, maxLength).trim()}...'
           : failureMessage?.trim();
 
-      shortFailureMessage = shortFailureMessage?.replaceAll(RegExp(r'[\n\t]'), ' ');
+      shortFailureMessage =
+          shortFailureMessage?.replaceAll(RegExp(r'[\n\t]'), ' ');
 
       setState(() {
-        _errorMessage = failureOccurred ? AppLocalizations.of(context)!.loginWarningRequestFailed(shortFailureMessage??'unknown error') : null;
+        _errorMessage = failureOccurred
+            ? AppLocalizations.of(context)!.loginWarningRequestFailed(
+                shortFailureMessage ?? 'unknown error')
+            : null;
         _isLoading = false;
         _tanInputFailure = false;
         _urlInputFailure = false;
@@ -188,26 +194,13 @@ class LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16),
 
               if (_errorMessage != null) // Show error message if it's not null
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  color: Colors.red.shade100,
-                  child: Row(
-                    children: [
-                      const Icon(Icons.error, color: Colors.red),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          _errorMessage!,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                ErrorBox(errorText: _errorMessage!),
               const SizedBox(height: 16),
-              TanInputField(controller: _tanInputController,
+              TanInputField(
+                controller: _tanInputController,
                 decoration: _textFieldDecoration(_tanInputFailure, ""),
-                onChanged: (value) => _resetErrorMessage(_LoginInputType.TAN),),
+                onChanged: (value) => _resetErrorMessage(_LoginInputType.TAN),
+              ),
               const SizedBox(height: 32),
               TextButton(
                 onPressed: () {
@@ -220,39 +213,37 @@ class LoginScreenState extends State<LoginScreen> {
                     : AppLocalizations.of(context)!.loginShowAdvancedSettings),
               ),
               if (_showAdvancedSettings)
-              TextField(
-                controller: _serverUrlController,
-                decoration: _textFieldDecoration(_urlInputFailure,
-                    AppLocalizations.of(context)!.loginServerUrl),
-                onChanged: (value) => _resetErrorMessage(_LoginInputType.URL),
-
-              ),
-              const SizedBox(height: 16),
-              const SizedBox(height: 16),
+                TextField(
+                  controller: _serverUrlController,
+                  decoration: _textFieldDecoration(_urlInputFailure,
+                      AppLocalizations.of(context)!.loginServerUrl),
+                  onChanged: (value) => _resetErrorMessage(_LoginInputType.URL),
+                ),
+              const SizedBox(height: 32),
               if (_isLoading)
-                const CircularProgressIndicator(),
-              if (!_isLoading)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.qr_code_scanner),
-                      label: Text(
-                          AppLocalizations.of(context)!.qrCodeScanButton),
-                      onPressed: () {},
+                const CircularProgressIndicator()
+              else
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.qr_code_scanner),
+                        label: Text(
+                            AppLocalizations.of(context)!.qrCodeScanButton),
+                        onPressed: () {},
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.login),
-                      onPressed: _handleLogin,
-                      label: Text(AppLocalizations.of(context)!.loginSubmit),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.login),
+                        onPressed: _handleLogin,
+                        label: Text(AppLocalizations.of(context)!.loginSubmit),
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
             ],
           ),
         ),
