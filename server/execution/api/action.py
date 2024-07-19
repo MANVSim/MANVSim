@@ -2,11 +2,13 @@ import uuid
 
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
+from werkzeug.exceptions import InternalServerError
 
 from app_config import csrf
 from execution.entities.performed_action import PerformedAction
 from execution.entities.resource import Resource, try_lock_all, release_all_resources
 from execution.utils import util
+from execution.entities.action import Action
 from utils import time
 from event_logging.event import Event
 
@@ -17,10 +19,16 @@ api = Blueprint("api-action", __name__)
 @jwt_required()
 def get_all_actions():
     """ Returns all actions stored for an execution. """
-    execution, _ = util.get_execution_and_player()
-    return {
-        "actions": [action.to_dict() for action in list(execution.scenario.actions.values())]
-    }
+    execution, player = util.get_execution_and_player()
+    # all actions a player can perform
+    scenario_actions: list[Action] = list(execution.scenario.actions.values())
+    player_role = player.role
+    if not player_role:
+        raise InternalServerError(f"Requesting player has no role assigned")
+
+    actions = [action.to_dict() for action in scenario_actions
+               if action.required_power <= player_role.power]
+    return {"actions": actions}
 
 
 @api.post("/action/perform")

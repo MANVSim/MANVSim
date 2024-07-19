@@ -31,7 +31,7 @@ class _PatientOverviewState extends State<PatientOverview> {
                 ),
                 Text(
                     AppLocalizations.of(context)!
-                        .patientInjuries(widget.patient.injuries),
+                        .patientLocation(widget.patient.location.name),
                     style: DefaultTextStyle.of(context)
                         .style
                         .apply(fontSizeFactor: 1.5))

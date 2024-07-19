@@ -49,29 +49,35 @@ def get_execution(id: int):
     if id in run.active_executions.keys():
         execution = run.active_executions[id]
     else:
-        execution = entityloader.load_execution(id, save_in_memory=False)
+        execution: bool | Execution = entityloader.load_execution(id, save_in_memory=False)
 
-    return {
-        "id": execution.id,
-        "name": execution.name,
-        "status": execution.status.name,
-        "players": [{
-            "tan": player.tan,
-            "name": player.name,
-            "alerted": player.alerted,
-            "logged_in": player.logged_in,
-            "role": {"id": player.role.id, "name": player.role.name} if player.role else None,
-            "location": {"id": player.location.id, "name": player.location.name} if player.location else None
-        } for player in execution.players.values()],
-        "roles": [{
-            "id": x.id,
-            "name": x.name
-        } for x in __get_roles()],
-        "locations": [{
-            "id": x.id,
-            "name": x.name
-        } for x in __get_top_level_locations()]
-    }
+    if isinstance(execution, bool) and not execution:
+        raise NotFound(f"Execution with id={id} does not exist")
+    elif isinstance(execution, bool) and execution:
+        raise InternalServerError("Execution found but invalid return type "
+                                  "provided.")
+    else:
+        return {
+            "id": execution.id,
+            "name": execution.name,
+            "status": execution.status.name,
+            "players": [{
+                "tan": player.tan,
+                "name": player.name,
+                "alerted": player.alerted,
+                "logged_in": player.logged_in,
+                "role": {"id": player.role.id, "name": player.role.name} if player.role else None,
+                "location": {"id": player.location.id, "name": player.location.name} if player.location else None
+            } for player in execution.players.values()],
+            "roles": [{
+                "id": x.id,
+                "name": x.name
+            } for x in __get_roles()],
+            "locations": [{
+                "id": x.id,
+                "name": x.name
+            } for x in __get_top_level_locations()]
+        }
 
 
 @web_api.post("/execution/create")
@@ -79,7 +85,7 @@ def get_execution(id: int):
 @required("name", str, RequiredValueSource.FORM)
 def create_execution(scenario_id: int, name: str):
     try:
-        new_execution = models.Execution(scenario_id=scenario_id, name=name)
+        new_execution = models.Execution(scenario_id=scenario_id, name=name)  # type: ignore
         db.session.add(new_execution)
         db.session.commit()
         print(f"new execution created with id: {new_execution.id}")

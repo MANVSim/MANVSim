@@ -13,18 +13,12 @@ part of manv_api;
 class PlayerSetNamePostRequest {
   /// Returns a new [PlayerSetNamePostRequest] instance.
   PlayerSetNamePostRequest({
-    this.name,
+    required this.name,
     this.forceUpdate,
   });
 
   /// username to be set.
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? name;
+  String name;
 
   /// An optional flag to indicate an overwrite.
   ///
@@ -43,7 +37,7 @@ class PlayerSetNamePostRequest {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (name == null ? 0 : name!.hashCode) +
+    (name.hashCode) +
     (forceUpdate == null ? 0 : forceUpdate!.hashCode);
 
   @override
@@ -51,11 +45,7 @@ class PlayerSetNamePostRequest {
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.name != null) {
       json[r'name'] = this.name;
-    } else {
-      json[r'name'] = null;
-    }
     if (this.forceUpdate != null) {
       json[r'force_update'] = this.forceUpdate;
     } else {
@@ -83,7 +73,7 @@ class PlayerSetNamePostRequest {
       }());
 
       return PlayerSetNamePostRequest(
-        name: mapValueOfType<String>(json, r'name'),
+        name: mapValueOfType<String>(json, r'name')!,
         forceUpdate: mapValueOfType<bool>(json, r'force_update'),
       );
     }
@@ -132,6 +122,7 @@ class PlayerSetNamePostRequest {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'name',
   };
 }
 

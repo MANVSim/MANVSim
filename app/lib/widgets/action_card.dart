@@ -40,7 +40,10 @@ class _ActionCardState extends State<ActionCard> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                      Text(AppLocalizations.of(context)!.actionNeededResources),
+                      Text(widget.action.resourceNamesNeeded.isNotEmpty
+                          ? AppLocalizations.of(context)!.actionNeededResources
+                          : AppLocalizations.of(context)!
+                              .actionNoNeededResources),
                       ListView.builder(
                           shrinkWrap: true, // nested scrolling
                           physics: const ClampingScrollPhysics(),
@@ -48,12 +51,11 @@ class _ActionCardState extends State<ActionCard> {
                           itemBuilder: (context, index) =>
                               Text(widget.action.resourceNamesNeeded[index]))
                     ])),
-                if (widget.canBePerformed)
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.lightGreen),
-                      onPressed: widget.onPerform,
-                      child: Text(AppLocalizations.of(context)!.actionPerform))
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightGreen),
+                    onPressed: widget.canBePerformed ? widget.onPerform : null,
+                    child: Text(AppLocalizations.of(context)!.actionPerform))
               ])
             ]));
   }

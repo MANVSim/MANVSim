@@ -22,7 +22,7 @@ class RunLocationTakeFromPost200Response {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  Location? playerLocation;
+  LocationDTO? playerLocation;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunLocationTakeFromPost200Response &&
@@ -65,7 +65,7 @@ class RunLocationTakeFromPost200Response {
       }());
 
       return RunLocationTakeFromPost200Response(
-        playerLocation: Location.fromJson(json[r'player_location']),
+        playerLocation: LocationDTO.fromJson(json[r'player_location']),
       );
     }
     return null;

@@ -7,8 +7,8 @@ from execution import run
 from execution.tests.entities import dummy_entities
 
 """
-If you’re using an application factory, define an app fixture to create and configure an app instance. 
-You can add code before and after the yield to set up and tear down other resources, such as creating and clearing a 
+If you’re using an application factory, define an app fixture to create and configure an app instance.
+You can add code before and after the yield to set up and tear down other resources, such as creating and clearing a
 database.
 """
 
@@ -44,7 +44,7 @@ def runner(app):
 
 def generate_token(app, valid_payload=True, pending=False, plid="123ABC"):
     payload = {
-        "sub": (plid if pending else "654WVU"),
+        "sub": (plid if pending or plid != "123ABC" else "654WVU"),
         "exec_id": ("1" if pending else "2"),
     }
     payload_invalid = {

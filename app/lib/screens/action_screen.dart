@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/models/patient.dart';
 
 import 'package:manvsim/models/patient_action.dart';
+import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/action_service.dart';
+import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -25,12 +27,14 @@ class ActionScreen extends StatefulWidget {
 }
 
 class _ActionScreenState extends State<ActionScreen> {
-  late Future<int> futureActionId;
-  late Future<String> futureResult;
+  late Future<String?> futureActionId;
+  late Future<ConditionPatient?> futureResult;
+  Patient? patient;
 
   @override
   void initState() {
-    futureActionId = performAction(widget.action.id, widget.resourceIds);
+    futureActionId = ActionService.performAction(
+        widget.patient.id, widget.action.id, widget.resourceIds);
     super.initState();
   }
 
@@ -45,21 +49,17 @@ class _ActionScreenState extends State<ActionScreen> {
           automaticallyImplyLeading: false,
         ),
         body: Center(
-            child: FutureBuilder<int>(
+            child: ApiFutureBuilder<String>(
                 future: futureActionId,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    Timer.run(() => showResultDialog(failureContent()));
-                  } else if (!snapshot.hasData ||
-                      snapshot.connectionState != ConnectionState.done) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+                builder: (context, actionId) {
                   return TimerWidget(
                     duration: widget.action.durationInSeconds,
                     onTimerComplete: () =>
-                        showResultDialog(successContent(snapshot.data!)),
+                        showResultDialog(successContent(actionId)),
                   );
-                })));
+                },
+                onError: () =>
+                    Timer.run(() => showResultDialog(failureContent())))));
   }
 
   void showResultDialog(Widget content) {
@@ -78,22 +78,28 @@ class _ActionScreenState extends State<ActionScreen> {
     );
     // close action_screen
     dialogFuture.whenComplete(() {
-      Navigator.pop(context);
+      Navigator.pop(context, patient);
     });
   }
 
-  Widget successContent(int performedActionId) {
-    futureResult = fetchActionResult(performedActionId);
-    return FutureBuilder<String>(
+  Widget successContent(String performedActionId) {
+    futureResult =
+        ActionService.fetchActionResult(widget.patient.id, performedActionId);
+    return ApiFutureBuilder<ConditionPatient>(
         future: futureResult,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          } else if (!snapshot.hasData ||
-              snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return Text(snapshot.data!);
+        builder: (context, conditionPatient) {
+          var (condition, patient) = conditionPatient;
+          this.patient = patient;
+          var conditionList = condition.entries.toList();
+          return ListView.builder(
+              shrinkWrap: true, // nested scrolling
+              physics: const ClampingScrollPhysics(),
+              itemCount: conditionList.length,
+              itemBuilder: (context, index) => Row(children: [
+                    Text("${conditionList[index].key}: ",
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(conditionList[index].value)
+                  ]));
         });
   }
 

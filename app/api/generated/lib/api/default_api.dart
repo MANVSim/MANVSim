@@ -207,7 +207,7 @@ class DefaultApi {
   }
 
   /// Returns a list of actions available to the user.
-  Future<List<Action>?> runActionAllGet() async {
+  Future<RunActionAllGet200Response?> runActionAllGet() async {
     final response = await runActionAllGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -216,11 +216,8 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      final responseBody = await _decodeBodyBytes(response);
-      return (await apiClient.deserializeAsync(responseBody, 'List<Action>') as List)
-        .cast<Action>()
-        .toList(growable: false);
-
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunActionAllGet200Response',) as RunActionAllGet200Response;
+    
     }
     return null;
   }
@@ -285,8 +282,8 @@ class DefaultApi {
   ///
   /// * [String] performedActionId (required):
   ///
-  /// * [String] patientId (required):
-  Future<Response> runActionPerformResultGetWithHttpInfo(String performedActionId, String patientId,) async {
+  /// * [int] patientId (required):
+  Future<Response> runActionPerformResultGetWithHttpInfo(String performedActionId, int patientId,) async {
     // ignore: prefer_const_declarations
     final path = r'/run/action/perform/result';
 
@@ -320,8 +317,8 @@ class DefaultApi {
   ///
   /// * [String] performedActionId (required):
   ///
-  /// * [String] patientId (required):
-  Future<String?> runActionPerformResultGet(String performedActionId, String patientId,) async {
+  /// * [int] patientId (required):
+  Future<RunActionPerformResultGet200Response?> runActionPerformResultGet(String performedActionId, int patientId,) async {
     final response = await runActionPerformResultGetWithHttpInfo(performedActionId, patientId,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -330,7 +327,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'String',) as String;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunActionPerformResultGet200Response',) as RunActionPerformResultGet200Response;
     
     }
     return null;
@@ -480,12 +477,12 @@ class DefaultApi {
     return null;
   }
 
-  /// Returns a list of all patients.
+  /// Returns a list of all patient ids.
   ///
   /// Note: This method returns the HTTP [Response].
-  Future<Response> runPatientAllTansGetWithHttpInfo() async {
+  Future<Response> runPatientAllIdsGetWithHttpInfo() async {
     // ignore: prefer_const_declarations
-    final path = r'/run/patient/all-tans';
+    final path = r'/run/patient/all-ids';
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -508,9 +505,9 @@ class DefaultApi {
     );
   }
 
-  /// Returns a list of all patients.
-  Future<RunPatientAllTansGet200Response?> runPatientAllTansGet() async {
-    final response = await runPatientAllTansGetWithHttpInfo();
+  /// Returns a list of all patient ids.
+  Future<RunPatientAllIdsGet200Response?> runPatientAllIdsGet() async {
+    final response = await runPatientAllIdsGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -518,7 +515,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientAllTansGet200Response',) as RunPatientAllTansGet200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientAllIdsGet200Response',) as RunPatientAllIdsGet200Response;
     
     }
     return null;

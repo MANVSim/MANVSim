@@ -13,16 +13,10 @@ part of manv_api;
 class RunActionPerformPost200Response {
   /// Returns a new [RunActionPerformPost200Response] instance.
   RunActionPerformPost200Response({
-    this.performedActionId,
+    required this.performedActionId,
   });
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? performedActionId;
+  String performedActionId;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunActionPerformPost200Response &&
@@ -31,18 +25,14 @@ class RunActionPerformPost200Response {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (performedActionId == null ? 0 : performedActionId!.hashCode);
+    (performedActionId.hashCode);
 
   @override
   String toString() => 'RunActionPerformPost200Response[performedActionId=$performedActionId]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.performedActionId != null) {
       json[r'performed_action_id'] = this.performedActionId;
-    } else {
-      json[r'performed_action_id'] = null;
-    }
     return json;
   }
 
@@ -65,7 +55,7 @@ class RunActionPerformPost200Response {
       }());
 
       return RunActionPerformPost200Response(
-        performedActionId: mapValueOfType<String>(json, r'performed_action_id'),
+        performedActionId: mapValueOfType<String>(json, r'performed_action_id')!,
       );
     }
     return null;
@@ -113,6 +103,7 @@ class RunActionPerformPost200Response {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'performed_action_id',
   };
 }
 

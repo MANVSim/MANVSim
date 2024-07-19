@@ -13,25 +13,13 @@ part of manv_api;
 class RunLocationTakeFromPostRequest {
   /// Returns a new [RunLocationTakeFromPostRequest] instance.
   RunLocationTakeFromPostRequest({
-    this.takeLocationId,
-    this.fromLocationId,
+    required this.takeLocationId,
+    required this.fromLocationId,
   });
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? takeLocationId;
+  int takeLocationId;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? fromLocationId;
+  int fromLocationId;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunLocationTakeFromPostRequest &&
@@ -41,24 +29,16 @@ class RunLocationTakeFromPostRequest {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (takeLocationId == null ? 0 : takeLocationId!.hashCode) +
-    (fromLocationId == null ? 0 : fromLocationId!.hashCode);
+    (takeLocationId.hashCode) +
+    (fromLocationId.hashCode);
 
   @override
   String toString() => 'RunLocationTakeFromPostRequest[takeLocationId=$takeLocationId, fromLocationId=$fromLocationId]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.takeLocationId != null) {
       json[r'take_location_id'] = this.takeLocationId;
-    } else {
-      json[r'take_location_id'] = null;
-    }
-    if (this.fromLocationId != null) {
       json[r'from_location_id'] = this.fromLocationId;
-    } else {
-      json[r'from_location_id'] = null;
-    }
     return json;
   }
 
@@ -81,8 +61,8 @@ class RunLocationTakeFromPostRequest {
       }());
 
       return RunLocationTakeFromPostRequest(
-        takeLocationId: mapValueOfType<int>(json, r'take_location_id'),
-        fromLocationId: mapValueOfType<int>(json, r'from_location_id'),
+        takeLocationId: mapValueOfType<int>(json, r'take_location_id')!,
+        fromLocationId: mapValueOfType<int>(json, r'from_location_id')!,
       );
     }
     return null;
@@ -130,6 +110,8 @@ class RunLocationTakeFromPostRequest {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'take_location_id',
+    'from_location_id',
   };
 }
 

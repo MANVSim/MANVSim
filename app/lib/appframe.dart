@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/screens/notifications_screen.dart';
 import 'package:manvsim/screens/patient_list_screen.dart';
-import 'package:manvsim/screens/tan_screen.dart';
+import 'package:manvsim/screens/patient_select_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppFrame extends StatefulWidget {
@@ -44,7 +44,7 @@ class _AppFrameState extends State<AppFrame> {
       ),
       body: const <Widget>[
         /// Home page
-        TanScreen(),
+        PatientSelectScreen(),
         PatientListScreen(),
         NotificationsScreen()
       ][currentPageIndex],
