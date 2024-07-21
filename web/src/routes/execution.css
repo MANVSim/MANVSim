@@ -1,24 +1,18 @@
 h3 {
-  margin-top: 1em
+  margin-top: 1em;
 }
 
 #execution-name-header {
   margin: 0;
 }
 
-.card button {
-  border-bottom: 1px #6c757d solid;
-  border-radius: 2px 2px 0px 0px;
-}
-
-@media screen and (min-width:575px) {
-
+@media screen and (min-width: 575px) {
   /* Hide scrollbar for Chrome, Safari and Opera */
   #active-tan-player-table::-webkit-scrollbar {
-    display: none
+    display: none;
   }
 
-  #active-tam-player-table {
+  #active-tan-player-table {
     /* IE and Edge */
     -ms-overflow-style: none;
     /* Firefox */
@@ -26,8 +20,7 @@ h3 {
   }
 }
 
-@media screen and (max-width:769px) {
-
+@media screen and (max-width: 769px) {
   #btn-activate-icon {
     display: inline !important;
   }
@@ -60,3 +53,4 @@ h3 {
     display: none;
   }
 }
+

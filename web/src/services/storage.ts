@@ -12,3 +12,7 @@ export function setStorageItem<Item extends StorageItem>(
 ): void {
   localStorage.setItem(key, value)
 }
+
+export function deleteStorageItem<Item extends StorageItem>(key: Item) {
+  localStorage.removeItem(key)
+}

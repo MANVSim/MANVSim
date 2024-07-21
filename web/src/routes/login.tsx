@@ -5,14 +5,15 @@ import {
   useActionData,
 } from "react-router-dom"
 import { Button, Collapse, Form as FormBS } from "react-bootstrap"
-import "./login.css"
 import { tryFetchApi } from "../api"
-import { isLoggedIn } from "../utils"
-import { setStorageItem } from "../storage"
+import { setStorageItem } from "../services/storage"
 import { ReactElement } from "react"
-import CsrfForm from "../components/CsrfForm"
+import { CsrfForm } from "../components/CsrfForm"
+import { isLoggedIn } from "../services/auth"
 
-export default function Login(): ReactElement {
+import "./login.css"
+
+export function LoginRoute(): ReactElement {
   const error = useActionData() as string
 
   if (isLoggedIn()) {
@@ -61,7 +62,7 @@ export default function Login(): ReactElement {
   )
 }
 
-Login.action = async function ({
+LoginRoute.action = async function ({
   request,
 }: ActionFunctionArgs<Request>): Promise<string | Response> {
   const formData = await request.formData()
@@ -80,8 +81,6 @@ Login.action = async function ({
 
   setStorageItem("token", json.token)
   setStorageItem("user", json.username)
-  // localStorage.setItem("token", json.token)
-  // localStorage.setItem("user", json.username)
 
   return redirect("/")
 }

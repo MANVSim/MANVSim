@@ -22,13 +22,19 @@ export function CsrfProvider({
   children: ReactNode
 }): ReactElement {
   const [csrfToken, setCsrfToken] = useState("")
-  if (csrfToken == "") getCsrfToken().then((token) => setCsrfToken(token))
+
+  if (csrfToken == "") {
+    getCsrfToken().then((token) => setCsrfToken(token))
+  }
+
   useEffect(() => {
-    const intervalId = setInterval(async () => {
+    const intervalId = setInterval(() => {
       getCsrfToken().then((token) => setCsrfToken(token))
     }, config.csrfPollingRate)
+
     return () => clearInterval(intervalId)
   }, [])
+
   return (
     <CsrfContext.Provider value={csrfToken}>{children}</CsrfContext.Provider>
   )

@@ -14,7 +14,7 @@ def get_templates():
             "id": scenario.id,
             "name": scenario.name,
             "executions": [
-                execution.id
+                {"id": execution.id, "name": execution.name}
                 for execution in scenario.executions
             ]
         }
