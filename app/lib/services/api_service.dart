@@ -28,13 +28,13 @@ class ApiService {
 
   DefaultApi? _apiClient;
 
-  /// The API client to use for all requests
-  /// Only available after a successful login
+  /// The API client to use for all requests.
+  /// Only available after a successful login.
   DefaultApi get api => _apiClient!;
 
-  /// Recovers the API client from the user's authentication information
-  /// Initializes the API client to use JWT and CSRF tokens
-  /// Is called when login screen is skipped
+  /// Recovers the API client from the user's authentication information.
+  /// Initializes the API client to use JWT and CSRF tokens.
+  /// Is called when login screen is skipped.
   recover(BuildContext context) async {
     TanUser user = Provider.of<TanUser>(context, listen: false);
 
@@ -45,8 +45,8 @@ class ApiService {
     }
   }
 
-  /// Logs in the user with the given TAN and URL
-  /// Initializes the API client to use JWT and CSRF tokens
+  /// Logs in the user with the given TAN and URL.
+  /// Initializes the API client to use JWT and CSRF tokens.
   login(String tan, String url, BuildContext context) async {
     DefaultApi apiClient = DefaultApi(ApiClient(basePath: url));
     LoginPost200Response? loginResponse =
@@ -56,16 +56,7 @@ class ApiService {
       throw Exception("Login failed: No response body received");
     }
 
-    if (loginResponse.jwtToken == null) {
-      throw Exception("Login failed: No JWT token received");
-    }
-
-    if (loginResponse.userCreationRequired == null) {
-      throw Exception(
-          "Login failed: User information missing: userCreationRequired");
-    }
-
-    final Authentication auth = _JwtCsrfAuth(loginResponse.jwtToken!);
+    final Authentication auth = _JwtCsrfAuth(loginResponse.jwtToken);
     _apiClient = DefaultApi(ApiClient(basePath: url, authentication: auth));
 
     if (context.mounted) {
@@ -102,14 +93,13 @@ class ApiService {
 
   /// Handles some common error codes
   handleErrorCode(ApiException e, BuildContext context) {
-
-    if (e.code == 401 || e.code == 409) {
-
+    if (e.code == 401 || e.code == 409 || e.code == 422) {
       String? messageHeader;
       String? messageBody;
 
-      if (e.code == 401) {
-        messageHeader = AppLocalizations.of(context)!.unauthorizedBearerAlertHeader;
+      if (e.code == 401 || e.code == 422) {
+        messageHeader =
+            AppLocalizations.of(context)!.unauthorizedBearerAlertHeader;
         messageBody = AppLocalizations.of(context)!.unauthorizedBearerAlertBody;
       } else if (e.code == 409) {
         messageHeader = AppLocalizations.of(context)!.waitAlreadyLoggedInHeader;
@@ -120,21 +110,17 @@ class ApiService {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(
-                messageHeader!),
-            content:
-                Text(messageBody!),
+            title: Text(messageHeader!),
+            content: Text(messageBody!),
             actions: <Widget>[
               TextButton(
-                child: Text(AppLocalizations.of(context)!
-                    .logOutAlertOption),
+                child: Text(AppLocalizations.of(context)!.logOutAlertOption),
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const LoginScreen()),
-                    (Route<dynamic> route) =>
-                        false,
+                    (Route<dynamic> route) => false,
                   );
                 },
               ),

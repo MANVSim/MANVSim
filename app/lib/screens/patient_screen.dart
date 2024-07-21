@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:manvsim/models/patient.dart';
 
-import 'package:manvsim/models/patient_location.dart';
+import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/action_selection.dart';
+import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/patient_overview.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,11 +19,11 @@ class PatientScreen extends StatefulWidget {
 }
 
 class _PatientScreenState extends State<PatientScreen> {
-  late Future<PatientLocation> futurePatientLocation;
+  late Future<Patient?> futurePatient;
 
   @override
   void initState() {
-    futurePatientLocation = arriveAtPatient(widget.patientId);
+    futurePatient = PatientService.arriveAtPatient(widget.patientId);
     super.initState();
   }
 
@@ -35,33 +37,30 @@ class _PatientScreenState extends State<PatientScreen> {
           actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(
-            onRefresh: refresh,
-            child: FutureBuilder(
-                future: futurePatientLocation,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
-                  } else if (!snapshot.hasData ||
-                      snapshot.connectionState != ConnectionState.done) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  var (patient, location) = snapshot.data!;
+            onRefresh: () => refresh(null),
+            child: ApiFutureBuilder<Patient>(
+                future: futurePatient,
+                builder: (context, patient) {
                   return SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Column(children: [
                         Card(child: PatientOverview(patient: patient)),
                         ActionSelection(
                             patient: patient,
-                            locations: [location],
+                            locations: [patient.location],
                             refreshPatient: refresh)
                       ]));
                 })));
   }
 
-  Future refresh() {
+  Future refresh(Patient? patient) {
     setState(() {
-      futurePatientLocation = arriveAtPatient(widget.patientId);
+      // TODO necessary to leave before every arrival?
+      futurePatient = patient != null
+          ? Future(() => patient)
+          : LocationService.leaveLocation()
+              .then((v) => PatientService.arriveAtPatient(widget.patientId));
     });
-    return futurePatientLocation;
+    return futurePatient;
   }
 }

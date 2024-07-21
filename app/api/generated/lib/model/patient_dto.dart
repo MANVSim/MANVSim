@@ -10,36 +10,48 @@
 
 part of manv_api;
 
-class RunPatientArrivePostRequest {
-  /// Returns a new [RunPatientArrivePostRequest] instance.
-  RunPatientArrivePostRequest({
-    required this.patientId,
+class PatientDTO {
+  /// Returns a new [PatientDTO] instance.
+  PatientDTO({
+    required this.id,
+    required this.name,
+    required this.location,
   });
 
-  int patientId;
+  int id;
+
+  String name;
+
+  LocationDTO location;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is RunPatientArrivePostRequest &&
-    other.patientId == patientId;
+  bool operator ==(Object other) => identical(this, other) || other is PatientDTO &&
+    other.id == id &&
+    other.name == name &&
+    other.location == location;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (patientId.hashCode);
+    (id.hashCode) +
+    (name.hashCode) +
+    (location.hashCode);
 
   @override
-  String toString() => 'RunPatientArrivePostRequest[patientId=$patientId]';
+  String toString() => 'PatientDTO[id=$id, name=$name, location=$location]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'patient_id'] = this.patientId;
+      json[r'id'] = this.id;
+      json[r'name'] = this.name;
+      json[r'location'] = this.location;
     return json;
   }
 
-  /// Returns a new [RunPatientArrivePostRequest] instance and imports its values from
+  /// Returns a new [PatientDTO] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static RunPatientArrivePostRequest? fromJson(dynamic value) {
+  static PatientDTO? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -48,24 +60,26 @@ class RunPatientArrivePostRequest {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "RunPatientArrivePostRequest[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "RunPatientArrivePostRequest[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "PatientDTO[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "PatientDTO[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return RunPatientArrivePostRequest(
-        patientId: mapValueOfType<int>(json, r'patient_id')!,
+      return PatientDTO(
+        id: mapValueOfType<int>(json, r'id')!,
+        name: mapValueOfType<String>(json, r'name')!,
+        location: LocationDTO.fromJson(json[r'location'])!,
       );
     }
     return null;
   }
 
-  static List<RunPatientArrivePostRequest> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <RunPatientArrivePostRequest>[];
+  static List<PatientDTO> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <PatientDTO>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = RunPatientArrivePostRequest.fromJson(row);
+        final value = PatientDTO.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -74,12 +88,12 @@ class RunPatientArrivePostRequest {
     return result.toList(growable: growable);
   }
 
-  static Map<String, RunPatientArrivePostRequest> mapFromJson(dynamic json) {
-    final map = <String, RunPatientArrivePostRequest>{};
+  static Map<String, PatientDTO> mapFromJson(dynamic json) {
+    final map = <String, PatientDTO>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = RunPatientArrivePostRequest.fromJson(entry.value);
+        final value = PatientDTO.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -88,14 +102,14 @@ class RunPatientArrivePostRequest {
     return map;
   }
 
-  // maps a json object with a list of RunPatientArrivePostRequest-objects as value to a dart map
-  static Map<String, List<RunPatientArrivePostRequest>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<RunPatientArrivePostRequest>>{};
+  // maps a json object with a list of PatientDTO-objects as value to a dart map
+  static Map<String, List<PatientDTO>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<PatientDTO>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = RunPatientArrivePostRequest.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = PatientDTO.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;
@@ -103,7 +117,9 @@ class RunPatientArrivePostRequest {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'patient_id',
+    'id',
+    'name',
+    'location',
   };
 }
 

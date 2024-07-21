@@ -5,6 +5,9 @@
 build/
 pubspec.lock  # Except for application packages
 
+# Ignore generated empty tests
+test/
+
 doc/api/
 
 # IntelliJ

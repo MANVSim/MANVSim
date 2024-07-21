@@ -68,7 +68,7 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**runLocationAllGet**](doc//DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of  top-level accessible locations.
 *DefaultApi* | [**runLocationLeavePost**](doc//DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
 *DefaultApi* | [**runLocationTakeFromPost**](doc//DefaultApi.md#runlocationtakefrompost) | **POST** /run/location/take-from | A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
-*DefaultApi* | [**runPatientAllTansGet**](doc//DefaultApi.md#runpatientalltansget) | **GET** /run/patient/all-tans | Returns a list of all patients.
+*DefaultApi* | [**runPatientAllIdsGet**](doc//DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 *DefaultApi* | [**runPatientArrivePost**](doc//DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
 *DefaultApi* | [**runPatientLeavePost**](doc//DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
 *DefaultApi* | [**scenarioStartTimeGet**](doc//DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
@@ -76,23 +76,25 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
- - [Action](doc//Action.md)
+ - [ActionDTO](doc//ActionDTO.md)
  - [Error](doc//Error.md)
- - [Location](doc//Location.md)
+ - [LocationDTO](doc//LocationDTO.md)
  - [LoginPost200Response](doc//LoginPost200Response.md)
  - [LoginPostRequest](doc//LoginPostRequest.md)
  - [NotificationsGet200Response](doc//NotificationsGet200Response.md)
- - [Patient](doc//Patient.md)
+ - [PatientDTO](doc//PatientDTO.md)
  - [PlayerSetNamePost401Response](doc//PlayerSetNamePost401Response.md)
  - [PlayerSetNamePostRequest](doc//PlayerSetNamePostRequest.md)
- - [Resource](doc//Resource.md)
+ - [ResourceDTO](doc//ResourceDTO.md)
+ - [RunActionAllGet200Response](doc//RunActionAllGet200Response.md)
  - [RunActionPerformPost200Response](doc//RunActionPerformPost200Response.md)
  - [RunActionPerformPostRequest](doc//RunActionPerformPostRequest.md)
+ - [RunActionPerformResultGet200Response](doc//RunActionPerformResultGet200Response.md)
  - [RunLocationAllGet200Response](doc//RunLocationAllGet200Response.md)
  - [RunLocationLeavePost200Response](doc//RunLocationLeavePost200Response.md)
  - [RunLocationTakeFromPost200Response](doc//RunLocationTakeFromPost200Response.md)
  - [RunLocationTakeFromPostRequest](doc//RunLocationTakeFromPostRequest.md)
- - [RunPatientAllTansGet200Response](doc//RunPatientAllTansGet200Response.md)
+ - [RunPatientAllIdsGet200Response](doc//RunPatientAllIdsGet200Response.md)
  - [RunPatientArrivePost200Response](doc//RunPatientArrivePost200Response.md)
  - [RunPatientArrivePostRequest](doc//RunPatientArrivePostRequest.md)
  - [RunPatientLeavePost200Response](doc//RunPatientLeavePost200Response.md)

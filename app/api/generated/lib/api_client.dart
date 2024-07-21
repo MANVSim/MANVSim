@@ -182,30 +182,34 @@ class ApiClient {
           return valueString == 'true' || valueString == '1';
         case 'DateTime':
           return value is DateTime ? value : DateTime.tryParse(value);
-        case 'Action':
-          return Action.fromJson(value);
+        case 'ActionDTO':
+          return ActionDTO.fromJson(value);
         case 'Error':
           return Error.fromJson(value);
-        case 'Location':
-          return Location.fromJson(value);
+        case 'LocationDTO':
+          return LocationDTO.fromJson(value);
         case 'LoginPost200Response':
           return LoginPost200Response.fromJson(value);
         case 'LoginPostRequest':
           return LoginPostRequest.fromJson(value);
         case 'NotificationsGet200Response':
           return NotificationsGet200Response.fromJson(value);
-        case 'Patient':
-          return Patient.fromJson(value);
+        case 'PatientDTO':
+          return PatientDTO.fromJson(value);
         case 'PlayerSetNamePost401Response':
           return PlayerSetNamePost401Response.fromJson(value);
         case 'PlayerSetNamePostRequest':
           return PlayerSetNamePostRequest.fromJson(value);
-        case 'Resource':
-          return Resource.fromJson(value);
+        case 'ResourceDTO':
+          return ResourceDTO.fromJson(value);
+        case 'RunActionAllGet200Response':
+          return RunActionAllGet200Response.fromJson(value);
         case 'RunActionPerformPost200Response':
           return RunActionPerformPost200Response.fromJson(value);
         case 'RunActionPerformPostRequest':
           return RunActionPerformPostRequest.fromJson(value);
+        case 'RunActionPerformResultGet200Response':
+          return RunActionPerformResultGet200Response.fromJson(value);
         case 'RunLocationAllGet200Response':
           return RunLocationAllGet200Response.fromJson(value);
         case 'RunLocationLeavePost200Response':
@@ -214,8 +218,8 @@ class ApiClient {
           return RunLocationTakeFromPost200Response.fromJson(value);
         case 'RunLocationTakeFromPostRequest':
           return RunLocationTakeFromPostRequest.fromJson(value);
-        case 'RunPatientAllTansGet200Response':
-          return RunPatientAllTansGet200Response.fromJson(value);
+        case 'RunPatientAllIdsGet200Response':
+          return RunPatientAllIdsGet200Response.fromJson(value);
         case 'RunPatientArrivePost200Response':
           return RunPatientArrivePost200Response.fromJson(value);
         case 'RunPatientArrivePostRequest':

@@ -10,36 +10,36 @@
 
 part of manv_api;
 
-class RunPatientArrivePostRequest {
-  /// Returns a new [RunPatientArrivePostRequest] instance.
-  RunPatientArrivePostRequest({
-    required this.patientId,
+class RunActionAllGet200Response {
+  /// Returns a new [RunActionAllGet200Response] instance.
+  RunActionAllGet200Response({
+    this.actions = const [],
   });
 
-  int patientId;
+  List<ActionDTO> actions;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is RunPatientArrivePostRequest &&
-    other.patientId == patientId;
+  bool operator ==(Object other) => identical(this, other) || other is RunActionAllGet200Response &&
+    _deepEquality.equals(other.actions, actions);
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (patientId.hashCode);
+    (actions.hashCode);
 
   @override
-  String toString() => 'RunPatientArrivePostRequest[patientId=$patientId]';
+  String toString() => 'RunActionAllGet200Response[actions=$actions]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'patient_id'] = this.patientId;
+      json[r'actions'] = this.actions;
     return json;
   }
 
-  /// Returns a new [RunPatientArrivePostRequest] instance and imports its values from
+  /// Returns a new [RunActionAllGet200Response] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static RunPatientArrivePostRequest? fromJson(dynamic value) {
+  static RunActionAllGet200Response? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -48,24 +48,24 @@ class RunPatientArrivePostRequest {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "RunPatientArrivePostRequest[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "RunPatientArrivePostRequest[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "RunActionAllGet200Response[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "RunActionAllGet200Response[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return RunPatientArrivePostRequest(
-        patientId: mapValueOfType<int>(json, r'patient_id')!,
+      return RunActionAllGet200Response(
+        actions: ActionDTO.listFromJson(json[r'actions']),
       );
     }
     return null;
   }
 
-  static List<RunPatientArrivePostRequest> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <RunPatientArrivePostRequest>[];
+  static List<RunActionAllGet200Response> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <RunActionAllGet200Response>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = RunPatientArrivePostRequest.fromJson(row);
+        final value = RunActionAllGet200Response.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -74,12 +74,12 @@ class RunPatientArrivePostRequest {
     return result.toList(growable: growable);
   }
 
-  static Map<String, RunPatientArrivePostRequest> mapFromJson(dynamic json) {
-    final map = <String, RunPatientArrivePostRequest>{};
+  static Map<String, RunActionAllGet200Response> mapFromJson(dynamic json) {
+    final map = <String, RunActionAllGet200Response>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = RunPatientArrivePostRequest.fromJson(entry.value);
+        final value = RunActionAllGet200Response.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -88,14 +88,14 @@ class RunPatientArrivePostRequest {
     return map;
   }
 
-  // maps a json object with a list of RunPatientArrivePostRequest-objects as value to a dart map
-  static Map<String, List<RunPatientArrivePostRequest>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<RunPatientArrivePostRequest>>{};
+  // maps a json object with a list of RunActionAllGet200Response-objects as value to a dart map
+  static Map<String, List<RunActionAllGet200Response>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<RunActionAllGet200Response>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = RunPatientArrivePostRequest.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = RunActionAllGet200Response.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;
@@ -103,7 +103,7 @@ class RunPatientArrivePostRequest {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'patient_id',
+    'actions',
   };
 }
 

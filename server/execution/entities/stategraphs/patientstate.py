@@ -22,27 +22,40 @@ class PatientState:
         self.treatments = treatments
         self.conditions = conditions
 
-    def add_treatment(self, treatment: str, new_state_uuid: str, force_update: bool = False):
+    def add_treatment(self, treatment: str, new_state_uuid: str,
+                      force_update: bool = False):
         """
-            Inserts an additional treatment, that leads to a state change. If the treatment is already
-            provided it keeps the old state unless the force_update flags allows an overwrite.
+            Inserts an additional treatment. If the treatment is already
+            provided it keeps the old state unless the force_update flags allows
+             an overwrite.
         """
         if force_update or treatment not in self.treatments.keys():
             self.treatments[treatment] = new_state_uuid
             return True
         else:
-            logging.warning("treatment already exist. You might force-update the id if necessary.")
+            logging.warning("treatment already exist. You might force-update "
+                            "the id if necessary.")
             return False
 
     def add_condition(self, key: str, value: str, force_update: bool = False):
+        """
+        Inserts an additional condition. If the condition is already
+        provided it keeps the old value unless the force_update flags allows an
+        overwrite.
+        """
         if force_update or key not in self.conditions.keys():
             self.conditions[key] = value
             return True
         else:
-            logging.warning("condition already exist. You might force-update the id if necessary.")
+            logging.warning("condition already exist. You might force-update "
+                            "the id if necessary.")
             return False
 
     def get_conditions(self, keys: list[str]):
+        """
+        Retrieves a dictionary of conditions, selected by the required keys,
+        provided in the method parameter.
+        """
         conditions = {}
         for key in keys:
             if key in self.conditions.keys():
@@ -60,12 +73,13 @@ class PatientState:
             logging.error("unable to start error, due to missing run time.")
             return False
 
-    def get_all_states(self):
-        return list(self.treatments.values()).append(self.after_time_state_uuid)
+    def get_all_child_state_ids(self):
+        return set(self.treatments.values()).add(self.after_time_state_uuid)
 
     def is_state_outdated(self):
         """ Returns a boolean related to the state timeout. """
-        return self.timelimit != -1 and self.timelimit + self.start_time <= time.current_time_s()
+        return (self.timelimit != -1 and
+                self.timelimit + self.start_time <= time.current_time_s())
 
     def to_dict(self):
         return self.__dict__
