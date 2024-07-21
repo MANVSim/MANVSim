@@ -19,7 +19,12 @@ function isTypeFactory<T>(
 const template = z.object({
   id: z.number(),
   name: z.string(),
-  executions: z.array(z.number()),
+  executions: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+    }),
+  ),
 })
 
 export type Template = z.infer<typeof template>

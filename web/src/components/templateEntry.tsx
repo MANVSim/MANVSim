@@ -60,19 +60,19 @@ export function TemplateEntry({
       </AccordionHeader>
       <AccordionBody>
         {executions.length ? (
-          executions.map((execution: number) => (
-            <li key={execution} className="w-100 d-flex mb-2">
+          executions.map(({ name, id }) => (
+            <li key={id} className="w-100 d-flex mb-2">
               <button
                 id="lobby-hover"
                 className="btn btn-light flex-fill me-2 d-flex justify-content-center"
-                onClick={() => navigate(`/execution/${execution}`)}
+                onClick={() => navigate(`/execution/${id}`)}
               >
-                <div className="align-self-center">{execution}</div>
+                <div className="align-self-center">{name}</div>
               </button>
               <div className="w-25">
                 <button
                   className="btn btn-success me-2 w-100"
-                  onClick={() => activateExecution(execution, navigate)}
+                  onClick={() => activateExecution(id, navigate)}
                 >
                   <svg
                     id="execution-play-icon"
