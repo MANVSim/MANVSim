@@ -1,12 +1,5 @@
-h3 {
-  margin-top: 1em;
-}
-
-#execution-name-header {
-  margin: 0;
-}
-
 @media screen and (min-width: 575px) {
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   #active-tan-player-table::-webkit-scrollbar {
     display: none;
@@ -53,4 +46,3 @@ h3 {
     display: none;
   }
 }
-

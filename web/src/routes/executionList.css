@@ -15,6 +15,15 @@
   background-color: #cfe2ff !important;
 }
 
+#notification-input {
+  border-top: 2px black solid;
+}
+
+#notification-display {
+  border-top: 1px black dotted;
+  border-bottom: 2px black solid;
+}
+
 @media screen and (max-width: 769px) {
   #active-execution-status {
     margin-right: 2rem !important;

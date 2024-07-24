@@ -76,7 +76,8 @@ def get_execution(id: int):
             "locations": [{
                 "id": x.id,
                 "name": x.name
-            } for x in __get_top_level_locations()]
+            } for x in __get_top_level_locations()],
+            "notifications": execution.notifications
         }
 
 
