@@ -3,7 +3,6 @@ from bcrypt import gensalt, hashpw
 from app import create_app
 from app_config import db, csrf
 from execution.tests.entities.dummy_entities import get_activity_diagrams
-from vars import RESULT_DELIMITER
 from models import (
     Scenario,
     Execution,
@@ -17,6 +16,8 @@ from models import (
     ResourcesNeeded,
     WebUser,
 )
+from vars import RESULT_DELIMITER
+
 
 # pyright: reportCallIssue=false
 # The following statements are excluded from pyright, due to ORM specifics.
@@ -24,65 +25,80 @@ from models import (
 
 
 def __create_resources():
-    insert(Resource(id=0, name="Verband", picture_ref="verband.png",
-                    quantity=10, location_id=2, consumable=True))
-    insert(Resource(id=1, name="Pflaster", picture_ref="pflaster.png",
-                    quantity=10000, location_id=3, consumable=True))
-    insert(Resource(id=2, name="Stetoskop", picture_ref="stetoskop.png",
+    insert(
+        Resource(id=0, name="Verband", picture_ref="media/static/no_image.png",
+                 quantity=10, location_id=2, consumable=True))
+    insert(
+        Resource(id=1, name="Pflaster", picture_ref="media/static/no_image.png",
+                 quantity=10000, location_id=3, consumable=True))
+    insert(Resource(id=2, name="Stetoskop",
+                    picture_ref="media/static/no_image.png",
                     quantity=2, location_id=1, consumable=False))
-    insert(Resource(id=3, name="Knochensäge", picture_ref="saege.png",
+    insert(Resource(id=3, name="Knochensäge",
+                    picture_ref="media/static/no_image.png",
                     quantity=1, location_id=0, consumable=False))
-    insert(Resource(id=4, name="EKG", quantity=1, picture_ref="dummy_ekg.png",
+    insert(Resource(id=4, name="EKG", quantity=1,
+                    picture_ref="media/static/tasche_ekg.jpg",
                     location_id=5, consumable=False))
     insert(Resource(id=5, name="Infusion", quantity=3,
-                    picture_ref="dummy_infusion.png", location_id=3,
+                    picture_ref="media/static/no_image.png", location_id=3,
                     consumable=False))
     insert(Resource(id=6, name="Trage", quantity=4,
-                    picture_ref="dummy_trage.png", location_id=0,
+                    picture_ref="media/static/no_image.png", location_id=0,
                     consumable=False))
     insert(Resource(id=7, name="Beatmungsgerät", quantity=1,
-                    picture_ref="dummy_beatmung.png", location_id=4,
+                    picture_ref="media/static/no_image.png", location_id=4,
                     consumable=False))
 
 
 def __create_locations():
-    insert(Location(id=0, name="RTW", picture_ref="rtw.jpg"))
+    insert(Location(id=0, name="RTW", picture_ref="media/static/rtw_sh.png"))
     insert(Location(id=1, name="Sichtungstasche",
-                    picture_ref="media/static/rtw_sh.png", location_id=0))
+                    picture_ref="media/static/tasche_sichtung.jpg",
+                    location_id=0))
     insert(Location(id=2, name="Verbandskasten",
                     picture_ref="media/static/tasche_rot.jpg", location_id=1))
     insert(Location(id=3, name="Roter Rucksack",
                     picture_ref="media/static/rucksack_rot.jpg", location_id=0))
     insert(Location(id=4, name="Blauer Rucksack",
-                    picture_ref="media/static/rucksack_blau.jpg", location_id=0))
-    insert(Location(id=5, name="EKG", picture_ref="dummy_ekg.png",
+                    picture_ref="media/static/rucksack_blau.jpg",
+                    location_id=0))
+    insert(Location(id=5, name="EKG", picture_ref="media/static/tasche_ekg.jpg",
                     location_id=0))
     insert(Location(id=6, name="Holstein Stadion",
-                    picture_ref="dummy_location.png"))
+                    picture_ref="media/static/no_image.png"))
 
 
 def __create_actions():
     insert(Action(id=0, name="Verband anlegen", required_power=100,
-                  picture_ref="verbandanlegen.jpg", results="",
+                  picture_ref="media/static/no_image.png", results="",
                   duration_secs=60))
     insert(Action(id=1, name="Puls messen", required_power=100,
-                  picture_ref="pulsmessen.jpg", results="", duration_secs=30))
+                  picture_ref="media/static/no_image.png", results="",
+                  duration_secs=30))
     insert(Action(id=2, name="Pflaster aufkleben", required_power=0,
-                  picture_ref="pflaster.jpg", results="", duration_secs=10))
+                  picture_ref="media/static/no_image.png", results="",
+                  duration_secs=10))
     insert(Action(id=3, name="Amputation", required_power=300,
-                  picture_ref="pflaster.jpg", results="", duration_secs=120))
+                  picture_ref="media/static/no_image.png", results="",
+                  duration_secs=120))
 
-    insert(Action(id=4, name="EKG schreiben", picture_ref="placeholder.png",
+    insert(Action(id=4, name="EKG schreiben",
+                  picture_ref="media/static/no_image.png",
                   duration_secs=2, results=f"EKG{RESULT_DELIMITER}12-Kanal-EKG",
                   required_power=200))
-    insert(Action(id=5, name="Pflaster kleben", picture_ref="placeholder.png",
+    insert(Action(id=5, name="Pflaster kleben",
+                  picture_ref="media/static/no_image.png",
                   duration_secs=10, results="", required_power=300))
-    insert(Action(id=6, name="Beatmen", picture_ref="placeholder.png",
+    insert(Action(id=6, name="Beatmen", picture_ref="media/static/no_image.png",
                   duration_secs=300, results="", required_power=200))
-    insert(Action(id=7, name="Betrachten", picture_ref="placeholder.png",
-                  duration_secs=5, required_power=100,
-                  results=f"Verletzung{RESULT_DELIMITER}Haut{RESULT_DELIMITER}Bewusstsein"))
-    insert(Action(id=8, name="Wunderheilung", picture_ref="placeholder.png",
+    insert(
+        Action(id=7, name="Betrachten", picture_ref="media/static/no_image.png",
+               duration_secs=5, required_power=100,
+               results=f"Verletzung{RESULT_DELIMITER}Haut{RESULT_DELIMITER}\
+               Bewusstsein"))
+    insert(Action(id=8, name="Wunderheilung",
+                  picture_ref="media/static/no_image.png",
                   duration_secs=5, results="", required_power=300))
 
 
@@ -160,7 +176,6 @@ def insert(data):
 
 
 with create_app(csrf=csrf, db=db).app_context():
-
     __create_executions()
     __create_scenarios()
     __create_players()
