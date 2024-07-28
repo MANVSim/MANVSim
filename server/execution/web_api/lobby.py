@@ -107,6 +107,8 @@ def change_execution_status(id: int, new_status: str):
     execution = try_get_execution(id)
     try:
         execution.status = Execution.Status[new_status]
+        if execution.id not in run.active_executions.keys():
+            run.activate_execution(execution)
     except KeyError:
         raise BadRequest(
             f"Not an option for the execution status: '{new_status}'. "

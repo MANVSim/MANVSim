@@ -82,7 +82,7 @@ export function ExecutionRoute() {
               <div className="d-flex mt-2">
                 <FormLabel className="fs-5 mt-2 me-4">Nachrichten</FormLabel>
                 <div className="d-flex justify-content-center ms-auto">
-                  <Button className="align-self-center" type="submit">
+                  <Button className={`align-self-center ${execution.status == "PENDING" || execution.status == "RUNNING" ? "" : "disabled"}`} type="submit">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16" height="16"
