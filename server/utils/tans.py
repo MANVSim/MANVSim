@@ -4,9 +4,7 @@ import string
 from flask import current_app
 
 import models
-from app import create_app
-from app_config import csrf, db
-
+from app_config import db
 
 ALLOWED_CHARS = string.ascii_uppercase + string.digits
 
@@ -41,7 +39,7 @@ class Tan:
         other (Tan or str): The other TAN or string to compare with.
 
         Returns:
-        bool: True if the TANs or strings are equal (ignoring case), False otherwise.
+        bool: True if TANs or strings are equal, False otherwise.
         """
         if isinstance(other, Tan):
             return self.value.upper() == other.value.upper()
@@ -72,9 +70,25 @@ class Tan:
         return hash(self.value)
 
 
-def possible_tans(length: int) -> int:
+def _possible_tans(length: int) -> int:
     """ Calculates the number of possible unique TANs of the given length. """
     return len(ALLOWED_CHARS) ** length
+
+
+def unique(length: int = 5) -> Tan:
+    """
+    Generates a unique TAN with the given length.
+
+    Parameters:
+    length (int): The length of the generated TAN. Default is 5.
+
+    Returns:
+    Tan: The generated unique TAN.
+
+    Raises:
+    ValueError: If no unique TAN of this length could be generated.
+    """
+    return uniques(1, length).pop()
 
 
 def uniques(n: int, length: int = 5) -> list[Tan]:
@@ -89,12 +103,13 @@ def uniques(n: int, length: int = 5) -> list[Tan]:
     list[Tan]: The list of generated unique TANs.
 
     Raises:
-    ValueError: If n is greater than the maximum possible TANs of the given length.
+    ValueError: If n is greater than the maximum possible TANs of this length.
     """
-    max_tans = possible_tans(length)
+    max_tans = _possible_tans(length)
     if n > max_tans:
         raise ValueError(
-            f"Cannot generate {n} unique TANs of length {length}. Maximum possible TANs of this length are {max_tans}."
+            f"Cannot generate {n} unique TANs of length {length}. Maximum \
+            possible TANs of this length are {max_tans}."
         )
     # Retrieve existing tans
     tans = set()
@@ -106,8 +121,8 @@ def uniques(n: int, length: int = 5) -> list[Tan]:
     unique_tans_left = max_tans - len(existing_tans)
     if unique_tans_left < n:
         raise ValueError(
-            f"Cannot generate {n} unique TANs due to limited permutations. Unique TANs left with this length: "
-            f"{unique_tans_left}"
+            f"Cannot generate {n} unique TANs due to limited permutations. \
+            Unique TANs left with this length: {unique_tans_left}"
         )
     # Generate new unique tans
     while len(tans) - len(existing_tans) < n:
