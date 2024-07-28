@@ -133,7 +133,7 @@ def create_test_execution(pending: bool = True):
         4: action_4,
         5: action_5
     }
-    scenario = Scenario(id=1, name="Schlägerei", patients=patient_dict,
+    scenario = Scenario(s_id=1, name="Schlägerei", patients=patient_dict,
                         actions=action_dict, locations=location_dict)
 
     # Execution

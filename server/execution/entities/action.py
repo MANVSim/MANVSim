@@ -3,8 +3,9 @@ import json
 
 class Action:
 
-    def __init__(self, id: int, name: str, results: list[str], picture_ref: str, duration_sec: int,
-                 resources_needed: list[str], required_power: int = 0):
+    def __init__(self, id: int, name: str, results: list[str], picture_ref: str,
+                 duration_sec: int, resources_needed: list[str],
+                 required_power: int = 0):
         self.id = id
         self.name = name
         self.results = results  # list of condition keys to reveal on a patient
@@ -15,8 +16,9 @@ class Action:
 
     def to_dict(self):
         """
-        Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
-        'shallow'-flag is set, only the object reference in form of a unique identifier is included.
+        Returns all fields of this class in a dictionary. By default, all nested
+        objects are included. In case the 'shallow'-flag is set, only the object
+        reference in form of a unique identifier is included.
         """
         return {
             'id': self.id,
@@ -30,7 +32,8 @@ class Action:
 
     def to_json(self):
         """
-        Returns this object as a JSON. By default, all nested objects are included. In case the 'shallow'-flag is set,
-        only the object reference in form of a unique identifier is included.
+        Returns this object as a JSON. By default, all nested objects are
+        included. In case the 'shallow'-flag is set, only the object reference
+        in form of a unique identifier is included.
         """
         return json.dumps(self.to_dict())
