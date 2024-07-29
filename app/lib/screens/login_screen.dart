@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manvsim/models/tan_user.dart';
+import 'package:manvsim/screens/qr_screen.dart';
 import 'package:manvsim/widgets/error_box.dart';
 import 'package:manvsim/widgets/tan_input.dart';
 import 'package:provider/provider.dart';
@@ -231,7 +234,26 @@ class LoginScreenState extends State<LoginScreen> {
                         icon: const Icon(Icons.qr_code_scanner),
                         label: Text(
                             AppLocalizations.of(context)!.qrCodeScanButton),
-                        onPressed: () {},
+                        onPressed: () async {
+
+                          final scannedText = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => QRScreen(),
+                            ),
+                          );
+                          if (scannedText != null) {
+
+                            final url = scannedText.split(';').first;
+                            final String tan = scannedText.split(';').last;
+
+                            _serverUrlController.text = url;
+                            for(int i=0; i<min(TanInputController.TAN_LENGTH, tan.length); i++) {
+                              _tanInputController.updateValue(i, tan.toUpperCase()[i]);
+                            }
+                          }
+
+                        },
                       ),
                     ),
                     const SizedBox(width: 8),
