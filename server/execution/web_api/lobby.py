@@ -74,7 +74,8 @@ def get_execution(id: int):
             "roles": [role.to_dict(include=["id", "name"]) for role in
                       __get_roles()],
             "locations": [loc.to_dict(include=["id", "name"]) for loc in
-                          __get_top_level_locations()]
+                          __get_top_level_locations()],
+            "notifications": execution.notifications
         }
 
 
@@ -105,6 +106,8 @@ def change_execution_status(id: int, new_status: str):
     execution = try_get_execution(id)
     try:
         execution.status = Execution.Status[new_status]
+        if execution.id not in run.active_executions.keys():
+            run.activate_execution(execution)
     except KeyError:
         raise BadRequest(
             f"Not an option for the execution status: '{new_status}'. "

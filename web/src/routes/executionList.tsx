@@ -105,7 +105,7 @@ ExecutionListRoute.action = async function ({
   request,
 }: ActionFunctionArgs<Request>) {
   const formData = await request.formData()
-  const id_json = await tryFetchJson<ExecutionData>("executions", {
+  const id_json = await tryFetchJson<ExecutionData>("execution/create", {
     body: formData,
     method: "POST",
   })

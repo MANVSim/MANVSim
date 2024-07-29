@@ -96,7 +96,7 @@ export function TemplateEntry({
         <CsrfForm
           className={`d-flex mt-2 ${isVisible ? "" : "d-none"}`}
           method="post"
-          action="/execution/create"
+          action="/executions"
         >
           <FormBS.Group className="d-none" controlId="formGroupScenarioId">
             <FormBS.Label>Scenario-ID</FormBS.Label>

@@ -36,3 +36,10 @@ export async function changeExecutionStatus(
     body: formData,
   })
 }
+
+export async function pushNotificationToPlayer(formData: FormData): Promise<Response> {
+   return tryFetchApi(`notifications/post`, {
+    method: "POST",
+    body: formData,
+  })
+}

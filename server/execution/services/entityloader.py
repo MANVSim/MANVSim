@@ -192,10 +192,13 @@ def __load_players(exec_id: int) -> dict[str, Player] | None:
 
 def load_execution(exec_id: int, save_in_memory=True) -> bool | Execution:
     """
-    Loads an Execution (Simulation) and all associated data into memory and
-    activates it to make it ready for execution.
-
+    Default: Loads an Execution (Simulation) and all associated data into memory
+    and activates it to make it ready for execution.
     Returns True for success, False otherwise.
+
+    If required the final memory loading is by-passed by editing the
+    save_in_memory flag. The execution status stays UNKNOWN and the object
+    itself is returned.
     """
     with current_app.app_context():
         ex = (db.session.query(models.Execution)
@@ -220,7 +223,10 @@ def load_execution(exec_id: int, save_in_memory=True) -> bool | Execution:
                 scenario.locations[player.location.id] = player.location
 
         execution = Execution(id=ex.id, name=ex.name, scenario=scenario,
-                              players=players, status=Execution.Status.PENDING)
+                              players=players,
+                              status=
+                              Execution.Status.PENDING if save_in_memory else
+                              Execution.Status.UNKNOWN)
         # Activate execution (makes it accessible by API)
         if save_in_memory:
             run.activate_execution(execution)
