@@ -84,7 +84,7 @@ class PatientState:
                 self.timelimit + self.start_time <= time.current_time_s())
 
     def to_dict(self):
-        return self.__dict__
+        return self.__dict__.copy()
 
     def from_dict(self, **kwargs):
         for key, value in kwargs.items():

@@ -34,13 +34,16 @@ class Execution:
             players={self.players!r}, status={self.status!r}, \
             starting_time={self.starting_time!r})")
 
-    def to_dict(self, shallow: bool = False):
+    def to_dict(self, shallow: bool = False, include: list | None = None,
+                exclude: list | None = None):
         """
         Returns all fields of this class in a dictionary. By default, all nested
         objects are included. In case the 'shallow'-flag is set, only the object
-        reference in form of a unique identifier is included.
+        reference in form of a unique identifier is included. Via exclude and
+        include, lists of attributes can be included or excluded from the
+        result.
         """
-        return {
+        result = {
             'id': self.id,
             'name': self.name,
             'scenario': self.scenario.id if shallow else self.scenario.to_dict(),
@@ -50,13 +53,23 @@ class Execution:
             'status': self.status.name
         }
 
-    def to_json(self, shallow: bool = False):
+        if include:
+            result = {key: result[key] for key in include if key in result}
+        if exclude:
+            for key in exclude:
+                result.pop(key, None)
+
+        return result
+
+    def to_json(self, shallow: bool = False, include: list | None = None,
+                exclude: list | None = None):
         """
         Returns this object as a JSON. By default, all nested objects are
         included. In case the 'shallow'-flag is set, only the object reference
-        in form of a unique identifier is included.
+        in form of a unique identifier is included. Via exclude and included,
+        lists of attributes can be included or excluded from the result.
         """
-        return json.dumps(self.to_dict(shallow))
+        return json.dumps(self.to_dict(shallow, include, exclude))
 
     def add_new_player(self, role: int, location: int):
         from utils.tans import unique
