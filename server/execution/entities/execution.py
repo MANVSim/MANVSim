@@ -1,6 +1,8 @@
 import json
 from enum import Enum
 
+from werkzeug.exceptions import InternalServerError, BadRequest
+
 from execution.entities.player import Player
 from execution.entities.scenario import Scenario
 from app_config import db
@@ -27,6 +29,28 @@ class Execution:
         self.status = status
         self.starting_time = starting_time
         self.notifications = []
+
+    def start_execution(self):
+        """ Performs the execution start protocol. """
+        if not self.scenario:
+            raise InternalServerError("Execution without a scenario detected.")
+        elif self.status == Execution.Status.PENDING:
+            # enables the patients activity-diagrams
+            self.scenario.run_patients()
+        else:
+            raise BadRequest("Process manipulation detected. Execution must be "
+                             "PENDING before start.")
+
+    def pause_execution(self):
+        """ Pauses execution components. """
+        if not self.scenario:
+            raise InternalServerError("Execution without a scenario detected.")
+        elif self.status == Execution.Status.RUNNING:
+            # enables the patients activity-diagrams
+            self.scenario.hold_patients()
+        else:
+            raise BadRequest("Process manipulation detected. Execution must be "
+                             "RUNNING before pause.")
 
     def __repr__(self):
         return (f"Execution(id={self.id!r}, scenario={self.scenario!r}, players={self.players!r}, "

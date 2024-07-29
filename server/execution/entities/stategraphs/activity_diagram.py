@@ -20,6 +20,14 @@ class ActivityDiagram:
 
         self.__create_state_dict(states)
 
+    def start_current_state(self):
+        """ Initiates the timer of 'current' state of the activity-diagram. """
+        self.current.start_timer()
+
+    def pause_current_state(self):
+        """ Pauses the timer of the 'current' state of the activity-diagram. """
+        self.current.pause_timer()
+
     def apply_treatment(self, treatment: str):
         """
             A game-method to eventually change states after an action was performed.

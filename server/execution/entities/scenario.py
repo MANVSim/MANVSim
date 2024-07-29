@@ -15,6 +15,14 @@ class Scenario:
         self.actions = actions
         self.locations = locations
 
+    def run_patients(self):
+        for patient in self.patients.values():
+            patient.start_activity_diagram()
+
+    def hold_patients(self):
+        for patient in self.patients.values():
+            patient.pause_activity_diagram()
+
     def to_dict(self, shallow: bool = False):
         """
         Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the

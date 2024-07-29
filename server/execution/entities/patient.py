@@ -53,6 +53,14 @@ class Patient:
             self.activity_diagram.apply_treatment(str(action.id))
             return action.results
 
+    def start_activity_diagram(self):
+        """ Starts the activity diagram. """
+        self.activity_diagram.start_current_state()
+
+    def pause_activity_diagram(self):
+        """ Pauses the activity diagram. """
+        self.activity_diagram.pause_current_state()
+
     def to_dict(self, shallow: bool = False):
         """
         Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
