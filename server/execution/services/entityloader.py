@@ -154,7 +154,7 @@ def __load_scenario(scenario_id: int) -> Scenario | None:
         patient_location = patient.location
         locations[patient_location.id] = patient_location
 
-    return Scenario(id=scenario.id, name=scenario.name, patients=patients,
+    return Scenario(s_id=scenario.id, name=scenario.name, patients=patients,
                     actions=actions, locations=locations)
 
 

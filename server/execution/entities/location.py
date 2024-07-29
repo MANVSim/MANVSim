@@ -1,17 +1,20 @@
 import json
 from queue import Queue
 
-from execution.entities.resource import Resource, try_lock_all, release_all_resources
+from execution.entities.resource import Resource, try_lock_all, \
+    release_all_resources
 from execution.utils.timeoutlock import TimeoutLock
 from vars import ACQUIRE_TIMEOUT
 
 
-# Suppresses "unexpected argument" warning for the lock.acquire_timeout() method. PyCharm does not recognize the
-# parameter in the related method definition.
+# Suppresses "unexpected argument" warning for the lock.acquire_timeout()
+# method. PyCharm does not recognize the parameter in the related method
+# definition.
 # noinspection PyArgumentList
 class Location:
 
-    def __init__(self, id: int, name: str, picture_ref: str | None, resources: list[Resource] | None = None,
+    def __init__(self, id: int, name: str, picture_ref: str | None,
+                 resources: list[Resource] | None = None,
                  sub_locations: set['Location'] | None = None):
         if resources is None:
             resources = []
@@ -28,35 +31,40 @@ class Location:
         self.loc_lock = TimeoutLock()
 
     def __repr__(self):
-        return (f"Location(id={self.id!r}, name={self.name!r}, picture_ref={self.picture_ref!r}, "
-                f"resources={self.resources!r}, locations={self.sub_locations!r})")
+        return (
+            f"Location(id={self.id!r}, name={self.name!r}, \
+            picture_ref={self.picture_ref!r}, resources={self.resources!r}, \
+            locations={self.sub_locations!r})")
 
-    def get_location_by_id(self, id):
+    def get_location_by_id(self, location_id: int):
         """
-        Retrieves a location of the stored locations.
-        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        Retrieves a location of the stored locations. If the list is blocked
+        more than 3 seconds the methods raises a TimeoutError.
         """
         with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
-                return next((location for location in self.sub_locations if location.id == id), None)
+                return next((location for location in self.sub_locations if
+                             location.id == location_id), None)
             else:
                 raise TimeoutError
 
-    def remove_location_by_id(self, id):
+    def remove_location_by_id(self, location_id: int):
         """
-        Removes a location of the stored locations.
-        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        Removes a location of the stored locations. If the list is blocked more
+        than 3 seconds the methods raises a TimeoutError
         """
         with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
-                self.sub_locations = {location for location in self.sub_locations if location.id != id}
+                self.sub_locations = {location for location in
+                                      self.sub_locations if
+                                      location.id != location_id}
             else:
                 raise TimeoutError
 
     def add_locations(self, new_locations: set):
         """
-        Unions a location-set of the stored locations.
-        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        Unions a location-set of the stored locations. If the list is blocked
+        more than 3 seconds the methods raises a TimeoutError.
         """
         with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
@@ -66,8 +74,8 @@ class Location:
 
     def remove_locations(self, old_locations: set):
         """
-        Removes a set of locations of the stored locations.
-        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        Removes a set of locations of the stored locations. If the list is
+        blocked more than 3 seconds the methods raises a TimeoutError.
         """
         with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
@@ -77,8 +85,8 @@ class Location:
 
     def add_resources(self, new_resources: list):
         """
-        Adds a resource to the resource list.
-        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        Adds a resource to the resource list. If the list is blocked more than
+        3 seconds the methods raises a TimeoutError.
         """
         with self.res_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
@@ -88,20 +96,21 @@ class Location:
 
     def remove_resources(self, old_resources: list):
         """
-        Removes a resource list of the stored resource-list.
-        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        Removes a resource list of the stored resource-list. If the list is
+        blocked more than 3 seconds the methods raises a TimeoutError.
         """
         with self.res_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:
-                self.resources = [resource for resource in self.resources if resource not in old_resources]
+                self.resources = [resource for resource in self.resources if
+                                  resource not in old_resources]
             else:
                 raise TimeoutError
 
     def get_child_location_by_id(self, id):
         """
-        Retrieves an "unknown" location of the locations array. "Unknown" means the requested location might be
-        located in a lower level.
-        If the list is blocked more than 3 seconds the methods raises a TimeoutError
+        Retrieves an "unknown" location of the locations array. "Unknown" means
+        the requested location might be located in a lower level. If the list is
+        blocked more than 3 seconds the methods raises a TimeoutError.
         """
         q = Queue()
         for loc in list(self.sub_locations):
@@ -119,8 +128,8 @@ class Location:
 
     def get_resource_by_id(self, id):
         """
-        Retrieves a resource out of the location tree. If the resource is available it returns the instance,
-        None otherwise.
+        Retrieves a resource out of the location tree. If the resource is
+        available it returns the instance, None otherwise.
         """
         # resource is contained on the current location
         for res in self.resources:
@@ -137,8 +146,8 @@ class Location:
 
     def leave_location(self, removed: set):
         """
-        Removes provided location set from the location list. It raises a TimeoutError, if the related lock is not
-        accessible.
+        Removes provided location set from the location list. It raises a
+        TimeoutError, if the related lock is not accessible.
         """
         q = Queue()  # for all reachable nodes (locations)
         locking_q = Queue()  # for all nodes contained in removed
@@ -186,28 +195,32 @@ class Location:
             break
 
         if success:
-            self.sub_locations -= removed   # reduce location access according to provided set
+            self.sub_locations -= removed  # reduce location access according to provided set
 
         release_all_locations(locations=loc_locked, include_resource=True)
         return success
 
     def to_dict(self, shallow: bool = False):
         """
-        Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
-        'shallow'-flag is set, only the object reference in form of a unique identifier is included.
+        Returns all fields of this class in a dictionary. By default, all nested
+        objects are included. In case the 'shallow'-flag is set, only the object
+        reference in form of a unique identifier is included.
         """
         return {
             'id': self.id,
             'name': self.name,
             'picture_ref': self.picture_ref,
-            'resources': [resource.id if shallow else resource.to_dict() for resource in self.resources],
-            'sub_locations': [location.id if shallow else location.to_dict() for location in self.sub_locations]
+            'resources': [resource.id if shallow else resource.to_dict() for
+                          resource in self.resources],
+            'sub_locations': [location.id if shallow else location.to_dict() for
+                              location in self.sub_locations]
         }
 
     def to_json(self, shallow: bool = False):
         """
-        Returns this object as a JSON. By default, all nested objects are included. In case the 'shallow'-flag is set,
-        only the object reference in form of a unique identifier is included.
+        Returns this object as a JSON. By default, all nested objects are
+        included. In case the 'shallow'-flag is set, only the object reference
+        in form of a unique identifier is included.
         """
         return json.dumps(self.to_dict(shallow))
 

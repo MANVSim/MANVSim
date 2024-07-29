@@ -7,8 +7,10 @@ from execution.utils.timeoutlock import TimeoutLock
 
 class Player:
 
-    def __init__(self, tan: str, name: str | None, alerted: bool, activation_delay_sec: int, location: Location | None,
-                 accessible_locations: set[Location], role: Role | None = None, logged_in: bool = False):
+    def __init__(self, tan: str, name: str | None, alerted: bool,
+                 activation_delay_sec: int, location: Location | None,
+                 accessible_locations: set[Location], role: Role | None = None,
+                 logged_in: bool = False):
         self.tan = tan
         self.name = name
         self.role = role
@@ -21,14 +23,21 @@ class Player:
         self.lock = TimeoutLock()
 
     def __repr__(self):
-        return (f"Player(tan={self.tan!r}, name={self.name!r}, alerted={self.alerted!r}, "
-                f"activation_delay_sec={self.activation_delay_sec!r}, location={self.location!r}, "
-                f"accessible_locations={self.accessible_locations!r}, role={self.role!r})")
+        return (
+            f"Player(tan={self.tan!r}, \
+            name={self.name!r}, \
+            alerted={self.alerted!r}, \
+            activation_delay_sec={self.activation_delay_sec!r}, \
+            location={self.location!r}, \
+            accessible_locations={self.accessible_locations!r}, \
+            role={self.role!r})"
+        )
 
     def to_dict(self, shallow: bool = False):
         """
-        Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
-        'shallow'-flag is set, only the object reference in form of a unique identifier is included.
+        Returns all fields of this class in a dictionary. By default, all nested
+        objects are included. In case the 'shallow'-flag is set, only the object
+        reference in form of a unique identifier is included.
         """
         return {
             'tan': self.tan,
@@ -38,14 +47,16 @@ class Player:
             'activation_delay_sec': self.activation_delay_sec,
             'location': self.location if not self.location else
             (self.location.id if shallow else self.location.to_dict()),
-            'accessible_locations': [location.id if shallow else location.to_dict() for location in
-                                     self.accessible_locations],
+            'accessible_locations': [
+                location.id if shallow else location.to_dict() for location in
+                self.accessible_locations],
             'logged_in': self.logged_in
         }
 
     def to_json(self, shallow: bool = False):
         """
-        Returns this object as a JSON. By default, all nested objects are included. In case the 'shallow'-flag is set,
-        only the object reference in form of a unique identifier is included.
+        Returns this object as a JSON. By default, all nested objects are
+        included. In case the 'shallow'-flag is set, only the object reference
+        in form of a unique identifier is included.
         """
         return json.dumps(self.to_dict(shallow))
