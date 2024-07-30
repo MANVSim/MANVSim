@@ -1,5 +1,5 @@
-from typing import List
 import logging
+from typing import List
 
 from flask import Blueprint, Response
 from string_utils import booleanize
@@ -11,7 +11,6 @@ from event_logging.event import Event
 from execution import run
 from execution.entities.execution import Execution
 from execution.services import entityloader
-from execution.services.entityloader import load_execution
 from execution.utils.util import try_get_execution
 from utils import time
 from utils.decorator import required, admin_only, RequiredValueSource, cache
@@ -49,7 +48,8 @@ def get_execution(id: int):
     if id in run.active_executions.keys():
         execution = run.active_executions[id]
     else:
-        execution: bool | Execution = entityloader.load_execution(id, save_in_memory=False)
+        execution: bool | Execution = entityloader.load_execution(id,
+                                                                  save_in_memory=False)
 
     if isinstance(execution, bool) and not execution:
         raise NotFound(f"Execution with id={id} does not exist")
@@ -66,17 +66,15 @@ def get_execution(id: int):
                 "name": player.name,
                 "alerted": player.alerted,
                 "logged_in": player.logged_in,
-                "role": {"id": player.role.id, "name": player.role.name} if player.role else None,
-                "location": {"id": player.location.id, "name": player.location.name} if player.location else None
+                "role": player.to_dict(
+                    include=["id", "name"]) if player.role else None,
+                "location": player.location.to_dict(
+                    include=["id", "name"]) if player.location else None
             } for player in execution.players.values()],
-            "roles": [{
-                "id": x.id,
-                "name": x.name
-            } for x in __get_roles()],
-            "locations": [{
-                "id": x.id,
-                "name": x.name
-            } for x in __get_top_level_locations()],
+            "roles": [role.to_dict(include=["id", "name"]) for role in
+                      __get_roles()],
+            "locations": [loc.to_dict(include=["id", "name"]) for loc in
+                          __get_top_level_locations()],
             "notifications": execution.notifications
         }
 
@@ -86,7 +84,8 @@ def get_execution(id: int):
 @required("name", str, RequiredValueSource.FORM)
 def create_execution(scenario_id: int, name: str):
     try:
-        new_execution = models.Execution(scenario_id=scenario_id, name=name)  # type: ignore
+        new_execution = models.Execution(scenario_id=scenario_id,
+                                         name=name)  # type: ignore
         db.session.add(new_execution)
         db.session.commit()
         print(f"new execution created with id: {new_execution.id}")
@@ -161,4 +160,5 @@ def __get_roles() -> List[models.Role]:
 
 @cache
 def __get_top_level_locations() -> List[models.Location]:
-    return models.Location.query.where(models.Location.location_id.is_(None)).all()
+    return models.Location.query.where(
+        models.Location.location_id.is_(None)).all()

@@ -33,13 +33,16 @@ class Player:
             role={self.role!r})"
         )
 
-    def to_dict(self, shallow: bool = False):
+    def to_dict(self, shallow: bool = False, include: list | None = None,
+                exclude: list | None = None):
         """
         Returns all fields of this class in a dictionary. By default, all nested
         objects are included. In case the 'shallow'-flag is set, only the object
-        reference in form of a unique identifier is included.
+        reference in form of a unique identifier is included. Via exclude and
+        include, lists of attributes can be included or excluded from the
+        result.
         """
-        return {
+        res_dict = {
             'tan': self.tan,
             'name': self.name,
             'role': self.role if self.role is None else self.role.name,
@@ -53,10 +56,22 @@ class Player:
             'logged_in': self.logged_in
         }
 
-    def to_json(self, shallow: bool = False):
+        if include:
+            res_dict = {key: res_dict[key] for key in include if
+                        key in res_dict}
+        if exclude:
+            for key in exclude:
+                res_dict.pop(key, None)
+
+        return res_dict
+
+    def to_json(self, shallow: bool = False, include: list | None = None,
+                exclude: list | None = None):
         """
         Returns this object as a JSON. By default, all nested objects are
         included. In case the 'shallow'-flag is set, only the object reference
-        in form of a unique identifier is included.
+        in form of a unique identifier is included. Via exclude and
+        included, lists of attributes can be included or excluded from the
+        result.
         """
-        return json.dumps(self.to_dict(shallow))
+        return json.dumps(self.to_dict(shallow, include, exclude))
