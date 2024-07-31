@@ -73,10 +73,12 @@ class ActivityDiagram:
     def to_dict(self):
         result = {}
         for key, value in self.__dict__.items():
-            if hasattr(value, '__dict__'):
-                result[key] = value.to_dict()
+            if isinstance(value, TimeoutLock):
+                pass
             elif isinstance(value, dict):
                 result[key] = {dict_key: dictvalue.to_dict() for dict_key, dictvalue in value.items()}
+            elif hasattr(value, '__dict__'):
+                result[key] = value.to_dict()
             else:
                 result[key] = value
         return result
