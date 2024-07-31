@@ -19,7 +19,7 @@ class Scenario:
         for patient in self.patients.values():
             patient.start_activity_diagram()
 
-    def hold_patients(self):
+    def pause_patients(self):
         for patient in self.patients.values():
             patient.pause_activity_diagram()
 

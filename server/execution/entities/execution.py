@@ -47,7 +47,7 @@ class Execution:
             raise InternalServerError("Execution without a scenario detected.")
         elif self.status == Execution.Status.RUNNING:
             # enables the patients activity-diagrams
-            self.scenario.hold_patients()
+            self.scenario.pause_patients()
         else:
             raise BadRequest("Process manipulation detected. Execution must be "
                              "RUNNING before pause.")
