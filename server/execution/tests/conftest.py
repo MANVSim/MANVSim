@@ -28,8 +28,7 @@ def app():
     yield flask_app
 
     # Clean up
-    run.deactivate_execution(1)
-    run.deactivate_execution(2)
+    run.active_executions = {}
 
 
 @pytest.fixture()

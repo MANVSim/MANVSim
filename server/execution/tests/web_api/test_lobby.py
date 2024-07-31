@@ -1,5 +1,3 @@
-import http
-
 from execution import run
 from execution.entities.execution import Execution
 from execution.tests.conftest import generate_webtoken
@@ -53,7 +51,7 @@ def test_execution_state_change(client):
     _test_illegal_state_changes(2, ["UNKNOWN"])
 
     # test legal state changes
-    _test_legal_state_changes(1,
+    _test_legal_state_changes(2,
                               ["PENDING", "RUNNING", "FINISHED"])
 
     # Status: FINISHED

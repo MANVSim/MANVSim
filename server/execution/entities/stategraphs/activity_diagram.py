@@ -2,31 +2,44 @@ import json
 import logging
 
 from execution.entities.stategraphs.patientstate import PatientState
+from execution.utils.timeoutlock import TimeoutLock
 from utils import time
+from vars import ACQUIRE_TIMEOUT
 
 
+# Suppresses "unexpected argument" warning for the lock.acquire_timeout()
+# method. PyCharm does not recognize the parameter in the related method
+# definition.
+# noinspection PyArgumentList
 class ActivityDiagram:
 
     def __init__(self, root: PatientState | None = None, states: list[PatientState] | None = None):
         if not states:
             states = []
 
-        self.states: dict[str, PatientState] = {}
         if root:
             self.current: PatientState = root
         else:
             self.current = PatientState()
             states.append(self.current)
 
+        self.states: dict[str, PatientState] = {}
+        self.lock = TimeoutLock()
         self.__create_state_dict(states)
 
     def start_current_state(self):
         """ Initiates the timer of 'current' state of the activity-diagram. """
-        self.current.start_timer()
+        with self.lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
+            if not acquired:
+                raise TimeoutError
+            self.current.start_timer()
 
     def pause_current_state(self):
         """ Pauses the timer of the 'current' state of the activity-diagram. """
-        self.current.pause_timer()
+        with self.lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
+            if not acquired:
+                raise TimeoutError
+            self.current.pause_timer()
 
     def apply_treatment(self, treatment: str):
         """
@@ -34,16 +47,19 @@ class ActivityDiagram:
             It further checks if the state is still active or has changed due to a timeout. If a timeout occurs, the
             current state is updated and the action applied to the new state.
         """
-        if self.current.is_state_outdated():
-            self.__update_state(self.current)
+        with self.lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
+            if not acquired:
+                raise TimeoutError
+            if self.current.is_state_outdated():
+                self.__update_state(self.current)
 
-        try:
-            new_state_uuid = self.current.treatments[treatment]
-            self.current = self.__get_state_by_id(new_state_uuid)
-            if self.current.timelimit != -1:
-                self.current.start_timer()
-        except KeyError:
-            logging.debug(f"Unable to identify treatment on current_state: {self.current.uuid}")
+            try:
+                new_state_uuid = self.current.treatments[treatment]
+                self.current = self.__get_state_by_id(new_state_uuid)
+                if self.current.timelimit != -1:
+                    self.current.start_timer()
+            except KeyError:
+                logging.debug(f"Unable to identify treatment on current_state: {self.current.uuid}")
 
     def add_state(self, state: PatientState, force_update: bool = False):
         """ An administration method to extend the activity diagram with another state. """
