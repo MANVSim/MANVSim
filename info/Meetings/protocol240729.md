@@ -1,0 +1,57 @@
+# Meeting 2024-07-29
+
+- Peter:
+  - FERTIG:
+    - Statusspalte auf Executionseite geändert, sodass der Status nur noch von "Bereit" zu "Alarmiert" geändert werde kann
+  - TODO:
+    - Evtl. von Flask auf FlaskAPI wechseln
+    - Login mit Rolle
+    - BA-Arbeit über Patienteneditor im Web
+- Yannick:
+  - FERTIG:
+    - Web: Notificationposting auf Executionseite
+  - TODO:
+    - Zeitstempel für Notificationsliste
+    - Beim Starten sollen Patienten in zeitabhängigen Zustand versetzt und beim Stoppen angehalten (WIP)
+- Louis:
+  - FERTIG:
+    - Refactoring von Webcode
+    - Einige Fixes (HTML)
+  - TODO:
+    - Szenariomanagement (WIP)
+    - Locations einem Szenario zuordnen
+    - Vereinigung von Szenarien und Executions im Webinterface
+    - Server einrichten
+- Simon:
+  - FERTIG:
+    - Standardbild hinzugefügt
+    - Generierung von nur einer TAN
+    - toJson, toDict: neues optional Attribut
+  - TODO:
+    - Multimediatype definieren
+- Lukas:
+  - FERTIG:
+    - Wartescreen verwendet Daten vom Server
+    - Mergerequests
+  - TODO:
+    - nach Absprache mit Jon
+    - API Kommunikation für Locations/Resources prüfen
+- Jon:
+  - Fertig:
+    - Dokumentation
+    - Refactoring
+    - Kommunikation mit Server für Patientenoberfläche
+  - TODO:
+    - BA-Arbeit: Karte von Szenario in App
+    - Resultat von Aktionen nicht im Fenster anzeigen
+    - Neben Countdown auch Aktion anzeigen
+- Generell:
+  - TODO:
+    - Archiv für Executions/Scenarios/...
+    - Webinterface für Multimediaupload
+    - App soll Bilder etc. nutzen
+    - Bug: Login bei Docker funktioniert nicht -> Build vom Web für Docker anpassen
+    - Arrival Time im Backend berechnen
+    - Maßnahmeneditor (evtl. als Teil von Patienteneditor)
+  - Wöchentliche Meetings beibehalten
+  - Nächstes Meeting mit Frank: 2.9.2024

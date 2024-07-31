@@ -3,8 +3,9 @@ import json
 
 class Action:
 
-    def __init__(self, id: int, name: str, results: list[str], picture_ref: str, duration_sec: int,
-                 resources_needed: list[str], required_power: int = 0):
+    def __init__(self, id: int, name: str, results: list[str], picture_ref: str,
+                 duration_sec: int, resources_needed: list[str],
+                 required_power: int = 0):
         self.id = id
         self.name = name
         self.results = results  # list of condition keys to reveal on a patient
@@ -13,12 +14,13 @@ class Action:
         self.required_power = required_power  # Power of Role
         self.resources_needed = resources_needed  # Names of resources needed to perform action
 
-    def to_dict(self):
+    def to_dict(self, include: list | None = None, exclude: list | None = None):
         """
-        Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
-        'shallow'-flag is set, only the object reference in form of a unique identifier is included.
+        Returns all fields of this class in a dictionary. Via exclude and
+        include, lists of attributes can be included or excluded from the
+        result.
         """
-        return {
+        result = {
             'id': self.id,
             'name': self.name,
             'results': self.results,
@@ -28,9 +30,17 @@ class Action:
             'resources_needed': self.resources_needed
         }
 
-    def to_json(self):
+        if include:
+            result = {key: result[key] for key in include if key in result}
+        if exclude:
+            for key in exclude:
+                result.pop(key, None)
+
+        return result
+
+    def to_json(self, include: list | None = None, exclude: list | None = None):
         """
-        Returns this object as a JSON. By default, all nested objects are included. In case the 'shallow'-flag is set,
-        only the object reference in form of a unique identifier is included.
+        Returns this object as a JSON. Via exclude and include, lists of
+        attributes can be included or excluded from the result.
         """
-        return json.dumps(self.to_dict())
+        return json.dumps(self.to_dict(include, exclude))

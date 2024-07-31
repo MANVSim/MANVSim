@@ -13,7 +13,8 @@ from vars import ACQUIRE_TIMEOUT
 # noinspection PyArgumentList
 class ActivityDiagram:
 
-    def __init__(self, root: PatientState | None = None, states: list[PatientState] | None = None):
+    def __init__(self, root: PatientState | None = None,
+                 states: list[PatientState] | None = None):
         if not states:
             states = []
 
@@ -59,7 +60,8 @@ class ActivityDiagram:
                 if self.current.timelimit != -1:
                     self.current.start_timer()
             except KeyError:
-                logging.debug(f"Unable to identify treatment on current_state: {self.current.uuid}")
+                logging.debug(
+                    f"Unable to identify treatment on current_state: {self.current.uuid}")
 
     def add_state(self, state: PatientState, force_update: bool = False):
         """ An administration method to extend the activity diagram with another state. """
@@ -67,7 +69,8 @@ class ActivityDiagram:
             self.states[state.uuid] = state
             return True
         else:
-            logging.warning("state_uuid already present. You might force-update the id if necessary.")
+            logging.warning(
+                "state_uuid already present. You might force-update the id if necessary.")
             return False
 
     def to_dict(self):
@@ -76,7 +79,8 @@ class ActivityDiagram:
             if isinstance(value, TimeoutLock):
                 pass
             elif isinstance(value, dict):
-                result[key] = {dict_key: dictvalue.to_dict() for dict_key, dictvalue in value.items()}
+                result[key] = {dict_key: dictvalue.to_dict() for
+                               dict_key, dictvalue in value.items()}
             elif hasattr(value, '__dict__'):
                 result[key] = value.to_dict()
             else:
@@ -87,7 +91,8 @@ class ActivityDiagram:
         for key, value in kwargs.items():
             if key == "states":
                 setattr(self, key,
-                        {dict_key: PatientState().from_dict(**dict_value) for dict_key, dict_value in value.items()})
+                        {dict_key: PatientState().from_dict(**dict_value) for
+                         dict_key, dict_value in value.items()})
             elif key == "current":
                 setattr(self, key, PatientState().from_dict(**value))
             else:
@@ -103,7 +108,8 @@ class ActivityDiagram:
     def __update_state(self, state: PatientState):
         timeout = state.start_time + state.timelimit  # timestamp when state changed
 
-        new_state: PatientState = self.__get_state_by_id(self.current.after_time_state_uuid)
+        new_state: PatientState = self.__get_state_by_id(
+            self.current.after_time_state_uuid)
         timeout_next_state = timeout + new_state.timelimit  # new start_time for next state
 
         # dash through states iff next state is also outdated
@@ -119,7 +125,8 @@ class ActivityDiagram:
         if uuid in self.states.keys():
             return self.states[uuid]
         else:
-            raise Exception("Inconsistency in activity diagram. Missing state in global dictionary")
+            raise Exception(
+                "Inconsistency in activity diagram. Missing state in global dictionary")
 
     def __create_state_dict(self, states: list[PatientState]):
         for state in states:

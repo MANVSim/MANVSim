@@ -10,11 +10,11 @@ from vars import ACQUIRE_TIMEOUT
 
 
 class Patient:
-
     class Classification(Enum):
         """
-        Classifies the severity of injuries and need for a treatment according to the currently used metric in Germany.
-        The prefix "PRE" indicates a preliminary classification that has to be verified by a doctor.
+        Classifies the severity of injuries and need for a treatment according
+        to the currently used metric in Germany. The prefix "PRE" indicates a
+        preliminary classification that has to be verified by a doctor.
         """
         NOT_CLASSIFIED = "not classified"
         PRE_RED = "pre-classified red"
@@ -27,10 +27,10 @@ class Patient:
         BLUE = "blue"
         BLACK = "black"
 
-    def __init__(self, id: int, name: str, activity_diagram: ActivityDiagram, location: Location,
+    def __init__(self, id: int, name: str, activity_diagram: ActivityDiagram,
+                 location: Location,
                  classification: Classification = Classification.NOT_CLASSIFIED,
                  performed_actions: list[PerformedAction] | None = None):
-
         if performed_actions is None:
             performed_actions = []
 
@@ -44,8 +44,9 @@ class Patient:
         self.action_queue = {}
         self.lock = TimeoutLock()
 
-    # Suppresses "unexpected argument" warning for the lock.acquire_timeout() method. PyCharm does not recognize the
-    # parameter in the related method definition.
+    # Suppresses "unexpected argument" warning for the lock.acquire_timeout()
+    # method. PyCharm does not recognize the parameter in the related method
+    # definition.
     # noinspection PyArgumentList
     def apply_action(self, action: Action):
         """ Applies the provided action to the current active state. """
@@ -61,23 +62,40 @@ class Patient:
         """ Pauses the activity diagram. """
         self.activity_diagram.pause_current_state()
 
-    def to_dict(self, shallow: bool = False):
+    def to_dict(self, shallow: bool = False, include: list | None = None,
+                exclude: list | None = None):
         """
-        Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
-        'shallow'-flag is set, only the object reference in form of a unique identifier is included.
+        Returns all fields of this class in a dictionary. By default, all nested
+        objects are included. In case the 'shallow'-flag is set, only the object
+        reference in form of a unique identifier is included. Via exclude and
+        include, lists of attributes can be included or excluded from the
+        result.
         """
-        return {
+        result = {
             'id': self.id,
             'name': self.name,
             'location': self.location.id if shallow else self.location.to_dict(),
             'classification': self.classification.name,
-            'performed_actions': [performed_action.id if shallow else performed_action.to_dict() for performed_action in
-                                  self.performed_actions]
+            'performed_actions': [
+                performed_action.id if shallow else performed_action.to_dict()
+                for performed_action in
+                self.performed_actions]
         }
 
-    def to_json(self, shallow: bool = False):
+        if include:
+            result = {key: result[key] for key in include if key in result}
+        if exclude:
+            for key in exclude:
+                result.pop(key, None)
+
+        return result
+
+    def to_json(self, shallow: bool = False, include: list | None = None,
+                exclude: list | None = None):
         """
-        Returns this object as a JSON. By default, all nested objects are included. In case the 'shallow'-flag is set,
-        only the object reference in form of a unique identifier is included.
+        Returns this object as a JSON. By default, all nested objects are
+        included. In case the 'shallow'-flag is set, only the object reference
+        in form of a unique identifier is included. Via exclude and include,
+        lists of attributes can be included or excluded from the result.
         """
-        return json.dumps(self.to_dict(shallow))
+        return json.dumps(self.to_dict(shallow, include, exclude))

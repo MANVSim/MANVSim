@@ -7,8 +7,10 @@ from utils import time
 
 class PatientState:
 
-    def __init__(self, state_uuid: str = str(uuid.uuid4()), treatments: dict[str, str] | None = None,
-                 start_time: int = -1, timelimit: int = -1, after_time_state_uuid="",
+    def __init__(self, state_uuid: str = str(uuid.uuid4()),
+                 treatments: dict[str, str] | None = None,
+                 start_time: int = -1, timelimit: int = -1,
+                 after_time_state_uuid: str = "",
                  conditions: dict[str, str] | None = None):
         if not treatments:
             treatments = {}
@@ -98,7 +100,7 @@ class PatientState:
                 self.timelimit + self.start_time <= time.current_time_s())
 
     def to_dict(self):
-        return self.__dict__
+        return self.__dict__.copy()
 
     def from_dict(self, **kwargs):
         for key, value in kwargs.items():

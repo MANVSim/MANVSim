@@ -7,7 +7,8 @@ from vars import ACQUIRE_TIMEOUT
 
 class Resource:
 
-    def __init__(self, id: int, name: str, quantity: int, picture_ref: str | None, consumable: bool = True):
+    def __init__(self, id: int, name: str, quantity: int,
+                 picture_ref: str | None, consumable: bool = True):
         self.id = id
         self.name = name
         self.quantity = quantity  # quantity >= 10000 indicates infinite resource
@@ -18,13 +19,20 @@ class Resource:
         self.locked_until = 0
 
     def __repr__(self):
-        return f"Resource(id={self.id!r}, name={self.name!r}, quantity={self.quantity!r}, " \
-               f"picture_ref={self.picture_ref!r}, consumable={self.consumable!r}, locked_until={self.locked_until!r})"
+        return (
+            f"Resource(id={self.id!r}, \
+            name={self.name!r}, \
+            quantity={self.quantity!r}, \
+            picture_ref={self.picture_ref!r}, \
+            consumable={self.consumable!r}, \
+            locked_until={self.locked_until!r})"
+        )
 
     def decrease(self, duration):
         """
-        Decreases the quantity of the resource. If the quantity equals zero and is marked as 'non-consumable'
-        additionally the locked-flag is set, when the resource is accessible again. If the locked-flag is outdated the
+        Decreases the quantity of the resource. If the quantity equals zero and
+        is marked as 'non-consumable' additionally the locked-flag is set, when
+        the resource is accessible again. If the locked-flag is outdated the
         method reassigns the flag and simulates an increase&decrease-operation.
         CAUTION: only use decrease if the resource is blocked beforehand.
 
@@ -49,13 +57,15 @@ class Resource:
             self.locked_until = current_secs + duration
             return True
 
-    # Suppresses "unexpected argument" warning for the lock.acquire_timeout() method. PyCharm does not recognize the
-    # parameter in the related method definition.
+    # Suppresses "unexpected argument" warning for the lock.acquire_timeout()
+    # method. PyCharm does not recognize the parameter in the related method
+    # definition.
     # noinspection PyArgumentList
     def increase(self, force=False):
         """
-        Increases the quantity, in case the resource is a non-consumable. Using the force parameter, allows
-        (consumable) resources to increase the quantity without locking, for rollback reasons.
+        Increases the quantity, in case the resource is a non-consumable. Using
+        the force parameter, allows (consumable) resources to increase the
+        quantity without locking, for rollback reasons.
         """
         if force:
             self.quantity += 1
@@ -63,37 +73,46 @@ class Resource:
 
         with (self.lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT)) as acquired:
             if acquired:
-                # resources can only be restored if they are non consumables and no other resource has claimed the
-                # resource in the meantime.
+                # resources can only be restored if they are non consumables and
+                # no other resource has claimed the resource in the meantime.
                 if not self.consumable and time.current_time_s() > self.locked_until:
                     self.quantity += 1
             else:
                 raise TimeoutError
 
-    def to_dict(self):
+    def to_dict(self, include: list | None = None, exclude: list | None = None):
         """
-        Returns all fields of this class in a dictionary. By default, all nested objects are included. In case the
-        'shallow'-flag is set, only the object reference in form of a unique identifier is included.
+        Returns all fields of this class in a dictionary. Via exclude and
+        include, lists of attributes can be included or excluded from the
+        result.
         """
-        return {
+        result = {
             'id': self.id,
             'name': self.name,
             'quantity': self.quantity,
             'picture_ref': self.picture_ref
         }
 
-    def to_json(self):
+        if include:
+            result = {key: result[key] for key in include if key in result}
+        if exclude:
+            for key in exclude:
+                result.pop(key, None)
+
+        return result
+
+    def to_json(self, include: list | None = None, exclude: list | None = None):
         """
-        Returns this object as a JSON. By default, all nested objects are included. In case the 'shallow'-flag is set,
-        only the object reference in form of a unique identifier is included.
+        Returns this object as a JSON. Via exclude and include, lists of
+        attributes can be included or excluded from the result.
         """
-        return json.dumps(self.to_dict())
+        return json.dumps(self.to_dict(include, exclude))
 
 
 def try_lock_all(resources: list['Resource']):
     """
-    Tries to lock all provided resources. If not successful, every lock will be released. Returns a boolean in every
-    case.
+    Tries to lock all provided resources. If not successful, every lock will be
+    released. Returns a boolean in every case.
     """
     resources = sorted(resources, key=lambda resource: resource.id)
     success = True
