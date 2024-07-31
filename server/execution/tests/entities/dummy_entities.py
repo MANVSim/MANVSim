@@ -68,6 +68,7 @@ def create_test_execution(pending: bool = True):
                           accessible_locations={loc_2, loc_3, loc_4},
                           role=role_1, alerted=False,
                           activation_delay_sec=10)
+        player_2.alert()
 
     # Actions
     action_1 = Action(id=1, name="EKG schreiben",

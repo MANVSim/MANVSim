@@ -3,6 +3,7 @@ import json
 from execution.entities.location import Location
 from execution.entities.role import Role
 from execution.utils.timeoutlock import TimeoutLock
+from utils import time
 
 
 class Player:
@@ -20,7 +21,18 @@ class Player:
         self.accessible_locations = accessible_locations
         self.logged_in = logged_in  # is toggled upon first login
 
+        self.alerted_timestamp = 0
         self.lock = TimeoutLock()
+
+    def alert(self):
+        if not self.alerted:
+            self.alerted = True
+            self.alerted_timestamp = time.current_time_s()
+
+    def remove_alert(self):
+        if self.alerted:
+            self.alerted = False
+            self.alerted_timestamp = 0
 
     def __repr__(self):
         return (

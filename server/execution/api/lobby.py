@@ -90,7 +90,7 @@ def get_current_exec_status():
         else:
             return {
                 "starting_time": execution.starting_time,
-                "travel_time": player.activation_delay_sec
+                "arrival_time": (player.alerted_timestamp + player.activation_delay_sec)
             }
     except KeyError:
         return "Invalid execution id or TAN provided. Unable to resolve data.", 400

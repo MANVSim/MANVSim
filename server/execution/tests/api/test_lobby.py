@@ -44,8 +44,7 @@ def test_current_exec_status(client):
     assert response.status_code == 200
     assert response.json["starting_time"] == test_execution.starting_time
 
-    # Requires testing for an alerted player. Not yet implemented due to mutation bug.
-    # assert response.json["travel_time"] > -1
+    assert response.json["arrival_time"] > run.active_executions[2].players["654WVU"].activation_delay_sec
 
     # invalid id
     response = client.get("/api/scenario/start-time", headers=headers_invalid_payload)
