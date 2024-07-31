@@ -59,3 +59,18 @@ def generate_token(app, valid_payload=True, pending=False, plid="123ABC"):
         return {
             "Authorization": f"Bearer {jwt.encode(payload_invalid, app.config["JWT_SECRET_KEY"], algorithm="HS256")}"
         }
+
+
+def generate_webtoken(app):
+    payload = {
+        # This is the custom claim added by flask_jwt_extended which holds the
+        # value of the identity parameter passed during token creation.
+        "identity": "admin",
+        # This is the standard JWT claim (subject) which also holds the value
+        # of the identity parameter. This is where flask_jwt_extended places the
+        # identity by default.
+        "sub": "admin"
+    }
+    return {"Authorization": f"Bearer {jwt.encode(payload,
+                                                  app.config["JWT_SECRET_KEY"],
+                                                  algorithm="HS256")}"}

@@ -166,14 +166,18 @@ def __perform_state_change(new_status: Execution.Status, execution: Execution):
     match new_status:
         case Execution.Status.RUNNING:
             # RUNNING only occurs after a PENDING
-            if execution.status == Execution.Status.PENDING:
+            if execution.status == Execution.Status.RUNNING:
+                return
+            elif execution.status == Execution.Status.PENDING:
                 execution.start_execution()
             else:
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
         case Execution.Status.PENDING:
             # PENDING occurs after UNKNOWN (DB load) and RUNNING
-            if execution.status == Execution.Status.RUNNING:
+            if execution.status == Execution.Status.PENDING:
+                return
+            elif execution.status == Execution.Status.RUNNING:
                 execution.pause_execution()
             elif execution.status == Execution.Status.UNKNOWN:
                 run.activate_execution(execution)
@@ -181,9 +185,14 @@ def __perform_state_change(new_status: Execution.Status, execution: Execution):
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
         case Execution.Status.FINISHED:
-            # FIXME Garbage Collection?
-            # FIXME Stat Review?
-            pass
+            if execution.status == Execution.Status.FINISHED:
+                return
+            elif execution.status == Execution.Status.RUNNING:
+                # TODO implement archive mechanisms
+                return
+            else:
+                raise BadRequest("Process manipulation detected. "
+                                 "Invalid State change")
         case _:
             raise BadRequest("Process manipulation detected. "
                              "Invalid State change")
