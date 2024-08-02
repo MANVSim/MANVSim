@@ -236,16 +236,15 @@ class LoginScreenState extends State<LoginScreen> {
                             AppLocalizations.of(context)!.qrCodeScanButton),
                         onPressed: () async {
 
-                          final scannedText = await Navigator.push(
+                          final scannedQR = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => QRScreen(),
+                              builder: (context) => const QRScreen(),
                             ),
                           );
-                          if (scannedText != null) {
+                          if (scannedQR case String scannedText) {
 
-                            final url = scannedText.split(';').first;
-                            final String tan = scannedText.split(';').last;
+                            final [url, ..., tan] = scannedText.split(';');
 
                             _serverUrlController.text = url;
                             for(int i=0; i<min(TanInputController.TAN_LENGTH, tan.length); i++) {

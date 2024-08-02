@@ -48,13 +48,14 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
                     label: Text(AppLocalizations.of(context)!.qrCodeScanButton),
                     onPressed: () async {
 
-                      final scannedText = await Navigator.push(
+                      final scannedQR = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => QRScreen(),
+                          builder: (context) => const QRScreen(),
                         ),
                       );
-                      if (scannedText != null) {
+                      if (scannedQR case String scannedText) {
+                        // TODO check only digits (maybe also error handling)
                         _idController.text = scannedText;
                       }
 

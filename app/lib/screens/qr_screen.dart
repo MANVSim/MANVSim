@@ -5,7 +5,7 @@ class QRScreen extends StatefulWidget {
   const QRScreen({super.key});
 
   @override
-  _QRScreenState createState() => _QRScreenState();
+  State<QRScreen> createState() => _QRScreenState();
 }
 
 class _QRScreenState extends State<QRScreen> {
@@ -23,7 +23,7 @@ class _QRScreenState extends State<QRScreen> {
             setState(() {
               _isBarcodeDetected = true;
             });
-            final String code = barcode.barcodes.first.rawValue ?? 'Unknown';
+            final String? code = barcode.barcodes.first.rawValue;
             Navigator.pop(context, code);
           }
         },
