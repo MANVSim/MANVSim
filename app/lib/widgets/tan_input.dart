@@ -3,28 +3,28 @@ import 'package:flutter/services.dart';
 
 class TanInputController extends ChangeNotifier {
   static const int TAN_LENGTH = 6;
-  final List<String> _code = List.generate(TAN_LENGTH, (index) => '');
+  final List<String> code = List.generate(TAN_LENGTH, (index) => '');
 
   String get tan {
-    if (_code.every((element) => element.isNotEmpty)) {
-      return _code.join();
+    if (code.every((element) => element.isNotEmpty)) {
+      return code.join();
     } else {
       return "";
     }
   }
 
-  String get incompleteTan => _code.join();
+  String get incompleteTan => code.join();
 
   void updateValue(int index, String value) {
     if (index < TAN_LENGTH) {
-      _code[index] = value;
+      code[index] = value;
       notifyListeners();
     }
   }
 
   void clear() {
     for (int i = 0; i < TAN_LENGTH; i++) {
-      _code[i] = '';
+      code[i] = '';
     }
     notifyListeners();
   }
@@ -56,6 +56,11 @@ class TanInputFieldState extends State<TanInputField> {
   void initState() {
     super.initState();
     widget.controller.addListener(() {
+
+      for (int i = 0; i < TAN_LENGTH; i++) {
+        _controllers[i].text = widget.controller.code[i];
+      }
+
       if (widget.onChanged != null) {
         widget.onChanged!(widget.controller.incompleteTan);
       }

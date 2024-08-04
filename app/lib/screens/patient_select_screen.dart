@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:manvsim/screens/qr_screen.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -45,7 +46,20 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.qr_code_scanner),
                     label: Text(AppLocalizations.of(context)!.qrCodeScanButton),
-                    onPressed: () {},
+                    onPressed: () async {
+
+                      final scannedQR = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const QRScreen(),
+                        ),
+                      );
+                      if (scannedQR case String scannedText) {
+                        // TODO check only digits (maybe also error handling)
+                        _idController.text = scannedText;
+                      }
+
+                    },
                   ),
                 ),
                 const SizedBox(width: 8),

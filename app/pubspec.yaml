@@ -44,6 +44,8 @@ dependencies:
   get_it: ^7.7.0
   provider: ^6.1.2
   shared_preferences: ^2.2.3
+  mobile_scanner: ^5.1.0
+
 
 dev_dependencies:
   flutter_test:
