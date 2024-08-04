@@ -8,6 +8,7 @@ from execution.entities.scenario import Scenario
 
 
 class Execution:
+
     class Status(Enum):
         RUNNING = "running"
         PENDING = "pending"
