@@ -13,43 +13,43 @@ part of manv_api;
 class ScenarioStartTimeGet200Response {
   /// Returns a new [ScenarioStartTimeGet200Response] instance.
   ScenarioStartTimeGet200Response({
-    required this.scenarioStartTime,
-    this.travelTime,
+    required this.startingTime,
+    this.arrivalTime,
   });
 
   /// Timestamp in ms since unix epoch.
-  int scenarioStartTime;
+  int startingTime;
 
-  /// Timestamp in ms since unix epoch. This parameter is only provided, if a player is alerted.
+  /// Timestamp in seconds since unix epoch, indicating the time the player arrives. This parameter is only provided, if a player is alerted.
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
   /// does not include a default value (using the "default:" property), however, the generated
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  int? travelTime;
+  int? arrivalTime;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ScenarioStartTimeGet200Response &&
-    other.scenarioStartTime == scenarioStartTime &&
-    other.travelTime == travelTime;
+    other.startingTime == startingTime &&
+    other.arrivalTime == arrivalTime;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (scenarioStartTime.hashCode) +
-    (travelTime == null ? 0 : travelTime!.hashCode);
+    (startingTime.hashCode) +
+    (arrivalTime == null ? 0 : arrivalTime!.hashCode);
 
   @override
-  String toString() => 'ScenarioStartTimeGet200Response[scenarioStartTime=$scenarioStartTime, travelTime=$travelTime]';
+  String toString() => 'ScenarioStartTimeGet200Response[startingTime=$startingTime, arrivalTime=$arrivalTime]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'scenario_start_time'] = this.scenarioStartTime;
-    if (this.travelTime != null) {
-      json[r'travel_time'] = this.travelTime;
+      json[r'starting_time'] = this.startingTime;
+    if (this.arrivalTime != null) {
+      json[r'arrival_time'] = this.arrivalTime;
     } else {
-      json[r'travel_time'] = null;
+      json[r'arrival_time'] = null;
     }
     return json;
   }
@@ -73,8 +73,8 @@ class ScenarioStartTimeGet200Response {
       }());
 
       return ScenarioStartTimeGet200Response(
-        scenarioStartTime: mapValueOfType<int>(json, r'scenario_start_time')!,
-        travelTime: mapValueOfType<int>(json, r'travel_time'),
+        startingTime: mapValueOfType<int>(json, r'starting_time')!,
+        arrivalTime: mapValueOfType<int>(json, r'arrival_time'),
       );
     }
     return null;
@@ -122,7 +122,7 @@ class ScenarioStartTimeGet200Response {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'scenario_start_time',
+    'starting_time',
   };
 }
 
