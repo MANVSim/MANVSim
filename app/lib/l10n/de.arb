@@ -162,11 +162,27 @@
 
 
   "notificationScreenName": "Benachrichtigungen",
-
-  "patientSelectScreenName": "Home",
-  "patientSelectTextField": "Patienten ID",
-  "patientSelectSubmit": "Patient anzeigen",
-
+  "selectScreenName": "Home",
+  "selectScreenTypePatient": "Patient",
+  "selectScreenTypeLocation": "Location",
+  "selectScreenTextField": "{type} ID",
+  "@homeSelectedTextField": {
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Patienten"
+      }
+    }
+  },
+  "selectScreenSubmit": "{type} anzeigen",
+  "@homeSelectedSubmit": {
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Patienten"
+      }
+    }
+  },
   "qrCodeScanButton"  : "QR Code scannen",
 
   "ok": "Ok"
