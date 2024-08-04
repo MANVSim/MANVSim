@@ -53,7 +53,7 @@ class _ActionScreenState extends State<ActionScreen> {
                 future: futureActionId,
                 builder: (context, actionId) {
                   return TimerWidget(
-                    duration: widget.action.durationInSeconds,
+                    duration: Duration(seconds: widget.action.durationInSeconds),
                     onTimerComplete: () =>
                         showResultDialog(successContent(actionId)),
                   );
