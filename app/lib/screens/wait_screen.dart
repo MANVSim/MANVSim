@@ -70,11 +70,12 @@ class _WaitScreenState extends State<WaitScreen> {
     try {
       final response = await _apiService.api.scenarioStartTimeGet();
       if (response != null) {
-        final int currentTimeSeconds = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        final int currentTimeSeconds =
+            DateTime.now().millisecondsSinceEpoch ~/ 1000;
         newState = _calculateState(
             currentTimeSeconds, response.startingTime, response.arrivalTime);
-        newWaitTime = _calculateWaitTime(
-            currentTimeSeconds, response.startingTime, response.arrivalTime, newState);
+        newWaitTime = _calculateWaitTime(currentTimeSeconds,
+            response.startingTime, response.arrivalTime, newState);
       } else {
         // no response (same as HTTP code 204)
         newState = _WaitState.waitingForStartTime;
@@ -95,11 +96,12 @@ class _WaitScreenState extends State<WaitScreen> {
       return;
     }
 
-    if (_waitState == _WaitState.initial && _isNavigationState(newState)) {
+    if (_waitState == _WaitState.initial &&
+        _isNavigationState(newState) &&
+        newWaitTime <= 0) {
       _goToHome();
     }
 
-    print(newWaitTime);
     if (newState != _waitState) {
       setState(() {
         _waitState = newState;
