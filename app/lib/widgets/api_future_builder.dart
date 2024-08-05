@@ -40,7 +40,7 @@ class ApiFutureBuilder<T> extends StatelessWidget {
             }
             return ErrorBox(errorText: snapshot.error.toString());
           }
-          return builder(context, snapshot.data!);
+          return builder(context, snapshot.data as T);
         });
   }
 }
