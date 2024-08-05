@@ -4,6 +4,7 @@ from queue import Queue
 from execution.entities.resource import Resource, try_lock_all, \
     release_all_resources
 from execution.utils.timeoutlock import TimeoutLock
+from media.media_data import MediaData
 from vars import ACQUIRE_TIMEOUT
 
 
@@ -13,7 +14,7 @@ from vars import ACQUIRE_TIMEOUT
 # noinspection PyArgumentList
 class Location:
 
-    def __init__(self, id: int, name: str, picture_ref: str | None,
+    def __init__(self, id: int, name: str, media_references: list[MediaData],
                  resources: list[Resource] | None = None,
                  sub_locations: set['Location'] | None = None):
         if resources is None:
@@ -23,7 +24,7 @@ class Location:
 
         self.id = id
         self.name = name
-        self.picture_ref = picture_ref  # Reference to picture
+        self.media_references = media_references
         self.resources = resources
         self.sub_locations = sub_locations
 
@@ -33,8 +34,10 @@ class Location:
     def __repr__(self):
         return (
             f"Location(id={self.id!r}, name={self.name!r}, \
-            picture_ref={self.picture_ref!r}, resources={self.resources!r}, \
-            locations={self.sub_locations!r})")
+            media_references={self.media_references!r}, \
+            resources={self.resources!r}, \
+            locations={self.sub_locations!r})"
+        )
 
     def get_location_by_id(self, location_id: int):
         """
@@ -209,7 +212,8 @@ class Location:
         return {
             'id': self.id,
             'name': self.name,
-            'picture_ref': self.picture_ref,
+            'media_references': [media_ref.to_dict() for media_ref in
+                                 self.media_references],
             'resources': [resource.id if shallow else resource.to_dict() for
                           resource in self.resources],
             'sub_locations': [location.id if shallow else location.to_dict() for

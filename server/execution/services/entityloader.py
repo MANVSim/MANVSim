@@ -14,6 +14,7 @@ from execution.entities.resource import Resource
 from execution.entities.role import Role
 from execution.entities.scenario import Scenario
 from execution.entities.stategraphs.activity_diagram import ActivityDiagram
+from media.media_data import MediaData
 from vars import RESULT_DELIMITER
 
 
@@ -24,8 +25,9 @@ def __load_resources(location_id: int) -> list[Resource]:
 
     resources = []
     for r in rs:
+        media_refs = MediaData.from_json(r.media_refs) if r.media_refs else []
         resources.append(Resource(id=r.id, name=r.name, quantity=r.quantity,
-                                  picture_ref=r.picture_ref))
+                                  media_references=media_refs))
 
     return resources
 
@@ -51,7 +53,10 @@ def load_location(location_id: int) -> Location | None:
         for child in children_locs:
             sub_locs.add(load_location(child.id))
 
-        return Location(id=loc.id, name=loc.name, picture_ref=loc.picture_ref,
+        media_refs = MediaData.from_json(
+            loc.media_refs) if loc.media_refs else []
+
+        return Location(id=loc.id, name=loc.name, media_references=media_refs,
                         resources=resources, sub_locations=sub_locs)
 
 
@@ -70,7 +75,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
         p_loc = p.location
         if p_loc is None:
             p_loc = Location(id=hash(p), name=f"Patient with ID {p.id}",
-                             picture_ref=None, resources=[])
+                             media_references=[], resources=[])
         else:
             p_loc = load_location(p.location)
 
@@ -84,7 +89,8 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_ad = ActivityDiagram()  # empty diagram with an empty root state
 
         patients[p.id] = Patient(id=p.id, name=p.name, activity_diagram=p_ad,
-                                 location=p_loc, performed_actions=[])  # type: ignore
+                                 location=p_loc,
+                                 performed_actions=[])  # type: ignore
 
     return patients
 
@@ -114,9 +120,10 @@ def __load_actions() -> dict[int, Action] | None:
     actions = dict()
     for ac in acs:
         resources_needed = __get_needed_resource_names(ac.id)
+        media_refs = MediaData.from_json(ac.media_refs) if ac.media_refs else []
         actions[ac.id] = Action(id=ac.id, name=ac.name,
                                 results=ac.results.split(RESULT_DELIMITER),
-                                picture_ref=ac.picture_ref,
+                                media_references=media_refs,
                                 duration_sec=ac.duration_secs,
                                 resources_needed=resources_needed,
                                 required_power=ac.required_power)

@@ -1,6 +1,5 @@
 import models
-from app import create_app
-from app_config import db, csrf
+from app_config import db
 from execution import run
 from execution.entities.execution import Execution
 from execution.entities.location import Location
@@ -10,6 +9,7 @@ from execution.entities.role import Role
 from execution.entities.scenario import Scenario
 from execution.services import entityloader
 from execution.tests.conftest import flask_app
+from media.media_data import MediaData
 
 
 def _check_role(role: Role | None):
@@ -46,7 +46,8 @@ def _check_players(players: list[Player], execution: Execution):
 def _check_scenario(scenario: Scenario):
     assert scenario
 
-    db_scenario = db.session.query(models.Scenario).filter_by(id=scenario.id).first()
+    db_scenario = db.session.query(models.Scenario).filter_by(
+        id=scenario.id).first()
     assert db_scenario is not None
     assert db_scenario.id == scenario.id
     assert db_scenario.name == scenario.name
@@ -55,10 +56,12 @@ def _check_scenario(scenario: Scenario):
 def _check_resource(resource: Resource, location: Location):
     assert resource
 
-    db_resource = db.session.query(models.Resource).filter_by(id=resource.id).first()
+    db_resource = db.session.query(models.Resource).filter_by(
+        id=resource.id).first()
     assert db_resource
     assert db_resource.name == resource.name
-    assert db_resource.picture_ref == resource.picture_ref
+    assert db_resource.media_refs == MediaData.list_to_json(
+        resource.media_references)
     assert db_resource.location_id == location.id
     assert db_resource.quantity == resource.quantity
 
@@ -67,15 +70,18 @@ def _check_location(location: Location | None, scenario: Scenario):
     assert location
     assert scenario
 
-    db_location = db.session.query(models.Location).filter_by(id=location.id).first()
+    db_location = db.session.query(models.Location).filter_by(
+        id=location.id).first()
     assert db_location is not None
     assert db_location.name == location.name
-    assert db_location.picture_ref == location.picture_ref
+    assert db_location.media_refs == MediaData.list_to_json(
+        location.media_references)
     assert location.resources is not None
     if location.resources:
         map(lambda r: _check_resource(r, location), location.resources)
     if db_location.location_id is not None:
-        db_parent = db.session.query(models.Location).filter_by(id=db_location.location_id).first()
+        db_parent = db.session.query(models.Location).filter_by(
+            id=db_location.location_id).first()
         assert db_parent is not None
         exec_parent = scenario.locations.get(db_parent.id)
         assert exec_parent
@@ -86,7 +92,8 @@ def _check_patients(scenario: Scenario):
     assert scenario
 
     db_patient_ids = map(lambda tpi: tpi.patient_id,
-                         db.session.query(models.TakesPartIn).filter_by(scenario_id=scenario.id).all())
+                         db.session.query(models.TakesPartIn).filter_by(
+                             scenario_id=scenario.id).all())
     db_patients: list[models.Patient] = db.session.query(models.Patient).filter(
         models.Patient.id.in_(db_patient_ids)).all()
 
@@ -97,7 +104,8 @@ def _check_patients(scenario: Scenario):
         assert db_patient.name == exec_patient.name
         assert True if db_patient.activity_diagram is not None and exec_patient.activity_diagram is not None \
             else db_patient.activity_diagram is None
-        # If a patient has no location, a generic one is created at runtime, so this check does not need to be applied
+        # If a patient has no location, a generic one is created at runtime, so
+        # this check does not need to be applied
         if db_patient.location is not None:
             assert db_patient.location == exec_patient.location.id
             _check_location(exec_patient.location, scenario)
@@ -112,10 +120,12 @@ def _check_actions(scenario: Scenario):
         exec_action = scenario.actions.get(db_action.id)
         assert exec_action
         assert db_action.name == exec_action.name
-        assert db_action.picture_ref == exec_action.picture_ref
+        assert db_action.media_refs == MediaData.list_to_json(
+            exec_action.media_references)
         assert db_action.duration_secs == exec_action.duration_sec
         assert db_action.required_power == exec_action.required_power
-        assert True if db_action.results is not None and exec_action.results is not None else db_action.results is None
+        assert True if db_action.results is not None and exec_action.results is not None \
+            else db_action.results is None
 
 
 def test_load_execution():

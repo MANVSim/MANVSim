@@ -1,15 +1,18 @@
 import json
 
+from media.media_data import MediaData
+
 
 class Action:
 
-    def __init__(self, id: int, name: str, results: list[str], picture_ref: str,
+    def __init__(self, id: int, name: str, results: list[str],
+                 media_references: list[MediaData],
                  duration_sec: int, resources_needed: list[str],
                  required_power: int = 0):
         self.id = id
         self.name = name
         self.results = results  # list of condition keys to reveal on a patient
-        self.picture_ref = picture_ref  # Reference to picture
+        self.media_references = media_references
         self.duration_sec = duration_sec
         self.required_power = required_power  # Power of Role
         self.resources_needed = resources_needed  # Names of resources needed to perform action
@@ -24,7 +27,8 @@ class Action:
             'id': self.id,
             'name': self.name,
             'results': self.results,
-            'picture_ref': self.picture_ref,
+            'media_references': [media_ref.to_dict() for media_ref in
+                                 self.media_references],
             'duration_sec': self.duration_sec,
             'required_role': self.required_power,
             'resources_needed': self.resources_needed
