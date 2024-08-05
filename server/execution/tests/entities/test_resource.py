@@ -40,7 +40,7 @@ def test_decrease(client):
 
 def test_increase_decrease(client):
     quantity = 50
-    resource = Resource(1, "test", quantity, "ref")
+    resource = Resource(1, "test", quantity, [])
     resource.consumable = False
 
     def t2(r):

@@ -29,7 +29,7 @@ class MediaData:
         }
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data) -> 'MediaData':
         media_type = cls.Type(data["media_type"])
         title = data.get("title")
         text = data.get("text")
@@ -40,16 +40,16 @@ class MediaData:
         return json.dumps(self.to_dict())
 
     @classmethod
-    def from_json(cls, json_str):
+    def from_json(cls, json_str) -> 'MediaData':
         data = json.loads(json_str)
         return cls.from_dict(data)
 
     @staticmethod
-    def list_to_json(media_data_list: List['MediaData']):
+    def list_to_json(media_data_list: list['MediaData']) -> str:
         return json.dumps(
             [media_data.to_dict() for media_data in media_data_list])
 
     @staticmethod
-    def list_from_json(json_str: str):
+    def list_from_json(json_str: str) -> list['MediaData']:
         data_list = json.loads(json_str)
         return [MediaData.from_dict(data) for data in data_list]

@@ -25,7 +25,8 @@ def __load_resources(location_id: int) -> list[Resource]:
 
     resources = []
     for r in rs:
-        media_refs = MediaData.from_json(r.media_refs) if r.media_refs else []
+        media_refs = MediaData.list_from_json(
+            r.media_refs) if r.media_refs else []
         resources.append(Resource(id=r.id, name=r.name, quantity=r.quantity,
                                   media_references=media_refs))
 
@@ -53,7 +54,7 @@ def load_location(location_id: int) -> Location | None:
         for child in children_locs:
             sub_locs.add(load_location(child.id))
 
-        media_refs = MediaData.from_json(
+        media_refs = MediaData.list_from_json(
             loc.media_refs) if loc.media_refs else []
 
         return Location(id=loc.id, name=loc.name, media_references=media_refs,
@@ -89,7 +90,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_ad = ActivityDiagram()  # empty diagram with an empty root state
 
         patients[p.id] = Patient(id=p.id, name=p.name, activity_diagram=p_ad,
-                                 location=p_loc,
+                                 location=p_loc,    # type: ignore
                                  performed_actions=[])  # type: ignore
 
     return patients
@@ -120,7 +121,8 @@ def __load_actions() -> dict[int, Action] | None:
     actions = dict()
     for ac in acs:
         resources_needed = __get_needed_resource_names(ac.id)
-        media_refs = MediaData.from_json(ac.media_refs) if ac.media_refs else []
+        media_refs = MediaData.list_from_json(
+            ac.media_refs) if ac.media_refs else []
         actions[ac.id] = Action(id=ac.id, name=ac.name,
                                 results=ac.results.split(RESULT_DELIMITER),
                                 media_references=media_refs,
