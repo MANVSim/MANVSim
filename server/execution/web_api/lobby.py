@@ -129,10 +129,13 @@ def change_player_status(id: int, tan: str, alerted: bool):
         raise NotFound(
             f"Player with TAN '{tan}' does not exist for execution with id {id}")
     if alerted:
+        player.alert()
         Event.player_alerted(execution_id=execution.id,
-                             time=time.current_time_s(),
+                             time=player.alerted_timestamp,
                              player=player.tan).log()
-    player.alerted = not alerted
+    else:
+        player.remove_alert()
+
     return Response(status=200)
 
 

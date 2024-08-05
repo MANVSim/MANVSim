@@ -105,9 +105,9 @@ paths:
                     type: integer
                     description: Timestamp in ms since unix epoch.
                     example: 1672531200
-                  travel_time:
+                  arrival_time:
                     type: integer
-                    description: Timestamp in ms since unix epoch. This parameter is only provided, if a player is alerted.
+                    description: Timestamp in seconds since unix epoch, indicating the time the player arrives. This parameter is only provided, if a player is alerted.
                     example: 1672531200
         '204':
           description: The execution has not been started yet.
