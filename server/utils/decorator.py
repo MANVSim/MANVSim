@@ -38,6 +38,9 @@ def required(arg: str, converter: Callable[[str], Any], source_enum: RequiredVal
                     source = request.form
                 case RequiredValueSource.JSON:
                     source = request.json
+                    if not source:
+                        raise BadRequest(
+                            f"Missing parameter in {str(source_enum)}: {arg}")
                 case RequiredValueSource.ARGS:
                     source = request.args
                 case _:
