@@ -171,7 +171,7 @@ def move_patient(patient_id: int, new_location_id: int):
 
         if (player.location and patient.location
             and player.location.id != patient.location.id):
-            return "Invalid request. Players is not allowed to move patient.", 409
+            return "Invalid request. Players is not allowed to move patient.", 418
         # Update player location
         r_value = leave_location()
         if not isinstance(r_value, dict):

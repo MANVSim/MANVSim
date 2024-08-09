@@ -172,7 +172,7 @@ def test_move_patient(client):
     # -- Fail Request: move patient out of reachability of player
     response = client.post("/api/run/action/perform/move/patient",
                            headers=auth_token, data=form)
-    assert response.status_code == 409
+    assert response.status_code == 418
     assert patient.location.id != new_location_id
 
     # -- Prevent fail request

@@ -425,6 +425,39 @@ paths:
       security:
         - bearerAuth: [ ]
 
+  /run/action/perform/move/patient:
+    post:
+      summary: Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ patient_id, new_location_id ]
+              properties:
+                patient_id:
+                  type: integer
+                  example: 2
+                new_location_id:
+                  type: integer
+                  example: 2
+      responses:
+        '200':
+          description: Returns the current player location and patient location.
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Unable to access runtime object. A timeout-error occurred.
+        '418':
+          description: Invalid request. Players is not allowed to move patient.
+      security:
+        - bearerAuth: [ ]
+
   /notifications:
     get:
       summary: notification polling
