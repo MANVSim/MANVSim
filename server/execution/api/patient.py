@@ -12,7 +12,7 @@ api = Blueprint("api-patient", __name__)
 
 @api.post("/patient/arrive")
 @jwt_required()
-@required("patient_id", int, RequiredValueSource.FORM)
+@required("patient_id", int, RequiredValueSource.JSON)
 @csrf.exempt
 def get_patient(patient_id: int):
     """

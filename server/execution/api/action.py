@@ -160,8 +160,8 @@ def get_perform_action_result():
 
 @api.post("/action/perform/move/patient")
 @jwt_required()
-@required("new_location_id", int, RequiredValueSource.FORM)
-@required("patient_id", int, RequiredValueSource.FORM)
+@required("new_location_id", int, RequiredValueSource.JSON)
+@required("patient_id", int, RequiredValueSource.JSON)
 @csrf.exempt
 def move_patient(patient_id: int, new_location_id: int):
     execution, player = util.get_execution_and_player()

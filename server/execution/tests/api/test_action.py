@@ -155,9 +155,10 @@ def test_perform_action_but_blocked_to_leaving(client):
 
 def test_move_patient(client):
     auth_token = generate_token(client.application)
+    auth_token["Content-Type"] = "application/json"
     patient_id = 1
     new_location_id = 1
-    # arrive patient
+
     form = {
         "patient_id": patient_id,
         "new_location_id": new_location_id
@@ -171,14 +172,14 @@ def test_move_patient(client):
 
     # -- Fail Request: move patient out of reachability of player
     response = client.post("/api/run/action/perform/move/patient",
-                           headers=auth_token, data=form)
+                           headers=auth_token, data=json.dumps(form))
     assert response.status_code == 418
     assert patient.location.id != new_location_id
 
     # -- Prevent fail request
     response = client.post("/api/run/location/leave", headers=auth_token)
     assert response.status_code == HTTPStatus.OK
-    response = client.post("/api/run/patient/arrive", headers=auth_token, data=form)
+    response = client.post("/api/run/patient/arrive", headers=auth_token, data=json.dumps(form))
     assert response.status_code == HTTPStatus.OK
 
     # -- Fail Request: try move with invalid data
@@ -187,7 +188,7 @@ def test_move_patient(client):
         "new_location_id": new_location_id
     }
     response = client.post("/api/run/action/perform/move/patient",
-                           headers=auth_token, data=invalid_form)
+                           headers=auth_token, data=json.dumps(invalid_form))
     assert response.status_code == 400
     assert patient.location.id != new_location_id
 
@@ -196,14 +197,14 @@ def test_move_patient(client):
         "new_location_id": -1
     }
     response = client.post("/api/run/action/perform/move/patient",
-                           headers=auth_token, data=invalid_form)
+                           headers=auth_token, data=json.dumps(invalid_form))
     assert response.status_code == 400
     assert patient.location.id != new_location_id
 
     # Successful request
     old_location = patient.location
     response = client.post("/api/run/action/perform/move/patient",
-                           headers=auth_token, data=form)
+                           headers=auth_token, data=json.dumps(form))
     assert response.status_code == 200
     assert patient.location.id == new_location_id
     assert old_location.id in execution.scenario.locations.keys()
