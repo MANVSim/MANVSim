@@ -57,7 +57,7 @@ class ActivityDiagram:
             try:
                 new_state_uuid = self.current.treatments[treatment]
                 self.current = self.__get_state_by_id(new_state_uuid)
-                if self.current.timelimit != -1:
+                if self.current.timelimit >= 0:
                     self.current.start_timer()
             except KeyError:
                 logging.debug(

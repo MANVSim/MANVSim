@@ -18,7 +18,7 @@ class PatientState:
             conditions = {}
 
         # the time the state was delayed due to a pause action
-        self.pause_time = 0
+        self.pause_time = -1
 
         self.uuid = state_uuid
         self.start_time = start_time
@@ -80,7 +80,7 @@ class PatientState:
         if self.pause_time > 0:
             # add the delay to the timestamp
             self.start_time = self.start_time + (current_s - self.pause_time)
-            self.pause_time = 0  # reset pause_timer
+            self.pause_time = -1  # reset pause_timer
         else:
             self.start_time = current_s
 
