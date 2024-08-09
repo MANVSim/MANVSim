@@ -2,8 +2,8 @@ import http
 import io
 
 
-TEST_IMG_1 = "media/static/rucksack_rot.jpg"
-TEST_IMG_2 = "media/static/tasche_rot.jpg"
+TEST_IMG_1 = "media/static/image/rucksack_rot.jpg"
+TEST_IMG_2 = "media/static/image/tasche_rot.jpg"
 
 
 def test_get_static_media(client):
@@ -24,13 +24,13 @@ def test_post_instance_media(client):
         data = {
             "file": (io.BytesIO(image_file.read()), "test.jpg")
         }
-        response = client.post("/media/instance/test.jpg",
+        response = client.post("/media/instance/image/test.jpg",
                                content_type="multipart/form-data", data=data)
 
     assert response.status_code == http.HTTPStatus.CREATED
 
     # Test access of posted image
-    response = client.get("/media/instance/test.jpg")
+    response = client.get("/media/instance/image/test.jpg")
     assert response.status_code == http.HTTPStatus.OK
 
 
