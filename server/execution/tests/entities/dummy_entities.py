@@ -23,50 +23,50 @@ def create_test_execution(pending: bool = True):
     res_1 = Resource(id=1, name="EKG", quantity=1,
                      media_references=[
                          MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/no_image.png")],
+                                   media_reference="media/static/image/no_image.png")],
                      consumable=False)
     res_2 = Resource(id=2, name="Infusion", quantity=3,
                      media_references=[
                          MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/no_image.png")])
+                                   media_reference="media/static/image/no_image.png")])
     res_3 = Resource(id=3, name="Trage", quantity=4,
                      media_references=[
                          MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/no_image.png")],
+                                   media_reference="media/static/image/no_image.png")],
                      consumable=False)
     res_4 = Resource(id=4, name="Blümchenpflaster", quantity=10000,
                      media_references=[
                          MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/no_image.png")])
+                                   media_reference="media/static/image/no_image.png")])
     res_5 = Resource(id=5, name="Beatmungsgerät", quantity=1,
                      media_references=[
                          MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/no_image.png")],
+                                   media_reference="media/static/image/no_image.png")],
                      consumable=False)
 
     # Locations
     loc_2 = Location(id=2, name="Roter Rucksack",
                      media_references=[
                          MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/rucksack_rot.jpg")],
+                                   media_reference="media/static/image/rucksack_rot.jpg")],
                      resources=[res_2, res_4])
     loc_3 = Location(id=3, name="Blauer Rucksack",
                      media_references=[
                          MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/rucksack_blau.jpg")],
+                                   media_reference="media/static/image/rucksack_blau.jpg")],
                      resources=[res_5])
     loc_4 = Location(id=4, name="EKG",
                      media_references=[
                          MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/tasche_ekg.jpg")],
+                                   media_reference="media/static/image/tasche_ekg.jpg")],
                      resources=[res_1])
     loc_5 = Location(id=5, name="Holstein Stadion",
                      media_references=[
                          MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/no_image.png")])
+                                   media_reference="media/static/image/no_image.png")])
     loc_1 = Location(id=1, name="RTW", media_references=[
         MediaData(media_type=MediaData.Type.IMAGE,
-                  media_reference="media/static/rtw_sh.png")],
+                  media_reference="media/static/image/rtw_sh.png")],
                      resources=[res_3], sub_locations={loc_2, loc_3, loc_4})
 
     # Roles
@@ -97,34 +97,34 @@ def create_test_execution(pending: bool = True):
     action_1 = Action(id=1, name="EKG schreiben",
                       media_references=[
                           MediaData(media_type=MediaData.Type.IMAGE,
-                                    media_reference="media/static/no_image.png")],
+                                    media_reference="media/static/image/no_image.png")],
                       duration_sec=2,
                       results=["EKG", "12-Kanal-EKG"], resources_needed=["EKG"],
                       required_power=200)
     action_2 = Action(id=2, name="Pflaster kleben",
                       media_references=[
                           MediaData(media_type=MediaData.Type.IMAGE,
-                                    media_reference="media/static/no_image.png")],
+                                    media_reference="media/static/image/no_image.png")],
                       duration_sec=10,
                       results=[],
                       resources_needed=["Blümchenpflaster"], required_power=400)
     action_3 = Action(id=3, name="Beatmen",
                       media_references=[
                           MediaData(media_type=MediaData.Type.IMAGE,
-                                    media_reference="media/static/no_image.png")],
+                                    media_reference="media/static/image/no_image.png")],
                       duration_sec=300, results=[],
                       resources_needed=["Beatmungsgerät"], required_power=300)
     action_4 = Action(id=4, name="Betrachten",
                       media_references=[
                           MediaData(media_type=MediaData.Type.IMAGE,
-                                    media_reference="media/static/no_image.png")],
+                                    media_reference="media/static/image/no_image.png")],
                       duration_sec=5,
                       results=["Verletzung", "Haut", "Bewusstsein"],
                       resources_needed=[], required_power=200)
     action_5 = Action(id=5, name="Wunderheilung",
                       media_references=[
                           MediaData(media_type=MediaData.Type.IMAGE,
-                                    media_reference="media/static/no_image.png")],
+                                    media_reference="media/static/image/no_image.png")],
                       duration_sec=5, results=[],
                       resources_needed=[], required_power=400)
 

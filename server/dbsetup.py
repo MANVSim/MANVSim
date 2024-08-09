@@ -29,44 +29,44 @@ def __create_resources():
     insert(
         Resource(id=0, name="Verband", media_refs=MediaData.list_to_json([
             MediaData(media_type=MediaData.Type.IMAGE,
-                      media_reference="media/static/no_image.png")]),
+                      media_reference="media/static/image/no_image.png")]),
                  quantity=10, location_id=2, consumable=True))
     insert(
         Resource(id=1, name="Pflaster", media_refs=MediaData.list_to_json([
             MediaData(media_type=MediaData.Type.IMAGE,
-                      media_reference="media/static/no_image.png")]),
+                      media_reference="media/static/image/no_image.png")]),
                  quantity=10000, location_id=3, consumable=True))
     insert(Resource(id=2, name="Stetoskop",
                     media_refs=MediaData.list_to_json([
                         MediaData(media_type=MediaData.Type.IMAGE,
-                                  media_reference="media/static/no_image.png")]),
+                                  media_reference="media/static/image/no_image.png")]),
                     quantity=2, location_id=1, consumable=False))
     insert(Resource(id=3, name="Knochensäge",
                     media_refs=MediaData.list_to_json([
                         MediaData(media_type=MediaData.Type.IMAGE,
-                                  media_reference="media/static/no_image.png")]),
+                                  media_reference="media/static/image/no_image.png")]),
                     quantity=1, location_id=0, consumable=False))
     insert(Resource(id=4, name="EKG", quantity=1,
                     media_refs=MediaData.list_to_json([
                         MediaData(media_type=MediaData.Type.IMAGE,
-                                  media_reference="media/static/tasche_ekg.jpg")]),
+                                  media_reference="media/static/image/tasche_ekg.jpg")]),
                     location_id=5, consumable=False))
     insert(Resource(id=5, name="Infusion", quantity=3,
                     media_refs=MediaData.list_to_json([
                         MediaData(media_type=MediaData.Type.IMAGE,
-                                  media_reference="media/static/no_image.png")]),
+                                  media_reference="media/static/image/no_image.png")]),
                     location_id=3,
                     consumable=False))
     insert(Resource(id=6, name="Trage", quantity=4,
                     media_refs=MediaData.list_to_json([
                         MediaData(media_type=MediaData.Type.IMAGE,
-                                  media_reference="media/static/no_image.png")]),
+                                  media_reference="media/static/image/no_image.png")]),
                     location_id=0,
                     consumable=False))
     insert(Resource(id=7, name="Beatmungsgerät", quantity=1,
                     media_refs=MediaData.list_to_json([
                         MediaData(media_type=MediaData.Type.IMAGE,
-                                  media_reference="media/static/no_image.png")]),
+                                  media_reference="media/static/image/no_image.png")]),
                     location_id=4,
                     consumable=False))
 
@@ -74,35 +74,35 @@ def __create_resources():
 def __create_locations():
     insert(Location(id=0, name="RTW", media_refs=MediaData.list_to_json([
         MediaData(media_type=MediaData.Type.IMAGE,
-                  media_reference="media/static/rtw_sh.png")])))
+                  media_reference="media/static/image/rtw_sh.png")])))
     insert(Location(id=1, name="Sichtungstasche",
                     media_refs=MediaData.list_to_json([
                         MediaData(media_type=MediaData.Type.IMAGE,
-                                  media_reference="media/static/tasche_sichtung.jpg")]),
+                                  media_reference="media/static/image/tasche_sichtung.jpg")]),
                     location_id=0))
     insert(Location(id=2, name="Verbandskasten",
                     media_refs=MediaData.list_to_json([
                         MediaData(media_type=MediaData.Type.IMAGE,
-                                  media_reference="media/static/tasche_rot.jpg")]),
+                                  media_reference="media/static/image/tasche_rot.jpg")]),
                     location_id=1))
     insert(Location(id=3, name="Roter Rucksack",
                     media_refs=MediaData.list_to_json([
                         MediaData(media_type=MediaData.Type.IMAGE,
-                                  media_reference="media/static/rucksack_rot.jpg")]),
+                                  media_reference="media/static/image/rucksack_rot.jpg")]),
                     location_id=0))
     insert(Location(id=4, name="Blauer Rucksack",
                     media_refs=MediaData.list_to_json([
                         MediaData(media_type=MediaData.Type.IMAGE,
-                                  media_reference="media/static/rucksack_blau.jpg")]),
+                                  media_reference="media/static/image/rucksack_blau.jpg")]),
                     location_id=0))
     insert(Location(id=5, name="EKG", media_refs=MediaData.list_to_json([
         MediaData(media_type=MediaData.Type.IMAGE,
-                  media_reference="media/static/tasche_ekg.jpg")]),
+                  media_reference="media/static/image/tasche_ekg.jpg")]),
                     location_id=0))
     insert(Location(id=6, name="Holstein Stadion",
                     media_refs=MediaData.list_to_json([
                         MediaData(media_type=MediaData.Type.IMAGE,
-                                  media_reference="media/static/no_image.png")]))
+                                  media_reference="media/static/image/no_image.png")]))
            )
 
 
@@ -110,54 +110,56 @@ def __create_actions():
     insert(Action(id=0, name="Verband anlegen", required_power=100,
                   media_refs=MediaData.list_to_json([
                       MediaData(media_type=MediaData.Type.IMAGE,
-                                media_reference="media/static/no_image.png")]),
+                                media_reference="media/static/image/no_image.png")]),
                   results="",
                   duration_secs=60))
     insert(Action(id=1, name="Puls messen", required_power=100,
                   media_refs=MediaData.list_to_json([
                       MediaData(media_type=MediaData.Type.IMAGE,
-                                media_reference="media/static/no_image.png")]),
+                                media_reference="media/static/image/no_image.png")]),
                   results="",
                   duration_secs=30))
     insert(Action(id=2, name="Pflaster aufkleben", required_power=0,
                   media_refs=MediaData.list_to_json([
                       MediaData(media_type=MediaData.Type.IMAGE,
-                                media_reference="media/static/no_image.png")]),
+                                media_reference="media/static/image/no_image.png")]),
                   results="",
                   duration_secs=10))
     insert(Action(id=3, name="Amputation", required_power=300,
                   media_refs=MediaData.list_to_json([
                       MediaData(media_type=MediaData.Type.IMAGE,
-                                media_reference="media/static/no_image.png")]),
+                                media_reference="media/static/image/no_image.png")]),
                   results="",
                   duration_secs=120))
 
     insert(Action(id=4, name="EKG schreiben",
                   media_refs=MediaData.list_to_json([
-                      MediaData(media_type=MediaData.Type.IMAGE,
-                                media_reference="media/static/no_image.png")]),
+                      MediaData(media_type=MediaData.Type.VIDEO,
+                                media_reference="media/static/video/test.mp4"),
+                      MediaData(media_type=MediaData.Type.AUDIO,
+                                media_reference="media/static/audio/test.wav")]),
                   duration_secs=2, results=f"EKG{RESULT_DELIMITER}12-Kanal-EKG",
                   required_power=200))
     insert(Action(id=5, name="Pflaster kleben",
                   media_refs=MediaData.list_to_json([
                       MediaData(media_type=MediaData.Type.IMAGE,
-                                media_reference="media/static/no_image.png")]),
+                                media_reference="media/static/image/no_image.png")]),
                   duration_secs=10, results="", required_power=300))
     insert(Action(id=6, name="Beatmen", media_refs=MediaData.list_to_json([
         MediaData(media_type=MediaData.Type.IMAGE,
-                  media_reference="media/static/no_image.png")]),
+                  media_reference="media/static/image/no_image.png")]),
                   duration_secs=300, results="", required_power=200))
     insert(
         Action(id=7, name="Betrachten", media_refs=MediaData.list_to_json([
             MediaData(media_type=MediaData.Type.IMAGE,
-                      media_reference="media/static/no_image.png")]),
+                      media_reference="media/static/image/no_image.png")]),
                duration_secs=5, required_power=100,
                results=f"Verletzung{RESULT_DELIMITER}Haut{RESULT_DELIMITER}\
                Bewusstsein"))
     insert(Action(id=8, name="Wunderheilung",
                   media_refs=MediaData.list_to_json([
                       MediaData(media_type=MediaData.Type.IMAGE,
-                                media_reference="media/static/no_image.png")]),
+                                media_reference="media/static/image/no_image.png")]),
                   duration_secs=5, results="", required_power=300))
 
 
