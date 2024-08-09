@@ -3,7 +3,7 @@ from execution.entities.location import Location
 
 
 def test_timeout():
-    l = Location(1, "test", ".")
+    l = Location(1, "test", [])
     l.loc_lock.acquire()  # t1
     try:
         l.add_locations(new_locations=set([]))
