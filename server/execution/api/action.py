@@ -5,12 +5,15 @@ from flask_jwt_extended import jwt_required
 from werkzeug.exceptions import InternalServerError
 
 from app_config import csrf
+from execution.api.location import leave_location
+from execution.api.patient import get_patient
 from execution.entities.performed_action import PerformedAction
 from execution.entities.resource import Resource, try_lock_all, release_all_resources
 from execution.utils import util
 from execution.entities.action import Action
 from utils import time
 from event_logging.event import Event
+from utils.decorator import required, RequiredValueSource
 
 api = Blueprint("api-action", __name__)
 
@@ -153,6 +156,38 @@ def get_perform_action_result():
 
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
+
+
+@api.post("/action/perform/move/patient")
+@jwt_required()
+@required("new_location_id", int, RequiredValueSource.FORM)
+@required("patient_id", int, RequiredValueSource.FORM)
+@csrf.exempt
+def move_patient(patient_id: int, new_location_id: int):
+    execution, player = util.get_execution_and_player()
+    try:
+        patient = execution.scenario.patients[patient_id]
+        new_location = execution.scenario.locations[new_location_id]
+
+        if (player.location and patient.location
+            and player.location.id != patient.location.id):
+            return "Invalid request. Players is not allowed to move patient.", 409
+        # Update player location
+        r_value = leave_location()
+        if not isinstance(r_value, dict):
+            return r_value
+
+        # Reassign Patient Location
+        patient.location = new_location
+
+        # Assign player to new patient location
+        r_value = get_patient()
+
+        # WARNING errors are just passed, not handled -> clients responsibility
+        return r_value
+
+    except KeyError:
+        return "Invalid Patient_ID or Location_ID detected", 400
 
 
 # Helper

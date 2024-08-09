@@ -70,47 +70,52 @@ def __create_locations():
 
 
 def __create_actions():
-    insert(Action(id=0, name="Verband anlegen", required_power=100,
+    insert(Action(id=1, name="Verband anlegen", required_power=100,
                   picture_ref="media/static/no_image.png", results="",
                   duration_secs=60))
-    insert(Action(id=1, name="Puls messen", required_power=100,
+    insert(Action(id=2, name="Puls messen", required_power=100,
                   picture_ref="media/static/no_image.png", results="",
                   duration_secs=30))
-    insert(Action(id=2, name="Pflaster aufkleben", required_power=0,
+    insert(Action(id=3, name="Pflaster aufkleben", required_power=0,
                   picture_ref="media/static/no_image.png", results="",
                   duration_secs=10))
-    insert(Action(id=3, name="Amputation", required_power=300,
+    insert(Action(id=4, name="Amputation", required_power=300,
                   picture_ref="media/static/no_image.png", results="",
                   duration_secs=120))
 
-    insert(Action(id=4, name="EKG schreiben",
+    insert(Action(id=5, name="EKG schreiben",
                   picture_ref="media/static/no_image.png",
                   duration_secs=2, results=f"EKG{RESULT_DELIMITER}12-Kanal-EKG",
                   required_power=200))
-    insert(Action(id=5, name="Pflaster kleben",
+    insert(Action(id=6, name="Pflaster kleben",
                   picture_ref="media/static/no_image.png",
                   duration_secs=10, results="", required_power=300))
-    insert(Action(id=6, name="Beatmen", picture_ref="media/static/no_image.png",
+    insert(Action(id=7, name="Beatmen", picture_ref="media/static/no_image.png",
                   duration_secs=300, results="", required_power=200))
     insert(
-        Action(id=7, name="Betrachten", picture_ref="media/static/no_image.png",
+        Action(id=8, name="Betrachten", picture_ref="media/static/no_image.png",
                duration_secs=5, required_power=100,
                results=f"Verletzung{RESULT_DELIMITER}Haut{RESULT_DELIMITER}\
                Bewusstsein"))
-    insert(Action(id=8, name="Wunderheilung",
+    insert(Action(id=9, name="Wunderheilung",
                   picture_ref="media/static/no_image.png",
                   duration_secs=5, results="", required_power=300))
 
+    # PROD DATA
+    insert(Action(id=0, name="Transportiere Patient zu", required_power=0,
+                  picture_ref="media/static/no_image.png", results="",
+                  duration_secs=40))
+
 
 def __resource_needed():
-    insert(ResourcesNeeded(action_id=0, resource_id=0))
-    insert(ResourcesNeeded(action_id=1, resource_id=2))
-    insert(ResourcesNeeded(action_id=2, resource_id=1))
-    insert(ResourcesNeeded(action_id=3, resource_id=3))
+    insert(ResourcesNeeded(action_id=1, resource_id=0))
+    insert(ResourcesNeeded(action_id=2, resource_id=2))
+    insert(ResourcesNeeded(action_id=3, resource_id=1))
+    insert(ResourcesNeeded(action_id=4, resource_id=3))
 
-    insert(ResourcesNeeded(action_id=4, resource_id=4))
-    insert(ResourcesNeeded(action_id=5, resource_id=1))
-    insert(ResourcesNeeded(action_id=6, resource_id=7))
+    insert(ResourcesNeeded(action_id=5, resource_id=4))
+    insert(ResourcesNeeded(action_id=6, resource_id=1))
+    insert(ResourcesNeeded(action_id=7, resource_id=7))
 
 
 def __create_roles():

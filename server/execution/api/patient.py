@@ -5,14 +5,16 @@ from app_config import csrf
 from execution.utils import util
 from event_logging.event import Event
 from utils import time
+from utils.decorator import required, RequiredValueSource
 
 api = Blueprint("api-patient", __name__)
 
 
 @api.post("/patient/arrive")
 @jwt_required()
+@required("patient_id", int, RequiredValueSource.FORM)
 @csrf.exempt
-def get_patient():
+def get_patient(patient_id: int):
     """
     Assigns the requesting player to the patients location and makes the players
     inventory accessible, iff the player
@@ -21,8 +23,6 @@ def get_patient():
     """
     try:
         execution, player = util.get_execution_and_player()
-        form = request.get_json()
-        patient_id = int(form["patient_id"])
         scenario = execution.scenario
         patient = scenario.patients[patient_id]
 
