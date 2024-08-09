@@ -17,7 +17,7 @@ class ScenarioStartTimeGet200Response {
     this.arrivalTime,
   });
 
-  /// Timestamp in ms since unix epoch.
+  /// Timestamp in seconds since unix epoch.
   int startingTime;
 
   /// Timestamp in seconds since unix epoch, indicating the time the player arrives. This parameter is only provided, if a player is alerted.
