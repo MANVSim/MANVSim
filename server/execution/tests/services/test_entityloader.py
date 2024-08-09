@@ -140,3 +140,6 @@ def test_load_execution():
             assert ex.status == Execution.Status.PENDING
             assert ex.name is not None
             assert ex.starting_time == -1
+
+    # CLEANUP - The fixture clean up of pytest does not apply after this test.
+    run.active_executions = {}

@@ -17,6 +17,9 @@ class PatientState:
         if not conditions:
             conditions = {}
 
+        # the time the state was delayed due to a pause action
+        self.pause_time = -1
+
         self.uuid = state_uuid
         self.start_time = start_time
         self.timelimit = timelimit
@@ -67,13 +70,26 @@ class PatientState:
         return conditions
 
     def start_timer(self):
-        """ Initiates a timer for the state object, if a timelimit is set. """
-        if self.timelimit != -1:
-            self.start_time = time.current_time_s()
-            return True
+        """
+        Initiates/restarts a timer for the state object, if a timelimit is set.
+        """
+        if self.timelimit == -1:
+            return
+
+        current_s = time.current_time_s()
+        if self.pause_time > 0:
+            # add the delay to the timestamp
+            self.start_time = self.start_time + (current_s - self.pause_time)
+            self.pause_time = -1  # reset pause_timer
         else:
-            logging.error("unable to start error, due to missing run time.")
-            return False
+            self.start_time = current_s
+
+    def pause_timer(self):
+        """ Pauses the state by setting a pause timestamp. """
+        if self.timelimit != -1:
+            return
+
+        self.pause_time = time.current_time_s()
 
     def get_all_child_state_ids(self):
         return set(self.treatments.values()).add(self.after_time_state_uuid)

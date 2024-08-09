@@ -15,6 +15,14 @@ class Scenario:
         self.actions = actions
         self.locations = locations
 
+    def run_patients(self):
+        for patient in self.patients.values():
+            patient.start_activity_diagram()
+
+    def pause_patients(self):
+        for patient in self.patients.values():
+            patient.pause_activity_diagram()
+
     def to_dict(self, shallow: bool = False, include: list | None = None,
                 exclude: list | None = None):
         """

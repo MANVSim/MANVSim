@@ -105,15 +105,14 @@ def create_execution(scenario_id: int, name: str):
 def change_execution_status(id: int, new_status: str):
     execution = try_get_execution(id)
     try:
-        execution.status = Execution.Status[new_status]
-        if execution.id not in run.active_executions.keys():
-            run.activate_execution(execution)
+        new_status_enum = Execution.Status[new_status]
+        __perform_state_change(new_status_enum, execution)
+        execution.status = new_status_enum
+        return Response(status=200)
+
     except KeyError:
-        raise BadRequest(
-            f"Not an option for the execution status: '{new_status}'. "
-            f"Possible values are: "
-            f"{str.join(', ', [e.name for e in Execution.Status])}")
-    return Response(status=200)
+        raise BadRequest(f"Not an option for the execution status: "
+                         f"'{new_status}'. ")
 
 
 @web_api.patch("/execution/player/status")
@@ -165,3 +164,39 @@ def __get_roles() -> List[models.Role]:
 def __get_top_level_locations() -> List[models.Location]:
     return models.Location.query.where(
         models.Location.location_id.is_(None)).all()
+
+
+def __perform_state_change(new_status: Execution.Status, execution: Execution):
+    match new_status:
+        case Execution.Status.RUNNING:
+            # RUNNING only occurs after a PENDING
+            if execution.status == Execution.Status.RUNNING:
+                return
+            elif execution.status == Execution.Status.PENDING:
+                execution.start_execution()
+            else:
+                raise BadRequest("Process manipulation detected. "
+                                 "Invalid State change")
+        case Execution.Status.PENDING:
+            # PENDING occurs after UNKNOWN (DB load) and RUNNING
+            if execution.status == Execution.Status.PENDING:
+                return
+            elif execution.status == Execution.Status.RUNNING:
+                execution.pause_execution()
+            elif execution.status == Execution.Status.UNKNOWN:
+                run.activate_execution(execution)
+            else:
+                raise BadRequest("Process manipulation detected. "
+                                 "Invalid State change")
+        case Execution.Status.FINISHED:
+            if execution.status == Execution.Status.FINISHED:
+                return
+            elif execution.status == Execution.Status.RUNNING:
+                # TODO implement archive mechanisms
+                return
+            else:
+                raise BadRequest("Process manipulation detected. "
+                                 "Invalid State change")
+        case _:
+            raise BadRequest("Process manipulation detected. "
+                             "Invalid State change")
