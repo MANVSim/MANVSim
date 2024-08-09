@@ -1,11 +1,11 @@
 import json
-from enum import Enum
-from typing import Optional, List
+from enum import StrEnum
+from typing import Optional
 
 
 class MediaData:
 
-    class Type(Enum):
+    class Type(StrEnum):
         AUDIO = "AUDIO"
         IMAGE = "IMAGE"
         VIDEO = "VIDEO"
