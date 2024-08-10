@@ -162,8 +162,10 @@ def __create_actions():
 
     # PROD DATA
     insert(Action(id=0, name="Transportiere Patient zu", required_power=0,
-                  picture_ref="media/static/no_image.png", results="",
-                  duration_secs=40))
+                  media_refs=MediaData.list_to_json([
+                      MediaData(media_type=MediaData.Type.IMAGE,
+                                media_reference="media/static/no_image.png")]),
+                  results="",duration_secs=40))
 
 
 def __resource_needed():
