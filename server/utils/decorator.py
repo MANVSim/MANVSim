@@ -14,6 +14,7 @@ from vars import DB_CACHE_TTL
 class RequiredValueSource(StrEnum):
     FORM = "form"
     ARGS = "query parameters"
+    JSON = "json"
 
 
 def required(arg: str, converter: Callable[[str], Any], source_enum: RequiredValueSource):
@@ -32,13 +33,19 @@ def required(arg: str, converter: Callable[[str], Any], source_enum: RequiredVal
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            if source_enum == RequiredValueSource.FORM:
-                source = request.form
-            elif source_enum == RequiredValueSource.ARGS:
-                source = request.args
-            else:
-                raise ValueError(
-                    f"Not an option for the @required decorator: {source_enum}")
+            match source_enum:
+                case RequiredValueSource.FORM:
+                    source = request.form
+                case RequiredValueSource.JSON:
+                    source = request.json
+                    if not source:
+                        raise BadRequest(
+                            f"Missing parameter in {str(source_enum)}: {arg}")
+                case RequiredValueSource.ARGS:
+                    source = request.args
+                case _:
+                    raise ValueError(
+                        f"Not an option for the @required decorator: {source_enum}")
 
             value = source.get(arg)
 
