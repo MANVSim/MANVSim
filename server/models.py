@@ -1,8 +1,11 @@
 from typing import List
+
 from bcrypt import checkpw
-from app_config import db
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app_config import db
+
 
 class Scenario(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -24,7 +27,7 @@ class Execution(db.Model):
 class Location(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
-    picture_ref: Mapped[str] = mapped_column(nullable=False)
+    media_refs = db.Column(db.JSON(), nullable=True)
     location_id: Mapped[int] = mapped_column(
         ForeignKey("location.id"), nullable=True)
 
@@ -70,7 +73,7 @@ class TakesPartIn(db.Model):
 class Resource(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
-    picture_ref: Mapped[str] = mapped_column(nullable=False)
+    media_refs = db.Column(db.JSON(), nullable=True)
     quantity: Mapped[int] = mapped_column(nullable=False)
     location_id: Mapped[int] = mapped_column(
         ForeignKey("location.id"), nullable=False)
@@ -81,7 +84,7 @@ class Action(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
     required_power: Mapped[int] = mapped_column(nullable=False)
-    picture_ref: Mapped[str] = mapped_column(nullable=False)
+    media_refs = db.Column(db.JSON(), nullable=True)
     duration_secs: Mapped[int] = mapped_column(nullable=False)
     results: Mapped[str] = mapped_column(nullable=False)
 
@@ -120,7 +123,8 @@ class WebUser(db.Model):
 
     @staticmethod
     def get_by_username(username: str) -> "WebUser | None":
-        return db.session.execute(db.select(WebUser).where(WebUser.username == username)).scalar_one_or_none()
+        return db.session.execute(db.select(WebUser).where(
+            WebUser.username == username)).scalar_one_or_none()
 
     def check_password(self, password: str) -> bool:
         return checkpw(str.encode(password), self.password.encode())

@@ -7,7 +7,7 @@ from utils import time as utime
 
 
 def test_decrease(client):
-    resource = Resource(id=1, name="test", quantity=10000, picture_ref="")
+    resource = Resource(id=1, name="test", quantity=10000, media_references=[])
 
     # test infinite
     assert resource.decrease(duration=1)
@@ -40,7 +40,7 @@ def test_decrease(client):
 
 def test_increase_decrease(client):
     quantity = 50
-    resource = Resource(1, "test", quantity, "ref")
+    resource = Resource(1, "test", quantity, [])
     resource.consumable = False
 
     def t2(r):

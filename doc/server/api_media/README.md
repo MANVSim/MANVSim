@@ -33,6 +33,72 @@ Accessible files are stored in two different directories:
 According to that, users can only upload files to the second directory, while (permanent) changes to the first directory have to go through the build and deployment process.
 
 
+### Media Reference JSON Schema
+
+The media reference attribute of entities has the following structure:
+
+```json
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "media_type": {
+        "type": "string",
+        "enum": ["AUDIO", "IMAGE", "VIDEO", "TEXT"],
+        "description": "The type of the media content."
+      },
+      "title": {
+        "type": ["string", "null"],
+        "description": "The title of the media content, if applicable."
+      },
+      "text": {
+        "type": ["string", "null"],
+        "description": "The text content, if applicable."
+      },
+      "media_reference": {
+        "type": ["string", "null"],
+        "description": "A reference to the media content, such as a URL or file path."
+      }
+    },
+    "required": ["media_type"],
+    "additionalProperties": false
+  }
+}
+```
+
+#### Example:
+
+```json
+[
+  {
+    "media_type": "AUDIO",
+    "title": "Sample Audio",
+    "text": null,
+    "media_reference": "http://example.com/audio.mp3"
+  },
+  {
+    "media_type": "IMAGE",
+    "title": null,
+    "text": "An example image",
+    "media_reference": "http://example.com/image.jpg"
+  },
+  {
+    "media_type": "VIDEO",
+    "title": "Sample Video",
+    "text": null,
+    "media_reference": "http://example.com/video.mp4"
+  },
+  {
+    "media_type": "TEXT",
+    "title": "Sample Text",
+    "text": "This is a sample text.",
+    "media_reference": null
+  }
+]
+```
+
+
 ### Future Work
 
 - Add support for different media formats (currently only images)

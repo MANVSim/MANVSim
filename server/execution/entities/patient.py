@@ -10,6 +10,7 @@ from vars import ACQUIRE_TIMEOUT
 
 
 class Patient:
+
     class Classification(Enum):
         """
         Classifies the severity of injuries and need for a treatment according

@@ -12,6 +12,7 @@ from execution.entities.role import Role
 from execution.entities.scenario import Scenario
 from execution.entities.stategraphs.activity_diagram import ActivityDiagram
 from execution.entities.stategraphs.patientstate import PatientState
+from media.media_data import MediaData
 from vars import INCLUDE_TIMELIMIT, PATIENT_TIMELIMIT
 
 
@@ -20,30 +21,52 @@ from vars import INCLUDE_TIMELIMIT, PATIENT_TIMELIMIT
 def create_test_execution(pending: bool = True):
     # Resources
     res_1 = Resource(id=1, name="EKG", quantity=1,
-                     picture_ref="media/static/tasche_ekg.jpg",
+                     media_references=[
+                         MediaData(media_type=MediaData.Type.IMAGE,
+                                   media_reference="media/static/no_image.png")],
                      consumable=False)
     res_2 = Resource(id=2, name="Infusion", quantity=3,
-                     picture_ref="media/static/no_image.png")
+                     media_references=[
+                         MediaData(media_type=MediaData.Type.IMAGE,
+                                   media_reference="media/static/no_image.png")])
     res_3 = Resource(id=3, name="Trage", quantity=4,
-                     picture_ref="media/static/no_image.png", consumable=False)
+                     media_references=[
+                         MediaData(media_type=MediaData.Type.IMAGE,
+                                   media_reference="media/static/no_image.png")],
+                     consumable=False)
     res_4 = Resource(id=4, name="Blümchenpflaster", quantity=10000,
-                     picture_ref="media/static/no_image.png")
+                     media_references=[
+                         MediaData(media_type=MediaData.Type.IMAGE,
+                                   media_reference="media/static/no_image.png")])
     res_5 = Resource(id=5, name="Beatmungsgerät", quantity=1,
-                     picture_ref="media/static/no_image.png", consumable=False)
+                     media_references=[
+                         MediaData(media_type=MediaData.Type.IMAGE,
+                                   media_reference="media/static/no_image.png")],
+                     consumable=False)
 
     # Locations
     loc_2 = Location(id=2, name="Roter Rucksack",
-                     picture_ref="media/static/rucksack_rot.jpg",
+                     media_references=[
+                         MediaData(media_type=MediaData.Type.IMAGE,
+                                   media_reference="media/static/rucksack_rot.jpg")],
                      resources=[res_2, res_4])
     loc_3 = Location(id=3, name="Blauer Rucksack",
-                     picture_ref="media/static/rucksack_blau.jpg",
+                     media_references=[
+                         MediaData(media_type=MediaData.Type.IMAGE,
+                                   media_reference="media/static/rucksack_blau.jpg")],
                      resources=[res_5])
     loc_4 = Location(id=4, name="EKG",
-                     picture_ref="media/static/tasche_ekg.jpg",
+                     media_references=[
+                         MediaData(media_type=MediaData.Type.IMAGE,
+                                   media_reference="media/static/tasche_ekg.jpg")],
                      resources=[res_1])
     loc_5 = Location(id=5, name="Holstein Stadion",
-                     picture_ref="media/static/no_image.png")
-    loc_1 = Location(id=1, name="RTW", picture_ref="media/static/rtw_sh.png",
+                     media_references=[
+                         MediaData(media_type=MediaData.Type.IMAGE,
+                                   media_reference="media/static/no_image.png")])
+    loc_1 = Location(id=1, name="RTW", media_references=[
+        MediaData(media_type=MediaData.Type.IMAGE,
+                  media_reference="media/static/rtw_sh.png")],
                      resources=[res_3], sub_locations={loc_2, loc_3, loc_4})
 
     # Roles
@@ -72,25 +95,36 @@ def create_test_execution(pending: bool = True):
 
     # Actions
     action_1 = Action(id=1, name="EKG schreiben",
-                      picture_ref="media/static/no_image.png",
+                      media_references=[
+                          MediaData(media_type=MediaData.Type.IMAGE,
+                                    media_reference="media/static/no_image.png")],
                       duration_sec=2,
                       results=["EKG", "12-Kanal-EKG"], resources_needed=["EKG"],
                       required_power=200)
     action_2 = Action(id=2, name="Pflaster kleben",
-                      picture_ref="media/static/no_image.png", duration_sec=10,
+                      media_references=[
+                          MediaData(media_type=MediaData.Type.IMAGE,
+                                    media_reference="media/static/no_image.png")],
+                      duration_sec=10,
                       results=[],
                       resources_needed=["Blümchenpflaster"], required_power=400)
     action_3 = Action(id=3, name="Beatmen",
-                      picture_ref="media/static/no_image.png",
+                      media_references=[
+                          MediaData(media_type=MediaData.Type.IMAGE,
+                                    media_reference="media/static/no_image.png")],
                       duration_sec=300, results=[],
                       resources_needed=["Beatmungsgerät"], required_power=300)
     action_4 = Action(id=4, name="Betrachten",
-                      picture_ref="media/static/no_image.png",
+                      media_references=[
+                          MediaData(media_type=MediaData.Type.IMAGE,
+                                    media_reference="media/static/no_image.png")],
                       duration_sec=5,
                       results=["Verletzung", "Haut", "Bewusstsein"],
                       resources_needed=[], required_power=200)
     action_5 = Action(id=5, name="Wunderheilung",
-                      picture_ref="media/static/no_image.png",
+                      media_references=[
+                          MediaData(media_type=MediaData.Type.IMAGE,
+                                    media_reference="media/static/no_image.png")],
                       duration_sec=5, results=[],
                       resources_needed=[], required_power=400)
 

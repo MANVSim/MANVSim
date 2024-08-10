@@ -1,6 +1,7 @@
 import json
 
 from execution.utils.timeoutlock import TimeoutLock
+from media.media_data import MediaData
 from utils import time
 from vars import ACQUIRE_TIMEOUT
 
@@ -8,11 +9,11 @@ from vars import ACQUIRE_TIMEOUT
 class Resource:
 
     def __init__(self, id: int, name: str, quantity: int,
-                 picture_ref: str | None, consumable: bool = True):
+                 media_references: list[MediaData], consumable: bool = True):
         self.id = id
         self.name = name
         self.quantity = quantity  # quantity >= 10000 indicates infinite resource
-        self.picture_ref = picture_ref
+        self.media_references = media_references
 
         self.consumable = consumable
         self.lock = TimeoutLock()
@@ -23,7 +24,7 @@ class Resource:
             f"Resource(id={self.id!r}, \
             name={self.name!r}, \
             quantity={self.quantity!r}, \
-            picture_ref={self.picture_ref!r}, \
+            media_references={self.media_references!r}, \
             consumable={self.consumable!r}, \
             locked_until={self.locked_until!r})"
         )
@@ -90,7 +91,8 @@ class Resource:
             'id': self.id,
             'name': self.name,
             'quantity': self.quantity,
-            'picture_ref': self.picture_ref
+            'media_references': [media_ref.to_dict() for media_ref in
+                                 self.media_references],
         }
 
         if include:

@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: c61745be7662
+Revision ID: e25eeba89926
 Revises: 
-Create Date: 2024-07-04 16:19:24.292563
+Create Date: 2024-08-05 13:49:36.394603
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c61745be7662'
+revision = 'e25eeba89926'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,7 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('required_power', sa.Integer(), nullable=False),
-    sa.Column('picture_ref', sa.String(), nullable=False),
+    sa.Column('media_refs', sa.JSON(), nullable=True),
     sa.Column('duration_secs', sa.Integer(), nullable=False),
     sa.Column('results', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_action'))
@@ -30,7 +30,7 @@ def upgrade():
     op.create_table('location',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('picture_ref', sa.String(), nullable=False),
+    sa.Column('media_refs', sa.JSON(), nullable=True),
     sa.Column('location_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['location_id'], ['location.id'], name=op.f('fk_location_location_id_location')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_location'))
@@ -78,7 +78,7 @@ def upgrade():
     op.create_table('resource',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('picture_ref', sa.String(), nullable=False),
+    sa.Column('media_refs', sa.JSON(), nullable=True),
     sa.Column('quantity', sa.Integer(), nullable=False),
     sa.Column('location_id', sa.Integer(), nullable=False),
     sa.Column('consumable', sa.Boolean(), nullable=False),
