@@ -386,6 +386,8 @@ paths:
           description: Resource not found. Update your current location-access.
         '409':
           description: Unable to access runtime object. A timeout-error occurred.
+        '418':
+          description: Invalid request. Patient has been moved.
       security:
         - bearerAuth: [ ]
 

@@ -60,6 +60,10 @@ def perform_action():
         if not player.role or player.role.power < action.required_power:
             return "Missing right detected. You need a higher role to perform that action", 403
 
+        if (player.location and patient.location
+                and player.location.id != patient.location.id):
+            return "Invalid request. Patient has been moved.", 418
+
         if len(resource_ids_used) < len(action.resources_needed):
             return "Missmatch detected. Less resources used than required", 418
 
@@ -170,8 +174,8 @@ def move_patient(patient_id: int, new_location_id: int):
         new_location = execution.scenario.locations[new_location_id]
 
         if (player.location and patient.location
-            and player.location.id != patient.location.id):
-            return "Invalid request. Players is not allowed to move patient.", 418
+                and player.location.id != patient.location.id):
+            return "Invalid request. Player is not allowed to move patient.", 418
         # Update player location
         r_value = leave_location()
         if not isinstance(r_value, dict):
