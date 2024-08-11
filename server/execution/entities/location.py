@@ -41,8 +41,9 @@ class Location:
 
     def get_location_by_id(self, location_id: int):
         """
-        Retrieves a location of the stored locations. If the list is blocked
-        more than 3 seconds the methods raises a TimeoutError.
+        Retrieves a location of the stored toplevel sub-locations.
+        If the list is blocked more than 3 seconds the methods raises a
+        TimeoutError.
         """
         with self.loc_lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT) as acquired:
             if acquired:

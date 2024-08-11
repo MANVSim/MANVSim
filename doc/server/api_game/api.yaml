@@ -235,21 +235,28 @@ paths:
       security:
         - bearerAuth: [ ]
 
-  /run/location/take-from:
+  /run/location/take-to:
     post:
-      summary: A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+      summary: A player takes any location which is not a registered top-level location and places another selected location. 
+               It is designed to create a valuable state among all locations and player inventories. However an invalid use may 
+               create an invalid game state. 
+               Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). 
+               The 'take_location_ids' list starts with the players current location. 
+               The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [ take_location_id, from_location_id ]
+              required: [ take_location_ids, to_location_ids ]
               properties:
-                take_location_id:
-                  type: integer
-                from_location_id:
-                  type: integer
+                take_location_ids:
+                  type: string
+                  example: "[1,2,3]"
+                to_location_ids:
+                  type: string
+                  example: "[1,2,3]"
       responses:
         '200':
           description: accessible locations (the inventory) are updated.
@@ -267,7 +274,52 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
-          description: (Take-/From-) Location not found. Update your current location-access.
+          description: (Take-/to-) Location not found. Update your current location-access.
+        '409':
+          description: Unable to access runtime object. A timeout-error occurred.
+      security:
+        - bearerAuth: [ ]
+
+  /run/location/put-to:
+    post:
+      summary: A player puts any location which is not a registered top-level location and places it into another selected location. 
+               It is designed to create a valuable state among all locations and player inventories. However an invalid use may 
+               create an invalid game state. 
+               Remember -
+               The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory.
+               The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ put_location_ids, to_location_ids ]
+              properties:
+                put_location_ids:
+                  type: string
+                  example: "[1,2,3]"
+                to_location_ids:
+                  type: string
+                  example: "[1,2,3]"
+      responses:
+        '200':
+          description: accessible locations (the inventory) are updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  player_location:
+                    $ref: '#/components/schemas/LocationDTO'
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: (Put-/to-) Location not found. Update your current location-access.
         '409':
           description: Unable to access runtime object. A timeout-error occurred.
       security:
