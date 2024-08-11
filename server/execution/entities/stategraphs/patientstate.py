@@ -47,7 +47,7 @@ class PatientState:
                             "the id if necessary.")
             return False
 
-    def add_condition(self, key: str, value: [MediaData],
+    def add_condition(self, key: str, value: list[MediaData],
                       force_update: bool = False):
         """
         Inserts an additional condition. If the condition is already
@@ -127,13 +127,14 @@ class PatientState:
 
     @classmethod
     def from_dict(cls, data: dict) -> 'PatientState':
-        state_uuid = data.get("uuid")
-        start_time = data.get("start_time")
-        timelimit = data.get("timelimit")
-        after_time_state_uuid = data.get("after_time_state_uuid")
-        treatments = data.get("treatments")
-        conditions = cls.__conditions_from_dict(data.get("conditions"))
-        pause_time = data.get("pause_time")
+        state_uuid: str = data.get("uuid", "")
+        start_time: int = data.get("start_time", -1)
+        timelimit: int = data.get("timelimit", -1)
+        after_time_state_uuid: str = data.get("after_time_state_uuid", "")
+        treatments: dict = data.get("treatments", {})
+        conditions: dict = cls.__conditions_from_dict(
+            data.get("conditions", {}))
+        pause_time: int = data.get("pause_time", -1)
         return cls(state_uuid, treatments, start_time, timelimit,
                    after_time_state_uuid, conditions, pause_time)
 

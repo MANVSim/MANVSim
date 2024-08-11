@@ -21,52 +21,42 @@ from vars import INCLUDE_TIMELIMIT, PATIENT_TIMELIMIT
 def create_test_execution(pending: bool = True):
     # Resources
     res_1 = Resource(id=1, name="EKG", quantity=1,
-                     media_references=[
-                         MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/image/no_image.png")],
+                     media_references=[MediaData.new_image(
+                         "media/static/image/no_image.png")],
                      consumable=False)
     res_2 = Resource(id=2, name="Infusion", quantity=3,
-                     media_references=[
-                         MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/image/no_image.png")])
+                     media_references=[MediaData.new_image(
+                         "media/static/image/no_image.png")])
     res_3 = Resource(id=3, name="Trage", quantity=4,
-                     media_references=[
-                         MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/image/no_image.png")],
+                     media_references=[MediaData.new_image(
+                         "media/static/image/no_image.png")],
                      consumable=False)
     res_4 = Resource(id=4, name="Blümchenpflaster", quantity=10000,
-                     media_references=[
-                         MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/image/no_image.png")])
+                     media_references=[MediaData.new_image(
+                         "media/static/image/no_image.png")])
     res_5 = Resource(id=5, name="Beatmungsgerät", quantity=1,
-                     media_references=[
-                         MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/image/no_image.png")],
+                     media_references=[MediaData.new_image(
+                         "media/static/image/no_image.png")],
                      consumable=False)
 
     # Locations
     loc_2 = Location(id=2, name="Roter Rucksack",
                      media_references=[
-                         MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/image/rucksack_rot.jpg")],
+                         MediaData.new_image("media/static/image/rucksack_rot.jpg")],
                      resources=[res_2, res_4])
     loc_3 = Location(id=3, name="Blauer Rucksack",
                      media_references=[
-                         MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/image/rucksack_blau.jpg")],
+                         MediaData.new_image("media/static/image/rucksack_blau.jpg")],
                      resources=[res_5])
     loc_4 = Location(id=4, name="EKG",
                      media_references=[
-                         MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/image/tasche_ekg.jpg")],
+                         MediaData.new_image("media/static/image/tasche_ekg.jpg")],
                      resources=[res_1])
     loc_5 = Location(id=5, name="Holstein Stadion",
-                     media_references=[
-                         MediaData(media_type=MediaData.Type.IMAGE,
-                                   media_reference="media/static/image/no_image.png")])
+                     media_references=[MediaData.new_image(
+                         "media/static/image/no_image.png")])
     loc_1 = Location(id=1, name="RTW", media_references=[
-        MediaData(media_type=MediaData.Type.IMAGE,
-                  media_reference="media/static/image/rtw_sh.png")],
+        MediaData.new_image("media/static/image/rtw_sh.png")],
                      resources=[res_3], sub_locations={loc_2, loc_3, loc_4})
 
     # Roles
@@ -95,36 +85,31 @@ def create_test_execution(pending: bool = True):
 
     # Actions
     action_1 = Action(id=1, name="EKG schreiben",
-                      media_references=[
-                          MediaData(media_type=MediaData.Type.IMAGE,
-                                    media_reference="media/static/image/no_image.png")],
+                      media_references=[MediaData.new_image(
+                          "media/static/image/no_image.png")],
                       duration_sec=2,
                       results=["EKG", "12-Kanal-EKG"], resources_needed=["EKG"],
                       required_power=200)
     action_2 = Action(id=2, name="Pflaster kleben",
-                      media_references=[
-                          MediaData(media_type=MediaData.Type.IMAGE,
-                                    media_reference="media/static/image/no_image.png")],
+                      media_references=[MediaData.new_image(
+                          "media/static/image/no_image.png")],
                       duration_sec=10,
                       results=[],
                       resources_needed=["Blümchenpflaster"], required_power=400)
     action_3 = Action(id=3, name="Beatmen",
-                      media_references=[
-                          MediaData(media_type=MediaData.Type.IMAGE,
-                                    media_reference="media/static/image/no_image.png")],
+                      media_references=[MediaData.new_image(
+                          "media/static/image/no_image.png")],
                       duration_sec=300, results=[],
                       resources_needed=["Beatmungsgerät"], required_power=300)
     action_4 = Action(id=4, name="Betrachten",
-                      media_references=[
-                          MediaData(media_type=MediaData.Type.IMAGE,
-                                    media_reference="media/static/image/no_image.png")],
+                      media_references=[MediaData.new_image(
+                          "media/static/image/no_image.png")],
                       duration_sec=5,
                       results=["Verletzung", "Haut", "Bewusstsein"],
                       resources_needed=[], required_power=200)
     action_5 = Action(id=5, name="Wunderheilung",
-                      media_references=[
-                          MediaData(media_type=MediaData.Type.IMAGE,
-                                    media_reference="media/static/image/no_image.png")],
+                      media_references=[MediaData.new_image(
+                          "media/static/image/no_image.png")],
                       duration_sec=5, results=[],
                       resources_needed=[], required_power=400)
 
@@ -193,107 +178,136 @@ def create_test_execution(pending: bool = True):
 
 def get_activity_diagrams():
     conditions_s1 = {
-        "RR": "120/80mmHg",
-        "HF": "80/min",
-        "AF": "20/min",
-        "SpO2": "95%",
-        "Radialispuls": "tastbar, kräftig",
-        "Rekapzeit": "1.5s",
-        "EKG": "Sinusrhythmus ST-Hebung in II;(Bild)",
-        "12-Kanal-EKG": "STEMI;(12-Kanal-Bild)",
-        "Haut": "blass, kalt schweißig",
-        "Schmerz": "7(NAS) in der Brust, ausstrahlend in linken Arm",
-        "Bewusstsein": "wach, orientiert",
-        "Psychischer Zustand": "aengstlich",
-        "Verletzungen": "keine",
-        "Temperatur": "36,7°C",
-        "BZ": "80 mg / dl",
-        "Auskultation": "vesikuläre Atemgeräusche beidseitig",
-        "Abdomen": "weich",
+        "RR": [MediaData.new_text("120/80mmHg")],
+        "HF": [MediaData.new_text("80/min")],
+        "AF": [MediaData.new_text("20/min")],
+        "SpO2": [MediaData.new_text("95%")],
+        "Radialispuls": [MediaData.new_text("tastbar, kräftig")],
+        "Rekapzeit": [MediaData.new_text("1.5s")],
+        "EKG": [MediaData.new_text("Sinusrhythmus ST-Hebung in II"),
+                MediaData.new_image("media/static/image/no_image.png")],
+        "12-Kanal-EKG": [MediaData.new_text("STEMI"),
+                         MediaData.new_video("media/static/video/test.mp4",
+                                             "12-Kanal-Bild")],
+        "Haut": [MediaData.new_text("blass, kalt schweißig")],
+        "Schmerz": [
+            MediaData.new_text(
+                "7(NAS) in der Brust, ausstrahlend in linken Arm")],
+        "Bewusstsein": [MediaData.new_text("wach, orientiert")],
+        "Psychischer Zustand": [MediaData.new_text("aengstlich")],
+        "Verletzungen": [MediaData.new_text("keine")],
+        "Temperatur": [MediaData.new_text("36,7°C")],
+        "BZ": [MediaData.new_text("80 mg / dl")],
+        "Auskultation": [
+            MediaData.new_text("vesikuläre Atemgeräusche beidseitig")],
+        "Abdomen": [MediaData.new_text("weich")],
     }
 
     conditions_s2 = {
-        "RR": "70/50mmHg",
-        "HF": "150/min",
-        "AF": "20/min",
-        "SpO2": "84%",
-        "Radialispuls": "tastbar, schwach",
-        "Rekapzeit": "2.5s",
-        "EKG": "Sinusrhythmus tachykarder Sinusrhythmus;(Bild)",
-        "12-Kanal-EKG": "tachykarder Sinusrhythmus;(12-Kanal-Bild)",
-        "Haut": "blass, kalt schweißig, Lippenzyanose",
-        "Schmerz": "vorhanden, aber nicht quantitativ beurteilbar",
-        "Bewusstsein": "reagiert auf Ansprache",
-        "Psychischer Zustand": "nicht beurteilbar",
-        "Verletzungen": "klaffende Kopfplatzwunde, Knochenfragmente sichtbar "
-                        "(zusätzlich Bild)",
-        "Temperatur": "35,3°C",
-        "BZ": "80 mg / dl",
-        "Auskultation": "vesikuläre Atemgeräusche beidseitig",
-        "Abdomen": "weich",
+        "RR": [MediaData.new_text("70/50mmHg")],
+        "HF": [MediaData.new_text("150/min")],
+        "AF": [MediaData.new_text("20/min")],
+        "SpO2": [MediaData.new_text("84%")],
+        "Radialispuls": [MediaData.new_text("tastbar, schwach")],
+        "Rekapzeit": [MediaData.new_text("2.5s")],
+        "EKG": [MediaData.new_text("Sinusrhythmus tachykarder Sinusrhythmus"),
+                MediaData.new_image("media/static/image/no_image.png")],
+        "12-Kanal-EKG": [MediaData.new_text("tachykarder Sinusrhythmus"),
+                         MediaData.new_image("media/static/image/no_image.png",
+                                             "12-Kanal-Bild")],
+        "Haut": [MediaData.new_text("blass, kalt schweißig, Lippenzyanose")],
+        "Schmerz": [
+            MediaData.new_text(
+                "vorhanden, aber nicht quantitativ beurteilbar")],
+        "Bewusstsein": [MediaData.new_text("reagiert auf Ansprache")],
+        "Psychischer Zustand": [MediaData.new_text("nicht beurteilbar")],
+        "Verletzungen": [MediaData.new_text(
+            "klaffende Kopfplatzwunde, Knochenfragmente sichtbar"),
+            MediaData.new_image("media/static/image/no_image.png")],
+        "Temperatur": [MediaData.new_text("35,3°C")],
+        "BZ": [MediaData.new_text("80 mg / dl")],
+        "Auskultation": [
+            MediaData.new_text("vesikuläre Atemgeräusche beidseitig")],
+        "Abdomen": [MediaData.new_text("weich")],
     }
 
     conditions_s3 = {
-        "RR": "60/40mmHg",
-        "HF": "140/min",
-        "AF": "30/min",
-        "SpO2": "82%",
-        "Radialispuls": "nicht tastbar",
-        "Rekapzeit": "5s",
-        "EKG": "Sinusrhythmus tachykarder Sinusrhythmus;(Bild)",
-        "12-Kanal-EKG": "tachykarder Sinusrhythmus;(12-Kanal-Bild)",
-        "Haut": "blass, kalt schweißig, Lippenzyanose",
-        "Schmerz": "vorhanden, aber nicht quantitativ beurteilbar",
-        "Bewusstsein": "reagiert auf Schmerzreiz",
-        "Psychischer Zustand": "nicht beurteilbar",
-        "Verletzungen": "amputierter linker Unterschenkel, Prellmarken an Bauch"
-                        "und Brust, linker Oberarm gebrochen, "
-                        "Knochensplitter steht vor",
-        "Temperatur": "35,3°C",
-        "DMS": "keine Gefühl in linker Hand",
-        "BZ": "80 mg/dl",
-        "Auskultation": "vesikuläre Atemgeräusche beidseitig",
-        "Abdomen": "weich",
+        "RR": [MediaData.new_text("60/40mmHg")],
+        "HF": [MediaData.new_text("140/min")],
+        "AF": [MediaData.new_text("30/min")],
+        "SpO2": [MediaData.new_text("82%")],
+        "Radialispuls": [MediaData.new_text("nicht tastbar")],
+        "Rekapzeit": [MediaData.new_text("5s")],
+        "EKG": [MediaData.new_text("Sinusrhythmus tachykarder Sinusrhythmus"),
+                MediaData.new_image("media/static/image/no_image.png")],
+        "12-Kanal-EKG": [MediaData.new_text("tachykarder Sinusrhythmus"),
+                         MediaData.new_image("media/static/image/no_image.png",
+                                             "12-Kanal-Bild")],
+        "Haut": [MediaData.new_text("blass, kalt schweißig, Lippenzyanose")],
+        "Schmerz": [
+            MediaData.new_text(
+                "vorhanden, aber nicht quantitativ beurteilbar")],
+        "Bewusstsein": [MediaData.new_text("reagiert auf Schmerzreiz")],
+        "Psychischer Zustand": [MediaData.new_text("nicht beurteilbar")],
+        "Verletzungen": [MediaData.new_text("amputierter linker Unterschenkel, "
+                                            "Prellmarken an Bauch und Brust, linker"
+                                            " Oberarm gebrochen, Knochensplitter "
+                                            "steht vor")],
+        "Temperatur": [MediaData.new_text("35,3°C")],
+        "DMS": [MediaData.new_text("keine Gefühl in linker Hand")],
+        "BZ": [MediaData.new_text("80 mg/dl")],
+        "Auskultation": [
+            MediaData.new_text("vesikuläre Atemgeräusche beidseitig")],
+        "Abdomen": [MediaData.new_text("weich")],
     }
 
     healthy_conditions = {
-        "RR": "120/80mmHg",
-        "HF": "80/min",
-        "AF": "12/min",
-        "SpO2": "98%",
-        "Radialispuls": "tastbar, kräftig",
-        "Rekapzeit": "1.5s",
-        "EKG": "Sinusrhythmus;(Bild)",
-        "12-Kanal-EKG": "STEMI;(12-Kanal-Bild)",
-        "Haut": "blass, kalt schweißig",
-        "Schmerz": "7(NAS) in der Brust, ausstrahlend in linken Arm",
-        "Bewusstsein": "wach, orientiert",
-        "Psychischer Zustand": "aengstlich",
-        "Verletzungen": "keine",
-        "Temperatur": "36,7°C",
-        "BZ": "80 mg / dl",
-        "Auskultation": "vesikuläre Atemgeräusche beidseitig",
-        "Abdomen": "weich",
+        "RR": [MediaData.new_text("120/80mmHg")],
+        "HF": [MediaData.new_text("80/min")],
+        "AF": [MediaData.new_text("12/min")],
+        "SpO2": [MediaData.new_text("98%")],
+        "Radialispuls": [MediaData.new_text("tastbar, kräftig")],
+        "Rekapzeit": [MediaData.new_text("1.5s")],
+        "EKG": [MediaData.new_text("Sinusrhythmus"),
+                MediaData.new_image("media/static/image/no_image.png")],
+        "12-Kanal-EKG": [MediaData.new_text("STEMI"),
+                         MediaData.new_image("media/static/image/no_image.png",
+                                             "12-Kanal-Bild")],
+        "Haut": [MediaData.new_text("blass, kalt schweißig")],
+        "Schmerz": [
+            MediaData.new_text(
+                "7(NAS) in der Brust, ausstrahlend in linken Arm")],
+        "Bewusstsein": [MediaData.new_text("wach, orientiert")],
+        "Psychischer Zustand": [MediaData.new_text("aengstlich")],
+        "Verletzungen": [MediaData.new_text("keine")],
+        "Temperatur": [MediaData.new_text("36,7°C")],
+        "BZ": [MediaData.new_text("80 mg / dl")],
+        "Auskultation": [
+            MediaData.new_text("vesikuläre Atemgeräusche beidseitig")],
+        "Abdomen": [MediaData.new_text("weich")],
     }
 
     dead = {
-        "RR": "0mmHg",
-        "HF": "0/min",
-        "AF": "0/min",
-        "SpO2": "0%",
-        "Radialispuls": "nicht tastbar",
-        "Rekapzeit": "1.5s",
-        "EKG": "linie;(Bild)",
-        "12-Kanal-EKG": "linie;(12-Kanal-Bild)",
-        "Haut": "kalt schweißig",
-        "Schmerz": "keine",
-        "Bewusstsein": "bewusstlos",
-        "Psychischer Zustand": "n.a.",
-        "Verletzungen": "x",
-        "Temperatur": "32°C",
-        "BZ": "0 mg / dl",
-        "Auskultation": "x",
-        "Abdomen": "weich",
+        "RR": [MediaData.new_text("0mmHg")],
+        "HF": [MediaData.new_text("0/min")],
+        "AF": [MediaData.new_text("0/min")],
+        "SpO2": [MediaData.new_text("0%")],
+        "Radialispuls": [MediaData.new_text("nicht tastbar")],
+        "Rekapzeit": [MediaData.new_text("1.5s")],
+        "EKG": [MediaData.new_text("Linie"),
+                MediaData.new_image("media/static/image/no_image.png")],
+        "12-Kanal-EKG": [MediaData.new_text("Linie"),
+                         MediaData.new_image("media/static/image/no_image.png",
+                                             "12-Kanal-Bild")],
+        "Haut": [MediaData.new_text("kalt schweißig")],
+        "Schmerz": [MediaData.new_text("keine")],
+        "Bewusstsein": [MediaData.new_text("bewusstlos")],
+        "Psychischer Zustand": [MediaData.new_text("n.a.")],
+        "Verletzungen": [],
+        "Temperatur": [MediaData.new_text("32°C")],
+        "BZ": [MediaData.new_text("0 mg / dl")],
+        "Auskultation": [],
+        "Abdomen": [MediaData.new_text("weich")],
     }
 
     uuid_s1 = str(uuid.uuid4())
