@@ -5,13 +5,19 @@ from werkzeug.utils import secure_filename
 
 from media.media_data import MediaData
 
-
 api = Blueprint("api-media", __name__)
 
 
 def setup(app: Flask):
     """ Execute this before using the API to ensure full functionality. """
-    os.makedirs(os.path.join(app.root_path, "media/instance"), exist_ok=True)
+    os.makedirs(os.path.join(app.root_path, "media/instance/image"),
+                exist_ok=True)
+    os.makedirs(os.path.join(app.root_path, "media/instance/video"),
+                exist_ok=True)
+    os.makedirs(os.path.join(app.root_path, "media/instance/audio"),
+                exist_ok=True)
+    os.makedirs(os.path.join(app.root_path, "media/instance/text"),
+                exist_ok=True)
     app.register_blueprint(api, url_prefix="/media")
 
 
@@ -33,7 +39,7 @@ def get_instance_media(filename):
 
 
 # TODO: Restrict to logged-in scenario creators
-@api.post("/instance/<path:filename>")
+@api.post("/<path:filename>")
 def post_instance_media(filename):
     """ Allows users to upload media files to the server. """
     if "file" not in request.files:
@@ -63,4 +69,3 @@ def post_instance_media(filename):
     # TODO: Maybe also check if extension matches contents of file
     file.save(save_path)
     return "File uploaded successfully", 201
-
