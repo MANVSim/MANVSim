@@ -3,25 +3,21 @@
 
 ### Access Media Files
 
-Retrieving a media file, given as `picture_ref` attribute of an entity, can be achieved by requesting `GET` on `http://[server.url]/[picture_ref]`. The picture reference already includes the information which of the two API endpoints should be addressed, so no explicit calling of the API is required.
+Retrieving a media file, given as part of the `media_reference` attribute of an entity, can be achieved by requesting `GET` on `http://[server.url]/[media_reference]`. The picture reference already includes the information which of the two API endpoints should be addressed, so no explicit calling of the API is required.
 
 For possible responses and media types see [MANVSim Media API](media_api.yml).
 
 
 ### Upload Media Files
 
-The administrators of scenarios are able upload additional media files that can be referenced in entities. Therefore, a `POST` containing the file as binary can be send to `http://[server.url]/media/instance/[filename]`. Only authenticated users can access this endpoint. A CSRF-Token may be required.
+The administrators of scenarios are able upload additional media files that can be referenced in entities. Therefore, a `POST` containing the file as binary can be send to `http://[server.url]/media/[filename]`. Only authenticated users can access this endpoint. A CSRF-Token may be required.
 
 For additional information on possible responses and allowed file formats see [MANVSim Media API](media_api.yml).
 
 
 ### Setting Media References
 
-Media references (for now the `picture_ref` attribute) for entities should have the following format:
-
-- `"media/static/{filename}"` for predefined media files
-- `"media/instance/{filename}"` for user-uploaded instance-specific media files 
-
+Media references for entities are lists of the `MediaData` datatype, which includes attributes such as type of the reference (image, video, audio, text) or a reference path to a media file `media_reference` (formerly known as `picture_ref`).
 
 ### Directory Structure
 
