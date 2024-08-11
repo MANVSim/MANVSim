@@ -1,6 +1,6 @@
 from execution import run
 from execution.entities.execution import Execution
-from execution.tests.conftest import generate_webtoken
+from conftest import generate_webtoken
 
 
 def test_execution_state_change(client):

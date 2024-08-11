@@ -2,7 +2,7 @@ import json
 
 from execution import run
 from execution.entities.execution import Execution
-from execution.tests.conftest import generate_token
+from conftest import generate_token
 
 execution_ids = run.active_executions.keys()
 player_ids = run.registered_players.keys()

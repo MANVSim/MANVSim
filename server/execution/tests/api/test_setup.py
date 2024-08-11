@@ -1,4 +1,4 @@
-from execution.tests.conftest import generate_token
+from conftest import generate_token
 
 
 def test_request_on_pending_execution(client):
