@@ -11,6 +11,11 @@ class MediaData:
         VIDEO = "VIDEO"
         TEXT = "TEXT"
 
+    ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+    ALLOWED_VIDEO_EXTENSIONS = {".mp4", ".mov", ".mkv"}
+    ALLOWED_TEXT_EXTENSIONS = {".txt"}
+    ALLOWED_AUDIO_EXTENSIONS = {".mp3", ".wav", ".ogg", ".flac"}
+
     def __init__(self, media_type: 'MediaData.Type',
                  title: Optional[str] = None,
                  text: Optional[str] = None,
@@ -53,3 +58,10 @@ class MediaData:
     def list_from_json(json_str: str) -> list['MediaData']:
         data_list = json.loads(json_str)
         return [MediaData.from_dict(data) for data in data_list]
+
+    @staticmethod
+    def is_allowed_extension(extension: str) -> bool:
+        return (extension in MediaData.ALLOWED_IMAGE_EXTENSIONS |
+                MediaData.ALLOWED_VIDEO_EXTENSIONS |
+                MediaData.ALLOWED_TEXT_EXTENSIONS |
+                MediaData.ALLOWED_AUDIO_EXTENSIONS)
