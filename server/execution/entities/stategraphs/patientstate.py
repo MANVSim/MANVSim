@@ -62,7 +62,7 @@ class PatientState:
                             "the id if necessary.")
             return False
 
-    def get_conditions(self, keys: list[str]):
+    def get_conditions(self, keys: list[str]) -> dict:
         """
         Retrieves a dictionary of conditions, selected by the required keys,
         provided in the method parameter.
@@ -70,9 +70,9 @@ class PatientState:
         conditions = {}
         for key in keys:
             if key in self.conditions.keys():
-                conditions[key] = self.conditions[key]
+                conditions[key] = [val.to_dict() for val in self.conditions[key]]
             else:
-                conditions[key] = "Missing Value"
+                conditions[key] = []
         return conditions
 
     def start_timer(self):

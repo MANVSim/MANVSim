@@ -5,14 +5,15 @@ from flask_jwt_extended import jwt_required
 from werkzeug.exceptions import InternalServerError
 
 from app_config import csrf
+from event_logging.event import Event
 from execution.api.location import leave_location
 from execution.api.patient import get_patient
-from execution.entities.performed_action import PerformedAction
-from execution.entities.resource import Resource, try_lock_all, release_all_resources
-from execution.utils import util
 from execution.entities.action import Action
+from execution.entities.performed_action import PerformedAction
+from execution.entities.resource import Resource, try_lock_all, \
+    release_all_resources
+from execution.utils import util
 from utils import time
-from event_logging.event import Event
 from utils.decorator import required, RequiredValueSource
 
 api = Blueprint("api-action", __name__)
@@ -61,7 +62,7 @@ def perform_action():
             return "Missing right detected. You need a higher role to perform that action", 403
 
         if (player.location and patient.location
-                and player.location.id != patient.location.id):
+            and player.location.id != patient.location.id):
             return "Invalid request. Patient has been moved.", 418
 
         if len(resource_ids_used) < len(action.resources_needed):
@@ -70,7 +71,8 @@ def perform_action():
         # get objects from ids
         resources_used = {}
         for res_id in resource_ids_used:
-            loc, res = player.location.get_resource_by_id(res_id) if player.location else (None, None)
+            loc, res = player.location.get_resource_by_id(
+                res_id) if player.location else (None, None)
             if res is None:
                 return "Unable to identify resource. Please update your location-access.", 404
             if loc not in resources_used.keys():
@@ -107,7 +109,8 @@ def perform_action():
 
             if not res.decrease(duration=action.duration_sec):
                 rollback_quantity(backup)
-                release_all_resources(resources_locked)  # release all locks after edit
+                release_all_resources(
+                    resources_locked)  # release all locks after edit
                 return "Resource is not available", 409
 
             backup.append(res)
@@ -123,10 +126,14 @@ def perform_action():
         start_time = time.current_time_s()
 
         Event.action_performed(execution_id=execution.id, time=start_time,
-            player=player.tan, action=action.id, patient=patient_id, duration_s=action.duration_sec).log()
+                               player=player.tan, action=action.id,
+                               patient=patient_id,
+                               duration_s=action.duration_sec).log()
 
-        performed_action = PerformedAction(str(uuid.uuid4()), start_time + action.duration_sec,
-                                           execution.id, action, resources_locked, player.tan)
+        performed_action = PerformedAction(str(uuid.uuid4()),
+                                           start_time + action.duration_sec,
+                                           execution.id, action,
+                                           resources_locked, player.tan)
         patient.action_queue[performed_action.id] = performed_action
         return {"performed_action_id": performed_action.id}
 
@@ -174,7 +181,7 @@ def move_patient(patient_id: int, new_location_id: int):
         new_location = execution.scenario.locations[new_location_id]
 
         if (player.location and patient.location
-                and player.location.id != patient.location.id):
+            and player.location.id != patient.location.id):
             return "Invalid request. Player is not allowed to move patient.", 418
         # Update player location
         r_value = leave_location()

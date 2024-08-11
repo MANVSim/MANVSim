@@ -91,10 +91,10 @@ class ActivityDiagram:
         for key, value in kwargs.items():
             if key == "states":
                 setattr(self, key,
-                        {dict_key: PatientState.from_dict(**dict_value) for
+                        {dict_key: PatientState.from_dict(dict_value) for
                          dict_key, dict_value in value.items()})
             elif key == "current":
-                setattr(self, key, PatientState.from_dict(**value))
+                setattr(self, key, PatientState.from_dict(value))
             else:
                 setattr(self, key, value)
         return self
