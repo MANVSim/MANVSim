@@ -206,29 +206,28 @@ class _WaitScreenState extends State<WaitScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (_showError())
-              Column(children: [
-                ErrorBox(
-                    errorText: AppLocalizations.of(context)!
-                        .waitErrorOccured(_errorText!)),
-                const SizedBox(height: 32),
-              ]),
+            if (_showError()) ...[
+              ErrorBox(
+                  errorText: AppLocalizations.of(context)!
+                      .waitErrorOccured(_errorText!)),
+              const SizedBox(height: 32),
+            ],
             Text(_waitStateText()),
+            const SizedBox(height: 32),
             if (_showTimer())
-              Column(
-                children: [
-                  const SizedBox(height: 32),
-                  TimerWidget(
-                      duration: Duration(seconds: _waitTimeSeconds),
-                      onTimerComplete: _handleTimerComplete),
-                ],
-              ),
-            const SizedBox(height: 64),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.skip_next),
-              onPressed: _goToHome,
-              label: Text(AppLocalizations.of(context)!.waitSkip),
-            ),
+              TimerWidget(
+                  duration: Duration(seconds: _waitTimeSeconds),
+                  onTimerComplete: _handleTimerComplete)
+            else
+              CircularProgressIndicator(),
+            if (true) ...[ // TODO: #228 use kDebugMode instead of true
+              const SizedBox(height: 64),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.skip_next),
+                onPressed: _goToHome,
+                label: Text(AppLocalizations.of(context)!.waitSkip),
+              )
+            ],
           ],
         ),
       ),
