@@ -4,7 +4,7 @@ import time
 from execution import run
 from http import HTTPStatus
 from execution.entities.location import Location
-from execution.tests.conftest import generate_token
+from conftest import generate_token
 
 player_ids = run.registered_players.keys()
 

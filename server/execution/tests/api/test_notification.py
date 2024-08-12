@@ -1,5 +1,5 @@
 from execution import run
-from execution.tests.conftest import generate_token
+from conftest import generate_token
 
 
 def test_get_notifications(client):

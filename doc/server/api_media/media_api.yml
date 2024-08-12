@@ -39,6 +39,8 @@ paths:
           description: Image in format `{.png, .jpg, .jpeg, .gif, .webp}`, video in format `{.mp4, .mov", .mkv}`, audio in format `{.mp3, .wav, .ogg, .flac}`, text in format `{.txt}`
         '404':
           description: File not found.
+  
+  /media/{filename}:
     post:
       summary: Allows users to upload media files to the server
       parameters:

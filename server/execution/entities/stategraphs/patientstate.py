@@ -2,6 +2,7 @@ import json
 import logging
 import uuid
 
+from media.media_data import MediaData
 from utils import time
 
 
@@ -11,14 +12,15 @@ class PatientState:
                  treatments: dict[str, str] | None = None,
                  start_time: int = -1, timelimit: int = -1,
                  after_time_state_uuid: str = "",
-                 conditions: dict[str, str] | None = None):
+                 conditions: dict[str, list[MediaData]] | None = None,
+                 pause_time: int = -1):
         if not treatments:
             treatments = {}
         if not conditions:
             conditions = {}
 
         # the time the state was delayed due to a pause action
-        self.pause_time = -1
+        self.pause_time = pause_time
 
         self.uuid = state_uuid
         self.start_time = start_time
@@ -26,6 +28,9 @@ class PatientState:
         self.after_time_state_uuid = after_time_state_uuid
         self.treatments = treatments
         self.conditions = conditions
+
+    def __repr__(self):
+        return f"PatientState(uuid: {self.uuid})"
 
     def add_treatment(self, treatment: str, new_state_uuid: str,
                       force_update: bool = False):
@@ -42,7 +47,8 @@ class PatientState:
                             "the id if necessary.")
             return False
 
-    def add_condition(self, key: str, value: str, force_update: bool = False):
+    def add_condition(self, key: str, value: list[MediaData],
+                      force_update: bool = False):
         """
         Inserts an additional condition. If the condition is already
         provided it keeps the old value unless the force_update flags allows an
@@ -56,7 +62,7 @@ class PatientState:
                             "the id if necessary.")
             return False
 
-    def get_conditions(self, keys: list[str]):
+    def get_conditions(self, keys: list[str]) -> dict:
         """
         Retrieves a dictionary of conditions, selected by the required keys,
         provided in the method parameter.
@@ -64,9 +70,9 @@ class PatientState:
         conditions = {}
         for key in keys:
             if key in self.conditions.keys():
-                conditions[key] = self.conditions[key]
+                conditions[key] = [val.to_dict() for val in self.conditions[key]]
             else:
-                conditions[key] = "Missing Value"
+                conditions[key] = []
         return conditions
 
     def start_timer(self):
@@ -99,16 +105,42 @@ class PatientState:
         return (self.timelimit != -1 and
                 self.timelimit + self.start_time <= time.current_time_s())
 
-    def to_dict(self):
-        return self.__dict__.copy()
+    def _conditions_to_dict(self) -> dict:
+        result: dict[str, list[dict]] = {}
+        for key, value in self.conditions.items():
+            result[key] = [v.to_dict() for v in value]
+        return result
 
-    def from_dict(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-        return self
+    def to_dict(self) -> dict:
+        result = self.__dict__.copy()
+        result['conditions'] = self._conditions_to_dict()
+        return result
 
-    def to_json(self):
+    @staticmethod
+    def __conditions_from_dict(data: dict) -> dict[str, list[MediaData]]:
+        if not data:
+            return {}
+        result = {}
+        for key, value in data.items():
+            result[key] = [MediaData.from_dict(v) for v in value]
+        return result
+
+    @classmethod
+    def from_dict(cls, data: dict) -> 'PatientState':
+        state_uuid: str = data.get("uuid", "")
+        start_time: int = data.get("start_time", -1)
+        timelimit: int = data.get("timelimit", -1)
+        after_time_state_uuid: str = data.get("after_time_state_uuid", "")
+        treatments: dict = data.get("treatments", {})
+        conditions: dict = cls.__conditions_from_dict(
+            data.get("conditions", {}))
+        pause_time: int = data.get("pause_time", -1)
+        return cls(state_uuid, treatments, start_time, timelimit,
+                   after_time_state_uuid, conditions, pause_time)
+
+    def to_json(self) -> str:
         return json.dumps(self.to_dict())
 
-    def from_json(self, json_string):
-        return self.from_dict(**json.loads(json_string))
+    @classmethod
+    def from_json(cls, json_string) -> 'PatientState':
+        return cls.from_dict(json.loads(json_string))

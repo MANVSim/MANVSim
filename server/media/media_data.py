@@ -65,3 +65,25 @@ class MediaData:
                 MediaData.ALLOWED_VIDEO_EXTENSIONS |
                 MediaData.ALLOWED_TEXT_EXTENSIONS |
                 MediaData.ALLOWED_AUDIO_EXTENSIONS)
+
+    @classmethod
+    def new_text(cls, text: str, title: Optional[str] = None) -> 'MediaData':
+        return cls(media_type=cls.Type.TEXT, text=text, title=title)
+
+    @classmethod
+    def new_image(cls, image_reference: str,
+                  title: Optional[str] = None) -> 'MediaData':
+        return cls(media_type=cls.Type.IMAGE, media_reference=image_reference,
+                   title=title)
+
+    @classmethod
+    def new_video(cls, video_reference: str,
+                  title: Optional[str] = None) -> 'MediaData':
+        return cls(media_type=cls.Type.IMAGE, media_reference=video_reference,
+                   title=title)
+
+    @classmethod
+    def new_audio(cls, audio_reference: str,
+              title: Optional[str] = None) -> 'MediaData':
+        return cls(media_type=cls.Type.IMAGE, media_reference=audio_reference,
+                   title=title)

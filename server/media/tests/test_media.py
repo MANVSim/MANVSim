@@ -24,7 +24,7 @@ def test_post_instance_media(client):
         data = {
             "file": (io.BytesIO(image_file.read()), "test.jpg")
         }
-        response = client.post("/media/instance/image/test.jpg",
+        response = client.post("/media/test.jpg",
                                content_type="multipart/form-data", data=data)
 
     assert response.status_code == http.HTTPStatus.CREATED
@@ -43,7 +43,7 @@ def test_post_illegal_format(client):
         data = {
             "file": (io.BytesIO(illegal_file.read()), "illegal.py")
         }
-        response = client.post("/media/instance/test.png",
+        response = client.post("/media/test.png",
                                content_type="multipart/form-data", data=data)
 
     assert response.status_code == http.HTTPStatus.BAD_REQUEST

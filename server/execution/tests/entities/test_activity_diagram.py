@@ -14,7 +14,7 @@ def test_empty_diagram():
         ad = ActivityDiagram()
         ad.apply_treatment("non-existent-treatment")
         conditions = ad.current.get_conditions(["RR", "Verletzung"])
-        assert conditions["RR"] == "Missing Value" and conditions["Verletzung"] == "Missing Value"
+        assert conditions["RR"] == [] and conditions["Verletzung"] == []
         assert True
     except TypeError | Exception:
         assert False
@@ -66,26 +66,26 @@ def test_to_dict():
 def test_from_json():
     json_string = """{
     "states": {"54a8174a-d52a-4a76-84cb-d33fcdaf3b8f": {
-                         "uuid": "54a8174a-d52a-4a76-84cb-d33fcdaf3b8f", 
-                         "start_time": 1715753665, 
-                         "timelimit": 1337, 
-                         "after_time_state_uuid": "563b8b6a-11cb-40ad-bc62-6a833aebd024", 
+                         "uuid": "54a8174a-d52a-4a76-84cb-d33fcdaf3b8f",
+                         "start_time": 1715753665,
+                         "timelimit": 1337,
+                         "after_time_state_uuid": "563b8b6a-11cb-40ad-bc62-6a833aebd024",
                          "treatments": {
-                            "1": "499d9080-dc68-41fc-a0a5-3f3e8563e70c", 
+                            "1": "499d9080-dc68-41fc-a0a5-3f3e8563e70c",
                             "2": "569f58d7-6cbb-4fde-97ae-f6b9f597c219"
                             }
                         }
                 },
    "current": {
-        "uuid": "54a8174a-d52a-4a76-84cb-d33fcdaf3b8f", 
-        "start_time": 1715753665, 
-        "timelimit": 1337, 
-        "after_time_state_uuid": "563b8b6a-11cb-40ad-bc62-6a833aebd024", 
+        "uuid": "54a8174a-d52a-4a76-84cb-d33fcdaf3b8f",
+        "start_time": 1715753665,
+        "timelimit": 1337,
+        "after_time_state_uuid": "563b8b6a-11cb-40ad-bc62-6a833aebd024",
         "treatments": {
-            "1": "499d9080-dc68-41fc-a0a5-3f3e8563e70c", 
+            "1": "499d9080-dc68-41fc-a0a5-3f3e8563e70c",
             "2": "569f58d7-6cbb-4fde-97ae-f6b9f597c219"
             }
-        }   
+        }
     }"""
     try:
         ActivityDiagram().from_json(json_string="{bullshit-string}")

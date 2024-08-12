@@ -8,7 +8,7 @@ from execution.entities.resource import Resource
 from execution.entities.role import Role
 from execution.entities.scenario import Scenario
 from execution.services import entityloader
-from execution.tests.conftest import flask_app
+from conftest import flask_app
 from media.media_data import MediaData
 
 
