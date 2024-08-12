@@ -1,12 +1,15 @@
-from flask import request
+import ast
+
 from flask import Blueprint
 from flask_jwt_extended import jwt_required
 
 from app_config import csrf
-from execution.utils import util
+from execution.entities.execution import Execution
 from execution.entities.location import Location
+from execution.utils import util
 from event_logging.event import Event
 from utils import time
+from utils.decorator import required, RequiredValueSource
 
 api = Blueprint("api-location", __name__)
 
@@ -25,54 +28,149 @@ def get_all_toplevel_location():
         return f"Missing or invalid request parameter detected.", 400
 
 
-@api.post("/location/take-from")
+@api.post("/location/take-to")
+@required("take_location_ids", str, RequiredValueSource.JSON)
+@required("to_location_ids", str, RequiredValueSource.JSON)
 @jwt_required()
 @csrf.exempt
-def get_location_out_of_location():
+def get_location_out_of_location(take_location_ids, to_location_ids):
     """
     Releases a sub location of the players current location. Afterward the
     location is an accessible location for the player.
-    Required Request Param:
-        required_loc_id:    location identifier that shall be added to the
-                            players inventory
+
+    @param take_location_ids: string of index list of the location the player
+                              wants to take into his inventory. The list should
+                              start with a toplevel location.
+                              example: "[1,2,3]"
+    @param to_location_ids: string of index list of the new locations parent in
+                            the players inventory. If the list is empty, the
+                            item is placed as on the root level of the
+                            inventory.
+                            example: "[1,2,3]"
     """
-    args: dict = request.get_json()
     try:
         execution, player = util.get_execution_and_player()
 
-        required_loc_id = int(args["take_location_id"])
-        from_loc_id = int(args["from_location_id"])
+        # convert string like "[1,2,3]" to an accessible list
+        take_location_id_list: list[int] = ast.literal_eval(take_location_ids)
+        to_location_id_list: list[int] = ast.literal_eval(to_location_ids)
 
-        # locate required parent location
-        from_location: Location = execution.scenario.locations[from_loc_id]
-        if from_location is None:
-            return ("From-Location not found. Update your current "
+        # locate the new location in the players location
+        to_location = get_location_from_index_list(to_location_id_list,
+                                                   execution)
+
+        if to_location is None:
+            return ("To-Location not found. Update your current "
                     "location-access."), 404
 
-        parent_location, required_location = from_location.get_child_location_by_id(
-            required_loc_id)
-        if required_location is None:
+        take_location_parent: Location | None= get_location_from_index_list(
+                                take_location_id_list[:-1], execution)
+        if not take_location_parent:
             return ("Take-Location not found. Update your current "
                     "location-access."), 404
 
-        assert parent_location  # pyright
+        take_location = take_location_parent.get_location_by_id(
+            take_location_id_list[len(take_location_id_list)-1])
 
-        # no lock needed, because only the requesting player can edit its own inventory
-        player.accessible_locations.add(required_location)
-        parent_location.remove_location_by_id(required_location.id)
-        if player.location:
-            # add location back to first children of the tree, to make it reachable for the leave-operation.
-            player.location.add_locations({required_location})
-            Event.location_take_from(execution_id=execution.id,
-                                     time=time.current_time_s(),
-                                     player=player.tan,
-                                     take_location_id=required_loc_id,
-                                     from_location_id=from_loc_id).log()
-            return {"player_location": player.location.to_dict()}
+        if not take_location:
+            return ("Take-Location not found. Update your current "
+                    "location-access."), 404
+
+        to_location.add_locations({take_location})
+
+        if not player.location:
+            return "Player is not assigned to a toplevel location.", 418
+
+        if to_location.id == player.location.id:
+            # if to_location is the player location -> the take_location should
+            # be placed in the inventory to guarantee a valid leave action.
+            player.accessible_locations.add(take_location)
         else:
-            return "Invalid state detected. Player has no location assigned", 418
+            # delete only from the location if the player location is different.
+            # In this case the player does not share the resources with any
+            # other player
+            take_location_parent.remove_location_by_id(take_location.id)
 
-    except KeyError:
+        Event.location_take_from(execution_id=execution.id,
+                                 time=time.current_time_s(),
+                                 player=player.tan,
+                                 take_location_ids=take_location_id_list,
+                                 to_location_ids=to_location_id_list).log()
+
+        return {"player_location": player.location.to_dict()}
+
+    except KeyError | ValueError:
+        return "Missing or invalid request parameter detected.", 400
+
+    except TimeoutError:
+        return "Unable to access runtime object. A timeout-error occurred.", 409
+
+
+@api.post("/location/put-to")
+@required("put_location_ids", str, RequiredValueSource.JSON)
+@required("to_location_ids", str, RequiredValueSource.JSON)
+@jwt_required()
+@csrf.exempt
+def put_location_to_location(put_location_ids, to_location_ids):
+    """
+    A method to transfer a location to another location. It can be used to
+    put items out of the inventory to another selected location.
+
+    @param put_location_ids: string of index list of location ids that is
+                             selected for transfer
+                             example: "[1,2,3]"
+    @param to_location_ids: string of index list of location ids the selected
+                            put location is selected to be placed in.
+                            example: "[1,2,3]"
+    """
+    try:
+        execution, player = util.get_execution_and_player()
+
+        # convert string like "[1,2,3]" to an accessible list
+        put_location_id_list: list[int] = ast.literal_eval(put_location_ids)
+        to_location_id_list: list[int] = ast.literal_eval(to_location_ids)
+
+        to_location = get_location_from_index_list(to_location_id_list,
+                                                   execution)
+        if not to_location:
+            return ("To-Location not found. Update your current "
+                    "location-access."), 404
+
+        put_location_parent: Location | None = get_location_from_index_list(
+                                put_location_id_list[:-1], execution)
+
+        if not put_location_parent:
+            return ("Put-Location not found. Update your current "
+                    "location-access."), 404
+
+        put_location = put_location_parent.get_location_by_id(
+            put_location_id_list[len(put_location_id_list)-1])
+
+        if not put_location:
+            return ("Put-Location not found. Update your current "
+                    "location-access."), 404
+
+        if not player.location:
+            return "Player is not assigned to a toplevel location.", 418
+
+        if put_location_parent == player.location.id:
+            # if location parent is the players current location -> only the
+            # inventory is edited to guarantee a valid leave action.
+            player.accessible_locations.remove(put_location)
+        else:
+            # otherwise perform default remove and add action
+            put_location_parent.remove_location_by_id(put_location.id)
+            to_location.add_locations({put_location})
+
+        Event.location_put_to(execution_id=execution.id,
+                              time=time.current_time_s(),
+                              player=player.tan,
+                              put_location_ids=put_location_id_list,
+                              to_location_ids=to_location_id_list).log()
+
+        return {"player_location": player.location.to_dict()}
+
+    except KeyError | ValueError:
         return "Missing or invalid request parameter detected.", 400
 
     except TimeoutError:
@@ -102,3 +200,19 @@ def leave_location():
         return "Unable to access runtime object. A timeout-error occurred.", 409
 
     return {"message": "Player successfully left location."}
+
+
+def get_location_from_index_list(id_list: list[int], execution: Execution):
+    target_location = None
+    if not id_list:
+        return target_location
+    for i in range(len(id_list)):
+        if i == 0:
+            target_location = execution.scenario.locations[id_list[i]]
+        elif not target_location:
+            # target location can be None if the first is 'skipped'...
+            return target_location
+        else:
+            target_location = target_location.get_location_by_id(id_list[i])
+
+    return target_location

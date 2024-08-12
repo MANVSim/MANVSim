@@ -53,14 +53,25 @@ class Event:
         })
 
     @staticmethod
-    def location_take_from(execution_id: int, time: int, player: str, take_location_id: int, from_location_id: int):
+    def location_take_from(execution_id: int, time: int, player: str, take_location_ids: list[int], to_location_ids: list[int]):
         """
         Creates an event representing the action of taking a location from another location.
         """
         return Event(execution=execution_id, type=Event.Type.LOCATION_TAKE_FROM, time=time, data={
             "player": player,
-            "take_location_id": take_location_id,
-            "from_location_id": from_location_id
+            "take_location_ids": take_location_ids,
+            "to_location_ids": to_location_ids
+        })
+
+    @staticmethod
+    def location_put_to(execution_id: int, time: int, player: str, put_location_ids: list[int], to_location_ids: list[int]):
+        """
+        Creates an event representing the action of putting a location into another location.
+        """
+        return Event(execution=execution_id, type=Event.Type.LOCATION_TAKE_FROM, time=time, data={
+            "player": player,
+            "put_location_ids": put_location_ids,
+            "to_location_ids": to_location_ids
         })
 
     @staticmethod
