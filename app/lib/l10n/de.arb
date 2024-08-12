@@ -3,6 +3,7 @@
 
   "frameHome": "Home",
   "framePatients": "Patienten",
+  "frameLocations": "Locations",
   "frameNotifications": "Benachrichtigungen",
 
   "startScreenAppName": "MANVSim",
@@ -70,6 +71,7 @@
   "nameWarningEmptyFields": "Bitte tragen Sie einen Namen ein",
 
   "patientListScreenName": "Patientenliste",
+  "locationListScreenName": "Locationliste",
 
   "patientScreenName": "Patient: {patientId}",
   "@patientScreenName": {
@@ -80,6 +82,18 @@
       }
     }
   },
+  "locationScreenName": "Location {locationId}",
+  "@locationScreenName": {
+    "placeholders": {
+      "locationId": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+
+  "locationListScreenTypeName": "Name",
+  "locationListScreenTypeId": "ID",
   "patientName": "Name: {patientName}",
   "@patientName": {
     "placeholders": {
