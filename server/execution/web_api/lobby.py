@@ -71,10 +71,14 @@ def get_execution(id: int):
                 "location": player.location.to_dict(
                     include=["id", "name"]) if player.location else None
             } for player in execution.players.values()],
-            "roles": [role.to_dict(include=["id", "name"]) for role in
-                      __get_roles()],
-            "locations": [loc.to_dict(include=["id", "name"]) for loc in
-                          __get_top_level_locations()],
+            "roles": [{
+                "id": x.id,
+                "name": x.name
+            } for x in __get_roles()],
+            "locations": [{
+                "id": x.id,
+                "name": x.name
+            } for x in __get_top_level_locations()],
             "notifications": execution.notifications
         }
 
@@ -149,7 +153,7 @@ def add_new_player(id: int, role: int, location: int):
 
 
 @cache
-def __get_roles() -> List[models.Role]:
+def __get_roles() -> list[models.Role]:
     """
     Gets all roles currently stored in the database. For efficient access the
     result is cached for subsequent function calls as the DB is not expected to
