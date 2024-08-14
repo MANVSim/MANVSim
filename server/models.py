@@ -18,7 +18,6 @@ class Execution(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     scenario_id: Mapped[int] = mapped_column(
         ForeignKey("scenario.id"), nullable=False)
-
     scenario: Mapped["Scenario"] = relationship(back_populates="executions")
     players: Mapped[List["Player"]] = relationship(back_populates="execution")
     name: Mapped[str] = mapped_column(nullable=False)
@@ -28,8 +27,12 @@ class Location(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
     media_refs = db.Column(db.JSON(), nullable=True)
+    is_vehicle: Mapped[bool] = mapped_column(default=False, nullable=False)
     location_id: Mapped[int] = mapped_column(
         ForeignKey("location.id"), nullable=True)
+
+    quantities_in_scenario = relationship("LocationQuantityInScenario",
+                                          back_populates="location")
 
 
 class Role(db.Model):
@@ -64,10 +67,23 @@ class Patient(db.Model):
 
 class TakesPartIn(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    quantity: Mapped[int] = mapped_column(default=1, nullable=False)
     scenario_id: Mapped[int] = mapped_column(
         ForeignKey("scenario.id"), nullable=False)
     patient_id: Mapped[int] = mapped_column(
         ForeignKey("patient.id"), nullable=False)
+
+
+class LocationQuantityInScenario(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    quantity: Mapped[int] = mapped_column(nullable=False, default=1)
+    scenario_id: Mapped[int] = mapped_column(
+        ForeignKey("scenario.id"), nullable=False)
+    location_id: Mapped[int] = mapped_column(
+        ForeignKey("location.id"), nullable=False)
+
+    location = relationship("Location",
+                            back_populates="quantities_in_scenario")
 
 
 class Resource(db.Model):

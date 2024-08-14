@@ -15,7 +15,7 @@ from models import (
     Resource,
     Action,
     ResourcesNeeded,
-    WebUser,
+    WebUser, LocationQuantityInScenario,
 )
 from vars import RESULT_DELIMITER
 
@@ -70,8 +70,9 @@ def __create_resources():
 
 
 def __create_locations():
-    insert(Location(id=0, name="RTW", media_refs=MediaData.list_to_json([
-        MediaData.new_image("media/static/image/rtw_sh.png")])))
+    insert(Location(id=0, name="RTW", is_vehicle=True,
+                    media_refs=MediaData.list_to_json([
+                        MediaData.new_image("media/static/image/rtw_sh.png")])))
     insert(Location(id=1, name="Sichtungstasche",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
@@ -217,6 +218,11 @@ def __takes_part_in():
     insert(TakesPartIn(scenario_id=2, patient_id=4))
 
 
+def __location_quantity_in_scenario():
+    insert(LocationQuantityInScenario(id=0, quantity=3, scenario_id=2,
+                                      location_id=0))
+
+
 def __create_executions():
     insert(Execution(id=3, name="Übungssimulation \"Busunglück\" 2024",
                      scenario_id=0))
@@ -228,19 +234,25 @@ def insert(data):
     db.session.add(data)
 
 
-with create_app(csrf=csrf, db=db).app_context():
-    __create_executions()
-    __create_scenarios()
-    __create_players()
-    __create_roles()
-    __create_patients()
-    __create_locations()
-    __create_resources()
-    __create_actions()
-    __takes_part_in()
-    __resource_needed()
+def main(app):
+    with app.app_context():
+        __create_executions()
+        __create_scenarios()
+        __create_players()
+        __create_roles()
+        __create_patients()
+        __create_locations()
+        __create_resources()
+        __create_actions()
+        __resource_needed()
+        __takes_part_in()
+        __location_quantity_in_scenario()
 
-    insert(WebUser(username="Terra", password=hashpw(b"pw1234",
-                                                     gensalt()).decode()))
+        insert(WebUser(username="Terra", password=hashpw(b"pw1234",
+                                                         gensalt()).decode()))
 
-    db.session.commit()
+        db.session.commit()
+
+
+if __name__ == '__main__':
+    main(create_app(csrf=csrf, db=db))
