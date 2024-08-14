@@ -14,6 +14,7 @@ import { CsrfProvider } from "./contexts/csrf"
 import { AuthProvider } from "./contexts/auth"
 import { ExecutionRoute } from "./routes/execution"
 import StateRoute from "./routes/state"
+import PatientsRoute from "./routes/patients"
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,11 @@ const router = createBrowserRouter([
       {
         path: "/patient/:patientId",
         element: <StateRoute />,
+      },
+      {
+        path: "/patients",
+        element: <PatientsRoute />,
+        loader: PatientsRoute.loader,
       },
     ],
   },
