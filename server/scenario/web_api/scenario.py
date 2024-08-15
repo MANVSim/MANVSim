@@ -115,22 +115,22 @@ def edit_scenario(id: int):
     request_data = request.get_json()
     scenario = models.Scenario.query.filter_by(id=id).first()
     if not scenario:
-        raise NotFound("Scenario ID could not be found in db.")
+        raise NotFound(f"scenario not found by id={id}")
     try:
         new_name = request_data["name"]
         scenario.name = new_name
     except KeyError:
-        logging.info("No name change detected")
+        logging.info("No name change detected.")
 
     try:
         new_patients = request_data["patients"]
-        update_patients_in_scenario(scenario, new_patients)
+        __update_patients_in_scenario(scenario, new_patients)
     except KeyError:
         logging.info("No patient changes detected")
 
     try:
         new_vehicle = request_data["vehicle"]
-        update_vehicle_in_scenario(scenario, new_vehicle)
+        __update_vehicle_in_scenario(scenario, new_vehicle)
     except KeyError:
         logging.info("No vehicle changes detected")
 
@@ -138,7 +138,7 @@ def edit_scenario(id: int):
     return "Successfully updated patient", 200
 
 
-def update_patients_in_scenario(scenario, new_patients):
+def __update_patients_in_scenario(scenario, new_patients):
     """
     Edits the vehicles registered on the provided scenario. Depending on the
     quantity and existence an entry is created, removed or edited.
@@ -165,7 +165,7 @@ def update_patients_in_scenario(scenario, new_patients):
         raise BadRequest("Invalid or missing parameter for patients detected")
 
 
-def update_vehicle_in_scenario(scenario, new_vehicles):
+def __update_vehicle_in_scenario(scenario, new_vehicles):
     """
     Edits the vehicles registered on the provided scenario. Depending on the
     quantity and existence an entry is created, removed or edited.
