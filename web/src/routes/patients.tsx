@@ -2,7 +2,8 @@ import { ReactElement } from "react"
 import { useLoaderData } from "react-router"
 import ListGroup from "react-bootstrap/ListGroup"
 import PatientEntry from "../components/PatientEntry"
-import { Patient, isPatient } from "../types"
+import { Patient } from "../types"
+import { getPatients } from "../api"
 
 export default function PatientsRoute(): ReactElement {
   const patients = useLoaderData() as Patient[]
@@ -22,15 +23,5 @@ export default function PatientsRoute(): ReactElement {
 }
 
 PatientsRoute.loader = async function (): Promise<Patient[]> {
-  const response = await fetch("/web/patient")
-  const json = await response.json()
-  if (
-    !Array.isArray(json) ||
-    json.some((p: unknown): boolean => !isPatient(p))
-  ) {
-    throw new Error(
-      "Request to /web/patient did not return an array of patients",
-    )
-  }
-  return json
+  return await getPatients()
 }
