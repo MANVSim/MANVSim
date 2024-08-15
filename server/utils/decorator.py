@@ -109,7 +109,6 @@ def role_required(required_role: WebUser.Role):
         @jwt_required()
         def wrapper(*args, **kwargs):
             user_role = get_jwt_identity()
-            print(f"ROLE >> {user_role}")
             try:
                 user_role = WebUser.Role.from_string(user_role)
             except ValueError:
