@@ -188,7 +188,7 @@ def __create_players():
 def __create_patients():
     ads = get_activity_diagrams()
 
-    insert(Patient(id=0, name="Hans", activity_diagram=()))
+    insert(Patient(id=0, name="Hans", activity_diagram="{}"))
 
     insert(Patient(id=1, name="Holger Hooligan",
                    activity_diagram=ads[0].to_json()))
@@ -198,7 +198,7 @@ def __create_patients():
                    activity_diagram=ads[2].to_json()))
     insert(Patient(id=4, name="Hoff Nungs Vollerfall",
                    activity_diagram=ads[3].to_json()))
-    insert(Patient(id=5, name="Gisela", activity_diagram=()))
+    insert(Patient(id=5, name="Gisela", activity_diagram="{}"))
 
 
 def __create_scenarios():
