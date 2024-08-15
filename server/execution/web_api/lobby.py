@@ -12,15 +12,15 @@ from execution import run
 from execution.entities.execution import Execution
 from execution.services import entityloader
 from execution.utils.util import try_get_execution
-from utils import time
-from utils.decorator import required, admin_only, RequiredValueSource, cache
+from models import WebUser
+from utils.decorator import required, RequiredValueSource, cache, role_required
 
 web_api = Blueprint("web_api-lobby", __name__)
 
 
+@role_required(WebUser.Role.GAME_MASTER)
 @web_api.post("/execution/activate")
 @required("id", int, RequiredValueSource.FORM)
-# @admin_only //FIXME enable me as soon as role management is working
 @csrf.exempt
 def activate_execution(id: int):
     if id in run.active_executions.keys():
@@ -39,9 +39,9 @@ def get_all_active_executions():
             in run.active_executions.values()]
 
 
+@role_required(WebUser.Role.GAME_MASTER)
 @web_api.get("/execution")
 @required("id", int, RequiredValueSource.ARGS)
-@admin_only
 def get_execution(id: int):
     # Add the execution to the active executions in case it stems from the
     # database
@@ -83,6 +83,7 @@ def get_execution(id: int):
         }
 
 
+@role_required(WebUser.Role.GAME_MASTER)
 @web_api.post("/execution/create")
 @required("scenario_id", int, RequiredValueSource.FORM)
 @required("name", str, RequiredValueSource.FORM)
@@ -101,10 +102,10 @@ def create_execution(scenario_id: int, name: str):
         return message, 400
 
 
+@role_required(WebUser.Role.GAME_MASTER)
 @web_api.patch("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 @required("new_status", str.upper, RequiredValueSource.FORM)
-@admin_only
 @csrf.exempt  # changes are applied via buttons. Therefore, no CSRF required
 def change_execution_status(id: int, new_status: str):
     execution = try_get_execution(id)
@@ -119,11 +120,11 @@ def change_execution_status(id: int, new_status: str):
                          f"'{new_status}'. ")
 
 
+@role_required(WebUser.Role.GAME_MASTER)
 @web_api.patch("/execution/player/status")
 @required("id", int, RequiredValueSource.ARGS)
 @required("tan", str, RequiredValueSource.ARGS)
 @required("alerted", booleanize, RequiredValueSource.FORM)
-@admin_only
 def change_player_status(id: int, tan: str, alerted: bool):
     execution = try_get_execution(id)
     try:
@@ -142,6 +143,7 @@ def change_player_status(id: int, tan: str, alerted: bool):
     return Response(status=200)
 
 
+@role_required(WebUser.Role.GAME_MASTER)
 @web_api.post("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 @required("role", int, RequiredValueSource.FORM)

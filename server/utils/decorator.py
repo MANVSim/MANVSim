@@ -2,7 +2,6 @@ from enum import StrEnum
 from functools import wraps
 from typing import Any, Callable
 
-import flask
 from cachetools.func import ttl_cache
 from flask import abort, request
 from flask_api import status
