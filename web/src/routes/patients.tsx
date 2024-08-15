@@ -10,6 +10,7 @@ export default function PatientsRoute(): ReactElement {
 
   return (
     <div>
+      <h1>Patienten</h1>
       <div className="mb-3">Die folgenden Patienten sind verfügbar:</div>
       <ListGroup>
         {patients.map(

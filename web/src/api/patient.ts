@@ -8,3 +8,11 @@ export async function getPatients(): Promise<Patient[]> {
   }
   throw Error(`Could not load patients!`)
 }
+
+export async function getPatient(id: string): Promise<Patient> {
+  const patient = await tryFetchJson<Patient>(`patient/${id}`)
+  if (isPatient(patient)) {
+    return patient
+  }
+  throw Error(`Could not load patient with id: ${id}`)
+}

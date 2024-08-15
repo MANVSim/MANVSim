@@ -168,6 +168,7 @@ export const isErrorResponse = isTypeFactory<ErrorResponse>(errorResponse)
 const patient = z.object({
   id: z.number(),
   name: z.string(),
+  activity_diagram: z.string().optional(),
 })
 
 export type Patient = z.infer<typeof patient>
