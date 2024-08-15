@@ -126,7 +126,7 @@ const executionData = z.object({
   status: ExecutionStatusEnum,
   roles: z.array(role),
   locations: z.array(location),
-  notifications: z.array(z.string())
+  notifications: z.array(z.string()),
 })
 
 export type ExecutionData = z.infer<typeof executionData>
@@ -164,3 +164,11 @@ export type ErrorResponse = z.infer<typeof errorResponse>
  * @function
  */
 export const isErrorResponse = isTypeFactory<ErrorResponse>(errorResponse)
+
+const patient = z.object({
+  id: z.number(),
+  name: z.string(),
+})
+
+export type Patient = z.infer<typeof patient>
+export const isPatient = isTypeFactory<Patient>(patient)
