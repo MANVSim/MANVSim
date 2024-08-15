@@ -4,6 +4,7 @@ import { yaml } from "@codemirror/lang-yaml"
 import { LoaderFunctionArgs, useLoaderData } from "react-router"
 import { getPatient } from "../api"
 import { Patient, isPatient } from "../types"
+import { default as jsyaml } from "js-yaml"
 
 export default function StateRoute(): ReactElement {
   const loaderData = useLoaderData()
@@ -28,5 +29,8 @@ StateRoute.loader = async function ({
     throw new Error("No patient ID provided")
   }
   const patient = await getPatient(id)
+  if (patient.activity_diagram !== undefined) {
+    patient.activity_diagram = jsyaml.dump(JSON.parse(patient.activity_diagram))
+  }
   return patient
 }
