@@ -6,7 +6,7 @@ from werkzeug.exceptions import NotFound
 
 import models
 from app_config import db
-from media.media_data import MediaData
+from scenario.web_api.utils import update_media
 from utils.decorator import RequiredValueSource, required
 from vars import RESULT_DELIMITER
 
@@ -68,7 +68,7 @@ def create_action():
         name="Neue Maßnahmen",
         duration_secs=0,
         required_power=0,
-        media_refs="",
+        media_refs="{}",
         result=""
     )
     db.session.add(action)
@@ -122,13 +122,13 @@ def edit_action(id: int):
 
     try:
         media_refs_add = request_data["media_refs_add"]
-        __update_media(action=action, media_refs_add=media_refs_add)
+        update_media(dbo=action, media_refs_add=media_refs_add)
     except KeyError:
         logging.debug("No media-add change detected.")
 
     try:
         media_refs_del = request_data["media_refs_del"]
-        __update_media(action=action, media_refs_del=media_refs_del)
+        update_media(dbo=action, media_refs_del=media_refs_del)
     except KeyError:
         logging.debug("No media-del change detected.")
 
@@ -151,6 +151,7 @@ def edit_action(id: int):
         logging.debug("No Resource-Del changes detected.")
 
     db.session.commit()
+    return "Successfully updated action", 200
 
 
 def __update_resources(action, resources_add=None, resources_del=None):
@@ -172,42 +173,3 @@ def __update_resources(action, resources_add=None, resources_del=None):
                 resource_id=resource_id
             )
             db.session.add(resource_needed)
-
-
-def __update_media(action: models.Action,
-                   media_refs_add: list[dict] | None = None,
-                   media_refs_del: list[dict] | None = None):
-    """ Deletes/Adds media-data based on parameters. """
-    media_refs: list[dict] = json.loads(action.media_refs)
-    for del_media in media_refs_del:
-        media_refs = remove_media(media_refs, del_media)
-
-    # Add
-    for add_media in media_refs_add:
-        media_refs.append(add_media)
-
-    action.media_refs = media_refs
-
-
-def remove_media(media_refs, del_media):
-    """ Removes json objects out of media-json-list. """
-    new_media_refs = []
-    for media in media_refs:
-        if media["media_type"] != media["media_type"]:
-            # different media type then required
-            new_media_refs.append(media)
-
-        elif (del_media["media_type"] == MediaData.Type.TEXT
-                and del_media["title"] != media["title"]):
-            # Title of text is primary key
-            new_media_refs.append(media)
-
-        elif (del_media["title"] != media["title"]
-              or del_media["media_reference"] != media["media_reference"]):
-            # title and reference are primary key for other media types
-            new_media_refs.append(media)
-        else:
-            # Primary Key and Type match
-            continue
-
-    return new_media_refs

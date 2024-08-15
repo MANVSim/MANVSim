@@ -1,7 +1,5 @@
-import json
-
 import models
-from scenario.web_api.data.action import __update_media
+from scenario.web_api.utils import update_media
 
 
 def test_media():
@@ -70,6 +68,5 @@ def test_media():
         }
     ]
 
-    __update_media(action, media_refs_add=media_add,
-                                    media_refs_del=media_del)
+    update_media(action, media_refs_add=media_add, media_refs_del=media_del)
     assert action.media_refs
