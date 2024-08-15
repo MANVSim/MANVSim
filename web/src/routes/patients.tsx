@@ -1,12 +1,13 @@
 import { ReactElement } from "react"
-import { useLoaderData } from "react-router"
+import { ActionFunctionArgs, useLoaderData } from "react-router"
 import ListGroup from "react-bootstrap/ListGroup"
 import PatientEntry from "../components/PatientEntry"
 import { Patient } from "../types"
-import { getPatients } from "../api"
+import { getPatients, tryFetchApi } from "../api"
 
 export default function PatientsRoute(): ReactElement {
   const patients = useLoaderData() as Patient[]
+
   return (
     <div>
       <div className="mb-3">Die folgenden Patienten sind verfügbar:</div>
@@ -24,4 +25,15 @@ export default function PatientsRoute(): ReactElement {
 
 PatientsRoute.loader = async function (): Promise<Patient[]> {
   return await getPatients()
+}
+
+PatientsRoute.action = async function ({
+  request,
+}: ActionFunctionArgs): Promise<null> {
+  const formData = await request.formData()
+  tryFetchApi(`patient/${formData.get("id")}`, {
+    method: "DELETE",
+    body: formData,
+  })
+  return null
 }

@@ -46,6 +46,7 @@ const router = createBrowserRouter([
         path: "/patients",
         element: <PatientsRoute />,
         loader: PatientsRoute.loader,
+        action: PatientsRoute.action,
         errorElement: <ErrorPage />,
       },
     ],

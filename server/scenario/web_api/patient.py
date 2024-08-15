@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, Response
 import models
 
 
@@ -17,3 +17,13 @@ def get_patients():
         }
         for patient in models.Patient.query
     ]
+
+
+@blueprint.delete("<int:patient_id>")
+def delete_patient(patient_id: int):
+    """
+    Deletes a patient by ID
+    """
+    models.Patient.query.filter_by(id=patient_id).delete()
+    models.db.session.commit()
+    return Response(status=200)
