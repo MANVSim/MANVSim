@@ -220,7 +220,7 @@ def __takes_part_in():
 def __create_executions():
     insert(Execution(id=3, name="Übungssimulation \"Busunglück\" 2024",
                      scenario_id=0))
-    insert(Execution(id=23456, name="Kreativer Name", scenario_id=1))
+    #insert(Execution(id=23456, name="Kreativer Name", scenario_id=1))  # FIXME: broken scenario
     insert(Execution(id=4, name="Dummy Execution 2024", scenario_id=2))
 
 
@@ -240,7 +240,20 @@ with create_app(csrf=csrf, db=db).app_context():
     __takes_part_in()
     __resource_needed()
 
-    insert(WebUser(username="Terra", password=hashpw(b"pw1234",
-                                                     gensalt()).decode()))
+    insert(WebUser(username="wadmin",
+                   password=hashpw(b"pw1234", gensalt()).decode(),
+                   role=WebUser.Role.WEB_ADMIN.name))
+
+    insert(WebUser(username="sadmin",
+                   password=hashpw(b"pw1234", gensalt()).decode(),
+                   role=WebUser.Role.SCENARIO_ADMIN.name))
+
+    insert(WebUser(username="gmaster",
+                   password=hashpw(b"pw1234", gensalt()).decode(),
+                   role=WebUser.Role.GAME_MASTER.name))
+
+    insert(WebUser(username="nobody",
+                   password=hashpw(b"pw1234", gensalt()).decode(),
+                   role=WebUser.Role.NONE.name))
 
     db.session.commit()
