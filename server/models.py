@@ -106,6 +106,7 @@ class LoggedEvent(db.Model):
     data = db.Column(db.JSON(), nullable=False)
 
 
+# pyright: reportAttributeAccessIssue=false
 class WebUser(db.Model):
 
     class Role(IntEnum):
@@ -137,7 +138,6 @@ class WebUser(db.Model):
                 return cls[role_name.upper()]
             except KeyError:
                 raise ValueError(f"No Role found for name: {role_name}")
-
 
     username: Mapped[str] = mapped_column(primary_key=True)
     password: Mapped[str]
