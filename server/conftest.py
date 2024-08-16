@@ -5,6 +5,7 @@ from app import create_app
 from app_config import csrf, db
 from execution import run
 from execution.tests.entities import dummy_entities
+from models import WebUser
 
 """
 If you’re using an application factory, define an app fixture to create and configure an app instance.
@@ -60,15 +61,15 @@ def generate_token(app, valid_payload=True, pending=False, plid="123ABC"):
         }
 
 
-def generate_webtoken(app):
+def generate_webtoken(app, identity: WebUser.Role = WebUser.Role.GAME_MASTER):
     payload = {
         # This is the custom claim added by flask_jwt_extended which holds the
         # value of the identity parameter passed during token creation.
-        "identity": "admin",
+        "identity": identity.name,
         # This is the standard JWT claim (subject) which also holds the value
         # of the identity parameter. This is where flask_jwt_extended places the
         # identity by default.
-        "sub": "admin"
+        "sub": identity.name
     }
     return {"Authorization": f"Bearer {jwt.encode(payload,
                                                   app.config["JWT_SECRET_KEY"],
