@@ -35,11 +35,9 @@ def get_location(location_id: int):
     if not location:
         raise NotFound(f"location not found by id={location_id}")
 
-    # FIXME
-    child_locations = models.Location.query.join(
-        models.Location,
-        models.Location.id == models.Location.location_id
-    ).all()
+    location_relations = models.LocationContainsLocation.query.filter_by(
+        parent=location.id
+    )
 
     return {
         "id": location.id,
@@ -49,9 +47,9 @@ def get_location(location_id: int):
             location.media_refs) if location.media_refs else {},
         "child_locations": [
             {
-                "id": child_location.id,
-                "name": child_location.name
-            } for child_location in child_locations
+                "id": location_relation.location.id,
+                "name": location_relation.location.name
+            } for location_relation in location_relations
         ]
     }
 
