@@ -7,6 +7,10 @@ import models
 from app_config import db
 from utils.decorator import admin_only, required, RequiredValueSource
 
+# pyright: reportCallIssue=false
+# pyright: reportAttributeAccessIssue=false
+# The following statements are excluded from pyright, due to ORM specifics.
+
 web_api = Blueprint("web_api-scenario", __name__)
 
 
@@ -112,10 +116,12 @@ def edit_scenario(id: int):
     in the request_json, the related value ist updated. There is no json
     response. To get the updated data, retrieve again.
     """
-    request_data = request.get_json()
     scenario = models.Scenario.query.filter_by(id=id).first()
     if not scenario:
         raise NotFound(f"scenario not found by id={id}")
+
+    request_data = request.get_json()
+
     try:
         new_name = request_data["name"]
         scenario.name = new_name

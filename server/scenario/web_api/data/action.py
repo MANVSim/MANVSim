@@ -10,6 +10,11 @@ from scenario.web_api.utils import update_media
 from utils.decorator import RequiredValueSource, required
 from vars import RESULT_DELIMITER
 
+# pyright: reportCallIssue=false
+# pyright: reportAttributeAccessIssue=false
+# The following statements are excluded from pyright, due to ORM specifics.
+
+
 web_api = Blueprint("web_api-action", __name__)
 
 
@@ -17,14 +22,12 @@ web_api = Blueprint("web_api-action", __name__)
 def get_all_actions():
     """ Returns a json of all actions stored. """
     action_list = models.Action.query.all()
-    return {
-        [
-            {
-                "id": action.id,
-                "name": action.name,
-            } for action in action_list
-        ]
-    }
+    return [
+        {
+            "id": action.id,
+            "name": action.name,
+        } for action in action_list
+    ]
 
 
 @web_api.get("/action")
@@ -94,11 +97,11 @@ def edit_action(id: int):
     Updates an action based on the provided json. If a key is missing or any
     error occurs, the column remains the same.
     """
-    request_data = request.get_json()
     action = models.Action.query.filter_by(id=id).first()
     if not action:
         raise NotFound(f"action not found by id={id}")
 
+    request_data = request.get_json()
     try:
         action.name = request_data["name"]
     except KeyError:
@@ -156,6 +159,12 @@ def edit_action(id: int):
 
 def __update_resources(action, resources_add=None, resources_del=None):
     """ Deletes/Adds required resource entries based on parameters. """
+    if resources_add is None:
+        resources_add = []
+
+    if resources_del is None:
+        resources_del = []
+
     # Delete required resources
     for resource_id in resources_del:
         resource = models.ResourcesNeeded.query.filter_by(

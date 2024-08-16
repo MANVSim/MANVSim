@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app_config import db
 
+
 # -- Player
 class Role(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -77,6 +78,11 @@ class Location(db.Model):
 
 
 class LocationContainsLocation(db.Model):
+    """
+    Allows templating of locations. Meaning: a backpack can be stored in two
+    locations. The copy instances will be generated while loading the game
+    state in memory.
+    """
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     parent: Mapped[int] = mapped_column(
         ForeignKey("location.id"), nullable=False)

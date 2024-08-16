@@ -9,6 +9,10 @@ from app_config import db
 from scenario.web_api.utils import update_media
 from utils.decorator import required, RequiredValueSource
 
+# pyright: reportCallIssue=false
+# pyright: reportAttributeAccessIssue=false
+# The following statements are excluded from pyright, due to ORM specifics.
+
 web_api = Blueprint("web_api-location", __name__)
 
 
@@ -16,14 +20,13 @@ web_api = Blueprint("web_api-location", __name__)
 def get_all_locations():
     """ Returns a json of all locations stored. """
     location_list = models.Location.query.all()
-    return {
-        [
-            {
-                "id": location.id,
-                "name": location.name,
-            } for location in location_list
-        ]
-    }
+    return [
+        {
+            "id": location.id,
+            "name": location.name,
+        } for location in location_list
+    ]
+
 
 
 @web_api.get("/location")
@@ -75,8 +78,8 @@ def create_location():
 
 
 @web_api.patch("/location")
-@required("id", int, RequiredValueSource.ARGS)
-def edi_location(id: int):
+@required("id", int, RequiredValueSource.JSON)
+def edit_location(id: int):
 
     location = models.Location.query.filter_by(id=id).first()
 
@@ -129,6 +132,9 @@ def edi_location(id: int):
     except KeyError:
         logging.debug("no location-del changes detected.")
 
+    db.session.commit()
+    return "Successfully updated location", 200
+
 
 def __update_resources(location, resources):
     try:
@@ -157,6 +163,12 @@ def __update_resources(location, resources):
 
 
 def __update_child_locations(location, locations_add=None, locations_del=None):
+
+    if locations_add is None:
+        locations_add = []
+
+    if locations_del is None:
+        locations_del = []
 
     # delete nested child- from parent-location
     for location_del in locations_del:

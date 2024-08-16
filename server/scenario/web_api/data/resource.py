@@ -9,6 +9,10 @@ from app_config import db
 from scenario.web_api.utils import update_media
 from utils.decorator import RequiredValueSource, required
 
+# pyright: reportCallIssue=false
+# pyright: reportAttributeAccessIssue=false
+# The following statements are excluded from pyright, due to ORM specifics.
+
 web_api = Blueprint("web_api-resource", __name__)
 
 
@@ -16,14 +20,12 @@ web_api = Blueprint("web_api-resource", __name__)
 def get_all_resources():
     """ Returns a json of all resources stored. """
     resource_list = models.Resource.query.all()
-    return {
-        [
-            {
-                "id": resource.id,
-                "name": resource.name,
-            } for resource in resource_list
-        ]
-    }
+    return [
+        {
+            "id": resource.id,
+            "name": resource.name,
+        } for resource in resource_list
+    ]
 
 
 @web_api.get("/resource")
@@ -66,14 +68,14 @@ def create_resource():
 
 @web_api.patch("/resource")
 @required("id", int, RequiredValueSource.JSON)
-def edit_resource():
-    request_data = request.get_json()
+def edit_resource(id: int):
 
     resource = models.Resource.query.filter_by(id=id).first()
 
     if not resource:
         raise NotFound(f"resource not found by id={id}")
 
+    request_data = request.get_json()
     try:
         resource.name = int(request_data["name"])
     except KeyError:

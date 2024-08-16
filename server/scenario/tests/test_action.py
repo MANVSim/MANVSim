@@ -1,5 +1,8 @@
 import models
 from scenario.web_api.utils import update_media
+# pyright: reportCallIssue=false
+# pyright: reportAttributeAccessIssue=false
+# The following statements are excluded from pyright, due to ORM specifics.
 
 
 def test_media():

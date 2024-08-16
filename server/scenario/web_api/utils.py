@@ -8,6 +8,11 @@ def update_media(dbo: models.Action | models.Location | models.Resource,
                  media_refs_add: list[dict] | None = None,
                  media_refs_del: list[dict] | None = None):
     """ Deletes/Adds media-data based on parameters. """
+    if media_refs_del is None:
+        media_refs_del = []
+    if media_refs_add is None:
+        media_refs_add = []
+
     media_refs: list[dict] = json.loads(dbo.media_refs)
     for del_media in media_refs_del:
         media_refs = __remove_media(media_refs, del_media)

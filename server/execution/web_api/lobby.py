@@ -166,8 +166,7 @@ def __get_roles() -> list[models.Role]:
 
 @cache
 def __get_top_level_locations() -> List[models.Location]:
-    return models.Location.query.where(
-        models.Location.location_id.is_(None)).all()
+    return models.Location.query.where(is_vehicle=True).all()  # pyright: ignore
 
 
 def __perform_state_change(new_status: Execution.Status, execution: Execution):
