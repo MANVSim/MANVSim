@@ -112,7 +112,7 @@ def role_required(required_role: WebUser.Role):
             try:
                 user_role = WebUser.Role.from_string(user_role)
             except ValueError:
-                abort(status.HTTP_403_FORBIDDEN)
+                abort(status.HTTP_401_UNAUTHORIZED)
 
             if user_role < required_role:
                 abort(status.HTTP_403_FORBIDDEN)

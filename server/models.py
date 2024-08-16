@@ -117,7 +117,7 @@ class WebUser(db.Model):
         WEB_ADMIN = 9999  # Web Application Administrator
         SCENARIO_ADMIN = 100  # Scenario Editor/Creator
         GAME_MASTER = 50  # Execution Management
-        NONE = 0
+        READ_ONLY = 0
 
         def __eq__(self, other):
             if isinstance(other, Role):
@@ -138,6 +138,7 @@ class WebUser(db.Model):
                 return cls[role_name.upper()]
             except KeyError:
                 raise ValueError(f"No Role found for name: {role_name}")
+
 
     username: Mapped[str] = mapped_column(primary_key=True)
     password: Mapped[str]

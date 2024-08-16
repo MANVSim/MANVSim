@@ -252,8 +252,8 @@ with create_app(csrf=csrf, db=db).app_context():
                    password=hashpw(b"pw1234", gensalt()).decode(),
                    role=WebUser.Role.GAME_MASTER.name))
 
-    insert(WebUser(username="nobody",
+    insert(WebUser(username="read",
                    password=hashpw(b"pw1234", gensalt()).decode(),
-                   role=WebUser.Role.NONE.name))
+                   role=WebUser.Role.READ_ONLY.name))
 
     db.session.commit()
