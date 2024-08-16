@@ -148,7 +148,7 @@ def __update_patients_in_scenario(scenario, new_patients):
             patient = models.TakesPartIn.query.filter_by(
                 scenario_id=scenario.id, patient_id=patient_data["id"]).first()
             quantity = int(patient_data["quantity"])
-            if not patient and quantity <= 0:
+            if quantity <= 0 and not patient:
                 continue
             elif not patient:
                 patient = models.TakesPartIn(

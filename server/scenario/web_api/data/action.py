@@ -162,7 +162,8 @@ def __update_resources(action, resources_add=None, resources_del=None):
             resource_id=resource_id,
             action_id=action.id
         )
-        db.session.delete(resource)
+        if resource:
+            db.session.delete(resource)
 
     # Add new required resources
     for resource_id in resources_add:

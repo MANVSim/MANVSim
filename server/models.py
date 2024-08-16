@@ -28,11 +28,22 @@ class Location(db.Model):
     name: Mapped[str] = mapped_column(nullable=False)
     media_refs = db.Column(db.JSON(), nullable=True)
     is_vehicle: Mapped[bool] = mapped_column(default=False, nullable=False)
-    location_id: Mapped[int] = mapped_column(
-        ForeignKey("location.id"), nullable=True)
 
     quantities_in_scenario = relationship("LocationQuantityInScenario",
                                           back_populates="location")
+    child_location = relationship("LocationContainsLocation",
+                                  back_populates="location")
+
+
+class LocationContainsLocation(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    parent: Mapped[int] = mapped_column(
+        ForeignKey("location.id"), nullable=False)
+    child: Mapped[int] = mapped_column(
+        ForeignKey("location.id"), nullable=False)
+
+    location = relationship("Location",
+                            back_populates="child_location")
 
 
 class Role(db.Model):
@@ -86,11 +97,19 @@ class LocationQuantityInScenario(db.Model):
                             back_populates="quantities_in_scenario")
 
 
+class ResourceQuantityInLocation(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    quantity: Mapped[int] = mapped_column(nullable=False)
+    location_id: Mapped[int] = mapped_column(
+        ForeignKey("location.id"), nullable=False)
+    resource_id: Mapped[int] = mapped_column(
+        ForeignKey("resource.id"), nullable=False)
+
+
 class Resource(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
     media_refs = db.Column(db.JSON(), nullable=True)
-    quantity: Mapped[int] = mapped_column(nullable=False)
     location_id: Mapped[int] = mapped_column(
         ForeignKey("location.id"), nullable=False)
     consumable: Mapped[bool] = mapped_column(nullable=False)
