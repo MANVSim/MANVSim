@@ -50,7 +50,7 @@ def get_action(action_id: int):
         "name": action.name,
         "min_role": min_role.name if min_role else None,
         "duration_secs": action.duration_secs,
-        "media_refs": json.loads(action.media_refs) if action.media_refs else {},
+        "media_refs": json.loads(action.media_refs) if action.media_refs else [],
         "results": action.results.split(RESULT_DELIMITER),
         "resources": [
             {
@@ -68,7 +68,7 @@ def create_action():
         name="Neue Maßnahmen",
         duration_secs=0,
         required_power=0,
-        media_refs="{}",
+        media_refs="[{}]",
         result=""
     )
     db.session.add(action)
@@ -113,7 +113,7 @@ def edit_action(id: int):
             logging.warning(f"No Role found with id={new_role["id"]}.")
     except KeyError:
         logging.debug("No role change detected or "
-                     "invalid role parameter provided.")
+                      "invalid role parameter provided.")
 
     try:
         action.duration_secs = int(request_data["duration_secs"])

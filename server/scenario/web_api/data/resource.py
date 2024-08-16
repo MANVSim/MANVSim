@@ -40,7 +40,7 @@ def get_resource(resource_id: int):
         "name": resource.name,
         "consumable": resource.consumable,
         "media_refs": json.loads(
-            resource.media_refs) if resource.media_refs else {},
+            resource.media_refs) if resource.media_refs else [],
     }
 
 
@@ -50,7 +50,7 @@ def create_resource():
         name="Neue Resource",
         consumable="False",
         quantity=10000,
-        media_refs="{}"
+        media_refs="[{}]"
     )
 
     db.session.add(resource)
@@ -64,7 +64,7 @@ def create_resource():
     }
 
 
-@web_api.post("/resource")
+@web_api.patch("/resource")
 @required("id", int, RequiredValueSource.JSON)
 def edit_resource():
     request_data = request.get_json()
