@@ -98,7 +98,7 @@ def role_required(required_role: WebUser.Role):
     """
     Decorator for a flask endpoint that only allows access to logged-in users with a specific role.
 
-    NOTE: This decorator needs to be the outermost to ensure working properly!
+    NOTE: To work properly this decorator must be invoked below the API path.
 
     :param required_role: The role required to access the endpoint
     :return: A decorator that wraps the function

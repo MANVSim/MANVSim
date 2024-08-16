@@ -18,8 +18,8 @@ from utils.decorator import required, RequiredValueSource, cache, role_required
 web_api = Blueprint("web_api-lobby", __name__)
 
 
-@role_required(WebUser.Role.GAME_MASTER)
 @web_api.post("/execution/activate")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("id", int, RequiredValueSource.FORM)
 @csrf.exempt
 def activate_execution(id: int):
@@ -39,8 +39,8 @@ def get_all_active_executions():
             in run.active_executions.values()]
 
 
-@role_required(WebUser.Role.GAME_MASTER)
 @web_api.get("/execution")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("id", int, RequiredValueSource.ARGS)
 def get_execution(id: int):
     # Add the execution to the active executions in case it stems from the
@@ -83,8 +83,8 @@ def get_execution(id: int):
         }
 
 
-@role_required(WebUser.Role.GAME_MASTER)
 @web_api.post("/execution/create")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("scenario_id", int, RequiredValueSource.FORM)
 @required("name", str, RequiredValueSource.FORM)
 def create_execution(scenario_id: int, name: str):
@@ -102,8 +102,8 @@ def create_execution(scenario_id: int, name: str):
         return message, 400
 
 
-@role_required(WebUser.Role.GAME_MASTER)
 @web_api.patch("/execution")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("id", int, RequiredValueSource.ARGS)
 @required("new_status", str.upper, RequiredValueSource.FORM)
 @csrf.exempt  # changes are applied via buttons. Therefore, no CSRF required
@@ -120,8 +120,8 @@ def change_execution_status(id: int, new_status: str):
                          f"'{new_status}'. ")
 
 
-@role_required(WebUser.Role.GAME_MASTER)
 @web_api.patch("/execution/player/status")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("id", int, RequiredValueSource.ARGS)
 @required("tan", str, RequiredValueSource.ARGS)
 @required("alerted", booleanize, RequiredValueSource.FORM)
@@ -143,8 +143,8 @@ def change_player_status(id: int, tan: str, alerted: bool):
     return Response(status=200)
 
 
-@role_required(WebUser.Role.GAME_MASTER)
 @web_api.post("/execution")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("id", int, RequiredValueSource.ARGS)
 @required("role", int, RequiredValueSource.FORM)
 @required("location", int, RequiredValueSource.FORM)
