@@ -71,6 +71,10 @@ class MediaData:
         return cls(media_type=cls.Type.TEXT, text=text, title=title)
 
     @classmethod
+    def new_text_file(cls, text_reference: str, title: Optional[str] = None) -> 'MediaData':
+        return cls(media_type=cls.Type.TEXT, title=title, media_reference=text_reference)
+
+    @classmethod
     def new_image(cls, image_reference: str,
                   title: Optional[str] = None) -> 'MediaData':
         return cls(media_type=cls.Type.IMAGE, media_reference=image_reference,

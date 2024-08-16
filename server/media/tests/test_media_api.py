@@ -15,7 +15,7 @@ def test_get_static_media(client):
     assert response.status_code == http.HTTPStatus.OK
 
 
-def test_post_instance_media(client):
+def test_post_instance_media_file(client):
     # Disable CSRF for this test
     client.application.config['WTF_CSRF_METHODS'] = []
 
@@ -32,6 +32,15 @@ def test_post_instance_media(client):
     # Test access of posted image
     response = client.get("/media/instance/image/test.jpg")
     assert response.status_code == http.HTTPStatus.OK
+
+
+def test_post_instance_media_text(client):
+    # Disable CSRF for this test
+    client.application.config['WTF_CSRF_METHODS'] = []
+
+    response = client.post("/media/txt", content_type="multipart/form-data", data={"text": "Test"})
+
+    assert response.status_code == http.HTTPStatus.CREATED
 
 
 def test_post_illegal_format(client):
