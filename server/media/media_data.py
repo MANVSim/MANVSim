@@ -67,7 +67,7 @@ class MediaData:
                 MediaData.ALLOWED_AUDIO_EXTENSIONS)
 
     @classmethod
-    def new_text(cls, text: str, title: Optional[str] = None) -> 'MediaData':
+    def new_text(cls, text: Optional[str], title: Optional[str] = None) -> 'MediaData':
         return cls(media_type=cls.Type.TEXT, text=text, title=title)
 
     @classmethod
