@@ -69,31 +69,6 @@ def required(arg: str, converter: Callable[[str], Any], source_enum: RequiredVal
     return decorator
 
 
-def admin_only(func: Callable):
-    """
-    Decorator for a flask endpoint that only allows access to logged in users with the web admin role.
-
-    :param func: The function to wrap
-    :return: Whatever the decorated function returns
-    """
-
-    @wraps(func)  # https://stackoverflow.com/a/64534085/11370741
-    @jwt_required()
-    def wrapper(*args, **kwargs):
-        user_role = get_jwt_identity()
-        try:
-            user_role = WebUser.Role.from_string(user_role)
-        except ValueError:
-            abort(status.HTTP_401_UNAUTHORIZED)
-
-        if user_role < WebUser.Role.WEB_ADMIN:
-            abort(status.HTTP_403_FORBIDDEN)
-
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
 def role_required(required_role: WebUser.Role):
     """
     Decorator for a flask endpoint that only allows access to logged-in users with a specific role.
