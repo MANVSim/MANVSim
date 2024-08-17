@@ -33,6 +33,7 @@ def activate_execution(id: int):
 
 
 @web_api.get("/execution/active")
+@role_required(WebUser.Role.READ_ONLY)
 def get_all_active_executions():
     """ Endpoint to return all currently active executions. """
     return [execution.to_dict(shallow=True) for execution
