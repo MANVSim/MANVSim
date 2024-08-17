@@ -10,9 +10,9 @@
 
 part of manv_api;
 
-class RunLocationTakeFromPost200Response {
-  /// Returns a new [RunLocationTakeFromPost200Response] instance.
-  RunLocationTakeFromPost200Response({
+class RunLocationTakeToPost200Response {
+  /// Returns a new [RunLocationTakeToPost200Response] instance.
+  RunLocationTakeToPost200Response({
     this.playerLocation,
   });
 
@@ -25,7 +25,7 @@ class RunLocationTakeFromPost200Response {
   LocationDTO? playerLocation;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is RunLocationTakeFromPost200Response &&
+  bool operator ==(Object other) => identical(this, other) || other is RunLocationTakeToPost200Response &&
     other.playerLocation == playerLocation;
 
   @override
@@ -34,7 +34,7 @@ class RunLocationTakeFromPost200Response {
     (playerLocation == null ? 0 : playerLocation!.hashCode);
 
   @override
-  String toString() => 'RunLocationTakeFromPost200Response[playerLocation=$playerLocation]';
+  String toString() => 'RunLocationTakeToPost200Response[playerLocation=$playerLocation]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -46,10 +46,10 @@ class RunLocationTakeFromPost200Response {
     return json;
   }
 
-  /// Returns a new [RunLocationTakeFromPost200Response] instance and imports its values from
+  /// Returns a new [RunLocationTakeToPost200Response] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static RunLocationTakeFromPost200Response? fromJson(dynamic value) {
+  static RunLocationTakeToPost200Response? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -58,24 +58,24 @@ class RunLocationTakeFromPost200Response {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "RunLocationTakeFromPost200Response[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "RunLocationTakeFromPost200Response[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "RunLocationTakeToPost200Response[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "RunLocationTakeToPost200Response[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return RunLocationTakeFromPost200Response(
+      return RunLocationTakeToPost200Response(
         playerLocation: LocationDTO.fromJson(json[r'player_location']),
       );
     }
     return null;
   }
 
-  static List<RunLocationTakeFromPost200Response> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <RunLocationTakeFromPost200Response>[];
+  static List<RunLocationTakeToPost200Response> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <RunLocationTakeToPost200Response>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = RunLocationTakeFromPost200Response.fromJson(row);
+        final value = RunLocationTakeToPost200Response.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -84,12 +84,12 @@ class RunLocationTakeFromPost200Response {
     return result.toList(growable: growable);
   }
 
-  static Map<String, RunLocationTakeFromPost200Response> mapFromJson(dynamic json) {
-    final map = <String, RunLocationTakeFromPost200Response>{};
+  static Map<String, RunLocationTakeToPost200Response> mapFromJson(dynamic json) {
+    final map = <String, RunLocationTakeToPost200Response>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = RunLocationTakeFromPost200Response.fromJson(entry.value);
+        final value = RunLocationTakeToPost200Response.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -98,14 +98,14 @@ class RunLocationTakeFromPost200Response {
     return map;
   }
 
-  // maps a json object with a list of RunLocationTakeFromPost200Response-objects as value to a dart map
-  static Map<String, List<RunLocationTakeFromPost200Response>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<RunLocationTakeFromPost200Response>>{};
+  // maps a json object with a list of RunLocationTakeToPost200Response-objects as value to a dart map
+  static Map<String, List<RunLocationTakeToPost200Response>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<RunLocationTakeToPost200Response>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = RunLocationTakeFromPost200Response.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = RunLocationTakeToPost200Response.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;

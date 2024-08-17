@@ -13,11 +13,13 @@ Method | HTTP request | Description
 [**notificationsGet**](DefaultApi.md#notificationsget) | **GET** /notifications | notification polling
 [**playerSetNamePost**](DefaultApi.md#playersetnamepost) | **POST** /player/set-name | Set username for the TAN
 [**runActionAllGet**](DefaultApi.md#runactionallget) | **GET** /run/action/all | Returns a list of actions available to the user.
+[**runActionPerformMovePatientPost**](DefaultApi.md#runactionperformmovepatientpost) | **POST** /run/action/perform/move/patient | Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
 [**runActionPerformPost**](DefaultApi.md#runactionperformpost) | **POST** /run/action/perform | Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
 [**runActionPerformResultGet**](DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action and officially finishes/dequeues the action of the patient.
 [**runLocationAllGet**](DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of  top-level accessible locations.
 [**runLocationLeavePost**](DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
-[**runLocationTakeFromPost**](DefaultApi.md#runlocationtakefrompost) | **POST** /run/location/take-from | A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+[**runLocationPutToPost**](DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
+[**runLocationTakeToPost**](DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
 [**runPatientAllIdsGet**](DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 [**runPatientArrivePost**](DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
 [**runPatientLeavePost**](DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
@@ -207,6 +209,52 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **runActionPerformMovePatientPost**
+> runActionPerformMovePatientPost(runActionPerformMovePatientPostRequest)
+
+Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
+
+### Example
+```dart
+import 'package:manv_api/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final runActionPerformMovePatientPostRequest = RunActionPerformMovePatientPostRequest(); // RunActionPerformMovePatientPostRequest | 
+
+try {
+    api_instance.runActionPerformMovePatientPost(runActionPerformMovePatientPostRequest);
+} catch (e) {
+    print('Exception when calling DefaultApi->runActionPerformMovePatientPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **runActionPerformMovePatientPostRequest** | [**RunActionPerformMovePatientPostRequest**](RunActionPerformMovePatientPostRequest.md)|  | 
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **runActionPerformPost**
 > RunActionPerformPost200Response runActionPerformPost(runActionPerformPostRequest)
 
@@ -391,10 +439,10 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **runLocationTakeFromPost**
-> RunLocationTakeFromPost200Response runLocationTakeFromPost(runLocationTakeFromPostRequest)
+# **runLocationPutToPost**
+> RunLocationTakeToPost200Response runLocationPutToPost(runLocationPutToPostRequest)
 
-A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
 
 ### Example
 ```dart
@@ -407,13 +455,13 @@ import 'package:manv_api/api.dart';
 //defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
 
 final api_instance = DefaultApi();
-final runLocationTakeFromPostRequest = RunLocationTakeFromPostRequest(); // RunLocationTakeFromPostRequest | 
+final runLocationPutToPostRequest = RunLocationPutToPostRequest(); // RunLocationPutToPostRequest | 
 
 try {
-    final result = api_instance.runLocationTakeFromPost(runLocationTakeFromPostRequest);
+    final result = api_instance.runLocationPutToPost(runLocationPutToPostRequest);
     print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->runLocationTakeFromPost: $e\n');
+    print('Exception when calling DefaultApi->runLocationPutToPost: $e\n');
 }
 ```
 
@@ -421,11 +469,58 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **runLocationTakeFromPostRequest** | [**RunLocationTakeFromPostRequest**](RunLocationTakeFromPostRequest.md)|  | 
+ **runLocationPutToPostRequest** | [**RunLocationPutToPostRequest**](RunLocationPutToPostRequest.md)|  | 
 
 ### Return type
 
-[**RunLocationTakeFromPost200Response**](RunLocationTakeFromPost200Response.md)
+[**RunLocationTakeToPost200Response**](RunLocationTakeToPost200Response.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **runLocationTakeToPost**
+> RunLocationTakeToPost200Response runLocationTakeToPost(runLocationTakeToPostRequest)
+
+A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
+
+### Example
+```dart
+import 'package:manv_api/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final runLocationTakeToPostRequest = RunLocationTakeToPostRequest(); // RunLocationTakeToPostRequest | 
+
+try {
+    final result = api_instance.runLocationTakeToPost(runLocationTakeToPostRequest);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->runLocationTakeToPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **runLocationTakeToPostRequest** | [**RunLocationTakeToPostRequest**](RunLocationTakeToPostRequest.md)|  | 
+
+### Return type
+
+[**RunLocationTakeToPost200Response**](RunLocationTakeToPost200Response.md)
 
 ### Authorization
 

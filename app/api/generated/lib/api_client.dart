@@ -184,6 +184,8 @@ class ApiClient {
           return value is DateTime ? value : DateTime.tryParse(value);
         case 'ActionDTO':
           return ActionDTO.fromJson(value);
+        case 'ActionDTOMediaReferencesInner':
+          return ActionDTOMediaReferencesInner.fromJson(value);
         case 'Error':
           return Error.fromJson(value);
         case 'LocationDTO':
@@ -204,6 +206,8 @@ class ApiClient {
           return ResourceDTO.fromJson(value);
         case 'RunActionAllGet200Response':
           return RunActionAllGet200Response.fromJson(value);
+        case 'RunActionPerformMovePatientPostRequest':
+          return RunActionPerformMovePatientPostRequest.fromJson(value);
         case 'RunActionPerformPost200Response':
           return RunActionPerformPost200Response.fromJson(value);
         case 'RunActionPerformPostRequest':
@@ -214,10 +218,12 @@ class ApiClient {
           return RunLocationAllGet200Response.fromJson(value);
         case 'RunLocationLeavePost200Response':
           return RunLocationLeavePost200Response.fromJson(value);
-        case 'RunLocationTakeFromPost200Response':
-          return RunLocationTakeFromPost200Response.fromJson(value);
-        case 'RunLocationTakeFromPostRequest':
-          return RunLocationTakeFromPostRequest.fromJson(value);
+        case 'RunLocationPutToPostRequest':
+          return RunLocationPutToPostRequest.fromJson(value);
+        case 'RunLocationTakeToPost200Response':
+          return RunLocationTakeToPost200Response.fromJson(value);
+        case 'RunLocationTakeToPostRequest':
+          return RunLocationTakeToPostRequest.fromJson(value);
         case 'RunPatientAllIdsGet200Response':
           return RunPatientAllIdsGet200Response.fromJson(value);
         case 'RunPatientArrivePost200Response':
