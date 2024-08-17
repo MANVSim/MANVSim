@@ -35,7 +35,7 @@ export function Root(): ReactElement {
             <Nav className="me-auto">
               <NavLink to="/" name="Home" />
               <NavLink to="/executions" name="Ausführungen" />
-              <NavLink to="/patients" name="Patienten" />
+              <NavLink to="/patient" name="Patienten" />
               <NavDropdown title="Benutzer">
                 <NavDropdown.Header>
                   {getStorageItem("user")}

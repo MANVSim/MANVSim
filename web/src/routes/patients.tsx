@@ -2,11 +2,11 @@ import { ReactElement } from "react"
 import { ActionFunctionArgs, useLoaderData } from "react-router"
 import ListGroup from "react-bootstrap/ListGroup"
 import PatientEntry from "../components/PatientEntry"
-import { Patient } from "../types"
+import { PatientResponse } from "../types"
 import { getPatients, tryFetchApi } from "../api"
 
 export default function PatientsRoute(): ReactElement {
-  const patients = useLoaderData() as Patient[]
+  const patients = useLoaderData() as PatientResponse[]
 
   return (
     <div>
@@ -14,7 +14,7 @@ export default function PatientsRoute(): ReactElement {
       <div className="mb-3">Die folgenden Patienten sind verfügbar:</div>
       <ListGroup>
         {patients.map(
-          (p: Patient): ReactElement => (
+          (p: PatientResponse): ReactElement => (
             <PatientEntry patient={p} key={p.id} />
           ),
         )}
@@ -24,7 +24,7 @@ export default function PatientsRoute(): ReactElement {
   )
 }
 
-PatientsRoute.loader = async function (): Promise<Patient[]> {
+PatientsRoute.loader = async function (): Promise<PatientResponse[]> {
   return await getPatients()
 }
 

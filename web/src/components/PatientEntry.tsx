@@ -1,12 +1,12 @@
 import Button from "react-bootstrap/Button"
 import ListGroup from "react-bootstrap/ListGroup"
 import Stack from "react-bootstrap/Stack"
-import { Patient } from "../types"
+import { PatientResponse } from "../types"
 import { ReactElement } from "react"
 import { CsrfForm } from "./CsrfForm"
 
 interface PatientEntryProps {
-  patient: Patient
+  patient: PatientResponse
 }
 
 export default function PatientEntry({

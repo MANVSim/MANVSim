@@ -13,7 +13,7 @@ import { LoginRoute } from "./routes/login"
 import { CsrfProvider } from "./contexts/csrf"
 import { AuthProvider } from "./contexts/auth"
 import { ExecutionRoute } from "./routes/execution"
-import StateRoute from "./routes/state"
+import StateRoute from "./routes/patient/state"
 import PatientsRoute from "./routes/patients"
 
 const router = createBrowserRouter([
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
       {
-        path: "/patients",
+        path: "/patient",
         element: <PatientsRoute />,
         loader: PatientsRoute.loader,
         action: PatientsRoute.action,

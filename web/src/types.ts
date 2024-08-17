@@ -165,10 +165,40 @@ export type ErrorResponse = z.infer<typeof errorResponse>
  */
 export const isErrorResponse = isTypeFactory<ErrorResponse>(errorResponse)
 
-const patient = z.object({
+const patientResponse = z.object({
   id: z.number(),
   name: z.string(),
   activity_diagram: z.string().optional(),
+})
+
+export type PatientResponse = z.infer<typeof patientResponse>
+export const isPatientRepsonse = isTypeFactory<PatientResponse>(patientResponse)
+
+const condition = z.object({
+  media_type: z.string(),
+  title: z.string().or(z.null()),
+  text: z.string(),
+  media_reference: z.string().or(z.null()),
+})
+
+const state = z.object({
+  uuid: z.string(),
+  start_time: z.number(),
+  timelimit: z.number(),
+  after_time_state_uuid: z.string(),
+  treatments: z.record(z.string(), z.string()),
+  conditions: z.record(z.string(), z.array(condition)),
+})
+
+const activityDiagram = z.object({
+  current: state,
+  states: state.array(),
+})
+
+const patient = patientResponse.extend({
+  activity_diagram: activityDiagram,
+  id: z.number(),
+  name: z.string(),
 })
 
 export type Patient = z.infer<typeof patient>
