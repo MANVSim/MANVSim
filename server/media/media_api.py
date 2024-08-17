@@ -79,7 +79,7 @@ def __handle_file_upload():
         result = MediaData.new_text_file(text_reference=f"{reference_path}/{filename}",
                                          title=request.form.get("title", default=None))
     else:
-        return "Forbidden file format", 400
+        return "Forbidden file format", 403
 
     save_path = os.path.join(current_app.root_path, reference_path, filename)
     # TODO: Maybe also check if extension matches contents of file

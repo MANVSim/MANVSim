@@ -40,6 +40,7 @@ paths:
         '404':
           description: File not found.
   
+
   /media/{filename}:
     post:
       summary: Allows users to upload media files to the server
@@ -49,8 +50,9 @@ paths:
           required: true
           schema:
             type: string
-          description: Allowed are images in format `{.png, .jpg, .jpeg, .gif, .webp}`, videos in format `{.mp4, .mov", .mkv}`, audio in format `{.mp3, .wav, .ogg, .flac}`, text in format `{.txt}`
+          description: The name of the file being uploaded. 
       requestBody:
+        required: true
         content:
           multipart/form-data:
             schema:
@@ -59,8 +61,61 @@ paths:
                 file:
                   type: string
                   format: binary
+                  description: Allowed are images in format `{.png, .jpg, .jpeg, .gif, .webp}`, videos in format `{.mp4, .mov", .mkv}`, audio in format `{.mp3, .wav, .ogg, .flac}`, text in format `{.txt}`
       responses:
         '201':
           description: File uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaData'
         '400':
-          description: No file part in request or No file provided or Forbidden file format
+          description: No file part in request or No file provided
+        '403':
+          description: Forbidden file format
+
+
+  /media/txt:
+    post:
+      summary: Returns a valid MediaData-JSON for raw text
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Optional title for text content
+                text:
+                  type: string
+                  description: Raw text content
+      responses:
+        '201':
+          description: MediaData-JSON created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaData'
+
+        '400':
+          description: No 'title' or 'text' field submitted
+
+
+components:
+
+  schemas:
+
+    MediaData:
+      type: object
+      properties:
+        media_type:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
+        media_reference:
+          type: string
+      required: [ media_type ]
