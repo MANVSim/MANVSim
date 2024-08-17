@@ -20,7 +20,7 @@ class PatientAction {
         name: dto.name,
         durationInSeconds: dto.durationSec,
         resourceNamesNeeded: dto.resourcesNeeded,
-        pictureRef: dto.pictureRef
+        pictureRef: dto.mediaReferences.firstOrNull?.mediaReference // TODO: change to new multi media format
     );
   }
 }
