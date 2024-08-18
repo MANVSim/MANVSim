@@ -63,7 +63,7 @@ def __handle_file_upload():
         return "Invalid request: No file provided", 400
 
     if not __check_file_content(file):
-        return "Contents of the file and file extension do not match", 415
+        return "Invalid request: Contents of the file and file extension do not match", 400
 
     filename = secure_filename(file.filename)
     extension = os.path.splitext(filename)[1]
@@ -85,7 +85,7 @@ def __handle_file_upload():
         result = MediaData.new_text_file(text_reference=f"{reference_path}/{filename}",
                                          title=request.form.get("title", default=None))
     else:
-        return "Forbidden file format", 415
+        return "Unsupported file format", 415
 
     save_path = os.path.join(current_app.root_path, reference_path, filename)
     file.save(save_path)
@@ -103,7 +103,7 @@ def __handle_raw_text():
 
 def __check_file_content(file: FileStorage) -> bool:
     """ Checks if the file content matches the extension. """
-    extension_type, _ = mimetypes.guess_type(file.filename)  # Get MIME type based on file extension
+    extension_type, _ = mimetypes.guess_type(str(file.filename))  # Get MIME type based on file extension
 
     file_content = file.read()
     content_type = magic.from_buffer(file_content, mime=True)  # Get MIME type of file content

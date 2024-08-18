@@ -70,9 +70,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/MediaData'
         '400':
-          description: No file part in request or No file provided
+          description: No file part in request or no file provided or file content/extension mismatch
         '415':
-          description: Forbidden file format or file content/extension mismatch
+          description: Unsupported file format
 
 
   /media/txt:
