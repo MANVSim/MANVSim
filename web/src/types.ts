@@ -182,6 +182,7 @@ const condition = z.object({
 })
 
 const state = z.object({
+  pause_time: z.number(),
   uuid: z.string(),
   start_time: z.number(),
   timelimit: z.number(),
