@@ -10,7 +10,7 @@ export default function StateRoute(): ReactElement {
     <div>
       <ListGroup>
         {Object.values(patient.activity_diagram.states).map((state: State) => (
-          <div>{state.uuid}</div>
+          <div key={state.uuid}>{state.uuid}</div>
         ))}
       </ListGroup>
     </div>
@@ -28,7 +28,6 @@ StateRoute.loader = async function ({
   if (patient.activity_diagram !== undefined) {
     patient.activity_diagram = JSON.parse(patient.activity_diagram)
   }
-  console.log(patient)
 
   return patient
 }
