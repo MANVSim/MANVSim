@@ -10,7 +10,7 @@ export default function StateRoute(): ReactElement {
     <div>
       <ListGroup>
         {Object.values(patient.activity_diagram.states).map((state: State) => (
-          <div key={state.uuid}>{state.uuid}</div>
+          <ListGroup.Item key={state.uuid}>{state.uuid}</ListGroup.Item>
         ))}
       </ListGroup>
     </div>
