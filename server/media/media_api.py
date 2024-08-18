@@ -1,6 +1,9 @@
+import mimetypes
 import os
 
+import magic
 from flask import send_from_directory, request, Blueprint, current_app, Flask
+from werkzeug.datastructures.file_storage import FileStorage
 from werkzeug.utils import secure_filename
 
 from media.media_data import MediaData
@@ -59,6 +62,9 @@ def __handle_file_upload():
     if not file.filename:
         return "Invalid request: No file provided", 400
 
+    if not __check_file_content(file):
+        return "Contents of the file and file extension do not match", 415
+
     filename = secure_filename(file.filename)
     extension = os.path.splitext(filename)[1]
     reference_path = "media/instance/"
@@ -79,10 +85,9 @@ def __handle_file_upload():
         result = MediaData.new_text_file(text_reference=f"{reference_path}/{filename}",
                                          title=request.form.get("title", default=None))
     else:
-        return "Forbidden file format", 403
+        return "Forbidden file format", 415
 
     save_path = os.path.join(current_app.root_path, reference_path, filename)
-    # TODO: Maybe also check if extension matches contents of file
     file.save(save_path)
     return result.to_json(), 201
 
@@ -94,3 +99,13 @@ def __handle_raw_text():
         return "Invalid request: Missing 'text' or 'title' attribute", 400
 
     return MediaData.new_text(title, text).to_json(), 201
+
+
+def __check_file_content(file: FileStorage) -> bool:
+    """ Checks if the file content matches the extension. """
+    extension_type, _ = mimetypes.guess_type(file.filename)  # Get MIME type based on file extension
+
+    file_content = file.read()
+    content_type = magic.from_buffer(file_content, mime=True)  # Get MIME type of file content
+
+    return extension_type == content_type

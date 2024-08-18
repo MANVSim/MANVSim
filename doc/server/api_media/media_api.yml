@@ -71,8 +71,8 @@ paths:
                 $ref: '#/components/schemas/MediaData'
         '400':
           description: No file part in request or No file provided
-        '403':
-          description: Forbidden file format
+        '415':
+          description: Forbidden file format or file content/extension mismatch
 
 
   /media/txt:

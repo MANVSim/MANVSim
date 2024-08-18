@@ -55,7 +55,7 @@ def test_post_illegal_format(client):
         response = client.post("/media/test.png",
                                content_type="multipart/form-data", data=data)
 
-    assert response.status_code == http.HTTPStatus.FORBIDDEN
+    assert response.status_code == http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE
 
 
 def test_illegal_get(client):
