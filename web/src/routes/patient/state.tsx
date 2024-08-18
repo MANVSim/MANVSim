@@ -1,13 +1,18 @@
 import { ReactElement } from "react"
-import { LoaderFunctionArgs } from "react-router"
+import { LoaderFunctionArgs, useLoaderData } from "react-router"
 import { getPatient } from "../../api"
-import { PatientResponse } from "../../types"
+import { Patient, PatientResponse, State } from "../../types"
 import { ListGroup } from "react-bootstrap"
 
 export default function StateRoute(): ReactElement {
+  const patient = useLoaderData() as Patient
   return (
     <div>
-      <ListGroup>{/* TODO: List states  */}</ListGroup>
+      <ListGroup>
+        {Object.values(patient.activity_diagram.states).map((state: State) => (
+          <div>{state.uuid}</div>
+        ))}
+      </ListGroup>
     </div>
   )
 }

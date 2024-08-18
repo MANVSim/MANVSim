@@ -190,9 +190,11 @@ const state = z.object({
   conditions: z.record(z.string(), z.array(condition)),
 })
 
+export type State = z.infer<typeof state>
+
 const activityDiagram = z.object({
   current: state,
-  states: state.array(),
+  states: z.record(z.string(), state),
 })
 
 const patient = patientResponse.extend({
