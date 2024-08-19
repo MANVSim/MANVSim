@@ -1,3 +1,4 @@
+# pylint: disable=unsubscriptable-object
 from enum import IntEnum
 from typing import List
 
