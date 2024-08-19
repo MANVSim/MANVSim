@@ -261,7 +261,7 @@ def main(app):
                    password=hashpw(b"pw1234", gensalt()).decode(),
                    role=WebUser.Role.READ_ONLY.name))
 
-        db.session.commit()
+    db.session.commit()
 
 
 if __name__ == '__main__':
