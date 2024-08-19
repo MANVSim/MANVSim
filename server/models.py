@@ -2,7 +2,7 @@ from enum import IntEnum
 from typing import List
 
 from bcrypt import checkpw
-from sqlalchemy import ForeignKey, UniqueConstraint
+from sqlalchemy import ForeignKey # UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app_config import db
@@ -122,16 +122,17 @@ class LocationQuantityInScenario(db.Model):
 
 
 class PlayersToVehicleInExecution(db.Model):
-    execution_id: Mapped[int] = mapped_column(ForeignKey("execution.id"), primary_key=True,
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    execution_id: Mapped[int] = mapped_column(ForeignKey("execution.id"),
                                               nullable=False)
-    player_id: Mapped[str] = mapped_column(ForeignKey("player.tan"), primary_key=True,
+    player_id: Mapped[str] = mapped_column(ForeignKey("player.tan"),
                                            nullable=False)
     location_id: Mapped[int] = mapped_column(ForeignKey("location.id"), nullable=False)
     vehicle_name: Mapped[str] = mapped_column(nullable=False)
 
-    __table_args__ = (
-        UniqueConstraint("execution_id", "vehicle_name", name="unique_execution_vehicle"),
-    )
+    #__table_args__ = (
+    #    UniqueConstraint("execution_id", "vehicle_name", name="unique_execution_vehicle"),
+    #)
 
 
 class Resource(db.Model):
