@@ -74,8 +74,24 @@ class Location(db.Model):
 
     quantities_in_scenario = relationship("LocationQuantityInScenario",
                                           back_populates="location")
-    child_location = relationship("LocationContainsLocation",
-                                  back_populates="location")
+
+    # Relationship to manage child locations (all locations contained within this one)
+    children = relationship(
+        "Location",
+        secondary="location_contains_location",
+        primaryjoin="Location.id == LocationContainsLocation.parent",
+        secondaryjoin="Location.id == LocationContainsLocation.child",
+        back_populates="parents"
+    )
+
+    # Relationship to manage parent locations (all locations that contain this one)
+    parents = relationship(
+        "Location",
+        secondary="location_contains_location",
+        primaryjoin="Location.id == LocationContainsLocation.child",
+        secondaryjoin="Location.id == LocationContainsLocation.parent",
+        back_populates="children"
+    )
 
 
 class LocationContainsLocation(db.Model):
@@ -89,9 +105,6 @@ class LocationContainsLocation(db.Model):
         ForeignKey("location.id"), nullable=False)
     child: Mapped[int] = mapped_column(
         ForeignKey("location.id"), nullable=False)
-
-    location = relationship("Location",
-                            back_populates="child_location")
 
 
 class LocationQuantityInScenario(db.Model):
@@ -110,9 +123,9 @@ class Resource(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
     media_refs = db.Column(db.JSON(), nullable=True)
-    location_id: Mapped[int] = mapped_column(
-        ForeignKey("location.id"), nullable=False)
     consumable: Mapped[bool] = mapped_column(nullable=False)
+    quantities_in_location = relationship("ResourceQuantityInLocation",
+                                          back_populates="resource")
 
 
 class ResourceQuantityInLocation(db.Model):
@@ -122,6 +135,8 @@ class ResourceQuantityInLocation(db.Model):
         ForeignKey("location.id"), nullable=False)
     resource_id: Mapped[int] = mapped_column(
         ForeignKey("resource.id"), nullable=False)
+    resource = relationship("Resource",
+                            back_populates="quantities_in_location")
 
 
 class ResourcesNeeded(db.Model):

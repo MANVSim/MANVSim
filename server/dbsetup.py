@@ -7,15 +7,15 @@ from media.media_data import MediaData
 from models import (
     Scenario,
     Execution,
-    Location,
+    Location, LocationContainsLocation, LocationQuantityInScenario,
     Role,
     Player,
     Patient,
     TakesPartIn,
-    Resource,
+    Resource, ResourceQuantityInLocation,
     Action,
     ResourcesNeeded,
-    WebUser, LocationQuantityInScenario,
+    WebUser,
 )
 from vars import RESULT_DELIMITER
 
@@ -29,44 +29,54 @@ def __create_resources():
     insert(
         Resource(id=0, name="Verband", media_refs=MediaData.list_to_json([
             MediaData.new_image("media/static/image/no_image.png")]),
-                 quantity=10, location_id=2, consumable=True))
+                 consumable=True))
     insert(
         Resource(id=1, name="Pflaster", media_refs=MediaData.list_to_json([
             MediaData.new_image("media/static/image/no_image.png")]),
-                 quantity=10000, location_id=3, consumable=True))
+                 consumable=True))
     insert(Resource(id=2, name="Stetoskop",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
                             "media/static/image/no_image.png")]),
-                    quantity=2, location_id=1, consumable=False))
+                    consumable=False))
     insert(Resource(id=3, name="Knochensäge",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
                             "media/static/image/no_image.png")]),
-                    quantity=1, location_id=0, consumable=False))
-    insert(Resource(id=4, name="EKG", quantity=1,
-                    media_refs=MediaData.list_to_json([
-                        MediaData.new_image(
-                            "media/static/image/tasche_ekg.jpg")]),
-                    location_id=5, consumable=False))
-    insert(Resource(id=5, name="Infusion", quantity=3,
-                    media_refs=MediaData.list_to_json([
-                        MediaData.new_image(
-                            "media/static/image/no_image.png")]),
-                    location_id=3,
                     consumable=False))
-    insert(Resource(id=6, name="Trage", quantity=4,
+    insert(Resource(id=4, name="EKG", consumable=False,
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/no_image.png")]),
-                    location_id=0,
-                    consumable=False))
-    insert(Resource(id=7, name="Beatmungsgerät", quantity=1,
+                            "media/static/image/tasche_ekg.jpg")])))
+    insert(Resource(id=5, name="Infusion", consumable=False,
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/no_image.png")]),
-                    location_id=4,
-                    consumable=False))
+                            "media/static/image/no_image.png")])))
+    insert(Resource(id=6, name="Trage", consumable=False,
+                    media_refs=MediaData.list_to_json([
+                        MediaData.new_image(
+                            "media/static/image/no_image.png")])))
+    insert(Resource(id=7, name="Beatmungsgerät", consumable=False,
+                    media_refs=MediaData.list_to_json([
+                        MediaData.new_image(
+                            "media/static/image/no_image.png")])))
+
+    insert(ResourceQuantityInLocation(id=0, quantity=10,
+                                      location_id=2, resource_id=0))
+    insert(ResourceQuantityInLocation(id=1, quantity=10000,
+                                      location_id=3, resource_id=1))
+    insert(ResourceQuantityInLocation(id=2, quantity=2,
+                                      location_id=1, resource_id=2))
+    insert(ResourceQuantityInLocation(id=3, quantity=1,
+                                      location_id=0, resource_id=3))
+    insert(ResourceQuantityInLocation(id=4, quantity=1,
+                                      location_id=5, resource_id=4))
+    insert(ResourceQuantityInLocation(id=5, quantity=3,
+                                      location_id=3, resource_id=5))
+    insert(ResourceQuantityInLocation(id=6, quantity=4,
+                                      location_id=0, resource_id=6))
+    insert(ResourceQuantityInLocation(id=7, quantity=1,
+                                      location_id=4, resource_id=7))
 
 
 def __create_locations():
@@ -76,31 +86,35 @@ def __create_locations():
     insert(Location(id=1, name="Sichtungstasche",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/tasche_sichtung.jpg")]),
-                    location_id=0))
+                            "media/static/image/tasche_sichtung.jpg")])))
     insert(Location(id=2, name="Verbandskasten",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/tasche_rot.jpg")]),
-                    location_id=1))
+                            "media/static/image/tasche_rot.jpg")])))
     insert(Location(id=3, name="Roter Rucksack",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/rucksack_rot.jpg")]),
-                    location_id=0))
+                            "media/static/image/rucksack_rot.jpg")])))
     insert(Location(id=4, name="Blauer Rucksack",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/rucksack_blau.jpg")]),
-                    location_id=0))
+                            "media/static/image/rucksack_blau.jpg")])))
     insert(Location(id=5, name="EKG", media_refs=MediaData.list_to_json([
-        MediaData.new_image("media/static/image/tasche_ekg.jpg")]),
-                    location_id=0))
+        MediaData.new_image("media/static/image/tasche_ekg.jpg")])))
     insert(Location(id=6, name="Holstein Stadion",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
                             "media/static/image/no_image.png")]))
            )
+
+    insert(LocationContainsLocation(id=0, parent=0, child=1,))
+    insert(LocationContainsLocation(id=1, parent=0, child=2,))
+    insert(LocationContainsLocation(id=2, parent=0, child=3))
+    insert(LocationContainsLocation(id=3, parent=0, child=4))
+    insert(LocationContainsLocation(id=4, parent=0, child=5))
+
+    insert(LocationQuantityInScenario(id=0, quantity=3, scenario_id=2,
+                                      location_id=0))
 
 
 def __create_actions():
@@ -216,11 +230,6 @@ def __takes_part_in():
     insert(TakesPartIn(scenario_id=2, patient_id=4))
 
 
-def __location_quantity_in_scenario():
-    insert(LocationQuantityInScenario(id=0, quantity=3, scenario_id=2,
-                                      location_id=0))
-
-
 def __create_executions():
     insert(Execution(id=3, name="Übungssimulation \"Busunglück\" 2024",
                      scenario_id=0))
@@ -231,19 +240,17 @@ def insert(data):
     db.session.add(data)
 
 
-def main(app):
-    with app.app_context():
-        __create_executions()
-        __create_scenarios()
-        __create_players()
-        __create_roles()
-        __create_patients()
-        __create_locations()
-        __create_resources()
-        __create_actions()
-        __resource_needed()
-        __takes_part_in()
-        __location_quantity_in_scenario()
+with create_app(csrf=csrf, db=db).app_context():
+    __create_executions()
+    __create_scenarios()
+    __create_players()
+    __create_roles()
+    __create_patients()
+    __create_locations()
+    __create_resources()
+    __create_actions()
+    __resource_needed()
+    __takes_part_in()
 
     insert(WebUser(username="wadmin",
                    password=hashpw(b"pw1234", gensalt()).decode(),
@@ -262,7 +269,3 @@ def main(app):
                    role=WebUser.Role.READ_ONLY.name))
 
     db.session.commit()
-
-
-if __name__ == '__main__':
-    main(create_app(csrf=csrf, db=db))

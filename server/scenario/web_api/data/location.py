@@ -50,8 +50,8 @@ def get_location(location_id: int):
             location.media_refs) if location.media_refs else {},
         "child_locations": [
             {
-                "id": location_relation.location.id,
-                "name": location_relation.location.name
+                "id": location_relation.child_location.id,
+                "name": location_relation.child_location.name
             } for location_relation in location_relations
         ]
     }
