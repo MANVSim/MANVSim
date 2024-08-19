@@ -1,7 +1,7 @@
 from conftest import generate_token
 
 
-def test_location_all(client):
+def test_player_inventory(client):
     auth_header = generate_token(client.application)
 
     response = client.get("/api/run/player/inventory", headers=auth_header)
