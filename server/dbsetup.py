@@ -12,10 +12,10 @@ from models import (
     Player,
     Patient,
     TakesPartIn,
-    Resource, ResourceQuantityInLocation,
+    Resource,
     Action,
     ResourcesNeeded,
-    WebUser,
+    WebUser, ResourceInLocation,
 )
 from vars import RESULT_DELIMITER
 
@@ -61,21 +61,21 @@ def __create_resources():
                         MediaData.new_image(
                             "media/static/image/no_image.png")])))
 
-    insert(ResourceQuantityInLocation(id=0, quantity=10,
-                                      location_id=2, resource_id=0))
-    insert(ResourceQuantityInLocation(id=1, quantity=10000,
-                                      location_id=3, resource_id=1))
-    insert(ResourceQuantityInLocation(id=2, quantity=2,
-                                      location_id=1, resource_id=2))
-    insert(ResourceQuantityInLocation(id=3, quantity=1,
+    insert(ResourceInLocation(id=0, quantity=10,
+                              location_id=2, resource_id=0))
+    insert(ResourceInLocation(id=1, quantity=10000,
+                              location_id=3, resource_id=1))
+    insert(ResourceInLocation(id=2, quantity=2,
+                              location_id=1, resource_id=2))
+    insert(ResourceInLocation(id=3, quantity=1,
                                       location_id=0, resource_id=3))
-    insert(ResourceQuantityInLocation(id=4, quantity=1,
+    insert(ResourceInLocation(id=4, quantity=1,
                                       location_id=5, resource_id=4))
-    insert(ResourceQuantityInLocation(id=5, quantity=3,
+    insert(ResourceInLocation(id=5, quantity=3,
                                       location_id=3, resource_id=5))
-    insert(ResourceQuantityInLocation(id=6, quantity=4,
+    insert(ResourceInLocation(id=6, quantity=4,
                                       location_id=0, resource_id=6))
-    insert(ResourceQuantityInLocation(id=7, quantity=1,
+    insert(ResourceInLocation(id=7, quantity=1,
                                       location_id=4, resource_id=7))
 
 
@@ -107,8 +107,8 @@ def __create_locations():
                             "media/static/image/no_image.png")]))
            )
 
-    insert(LocationContainsLocation(id=0, parent=0, child=1,))
-    insert(LocationContainsLocation(id=1, parent=0, child=2,))
+    insert(LocationContainsLocation(id=0, parent=0, child=1, ))
+    insert(LocationContainsLocation(id=1, parent=0, child=2, ))
     insert(LocationContainsLocation(id=2, parent=0, child=3))
     insert(LocationContainsLocation(id=3, parent=0, child=4))
     insert(LocationContainsLocation(id=4, parent=0, child=5))

@@ -139,7 +139,7 @@ def edit_location(id: int):
 def __update_resources(location, resources):
     try:
         for resource_data in resources:
-            resource = models.ResourceQuantityInLocation.query.filter_by(
+            resource = models.ResourceInLocation.query.filter_by(
                 location_id=location.id,
                 resource_id=resource_data["id"]
             ).first()
@@ -147,7 +147,7 @@ def __update_resources(location, resources):
             if quantity <= 0 and not resource:
                 continue
             elif not resource:
-                resource = models.ResourceQuantityInLocation(
+                resource = models.ResourceInLocation(
                     quantity=quantity,
                     location_id=location.id,
                     resource_id=resource_data["id"]
