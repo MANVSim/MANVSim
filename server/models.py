@@ -123,10 +123,11 @@ class LocationQuantityInScenario(db.Model):
 
 
 class PlayersToVehicleInExecution(db.Model):
-    execution_id: Mapped[int] = mapped_column(ForeignKey("execution.id"), primary_key=True,
+    execution_id: Mapped[int] = mapped_column(ForeignKey("execution.id"),
+                                              primary_key=True,
                                               nullable=False)
-    player_id: Mapped[str] = mapped_column(ForeignKey("player.tan"), primary_key=True,
-                                           nullable=False)
+    player_id: Mapped[str] = mapped_column(ForeignKey("player.tan"),
+                                           nullable=False, primary_key=True)
     location_id: Mapped[int] = mapped_column(ForeignKey("location.id"), nullable=False)
     vehicle_name: Mapped[str] = mapped_column(nullable=False)
 
