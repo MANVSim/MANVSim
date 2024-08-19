@@ -4,21 +4,22 @@ from flask import Blueprint, request
 from werkzeug.exceptions import NotFound, BadRequest
 
 import models
+from models import WebUser
 from app_config import db
-from utils.decorator import admin_only, required, RequiredValueSource
+from utils.decorator import role_required, required, RequiredValueSource
+
+web_api = Blueprint("web_api-scenario", __name__)
 
 # pyright: reportCallIssue=false
 # pyright: reportAttributeAccessIssue=false
 # The following statements are excluded from pyright, due to ORM specifics.
 
-web_api = Blueprint("web_api-scenario", __name__)
-
 
 # -- DBO Execution
 
 @web_api.get("/templates")
-@admin_only
-def get_execution():
+@role_required(WebUser.Role.READ_ONLY)
+def get_templates():
     return [
         {
             "id": scenario.id,

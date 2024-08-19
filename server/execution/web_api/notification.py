@@ -1,13 +1,14 @@
 from flask import Blueprint, request
 
 from execution import run
-from utils.decorator import admin_only
+from models import WebUser
+from utils.decorator import role_required
 
 web_api = Blueprint("web_api-notification", __name__)
 
 
-@admin_only
 @web_api.post("/notifications/post")
+@role_required(WebUser.Role.GAME_MASTER)
 def add_notification_to_execution():
     """
     Endpoint for adding a notification to an execution via the execution id.

@@ -178,8 +178,6 @@ def __create_roles():
 def __create_players():
     insert(Player(tan="123ABC", execution_id=1, location_id=0, role_id=1,
                   alerted=True, activation_delay_sec=120))
-    insert(Player(tan="456DEF", execution_id=23456, location_id=0, role_id=2,
-                  alerted=True, activation_delay_sec=120))
     insert(Player(tan="987ZYX", execution_id=2, location_id=0,
                   role_id=2, alerted=True, activation_delay_sec=10))
     insert(Player(tan="654WVU", execution_id=2, location_id=0, role_id=3,
@@ -226,7 +224,6 @@ def __location_quantity_in_scenario():
 def __create_executions():
     insert(Execution(id=3, name="Übungssimulation \"Busunglück\" 2024",
                      scenario_id=0))
-    insert(Execution(id=23456, name="Kreativer Name", scenario_id=1))
     insert(Execution(id=4, name="Dummy Execution 2024", scenario_id=2))
 
 
@@ -248,8 +245,21 @@ def main(app):
         __takes_part_in()
         __location_quantity_in_scenario()
 
-        insert(WebUser(username="Terra", password=hashpw(b"pw1234",
-                                                         gensalt()).decode()))
+    insert(WebUser(username="wadmin",
+                   password=hashpw(b"pw1234", gensalt()).decode(),
+                   role=WebUser.Role.WEB_ADMIN.name))
+
+    insert(WebUser(username="sadmin",
+                   password=hashpw(b"pw1234", gensalt()).decode(),
+                   role=WebUser.Role.SCENARIO_ADMIN.name))
+
+    insert(WebUser(username="gmaster",
+                   password=hashpw(b"pw1234", gensalt()).decode(),
+                   role=WebUser.Role.GAME_MASTER.name))
+
+    insert(WebUser(username="read",
+                   password=hashpw(b"pw1234", gensalt()).decode(),
+                   role=WebUser.Role.READ_ONLY.name))
 
         db.session.commit()
 
