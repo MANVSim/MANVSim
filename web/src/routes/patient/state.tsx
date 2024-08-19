@@ -1,7 +1,7 @@
 import { ReactElement } from "react"
 import { LoaderFunctionArgs, useLoaderData } from "react-router"
 import { getPatient } from "../../api"
-import { Patient, PatientResponse, State } from "../../types"
+import { Patient, State } from "../../types"
 import { ListGroup } from "react-bootstrap"
 
 interface StateEntryProps {
@@ -42,15 +42,15 @@ export default function StateRoute(): ReactElement {
 
 StateRoute.loader = async function ({
   params,
-}: LoaderFunctionArgs): Promise<PatientResponse> {
+}: LoaderFunctionArgs): Promise<Patient> {
   const id = params.patientId
   if (id === undefined) {
     throw new Error("No patient ID provided")
   }
   const patient = await getPatient(id)
-  if (patient.activity_diagram !== undefined) {
-    patient.activity_diagram = JSON.parse(patient.activity_diagram)
-  }
 
-  return patient
+  return {
+    ...patient,
+    activity_diagram: JSON.parse(patient.activity_diagram || "{}"),
+  }
 }

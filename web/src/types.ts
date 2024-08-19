@@ -198,6 +198,8 @@ const activityDiagram = z.object({
   states: z.record(z.string(), state),
 })
 
+export type ActivityDiagram = z.infer<typeof activityDiagram>
+
 const patient = patientResponse.extend({
   activity_diagram: activityDiagram,
   id: z.number(),
