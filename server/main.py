@@ -1,4 +1,5 @@
 from flask_migrate import Migrate
+
 from app import create_app
 from app_config import csrf, db
 

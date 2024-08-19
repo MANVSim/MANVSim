@@ -1,13 +1,14 @@
 from flask import Blueprint
 
 import models
-from utils.decorator import admin_only
+from models import WebUser
+from utils.decorator import role_required
 
 web_api = Blueprint("web_api-scenario", __name__)
 
 
 @web_api.get("/templates")
-@admin_only
+@role_required(WebUser.Role.READ_ONLY)
 def get_templates():
     return [
         {

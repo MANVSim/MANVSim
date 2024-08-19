@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/rendering.dart';
+
 
 
 class TimerWidget extends StatefulWidget {
-  final int duration;
+  final Duration duration;
   final VoidCallback? onTimerComplete;
 
   const TimerWidget({super.key, required this.duration, this.onTimerComplete});
@@ -14,13 +16,18 @@ class TimerWidget extends StatefulWidget {
 }
 
 class TimerWidgetState extends State<TimerWidget> {
+
+  /// Remaining time in seconds.
   late int _remainingTime;
+
+
   Timer? _timer;
+  /// Timer ticks every second.
 
   @override
   void initState() {
     super.initState();
-    _remainingTime = widget.duration;
+    _remainingTime = widget.duration.inSeconds;
     _startTimer();
   }
 
@@ -46,8 +53,18 @@ class TimerWidgetState extends State<TimerWidget> {
   }
 
   @override
+  void didUpdateWidget(TimerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.duration != widget.duration) {
+      _timer?.cancel();
+      _remainingTime = widget.duration.inSeconds;
+      _startTimer();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    double progressValue = _remainingTime / widget.duration;
+    double progressValue = _remainingTime / widget.duration.inSeconds;
 
     return Stack(
       alignment: Alignment.center,

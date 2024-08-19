@@ -47,9 +47,23 @@
   "waitAlreadyLoggedInHeader": "TAN bereits angemeldet",
   "waitAlreadyLoggedInText": "Für diese TAN wurde bereits ein Name gesetzt. Bitte loggen Sie sich erneut ein.",
 
-  "waitText": "Warten auf Start der Simulation",
+  "waitText": "Bitte warten",
   "waitSkip": "Überspringen",
-
+  "waitTextWaitForStart": "Warten auf Start der Simulation",
+  "waitTextWaitForStartTime": "Warten auf Start der Simulation (Unbekannte Startzeit)",
+  "waitTextWaitForStartAndArrival": "Warten auf Start der Simulation und Ankunft am Zielort",
+  "waitTextWaitForArrival": "Spieler wurde alarmiert. Warten auf Ankunft am Zielort",
+  "waitTextWaitForTravelTime": "Warten auf Alarmierung",
+  "waitTextInitial": "Ankunftszeiten werden geladen",
+  "waitErrorOccured": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten: '{error}'",
+    "@waitErrorOccured": {
+        "placeholders": {
+        "error": {
+            "type": "String",
+            "example": "Server nicht erreichbar"
+        }
+        }
+    },
   "nameScreenName": "Namen festlegen",
   "nameName": "Name",
   "nameSubmit": "Simulation beitreten",

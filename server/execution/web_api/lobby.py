@@ -12,14 +12,15 @@ from execution import run
 from execution.entities.execution import Execution
 from execution.services import entityloader
 from execution.utils.util import try_get_execution
-from utils.decorator import required, admin_only, RequiredValueSource, cache
+from models import WebUser
+from utils.decorator import required, RequiredValueSource, cache, role_required
 
 web_api = Blueprint("web_api-lobby", __name__)
 
 
 @web_api.post("/execution/activate")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("id", int, RequiredValueSource.FORM)
-# @admin_only //FIXME enable me as soon as role management is working
 @csrf.exempt
 def activate_execution(id: int):
     if id in run.active_executions.keys():
@@ -32,6 +33,7 @@ def activate_execution(id: int):
 
 
 @web_api.get("/execution/active")
+@role_required(WebUser.Role.READ_ONLY)
 def get_all_active_executions():
     """ Endpoint to return all currently active executions. """
     return [execution.to_dict(shallow=True) for execution
@@ -39,8 +41,8 @@ def get_all_active_executions():
 
 
 @web_api.get("/execution")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("id", int, RequiredValueSource.ARGS)
-@admin_only
 def get_execution(id: int):
     # Add the execution to the active executions in case it stems from the
     # database
@@ -83,6 +85,7 @@ def get_execution(id: int):
 
 
 @web_api.post("/execution/create")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("scenario_id", int, RequiredValueSource.FORM)
 @required("name", str, RequiredValueSource.FORM)
 def create_execution(scenario_id: int, name: str):
@@ -100,9 +103,9 @@ def create_execution(scenario_id: int, name: str):
 
 
 @web_api.patch("/execution")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("id", int, RequiredValueSource.ARGS)
 @required("new_status", str.upper, RequiredValueSource.FORM)
-@admin_only
 @csrf.exempt  # changes are applied via buttons. Therefore, no CSRF required
 def change_execution_status(id: int, new_status: str):
     execution = try_get_execution(id)
@@ -118,10 +121,10 @@ def change_execution_status(id: int, new_status: str):
 
 
 @web_api.patch("/execution/player/status")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("id", int, RequiredValueSource.ARGS)
 @required("tan", str, RequiredValueSource.ARGS)
 @required("alerted", booleanize, RequiredValueSource.FORM)
-@admin_only
 def change_player_status(id: int, tan: str, alerted: bool):
     execution = try_get_execution(id)
     try:
@@ -141,6 +144,7 @@ def change_player_status(id: int, tan: str, alerted: bool):
 
 
 @web_api.post("/execution")
+@role_required(WebUser.Role.GAME_MASTER)
 @required("id", int, RequiredValueSource.ARGS)
 @required("role", int, RequiredValueSource.FORM)
 @required("location", int, RequiredValueSource.FORM)

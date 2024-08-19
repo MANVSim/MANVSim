@@ -7,8 +7,8 @@ import { LinkContainer } from "react-router-bootstrap"
 import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap"
 import { ReactElement } from "react"
 import { NavLink } from "../components/NavLink"
-import { isLoggedIn } from "../services/auth"
-import { deleteStorageItem, getStorageItem } from "../services/storage"
+import { isLoggedIn, logout } from "../services/auth"
+import { getStorageItem } from "../services/storage"
 
 export function Root(): ReactElement {
   const navigate = useNavigate()
@@ -17,9 +17,8 @@ export function Root(): ReactElement {
     return <Navigate replace to="/login" />
   }
 
-  function logout() {
-    deleteStorageItem("token")
-    deleteStorageItem("user")
+  function logoutCallback() {
+    logout()
     navigate("login")
   }
 
@@ -39,7 +38,9 @@ export function Root(): ReactElement {
                 <NavDropdown.Header>
                   {getStorageItem("user")}
                 </NavDropdown.Header>
-                <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
+                <NavDropdown.Item onClick={logoutCallback}>
+                  Logout
+                </NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>

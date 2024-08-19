@@ -1,3 +1,4 @@
+from enum import IntEnum
 from typing import List
 
 from bcrypt import checkpw
@@ -105,9 +106,43 @@ class LoggedEvent(db.Model):
     data = db.Column(db.JSON(), nullable=False)
 
 
+# pyright: reportAttributeAccessIssue=false
 class WebUser(db.Model):
+
+    class Role(IntEnum):
+        """
+        Defines all Roles a User could have where the value of each role is its
+        assigned power, which establishes an order between all roles.
+        """
+        WEB_ADMIN = 9999  # Web Application Administrator
+        SCENARIO_ADMIN = 100  # Scenario Editor/Creator
+        GAME_MASTER = 50  # Execution Management
+        READ_ONLY = 0
+
+        def __eq__(self, other):
+            if isinstance(other, Role):
+                return self.value == other.value
+            return NotImplemented
+
+        def __lt__(self, other):
+            if isinstance(other, Role):
+                return self.value < other.value
+            return NotImplemented
+
+        @classmethod
+        def from_string(cls, role_name: str):
+            """
+            Converts a string to the corresponding Role object.
+            """
+            try:
+                return cls[role_name.upper()]
+            except KeyError:
+                raise ValueError(f"No Role found for name: {role_name}")
+
+
     username: Mapped[str] = mapped_column(primary_key=True)
     password: Mapped[str]
+    role: Mapped[str] = mapped_column(nullable=False)
 
     def is_authenticated(self):
         return True
