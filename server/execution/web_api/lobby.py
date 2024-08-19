@@ -12,7 +12,6 @@ from execution import run
 from execution.entities.execution import Execution
 from execution.services import entityloader
 from execution.utils.util import try_get_execution
-from utils import time
 from utils.decorator import required, admin_only, RequiredValueSource, cache
 
 web_api = Blueprint("web_api-lobby", __name__)
@@ -88,8 +87,7 @@ def get_execution(id: int):
 @required("name", str, RequiredValueSource.FORM)
 def create_execution(scenario_id: int, name: str):
     try:
-        new_execution = models.Execution(scenario_id=scenario_id,
-                                         name=name)  # type: ignore
+        new_execution = models.Execution(scenario_id=scenario_id, name=name)  # type: ignore
         db.session.add(new_execution)
         db.session.commit()
         print(f"new execution created with id: {new_execution.id}")
