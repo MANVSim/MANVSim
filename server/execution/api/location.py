@@ -21,7 +21,7 @@ def get_player_inventory():
     try:
         _, player = util.get_execution_and_player()
         return {
-            "accessible locations": [
+            "accessible_locations": [
                 location.to_dict() for location in player.accessible_locations
             ]
         }
