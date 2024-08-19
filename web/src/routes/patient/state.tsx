@@ -28,6 +28,9 @@ export default function StateRoute(): ReactElement {
   const patient = useLoaderData() as Patient
   return (
     <div>
+      <h1>Zustände</h1>
+      <div>Patient: {patient.name}</div>
+      <hr />
       <ListGroup>
         {Object.values(patient.activity_diagram.states).map((state: State) => (
           <StateEntry state={state} key={state.uuid} />
