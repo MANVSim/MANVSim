@@ -168,13 +168,17 @@ export const isErrorResponse = isTypeFactory<ErrorResponse>(errorResponse)
 // Base Data
 const baseDataStripped = z.object({
   id: z.number(),
-  name: z.string()
+  name: z.string(),
+  quantity: z.number().or(z.null())
 })
 
 export type BaseDataStripped = z.infer<typeof baseDataStripped>
 
 const media = z.object({
-  // TODO
+  media_type: z.string(),
+  title: z.string().or(z.null()),
+  text: z.string().or(z.null()),
+  media_reference: z.string().or(z.null())
 })
 
 const actionData = z.object({
@@ -189,3 +193,22 @@ const actionData = z.object({
 
 export type ActionData = z.infer<typeof actionData>
 
+const locationData = z.object({
+    id: z.number(),
+    name: z.string().or(z.null()),
+    is_vehicle: z.boolean(),
+    media_refs: z.array(media),
+    child_locations: z.array(baseDataStripped),
+    resources: z.array(baseDataStripped)
+})
+
+export type LocationData = z.infer<typeof locationData>
+
+const resourceData = z.object({
+  id: z.number(),
+  name: z.string().or(z.null()),
+  media_refs: z.array(media),
+  consumable: z.boolean()
+})
+
+export type ResourceData = z.infer<typeof resourceData>

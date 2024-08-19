@@ -28,7 +28,6 @@ def get_all_locations():
     ]
 
 
-
 @web_api.get("/location")
 @required("location_id", int, RequiredValueSource.ARGS)
 def get_location(location_id: int):
@@ -42,6 +41,10 @@ def get_location(location_id: int):
         parent=location.id
     )
 
+    resource_relations = models.ResourceQuantityInLocation.query.filter_by(
+        location_id=location_id
+    ).all()
+
     return {
         "id": location.id,
         "name": location.name,
@@ -53,6 +56,13 @@ def get_location(location_id: int):
                 "id": location_relation.child_location.id,
                 "name": location_relation.child_location.name
             } for location_relation in location_relations
+        ],
+        "resources": [
+            {
+                "id": resource.resource.id,
+                "name": resource.resource.name,
+                "quantity": resource.quantity
+            } for resource in resource_relations
         ]
     }
 
