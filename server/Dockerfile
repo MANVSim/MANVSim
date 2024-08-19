@@ -6,6 +6,7 @@ RUN apt-get update && \
     apt-get install -y \
     make \
     dos2unix \
+    libmagic1 \
     npm
 
 RUN pip3 install pipenv
