@@ -3,7 +3,10 @@ FROM python:3.12-slim
 WORKDIR /usr/src/app
 
 RUN apt-get update && \
-    apt-get install -y make dos2unix
+    apt-get install -y \
+    make \
+    dos2unix \
+    npm
 
 RUN pip3 install pipenv
 
