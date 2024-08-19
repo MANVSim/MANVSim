@@ -164,3 +164,28 @@ export type ErrorResponse = z.infer<typeof errorResponse>
  * @function
  */
 export const isErrorResponse = isTypeFactory<ErrorResponse>(errorResponse)
+
+// Base Data
+const baseDataStripped = z.object({
+  id: z.number(),
+  name: z.string()
+})
+
+export type BaseDataStripped = z.infer<typeof baseDataStripped>
+
+const media = z.object({
+  // TODO
+})
+
+const actionData = z.object({
+  id: z.number(),
+  name: z.string().or(z.null()),
+  min_role: z.string().or(z.null()),
+  duration_secs: z.number(),
+  media_refs: z.array(media),
+  results: z.array(z.string()),
+  resources: z.array(baseDataStripped)
+})
+
+export type ActionData = z.infer<typeof actionData>
+

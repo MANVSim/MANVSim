@@ -13,6 +13,7 @@ import { LoginRoute } from "./routes/login"
 import { CsrfProvider } from "./contexts/csrf"
 import { AuthProvider } from "./contexts/auth"
 import { ExecutionRoute } from "./routes/execution"
+import { BaseDataRoute } from "./routes/base-data"
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,11 @@ const router = createBrowserRouter([
         loader: ExecutionRoute.loader,
         action: ExecutionRoute.action,
       },
+      {
+        path: "/data",
+        element: <BaseDataRoute />,
+        loader: BaseDataRoute.loader
+      }
     ],
   },
   {
