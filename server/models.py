@@ -139,7 +139,7 @@ class Resource(db.Model):
     name: Mapped[str] = mapped_column(nullable=False)
     media_refs = db.Column(db.JSON(), nullable=True)
     consumable: Mapped[bool] = mapped_column(nullable=False)
-    quantities_in_location = relationship("ResourceQuantityInLocation",
+    quantities_in_location = relationship("ResourceInLocation",
                                           back_populates="resource")
 
 
