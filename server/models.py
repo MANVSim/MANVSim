@@ -2,13 +2,14 @@ from enum import IntEnum
 from typing import List
 
 from bcrypt import checkpw
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app_config import db
 
 
-# -- Player
+# -- Player --
+
 class Role(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
@@ -19,8 +20,7 @@ class Role(db.Model):
 class Player(db.Model):
     tan: Mapped[str] = mapped_column(primary_key=True)
     execution_id: Mapped[int] = mapped_column(
-        ForeignKey("execution.id"), nullable=False
-    )
+        ForeignKey("execution.id"), nullable=False)
     location_id: Mapped[int] = mapped_column(
         ForeignKey("location.id"), nullable=False)
     role_id: Mapped[int] = mapped_column(ForeignKey("role.id"), nullable=False)
@@ -30,7 +30,8 @@ class Player(db.Model):
     execution: Mapped["Execution"] = relationship(back_populates="players")
 
 
-# - GAME
+# -- GAME --
+
 class Scenario(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
@@ -65,7 +66,8 @@ class TakesPartIn(db.Model):
         ForeignKey("patient.id"), nullable=False)
 
 
-# base-data
+# -- Scenario-Data --
+
 class Location(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
@@ -119,6 +121,19 @@ class LocationQuantityInScenario(db.Model):
                             back_populates="quantities_in_scenario")
 
 
+class PlayersToVehicleInExecution(db.Model):
+    execution_id: Mapped[int] = mapped_column(ForeignKey("execution.id"), primary_key=True,
+                                              nullable=False)
+    player_id: Mapped[int] = mapped_column(ForeignKey("player.tan"), primary_key=True,
+                                           nullable=False)
+    location_id: Mapped[int] = mapped_column(ForeignKey("location.id"), nullable=False)
+    vehicle_name: Mapped[str] = mapped_column(nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("execution_id", "vehicle_name", name="unique_execution_vehicle"),
+    )
+
+
 class Resource(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
@@ -128,7 +143,7 @@ class Resource(db.Model):
                                           back_populates="resource")
 
 
-class ResourceQuantityInLocation(db.Model):
+class ResourceInLocation(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     quantity: Mapped[int] = mapped_column(nullable=False)
     location_id: Mapped[int] = mapped_column(
@@ -163,6 +178,8 @@ class LoggedEvent(db.Model):
     type: Mapped[str] = mapped_column(nullable=False)
     data = db.Column(db.JSON(), nullable=False)
 
+
+# -- Web --
 
 # pyright: reportAttributeAccessIssue=false
 class WebUser(db.Model):
