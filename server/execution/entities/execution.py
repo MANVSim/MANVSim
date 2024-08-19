@@ -103,9 +103,7 @@ class Execution:
         from execution.services.entityloader import load_role
 
         tan = str(unique())
-        db.session.add(models.Player(tan=tan, execution_id=self.id,
-                                     location_id=0, role_id=role, alerted=False,
-                                     activation_delay_sec=0))  # pyright: ignore [reportCallIssue]
+        db.session.add(models.Player(tan=tan, execution_id=self.id, location_id=0, role_id=role, alerted=False, activation_delay_sec=0))  # pyright: ignore
         db.session.commit()
         new_player = Player(tan, None, False, 0,
                             load_location(location), set(), load_role(role))
