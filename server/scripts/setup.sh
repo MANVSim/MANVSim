@@ -10,8 +10,8 @@ flask --app main db upgrade
 # echo "Created admin user with username 'admin' and the password 'password'"
 
 echo "Building the frontend"
-cd ../web/
-npm i
-npm run build
+(cd ../web/ &&
+npm i &&
+npm run build) || echo "Frontend build failed!" >&2
 
 echo "You can now start the server by running 'make run'"
