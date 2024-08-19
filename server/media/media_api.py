@@ -7,6 +7,8 @@ from werkzeug.datastructures.file_storage import FileStorage
 from werkzeug.utils import secure_filename
 
 from media.media_data import MediaData
+from models import WebUser
+from utils.decorator import role_required
 
 api = Blueprint("api-media", __name__)
 
@@ -41,8 +43,8 @@ def get_instance_media(filename):
     return send_from_directory("media/instance", filename)
 
 
-# TODO: Restrict to logged-in scenario creators
 @api.post("/<path:filename>")
+@role_required(WebUser.Role.SCENARIO_ADMIN)
 def post_instance_media(filename):
     """ Allows users to upload media files to the server. Returns a MediaData-JSON. """
     if not filename:
