@@ -92,7 +92,7 @@ def _check_patients(scenario: Scenario):
     assert scenario
 
     db_patient_ids = map(lambda tpi: tpi.patient_id,
-                         db.session.query(models.TakesPartIn).filter_by(
+                         db.session.query(models.PatientInScenario).filter_by(
                              scenario_id=scenario.id).all())
     db_patients: list[models.Patient] = db.session.query(models.Patient).filter(
         models.Patient.id.in_(db_patient_ids)).all()

@@ -58,13 +58,12 @@ class Patient(db.Model):
     activity_diagram = db.Column(db.JSON(), nullable=False)
 
 
-class TakesPartIn(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    quantity: Mapped[int] = mapped_column(default=1, nullable=False)
+class PatientInScenario(db.Model):
     scenario_id: Mapped[int] = mapped_column(
-        ForeignKey("scenario.id"), nullable=False)
+        ForeignKey("scenario.id"), nullable=False, primary_key=True)
     patient_id: Mapped[int] = mapped_column(
         ForeignKey("patient.id"), nullable=False)
+    identifier: Mapped[str] = mapped_column(nullable=False, primary_key=True)
 
 
 # -- Scenario-Data --
