@@ -67,8 +67,8 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
     and returns them in a dictionary.
     """
     patient_ids = [participation.patient_id for participation in
-                   db.session.query(models.TakesPartIn).
-                   filter(models.TakesPartIn.scenario_id == scenario_id).all()]
+                   db.session.query(models.PatientInScenario).
+                   filter(models.PatientInScenario.scenario_id == scenario_id).all()]
     ps = (db.session.query(models.Patient).
           filter(models.Patient.id.in_(patient_ids)).all())
     patients = dict()

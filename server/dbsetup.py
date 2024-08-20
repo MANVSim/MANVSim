@@ -222,12 +222,12 @@ def __create_scenarios():
 
 
 def __takes_part_in():
-    insert(TakesPartIn(scenario_id=0, patient_id=0))
-    insert(TakesPartIn(scenario_id=0, patient_id=5))
-    insert(TakesPartIn(scenario_id=2, patient_id=1))
-    insert(TakesPartIn(scenario_id=2, patient_id=2))
-    insert(TakesPartIn(scenario_id=2, patient_id=3))
-    insert(TakesPartIn(scenario_id=2, patient_id=4))
+    insert(PatientInScenario(scenario_id=0, patient_id=0, identifier="Patient A"))
+    insert(PatientInScenario(scenario_id=0, patient_id=5, identifier="Patient B"))
+    insert(PatientInScenario(scenario_id=2, patient_id=1, identifier="Patient A"))
+    insert(PatientInScenario(scenario_id=2, patient_id=2, identifier="Patient B"))
+    insert(PatientInScenario(scenario_id=2, patient_id=3, identifier="Patient C"))
+    insert(PatientInScenario(scenario_id=2, patient_id=4, identifier="Patient D"))
 
 
 def __create_executions():

@@ -47,10 +47,10 @@ def get_scenario(scenario_id: int):
         raise NotFound(f"scenario not found by id={scenario_id}")
 
     patient_list = (models.Patient.query.join(
-        models.TakesPartIn,
-        models.Patient.id == models.TakesPartIn.patient_id
+        models.PatientInScenario,
+        models.Patient.id == models.PatientInScenario.patient_id
     ).filter(
-        models.TakesPartIn.scenario_id == scenario_id
+        models.PatientInScenario.scenario_id == scenario_id
     ).all())
 
     vehicle_list = models.Location.query.filter_by(is_vehicle=True)
@@ -152,13 +152,13 @@ def __update_patients_in_scenario(scenario, new_patients):
     """
     try:
         for patient_data in new_patients:
-            patient = models.TakesPartIn.query.filter_by(
+            patient = models.PatientInScenario.query.filter_by(
                 scenario_id=scenario.id, patient_id=patient_data["id"]).first()
             quantity = int(patient_data["quantity"])
             if quantity <= 0 and not patient:
                 continue
             elif not patient:
-                patient = models.TakesPartIn(
+                patient = models.PatientInScenario(
                     quantity=int(patient_data["quantity"]),
                     scenario_id=scenario.id,
                     patient_id=patient_data["id"]
@@ -186,7 +186,7 @@ def __update_vehicle_in_scenario(scenario, new_vehicles):
             if not vehicle and quantity <= 0:
                 continue
             elif not vehicle:
-                vehicle = models.TakesPartIn(
+                vehicle = models.PatientInScenario(
                     quantity=int(vehicle_data["quantity"]),
                     scenario_id=scenario.id,
                     patient_id=int(vehicle_data["id"])
