@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
 import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/services/location_service.dart';
 
@@ -45,5 +48,16 @@ class PatientService {
         .then((response) => (response?.patient != null
             ? Patient.fromApi((response?.patient)!)
             : null));
+  }
+
+  static Future<List<PatientPosition>?> fetchPatientPositions() {
+    var rnd = Random();
+    return PatientService.fetchPatientsIDs().then((idList) => idList
+        ?.map((id) => (
+    position: Point<double>(
+        rnd.nextDouble() * width, rnd.nextDouble() * height),
+    id: id
+    ))
+        .toList());
   }
 }

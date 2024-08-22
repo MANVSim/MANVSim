@@ -281,5 +281,8 @@
 
   "defaultError": "Ein Unbekannter Fehler ist aufgetreten.",
 
-  "dateTimeFormat": "dd.MM.yyyy HH:mm:ss"
+  "dateTimeFormat": "dd.MM.yyyy HH:mm:ss",
+
+
+  "mapScreenName": "Karte"
 }
