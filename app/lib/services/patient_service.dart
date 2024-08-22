@@ -7,6 +7,7 @@ import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/services/location_service.dart';
+import 'package:manvsim/widgets/patient_map.dart';
 
 import '../models/location.dart';
 import '../screens/patient_screen.dart';
@@ -54,10 +55,11 @@ class PatientService {
     var rnd = Random();
     return PatientService.fetchPatientsIDs().then((idList) => idList
         ?.map((id) => (
-    position: Point<double>(
-        rnd.nextDouble() * width, rnd.nextDouble() * height),
-    id: id
-    ))
+              position: Point<double>(
+                  rnd.nextDouble() * PatientMap.width,
+                  rnd.nextDouble() * PatientMap.height),
+              id: id
+            ))
         .toList());
   }
 }
