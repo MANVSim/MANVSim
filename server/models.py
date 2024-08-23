@@ -51,22 +51,31 @@ class Execution(db.Model):
 
 class Patient(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(nullable=False)
+    template_name: Mapped[str] = mapped_column(nullable=False)
     # If no location is set, one is generated at runtime
     location: Mapped[int] = mapped_column(
         ForeignKey("location.id"), nullable=True)
     activity_diagram = db.Column(db.JSON(), nullable=False)
 
 
+class Action(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(nullable=False)
+    required_power: Mapped[int] = mapped_column(nullable=False)
+    media_refs = db.Column(db.JSON(), nullable=True)
+    duration_secs: Mapped[int] = mapped_column(nullable=False)
+    results: Mapped[str] = mapped_column(nullable=False)
+
+
+# -- Scenario-Data --
+
 class PatientInScenario(db.Model):
     scenario_id: Mapped[int] = mapped_column(
         ForeignKey("scenario.id"), nullable=False, primary_key=True)
     patient_id: Mapped[int] = mapped_column(
         ForeignKey("patient.id"), nullable=False)
-    identifier: Mapped[str] = mapped_column(nullable=False, primary_key=True)
+    name: Mapped[str] = mapped_column(nullable=False, primary_key=True)
 
-
-# -- Scenario-Data --
 
 class Location(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -74,8 +83,6 @@ class Location(db.Model):
     media_refs = db.Column(db.JSON(), nullable=True)
     is_vehicle: Mapped[bool] = mapped_column(default=False, nullable=False)
 
-    quantities_in_scenario = relationship("LocationQuantityInScenario",
-                                          back_populates="location")
 
     # Relationship to manage child locations (all locations contained within this one)
     children = relationship(
@@ -109,24 +116,12 @@ class LocationContainsLocation(db.Model):
         ForeignKey("location.id"), nullable=False)
 
 
-class LocationQuantityInScenario(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    quantity: Mapped[int] = mapped_column(nullable=False, default=1)
-    scenario_id: Mapped[int] = mapped_column(
-        ForeignKey("scenario.id"), nullable=False)
-    location_id: Mapped[int] = mapped_column(
-        ForeignKey("location.id"), nullable=False)
-
-    location = relationship("Location",
-                            back_populates="quantities_in_scenario")
-
-
 class PlayersToVehicleInExecution(db.Model):
     execution_id: Mapped[int] = mapped_column(ForeignKey("execution.id"),
                                               primary_key=True,
                                               nullable=False)
-    player_id: Mapped[str] = mapped_column(ForeignKey("player.tan"),
-                                           nullable=False, primary_key=True)
+    player_tan: Mapped[str] = mapped_column(ForeignKey("player.tan"),
+                                            nullable=False, primary_key=True)
     location_id: Mapped[int] = mapped_column(ForeignKey("location.id"), nullable=False)
     vehicle_name: Mapped[str] = mapped_column(nullable=False)
 
@@ -163,15 +158,6 @@ class ResourcesNeeded(db.Model):
         ForeignKey("resource.id"), nullable=False)
 
 
-class Action(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(nullable=False)
-    required_power: Mapped[int] = mapped_column(nullable=False)
-    media_refs = db.Column(db.JSON(), nullable=True)
-    duration_secs: Mapped[int] = mapped_column(nullable=False)
-    results: Mapped[str] = mapped_column(nullable=False)
-
-
 class LoggedEvent(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     execution: Mapped[int] = mapped_column(nullable=False)
@@ -184,7 +170,6 @@ class LoggedEvent(db.Model):
 
 # pyright: reportAttributeAccessIssue=false
 class WebUser(db.Model):
-
     class Role(IntEnum):
         """
         Defines all Roles a User could have where the value of each role is its
@@ -214,7 +199,6 @@ class WebUser(db.Model):
                 return cls[role_name.upper()]
             except KeyError:
                 raise ValueError(f"No Role found for name: {role_name}")
-
 
     username: Mapped[str] = mapped_column(primary_key=True)
     password: Mapped[str]

@@ -1,5 +1,6 @@
 import models
 from app_config import db
+from conftest import flask_app
 from execution import run
 from execution.entities.execution import Execution
 from execution.entities.location import Location
@@ -8,7 +9,6 @@ from execution.entities.resource import Resource
 from execution.entities.role import Role
 from execution.entities.scenario import Scenario
 from execution.services import entityloader
-from conftest import flask_app
 from media.media_data import MediaData
 
 
@@ -26,7 +26,6 @@ def _check_players(players: list[Player], execution: Execution):
     assert False if players is None else True
 
     for player in players:
-        print(player)
         p_tan = player.tan
         db_player = db.session.query(models.Player).filter_by(tan=p_tan).first()
         assert db_player is not None
@@ -62,8 +61,11 @@ def _check_resource(resource: Resource, location: Location):
     assert db_resource.name == resource.name
     assert db_resource.media_refs == MediaData.list_to_json(
         resource.media_references)
-    assert db_resource.location_id == location.id
-    assert db_resource.quantity == resource.quantity
+    assert db_resource.consumable == resource.consumable
+
+    db_resource_mapping = db.session.query(models.ResourceInLocation).filter_by(
+        resource_id=resource.id, location_id=location.id).first()
+    assert db_resource_mapping is not None and db_resource_mapping.quantity == resource.quantity
 
 
 def _check_location(location: Location | None, scenario: Scenario):
@@ -79,13 +81,14 @@ def _check_location(location: Location | None, scenario: Scenario):
     assert location.resources is not None
     if location.resources:
         map(lambda r: _check_resource(r, location), location.resources)
-    if db_location.location_id is not None:
-        db_parent = db.session.query(models.Location).filter_by(
-            id=db_location.location_id).first()
-        assert db_parent is not None
-        exec_parent = scenario.locations.get(db_parent.id)
-        assert exec_parent
-        assert location in exec_parent.sub_locations
+
+    children = db.session.query(models.LocationContainsLocation).filter_by(parent=location.id).all()
+    for child in children:
+        db_child = db.session.query(models.Location).filter_by(id=child.child).first()
+        assert db_child is not None
+        exec_child = scenario.locations.get(db_child.id)
+        assert exec_child
+        assert location in exec_child.sub_locations
 
 
 def _check_patients(scenario: Scenario):
@@ -101,7 +104,10 @@ def _check_patients(scenario: Scenario):
     for db_patient in db_patients:
         exec_patient = scenario.patients.get(db_patient.id)
         assert exec_patient
-        assert db_patient.name == exec_patient.name
+        db_mapping = db.session.query(models.PatientInScenario).filter_by(scenario_id=scenario.id,
+                                                                    patient_id=db_patient.id).first()
+        assert db_mapping
+        assert db_mapping.name == exec_patient.name
         assert True if db_patient.activity_diagram is not None and exec_patient.activity_diagram is not None \
             else db_patient.activity_diagram is None
         # If a patient has no location, a generic one is created at runtime, so

@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 670b07de71aa
+Revision ID: f5d3bad37316
 Revises: 
-Create Date: 2024-08-20 13:38:55.567651
+Create Date: 2024-08-23 11:40:43.021500
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '670b07de71aa'
+revision = 'f5d3bad37316'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -82,18 +82,9 @@ def upgrade():
     sa.ForeignKeyConstraint(['parent'], ['location.id'], name=op.f('fk_location_contains_location_parent_location')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_location_contains_location'))
     )
-    op.create_table('location_quantity_in_scenario',
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('quantity', sa.Integer(), nullable=False),
-    sa.Column('scenario_id', sa.Integer(), nullable=False),
-    sa.Column('location_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['location_id'], ['location.id'], name=op.f('fk_location_quantity_in_scenario_location_id_location')),
-    sa.ForeignKeyConstraint(['scenario_id'], ['scenario.id'], name=op.f('fk_location_quantity_in_scenario_scenario_id_scenario')),
-    sa.PrimaryKeyConstraint('id', name=op.f('pk_location_quantity_in_scenario'))
-    )
     op.create_table('patient',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('template_name', sa.String(), nullable=False),
     sa.Column('location', sa.Integer(), nullable=True),
     sa.Column('activity_diagram', sa.JSON(), nullable=False),
     sa.ForeignKeyConstraint(['location'], ['location.id'], name=op.f('fk_patient_location_location')),
@@ -119,10 +110,10 @@ def upgrade():
     op.create_table('patient_in_scenario',
     sa.Column('scenario_id', sa.Integer(), nullable=False),
     sa.Column('patient_id', sa.Integer(), nullable=False),
-    sa.Column('identifier', sa.String(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['patient_id'], ['patient.id'], name=op.f('fk_patient_in_scenario_patient_id_patient')),
     sa.ForeignKeyConstraint(['scenario_id'], ['scenario.id'], name=op.f('fk_patient_in_scenario_scenario_id_scenario')),
-    sa.PrimaryKeyConstraint('scenario_id', 'identifier', name=op.f('pk_patient_in_scenario'))
+    sa.PrimaryKeyConstraint('scenario_id', 'name', name=op.f('pk_patient_in_scenario'))
     )
     op.create_table('player',
     sa.Column('tan', sa.String(), nullable=False),
@@ -138,13 +129,13 @@ def upgrade():
     )
     op.create_table('players_to_vehicle_in_execution',
     sa.Column('execution_id', sa.Integer(), nullable=False),
-    sa.Column('player_id', sa.String(), nullable=False),
+    sa.Column('player_tan', sa.String(), nullable=False),
     sa.Column('location_id', sa.Integer(), nullable=False),
     sa.Column('vehicle_name', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['execution_id'], ['execution.id'], name=op.f('fk_players_to_vehicle_in_execution_execution_id_execution')),
     sa.ForeignKeyConstraint(['location_id'], ['location.id'], name=op.f('fk_players_to_vehicle_in_execution_location_id_location')),
-    sa.ForeignKeyConstraint(['player_id'], ['player.tan'], name=op.f('fk_players_to_vehicle_in_execution_player_id_player')),
-    sa.PrimaryKeyConstraint('execution_id', 'player_id', name=op.f('pk_players_to_vehicle_in_execution')),
+    sa.ForeignKeyConstraint(['player_tan'], ['player.tan'], name=op.f('fk_players_to_vehicle_in_execution_player_tan_player')),
+    sa.PrimaryKeyConstraint('execution_id', 'player_tan', name=op.f('pk_players_to_vehicle_in_execution')),
     sa.UniqueConstraint('execution_id', 'vehicle_name', name='unique_execution_vehicle')
     )
     # ### end Alembic commands ###
@@ -158,7 +149,6 @@ def downgrade():
     op.drop_table('resources_needed')
     op.drop_table('resource_in_location')
     op.drop_table('patient')
-    op.drop_table('location_quantity_in_scenario')
     op.drop_table('location_contains_location')
     op.drop_table('execution')
     op.drop_table('web_user')
