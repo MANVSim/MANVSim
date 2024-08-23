@@ -1,3 +1,4 @@
+from email.policy import default
 from json import JSONDecodeError
 
 from flask import current_app
@@ -31,10 +32,12 @@ def __load_resources(location_id: int) -> list[Resource]:
     resources = []
     for res in res_in_loc:
         r = db.session.query(models.Resource).filter(models.Resource.id == res.id).first()
-        media_refs = MediaData.list_from_json(
-            r.media_refs) if r.media_refs else []
-        resources.append(Resource(id=__generate_id(), name=r.name, quantity=res.quantity,
-                                  media_references=media_refs))
+        if r:
+            media_refs = MediaData.list_from_json(
+                r.media_refs) if r.media_refs else []
+
+            resources.append(Resource(id=__generate_id(), name=r.name, quantity=res.quantity,
+                                      media_references=media_refs))
 
     return resources
 
@@ -55,11 +58,11 @@ def load_location(location_id: int) -> Location | None:
 
         resources = __load_resources(loc.id)
 
-        children_loc_ids = (db.session.query(models.LocationContainsLocation).
-                            filter(models.LocationContainsLocation.parent == loc.id).all())
+        children_locs = (db.session.query(models.LocationContainsLocation).
+                         filter(models.LocationContainsLocation.parent == loc.id).all())
         sub_locs = set()
-        for child_id in children_loc_ids:
-            sub_locs.add(load_location(location_id=child_id))
+        for child in children_locs:
+            sub_locs.add(load_location(location_id=child.child))
 
         media_refs = MediaData.list_from_json(
             loc.media_refs) if loc.media_refs else []
@@ -80,6 +83,8 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
     patient_locations: dict[int, Location] = dict()
     for mapping in patient_mapping:
         p = db.session.query(models.Patient).filter(models.Patient.id == mapping.patient_id).first()
+        if not p:
+            continue
 
         # Load Locations
         if p.location is None:
@@ -89,7 +94,8 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_loc = patient_locations[p.location]
         else:
             p_loc = load_location(p.location)
-            patient_locations[p.location] = p_loc
+            if p_loc:
+                patient_locations[p.location] = p_loc
 
         # Load Activity Diagram
         p_ad = p.activity_diagram
@@ -101,7 +107,8 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_ad = ActivityDiagram()  # empty diagram with an empty root state
 
         # Create Patient
-        patients[p.id] = Patient(id=__generate_id(), name=mapping.name, activity_diagram=p_ad,  # type: ignore
+        patients[p.id] = Patient(id=__generate_id(), name=mapping.name, activity_diagram=p_ad,
+                                 # type: ignore
                                  location=p_loc, performed_actions=[])  # type: ignore
 
     return patients
@@ -204,23 +211,30 @@ def __load_players(exec_id: int) -> dict[str, Player] | None:
     for mapping in vehicle_mappings:
         if mapping.vehicle_name not in vehicles.keys():
             vehicle_location = load_location(mapping.location_id)
-            vehicle_location.name = mapping.vehicle_name
-            vehicles[mapping.vehicle_name] = vehicle_location
+            if vehicle_location:
+                vehicle_location.name = mapping.vehicle_name
+                vehicles[mapping.vehicle_name] = vehicle_location
 
     # Assign vehicles or load locations
     players: dict[str, Player] = dict()
     locations: dict[int, Location] = dict()
     for p in ps:
         player_role = load_role(p.role_id)
+        db_player_loc = db.session.query(models.Location).filter_by(id=p.location_id).first()
+        if not db_player_loc:
+            continue
         # If the players location is a vehicle, select the associated one ...
-        if db.session.query(models.Location.is_vehicle).filter_by(id=p.location_id).first():
-            player_loc = vehicles[
-                db.session.query(models.PlayersToVehicleInExecution.vehicle_name).filter_by(
-                    player_id=p.tan).first()]
+        player_loc = None
+        if db_player_loc.is_vehicle:
+            name_mapping = db.session.query(models.PlayersToVehicleInExecution).filter_by(
+                player_id=p.tan).first()
+            if name_mapping:
+                player_loc = vehicles[name_mapping.vehicle_name]
         # ... otherwise load the given location (if it has not been loaded) ...
         elif p.location_id not in locations.keys():
             player_loc = load_location(p.location_id)
-            locations[p.location_id] = player_loc
+            if player_loc:
+                locations[p.location_id] = player_loc
         # ... or assign the already loaded location object.
         else:
             player_loc = locations[p.location_id]
