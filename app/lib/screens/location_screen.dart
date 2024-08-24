@@ -64,7 +64,13 @@ class _LocationScreenState extends State<LocationScreen> {
                               initiallyExpanded: true,
                               locations: [location],
                               resourceToggle: (resource) => {},
-                              onLocationSelected: (location, selected) => {}),
+                              onLocationSelected:(selectedLocationIdPath) {
+                                if (selectedLocationIdPath != null) {
+                                  print(selectedLocationIdPath);
+                                } else {
+                                  print('no location selected');
+                                }
+                              }),
                         ]))),
                 Text(AppLocalizations.of(context)!.locationScreenInventory),
                 ApiFutureBuilder<List<Location>>(
@@ -78,7 +84,13 @@ class _LocationScreenState extends State<LocationScreen> {
                                 ResourceDirectory(
                                     locations: inventory,
                                     resourceToggle: (resource) => {},
-                                    onLocationSelected: (location, selected) => {}),
+                                    onLocationSelected: (selectedLocationIdPath) {
+                                      if (selectedLocationIdPath != null) {
+                                        print(selectedLocationIdPath);
+                                      } else {
+                                        print('no location selected');
+                                      }
+                                    },),
                               ])));
                     }),
               ]);

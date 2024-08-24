@@ -11,7 +11,7 @@ class ResourceDirectory extends StatefulWidget {
 
   // function to propagate toggling to parent
   final Function(Resource resource) resourceToggle;
-  final Function(Location location, bool selected)? onLocationSelected;
+  final Function(List<int>? selectedLocationIdPath)? onLocationSelected;
 
   const ResourceDirectory(
       {super.key,
@@ -38,8 +38,20 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
     setState(() {
       isLocationSelected[index] = !isLocationSelected[index];
     });
-    widget.onLocationSelected!(
-        widget.locations[index], isLocationSelected[index]);
+
+    List<int>? selectedIndexPath = isLocationSelected[index]
+        ? [widget.locations[index].id]
+        : null;
+
+    widget.onLocationSelected!(selectedIndexPath);
+  }
+
+  void _handleChildLocationSelected(List<int>? selectedIndexPath, Location location) {
+    List<int>? newSelectedIndexPath= selectedIndexPath != null
+        ? [location.id, ...selectedIndexPath]
+        : null;
+
+    widget.onLocationSelected!(newSelectedIndexPath);
   }
 
   @override
@@ -98,7 +110,11 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
                     resourceToggle: widget.resourceToggle,
                     onLocationSelected: isLocationSelected[locationIndex]
                         ? null
-                        : widget.onLocationSelected,
+                        : widget.onLocationSelected != null
+                            ? (selectedIndexPath) =>
+                                _handleChildLocationSelected(
+                                    selectedIndexPath, location)
+                            : null,
                   )
                 ],
               ));
