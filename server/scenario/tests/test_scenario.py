@@ -1,5 +1,7 @@
 import json
 
+import models
+
 
 def test_get_scenario(client):
     response = client.get("/web/scenario?scenario_id=2")
@@ -9,7 +11,6 @@ def test_get_scenario(client):
     assert "name" in response_data.keys()
     assert "patients" in response_data.keys()
     assert "vehicles" in response_data.keys()
-    assert "vehicles-quantity" in response_data.keys()
 
 
 def test_create_scenario(client):
@@ -22,25 +23,41 @@ def test_create_scenario(client):
     form = {
         "id": 2,
         "name": "neuer Name",
-        "patients": [
+        "vehicles_add": [
             {
                 "id": 0,
-                "quantity": 0
+                "name": "RTW II"
             },
             {
-                "id": 1,
-                "quantity": 3
+                "id": 0,
+                "name": "RTW III"
             },
-            {
-                # might cause error
-                "id": 245,
-                "quantity": 1
-            }
         ],
-        "vehicle": []
+        "vehicles_del": [
+            {
+                "id": 0,
+                "name": "RTW II"
+            },
+            {
+                "id": 0,
+                "name": "RTW I"
+            },
+        ],
     }
     response = client.patch("/web/scenario", data=json.dumps(form),
                             headers=csrf_header,
                             content_type='application/json')
     assert response.status_code == 200
+    vehicle = models.PlayersToVehicleInExecution.query.filter_by(
+        scenario_id=2,
+        location_id=0,
+        vehicle_name="RTW II"
+    ).first()
+    assert vehicle
+    vehicle = models.PlayersToVehicleInExecution.query.filter_by(
+        scenario_id=2,
+        location_id=0,
+        vehicle_name="RTW III"
+    ).first()
+    assert vehicle
 

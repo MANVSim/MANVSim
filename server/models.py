@@ -119,14 +119,16 @@ class LocationContainsLocation(db.Model):
 class PlayersToVehicleInExecution(db.Model):
     execution_id: Mapped[int] = mapped_column(ForeignKey("execution.id"),
                                               primary_key=True,
-                                              nullable=False)
+                                              nullable=True)
+    scenario_id: Mapped[int] = mapped_column(ForeignKey("scenario.id"),
+                                             nullable=False)
     player_tan: Mapped[str] = mapped_column(ForeignKey("player.tan"),
-                                            nullable=False, primary_key=True)
+                                            nullable=True, primary_key=True)
     location_id: Mapped[int] = mapped_column(ForeignKey("location.id"), nullable=False)
     vehicle_name: Mapped[str] = mapped_column(nullable=False)
 
     __table_args__ = (
-        UniqueConstraint("execution_id", "vehicle_name", name="unique_execution_vehicle"),
+        UniqueConstraint("execution_id", "scenario_id", "vehicle_name", name="unique_execution_vehicle"),
     )
 
 

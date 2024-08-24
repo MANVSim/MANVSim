@@ -193,11 +193,11 @@ def __create_players():
     insert(Player(tan="654WVU", execution_id=2, location_id=0, role_id=3,
                   alerted=False, activation_delay_sec=10))
 
-    insert(PlayersToVehicleInExecution(execution_id=1, player_tan="123ABC", location_id=0,
+    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=2, player_tan="123ABC", location_id=0,
                                        vehicle_name="RTW I"))
-    insert(PlayersToVehicleInExecution(execution_id=2, player_tan="987ZYX", location_id=0,
+    insert(PlayersToVehicleInExecution(execution_id=2, scenario_id=2, player_tan="987ZYX", location_id=0,
                                        vehicle_name="RTW I"))
-    insert(PlayersToVehicleInExecution(execution_id=2, player_tan="654WVU", location_id=0,
+    insert(PlayersToVehicleInExecution(execution_id=2, scenario_id=2, player_tan="654WVU", location_id=0,
                                        vehicle_name="RTW II"))
 
 
