@@ -25,12 +25,19 @@ export function TemplateEntry({
     name: "", // Initial value for name
   })
 
-  const handleButtonClick = (event: { stopPropagation: () => void }) => {
+  const handleButtonClickAdd = (event: { stopPropagation: () => void }) => {
     if (isAccordionOpen) {
       event.stopPropagation() // Prevents the click event from bubbling up
     }
     setIsAccordionOpen(true)
     setIsVisible(!isVisible)
+  }
+
+  const handleButtonClickScenario = (event: { stopPropagation: () => void }, scenario_id: number) => {
+    if (isAccordionOpen) {
+      event.stopPropagation() // Prevents the click event from bubbling up
+    }
+    navigate(`/scenario/${scenario_id}`)
   }
 
   const handleOpenAccordion = () => {
@@ -45,13 +52,13 @@ export function TemplateEntry({
       >
         <div className="d-flex justify-content-between w-100">
           <div className="d-flex align-items-center">
-            <span>{name}</span>
+            <span className="btn-link" onClick={(event: { stopPropagation: () => void }) => handleButtonClickScenario(event, template.id)}>{name}</span>
           </div>
           <div className="me-3">
             <button
               id="add-btn"
               className="btn btn-outline-primary btn-sm"
-              onClick={handleButtonClick}
+              onClick={handleButtonClickAdd}
             >
               +
             </button>

@@ -14,6 +14,7 @@ import { CsrfProvider } from "./contexts/csrf"
 import { AuthProvider } from "./contexts/auth"
 import { ExecutionRoute } from "./routes/execution"
 import { BaseDataRoute } from "./routes/base-data"
+import { ScenarioEditor } from "./routes/scenario-editor"
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,12 @@ const router = createBrowserRouter([
         element: <ExecutionRoute />,
         loader: ExecutionRoute.loader,
         action: ExecutionRoute.action,
+      },
+      {
+        path: "/scenario/:scenarioId",
+        element: <ScenarioEditor />,
+        loader: ScenarioEditor.loader,
+        action: ScenarioEditor.action
       },
       {
         path: "/data",

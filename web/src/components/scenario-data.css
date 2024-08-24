@@ -1,0 +1,8 @@
+#data-quantity-editor input {
+    width: 4em
+}
+
+#data-items {
+    overflow-y: scroll;
+    height: 20em;
+}
