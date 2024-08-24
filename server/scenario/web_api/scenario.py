@@ -77,7 +77,7 @@ def get_scenario(scenario_id: int):
                 "name": vehicle.name
             } for vehicle in vehicle_list
         ],
-        "vehicles-quantity": [
+        "vehicles_quantity": [
             {
                 "id": vehicle.id,
                 "name": vehicle.location.name,
