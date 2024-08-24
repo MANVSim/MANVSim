@@ -92,6 +92,9 @@
     }
   },
 
+  "locationScreenInventory": "Inventar",
+  "locationScreenAvailableSubLocations": "An Location verfügbar",
+
   "locationListScreenTypeName": "Name",
   "locationListScreenTypeId": "ID",
   "patientName": "Name: {patientName}",
@@ -168,6 +171,10 @@
     }
   },
   "moveFailure": "Leider konnte der Patient nicht erfolgreich bewegt werden.\nBitte versuche es erneut.",
+
+
+  "resourceDirectorySelectLocation": "Auswählen",
+  "resourceDirectoryUnselectLocation": "Abwählen",
 
   "actionNeededResources": "Benötigte Resourcen: ",
   "actionNoNeededResources": "Keine Resourcen benötigt.",
