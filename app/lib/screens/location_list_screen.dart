@@ -79,7 +79,7 @@ class _LocationListScreenState extends State<LocationListScreen> {
                             title: Text(
                               _selectedShowAs[0]
                                   ? locationIds[index].name
-                                  : AppLocalizations.of(context)!.locationScreenName(locationIds[index].id)
+                                  : AppLocalizations.of(context)!.locationName(locationIds[index].id)
                             ),
                             onTap: () => LocationService.goToPatientScreen(
                                 locationIds[index].id, context))))),

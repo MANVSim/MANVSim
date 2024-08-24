@@ -82,8 +82,9 @@
       }
     }
   },
-  "locationScreenName": "Location {locationId}",
-  "@locationScreenName": {
+  "locationScreenName": "Location Übersicht",
+  "locationName": "Location {locationId}",
+  "@locationName": {
     "placeholders": {
       "locationId": {
         "type": "int",
