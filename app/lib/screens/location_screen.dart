@@ -3,7 +3,7 @@ import 'package:manvsim/models/location.dart';
 
 import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/player_service.dart';
-import 'package:manvsim/widgets/LocationOverview.dart';
+import 'package:manvsim/widgets/location_overview.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
