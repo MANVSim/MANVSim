@@ -8,6 +8,7 @@ class ResourceDirectory extends StatefulWidget {
   final List<Location> locations;
   final bool initiallyExpanded;
   final bool rootLocationsSelectable;
+  final bool parentLocationSelected;
 
   // function to propagate toggling to parent
   final Function(Resource resource) resourceToggle;
@@ -19,30 +20,48 @@ class ResourceDirectory extends StatefulWidget {
       required this.resourceToggle,
       this.initiallyExpanded = false,
       this.onLocationSelected,
-      this.rootLocationsSelectable = true});
+      this.rootLocationsSelectable = true,
+      this.parentLocationSelected = false});
 
   @override
   State<ResourceDirectory> createState() => _ResourceDirectoryState();
 }
 
 class _ResourceDirectoryState extends State<ResourceDirectory> {
-  late List<bool> isLocationSelected;
+
+  int? selectedLocationIndex;
 
   @override
-  void initState() {
-    isLocationSelected = List.filled(widget.locations.length, false);
-    super.initState();
+  void didUpdateWidget(ResourceDirectory oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.parentLocationSelected && selectedLocationIndex != null) {
+      setState(() {
+        selectedLocationIndex = null;
+      });
+    }
+  }
+  
+  bool _isLocationSelected(int index) {
+    return selectedLocationIndex == index;
   }
 
   void _locationSelected(int index) {
+    
+    int? newSelectedLocationIndex;
+    List<int>? selectedIndexPath;
+    
+    if (_isLocationSelected(index)) {
+      newSelectedLocationIndex = null;
+      selectedIndexPath = null;
+    } else {
+      newSelectedLocationIndex = index;
+      selectedIndexPath = [widget.locations[index].id];
+    }
+    
     setState(() {
-      isLocationSelected[index] = !isLocationSelected[index];
+      selectedLocationIndex = newSelectedLocationIndex;
     });
-
-    List<int>? selectedIndexPath = isLocationSelected[index]
-        ? [widget.locations[index].id]
-        : null;
-
     widget.onLocationSelected!(selectedIndexPath);
   }
 
@@ -51,6 +70,9 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
         ? [location.id, ...selectedIndexPath]
         : null;
 
+    setState(() {
+      selectedLocationIndex = null;
+    });
     widget.onLocationSelected!(newSelectedIndexPath);
   }
 
@@ -63,9 +85,11 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
         itemBuilder: (context, locationIndex) {
           final location = widget.locations[locationIndex];
           return Card(
-              color: isLocationSelected[locationIndex]
-                  ? Colors.lightGreen
-                  : Theme.of(context).cardColor,
+              color: _isLocationSelected(locationIndex)
+                  ? Colors.lightGreen.shade400
+                  : widget.parentLocationSelected
+                      ? Colors.lightGreen.shade200
+                      : Theme.of(context).cardColor,
               child: ExpansionTile(
                 initiallyExpanded: widget.initiallyExpanded,
                 title: Row(
@@ -74,7 +98,7 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
                     const Spacer(),
                     if (widget.onLocationSelected != null && widget.rootLocationsSelectable)
                       ElevatedButton(
-                          child: Text(isLocationSelected[locationIndex]
+                          child: Text(_isLocationSelected(locationIndex)
                               ? (AppLocalizations.of(context)!.resourceDirectoryUnselectLocation)
                               : (AppLocalizations.of(context)!.resourceDirectorySelectLocation)),
                           onPressed: () => _locationSelected(locationIndex))
@@ -108,13 +132,12 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
                   ResourceDirectory(
                     locations: location.locations,
                     resourceToggle: widget.resourceToggle,
-                    onLocationSelected: isLocationSelected[locationIndex]
-                        ? null
-                        : widget.onLocationSelected != null
+                    onLocationSelected:  widget.onLocationSelected != null
                             ? (selectedIndexPath) =>
                                 _handleChildLocationSelected(
                                     selectedIndexPath, location)
                             : null,
+                    parentLocationSelected: _isLocationSelected(locationIndex),
                   )
                 ],
               ));
