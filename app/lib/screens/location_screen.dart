@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
 
 import 'package:manvsim/services/location_service.dart';
+import 'package:manvsim/services/player_service.dart';
 import 'package:manvsim/widgets/LocationOverview.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
@@ -20,19 +21,22 @@ class LocationScreen extends StatefulWidget {
 
 class _LocationScreenState extends State<LocationScreen> {
   late Future<Location?> futureLocation;
+  late Future<List<Location>?> futureInventory;
 
   @override
   void initState() {
-
-    // TODO arrive at location
     super.initState();
     futureLocation = _findLocationById(widget.locationId);
+    futureInventory = _getInventory();
   }
 
   _findLocationById(int locationId) {
-    return LocationService.fetchLocations()
-        .then((locations) => locations
-            .firstWhere((location) => location.id == locationId));
+    return LocationService.fetchLocations().then((locations) =>
+        locations.firstWhere((location) => location.id == locationId));
+  }
+
+  _getInventory() {
+    return PlayerService.getInventory();
   }
 
   @override
@@ -44,30 +48,56 @@ class _LocationScreenState extends State<LocationScreen> {
               .patientScreenName(widget.locationId)),
           actions: const <Widget>[LogoutButton()],
         ),
-        body: RefreshIndicator(
-            onRefresh: () => refresh(null),
-            child: ApiFutureBuilder<Location>(
-                future: futureLocation,
-                builder: (context, location) {
-                  return SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      child: Column(children: [
-                        Card(child: LocationOverview(location: location)),
-                        ResourceDirectory(
-                            locations: [location], resourceToggle: (resource) => {}),
-                      ]));
-                })));
+        body: ApiFutureBuilder<Location>(
+            future: futureLocation,
+            builder: (context, location) {
+              return Column(children: [
+                Card(child: LocationOverview(location: location)),
+                Text(AppLocalizations.of(context)!.locationScreenAvailableSubLocations),
+                RefreshIndicator(
+                    onRefresh: () => refreshLocation(null),
+                    child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Column(children: [
+                          ResourceDirectory(
+                              rootLocationsSelectable: false,
+                              initiallyExpanded: true,
+                              locations: [location],
+                              resourceToggle: (resource) => {},
+                              onLocationSelected: (location, selected) => {}),
+                        ]))),
+                Text(AppLocalizations.of(context)!.locationScreenInventory),
+                ApiFutureBuilder<List<Location>>(
+                    future: futureInventory,
+                    builder: (context, inventory) {
+                      return RefreshIndicator(
+                          onRefresh: () => refreshInventory(),
+                          child: SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              child: Column(children: [
+                                ResourceDirectory(
+                                    locations: inventory,
+                                    resourceToggle: (resource) => {},
+                                    onLocationSelected: (location, selected) => {}),
+                              ])));
+                    }),
+              ]);
+            }));
   }
 
-  Future refresh(Location? location) {
-
-
+  Future refreshLocation(Location? location) {
     setState(() {
-      // TODO leave and arrive at location
       futureLocation = location != null
           ? Future(() => location)
           : _findLocationById(widget.locationId);
     });
     return futureLocation;
+  }
+
+  Future refreshInventory() {
+    setState(() {
+      futureInventory = _getInventory();
+    });
+    return futureInventory;
   }
 }
