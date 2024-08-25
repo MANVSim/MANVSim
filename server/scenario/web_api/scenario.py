@@ -1,6 +1,7 @@
 import logging
 
 from flask import Blueprint, request
+from sqlalchemy import select, distinct
 from werkzeug.exceptions import NotFound, BadRequest
 
 import models
@@ -117,7 +118,7 @@ def edit_scenario(id: int):
         __update_patients_in_scenario(scenario, patients_add=patients_add,
                                       patients_del=patients_del)
     except KeyError:
-        logging.info("No or inconsistent patient-add changes detected")
+        logging.info("No or inconsistent patient changes detected")
 
     try:
         vehicles_add = request_data["vehicles_add"]
@@ -137,6 +138,7 @@ def __update_patients_in_scenario(scenario, patients_add=None, patients_del=None
     quantity and existence an entry is created, removed or edited.
     """
     if patients_add and patients_del:
+        # if names are marked for deletion as well as addition, do nothing
         patientNamesAdd = [item["name"] for item in patients_add]
         patientNamesDel = [item["name"] for item in patients_del]
 
@@ -147,6 +149,7 @@ def __update_patients_in_scenario(scenario, patients_add=None, patients_del=None
 
     try:
         if patients_del:
+            # remove all patients from scenario by provided name
             for patient_del in patients_del:
                 db.session.query(models.PatientInScenario).filter(
                     models.PatientInScenario.scenario_id == scenario.id,
@@ -155,31 +158,26 @@ def __update_patients_in_scenario(scenario, patients_add=None, patients_del=None
 
         if patients_add:
             for patient_add in patients_add:
-                patient = models.PatientInScenario.query.filter_by(
+                patient = models.PatientInScenario(
                     scenario_id=scenario.id,
+                    patient_id=patient_add["id"],
                     name=patient_add["name"]
-                ).first()
-                # prevent primary collision
-                if not patient:
-                    patient = models.PatientInScenario(
-                        scenario_id=scenario.id,
-                        patient_id=patient_add["id"],
-                        name=patient_add["name"]
-                    )
-                    db.session.add(patient)
+                )
+                db.session.add(patient)
 
         db.session.commit()
-        logging.info(f"Update patients for scenario {scenario.id}")
+        logging.info(f"Updated patients for scenario {scenario.id}")
     except KeyError:
         raise BadRequest("Invalid or missing parameter for patients detected")
 
 
-def __update_vehicle_in_scenario(scenario, vehicles_add: dict=None, vehicles_del=None):
+def __update_vehicle_in_scenario(scenario, vehicles_add=None, vehicles_del=None):
     """
     Edits the vehicles registered on the provided scenario. Depending on the
     quantity and existence an entry is created, removed or edited.
     """
     if vehicles_add and vehicles_del:
+        # if names are marked for deletion as well as addition, do nothing
         vehicleNamesAdd = [item["name"] for item in vehicles_add]
         vehicleNamesDel = [item["name"] for item in vehicles_del]
 
@@ -197,23 +195,50 @@ def __update_vehicle_in_scenario(scenario, vehicles_add: dict=None, vehicles_del
                 ).delete()
 
         if vehicles_add:
-            for vehicle_add in vehicles_add:
-                vehicle = models.PlayersToVehicleInExecution.query.filter_by(
-                    scenario_id=scenario.id,
-                    vehicle_name=vehicle_add["name"]
-                ).first()
-                # prevent primary collision
-                if not vehicle:
-                    # FIXME add entry for all execution entries in db
-                    vehicle = models.PlayersToVehicleInExecution(
-                        scenario_id=scenario.id,
-                        location_id=vehicle_add["id"],
-                        vehicle_name=vehicle_add["name"]
-                    )
-                    db.session.add(vehicle)
+            __add_vehicles_to_execution(scenario, vehicles_add)
 
         db.session.commit()
-        logging.info(f"Update vehicles for scenario {scenario.id}")
+        logging.info(f"Updated vehicles for scenario {scenario.id}")
 
     except KeyError:
         raise BadRequest("Invalid or missing parameter for vehicles detected")
+
+
+def __add_vehicles_to_execution(scenario, vehicles_add):
+    """
+    This method adds a new vehicle to all executions that are referenced with
+    the provided scenario id. In case no execution is created for a scenario,
+    the method used execution_id=0 as wildcard for the initial creation of
+    a corresponding execution.
+    """
+    for vehicle_add in vehicles_add:
+        # Get all execution ids for scenario from PlayersToVehicle Table
+        execution_ids_query = select(distinct(
+            models.PlayersToVehicleInExecution.execution_id)
+        ).where(
+            models.PlayersToVehicleInExecution.scenario_id == scenario.id
+        )
+        execution_ids = [row[0] for row in
+                         db.session.execute(execution_ids_query)]
+
+        if not execution_ids:
+            # Unused scenario in DB -> create entry with id execution_id = 0
+            # Execution ID 0 indicates an uncreated game for scenarios.
+            # Causes changes on how an execution is created
+            vehicle = models.PlayersToVehicleInExecution(
+                execution_id=0,
+                scenario_id=scenario.id,
+                location_id=vehicle_add["id"],
+                vehicle_name=vehicle_add["name"]
+            )
+            db.session.add(vehicle)
+        else:
+            # Add new vehicle to every execution stored
+            for exec_id in execution_ids:
+                vehicle = models.PlayersToVehicleInExecution(
+                    execution_id=exec_id,
+                    scenario_id=scenario.id,
+                    location_id=vehicle_add["id"],
+                    vehicle_name=vehicle_add["name"]
+                )
+                db.session.add(vehicle)

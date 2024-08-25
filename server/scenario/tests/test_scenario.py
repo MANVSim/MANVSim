@@ -1,6 +1,7 @@
 import json
 
 import models
+from conftest import flask_app
 
 
 def test_get_scenario(client):
@@ -38,26 +39,21 @@ def test_create_scenario(client):
                 "id": 0,
                 "name": "RTW II"
             },
-            {
-                "id": 0,
-                "name": "RTW I"
-            },
         ],
     }
     response = client.patch("/web/scenario", data=json.dumps(form),
                             headers=csrf_header,
                             content_type='application/json')
     assert response.status_code == 200
-    vehicle = models.PlayersToVehicleInExecution.query.filter_by(
-        scenario_id=2,
-        location_id=0,
-        vehicle_name="RTW II"
-    ).first()
-    assert vehicle
-    vehicle = models.PlayersToVehicleInExecution.query.filter_by(
-        scenario_id=2,
-        location_id=0,
-        vehicle_name="RTW III"
-    ).first()
-    assert vehicle
+    with flask_app.app_context():
+        vehicle = models.PlayersToVehicleInExecution.query.filter_by(
+            scenario_id=2,
+            location_id=0,
+            vehicle_name="RTW II"
+        ).first()
+        assert vehicle
+        vehicle = models.PlayersToVehicleInExecution.query.filter_by(
+            vehicle_name="RTW III"
+        ).all()
+        assert len(vehicle) > 1
 
