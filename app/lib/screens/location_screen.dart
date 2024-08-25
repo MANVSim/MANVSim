@@ -20,20 +20,32 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  late Future<Location?> futureLocation;
-  late Future<List<Location>?> futureInventory;
+  late Future<Location?> _futureLocation;
+  late Future<List<Location>?> _futureInventory;
 
-  List<int>? selectedInventoryIdPath;
-  List<String>? selectedInventoryNamePath;
-  List<int>? selectedLocationIdPath;
-  late List<String> selectedLocationNamePath;
+  late Location _fetchedLocation;
+
+  List<Location>? _selectedInventoryPath;
+  List<Location>? _selectedLocationPath;
 
   @override
   void initState() {
     super.initState();
-    futureLocation = _findLocationById(widget.locationId);
-    futureInventory = _getInventory();
-    selectedInventoryNamePath = ["Inventar"];
+    _futureLocation = _findLocationById(widget.locationId);
+    _futureInventory = _getInventory();
+  }
+
+  List<String> get _selectedInventoryPathNames {
+    String inventoryName = AppLocalizations.of(context)!.locationScreenInventory;
+    return _selectedInventoryPath != null
+        ? [inventoryName, ..._selectedInventoryPath!.map((e) => e.name)]
+        : [inventoryName];
+  }
+
+  List<String> get _selectedLocationPathNames {
+    return _selectedLocationPath != null
+        ? _selectedLocationPath!.map((e) => e.name).toList()
+        : [_fetchedLocation.name];
   }
 
   _findLocationById(int locationId) {
@@ -46,28 +58,24 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   _canTake() {
-    return selectedLocationIdPath != null;
+    return _selectedLocationPath != null;
   }
 
   _canPut() {
-    return selectedInventoryIdPath != null;
+    return _selectedInventoryPath != null;
   }
 
   _handleTake() {
     if (_canTake()) {
-      print(selectedInventoryIdPath);
-      print(selectedLocationIdPath);
-      print(selectedInventoryNamePath);
-      print(selectedLocationNamePath);
+      print(_selectedInventoryPathNames);
+      print(_selectedLocationPathNames);
     }
   }
 
   _handlePut() {
     if (_canPut()) {
-      print(selectedInventoryIdPath);
-      print(selectedLocationIdPath);
-      print(selectedInventoryNamePath);
-      print(selectedLocationNamePath);
+      print(_selectedInventoryPathNames);
+      print(_selectedLocationPathNames);
     }
   }
 
@@ -80,8 +88,11 @@ class _LocationScreenState extends State<LocationScreen> {
         actions: const <Widget>[LogoutButton()],
       ),
       body: ApiFutureBuilder<Location>(
-          future: futureLocation,
+          future: _futureLocation,
           builder: (context, location) {
+
+            _fetchedLocation = location;
+
             return Column(children: [
               Card(child: LocationOverview(location: location)),
               Text(AppLocalizations.of(context)!
@@ -96,21 +107,17 @@ class _LocationScreenState extends State<LocationScreen> {
                           initiallyExpanded: true,
                           locations: [location],
                           resourceToggle: (resource) => {},
-                          onLocationSelected: (currentSelectedLocationIdPath,
-                              currentSelectedLocationNamePath) {
+                          onLocationSelected: (currentSelectedLocationPath) {
                             setState(() {
-                              selectedLocationIdPath =
-                                  currentSelectedLocationIdPath;
-                              selectedLocationNamePath =
-                                  currentSelectedLocationNamePath ??
-                                      [location.name];
+                              _selectedLocationPath =
+                                  currentSelectedLocationPath;
                             });
                           },
                         ),
                       ]))),
               Text(AppLocalizations.of(context)!.locationScreenInventory),
               ApiFutureBuilder<List<Location>>(
-                  future: futureInventory,
+                  future: _futureInventory,
                   builder: (context, inventory) {
                     return RefreshIndicator(
                         onRefresh: () => refreshInventory(),
@@ -121,18 +128,10 @@ class _LocationScreenState extends State<LocationScreen> {
                                 locations: inventory,
                                 resourceToggle: (resource) => {},
                                 onLocationSelected:
-                                    (currentSelectedLocationIdPath,
-                                        currentSelectedLocationNamePath) {
+                                    (currentSelectedLocationPath) {
                                   setState(() {
-                                    selectedInventoryIdPath =
-                                        currentSelectedLocationIdPath;
-                                    selectedInventoryNamePath =
-                                        currentSelectedLocationNamePath != null
-                                            ? [
-                                                "Inventar",
-                                                ...currentSelectedLocationNamePath
-                                              ]
-                                            : ["Inventar"];
+                                    _selectedInventoryPath =
+                                        currentSelectedLocationPath;
                                   });
                                 },
                               ),
@@ -175,17 +174,17 @@ class _LocationScreenState extends State<LocationScreen> {
 
   Future refreshLocation(Location? location) {
     setState(() {
-      futureLocation = location != null
+      _futureLocation = location != null
           ? Future(() => location)
           : _findLocationById(widget.locationId);
     });
-    return futureLocation;
+    return _futureLocation;
   }
 
   Future refreshInventory() {
     setState(() {
-      futureInventory = _getInventory();
+      _futureInventory = _getInventory();
     });
-    return futureInventory;
+    return _futureInventory;
   }
 }
