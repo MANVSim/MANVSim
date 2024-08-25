@@ -1,6 +1,7 @@
 import logging
 
 from flask import Blueprint, request
+from sqlalchemy import select, distinct
 from werkzeug.exceptions import NotFound, BadRequest
 
 import models
@@ -46,19 +47,15 @@ def get_scenario(scenario_id: int):
     if not scenario:
         raise NotFound(f"scenario not found by id={scenario_id}")
 
-    patient_list = (models.Patient.query.join(
-        models.TakesPartIn,
-        models.Patient.id == models.TakesPartIn.patient_id
-    ).filter(
-        models.TakesPartIn.scenario_id == scenario_id
-    ).all())
+    patient_list = models.PatientInScenario.query.filter_by(
+        scenario_id=scenario_id
+    )
 
-    vehicle_list = models.Location.query.filter_by(is_vehicle=True)
-    vehicle_quantity_list = (models.LocationQuantityInScenario.query.join(
-        models.Location,
-        models.LocationQuantityInScenario.location_id == models.Location.id
+    vehicle_list = (models.Location.query.join(
+        models.PlayersToVehicleInExecution,
+        models.Location.id == models.PlayersToVehicleInExecution.location_id
     ).filter(
-        models.LocationQuantityInScenario.scenario_id == scenario_id
+        models.PlayersToVehicleInExecution.scenario_id == scenario_id
     ).all())
 
     return {
@@ -66,7 +63,7 @@ def get_scenario(scenario_id: int):
         "name": scenario.name,
         "patients": [
             {
-                "id": patient.id,
+                "id": patient.patient_id,
                 "name": patient.name
             }
             for patient in patient_list
@@ -74,15 +71,8 @@ def get_scenario(scenario_id: int):
         "vehicles": [
             {
                 "id": vehicle.id,
-                "name": vehicle.name
+                "name": vehicle.name,
             } for vehicle in vehicle_list
-        ],
-        "vehicles_quantity": [
-            {
-                "id": vehicle.id,
-                "name": vehicle.location.name,
-                "quantity": vehicle.quantity
-            } for vehicle in vehicle_quantity_list
         ]
     }
 
@@ -94,18 +84,11 @@ def create_scenario():
     db.session.add(scenario)
     db.session.commit()
 
-    vehicle_list = models.Location.query.filter_by(is_vehicle=True)
     return {
         "id": scenario.id,
         "name": scenario.name,
         "patients": [],
-        "vehicles": [
-            {
-                "id": vehicle.id,
-                "name": vehicle.name
-            } for vehicle in vehicle_list
-        ],
-        "vehicles-quantity": []
+        "vehicles": []
     }
 
 
@@ -130,72 +113,132 @@ def edit_scenario(id: int):
         logging.info("No name change detected.")
 
     try:
-        new_patients = request_data["patients"]
-        __update_patients_in_scenario(scenario, new_patients)
+        patients_add = request_data["patients_add"]
+        patients_del = request_data["patients_del"]
+        __update_patients_in_scenario(scenario, patients_add=patients_add,
+                                      patients_del=patients_del)
     except KeyError:
-        logging.info("No patient changes detected")
+        logging.info("No or inconsistent patient changes detected")
 
     try:
-        new_vehicle = request_data["vehicle"]
-        __update_vehicle_in_scenario(scenario, new_vehicle)
+        vehicles_add = request_data["vehicles_add"]
+        vehicles_del = request_data["vehicles_del"]
+        __update_vehicle_in_scenario(scenario, vehicles_add=vehicles_add,
+                                     vehicles_del=vehicles_del)
     except KeyError:
-        logging.info("No vehicle changes detected")
+        logging.info("No or inconsistent vehicle changes detected")
 
     db.session.commit()
     return "Successfully updated patient", 200
 
 
-def __update_patients_in_scenario(scenario, new_patients):
+def __update_patients_in_scenario(scenario, patients_add=None, patients_del=None):
     """
     Edits the vehicles registered on the provided scenario. Depending on the
     quantity and existence an entry is created, removed or edited.
     """
+    if patients_add and patients_del:
+        # if names are marked for deletion as well as addition, do nothing
+        patientNamesAdd = [item["name"] for item in patients_add]
+        patientNamesDel = [item["name"] for item in patients_del]
+
+        common_elements = set(patientNamesAdd) & set(patientNamesDel)
+
+        patients_add = [item for item in patients_add if item["name"] not in common_elements]
+        patients_del = [item for item in patients_del if item["name"] not in common_elements]
+
     try:
-        for patient_data in new_patients:
-            patient = models.TakesPartIn.query.filter_by(
-                scenario_id=scenario.id, patient_id=patient_data["id"]).first()
-            quantity = int(patient_data["quantity"])
-            if quantity <= 0 and not patient:
-                continue
-            elif not patient:
-                patient = models.TakesPartIn(
-                    quantity=int(patient_data["quantity"]),
+        if patients_del:
+            # remove all patients from scenario by provided name
+            for patient_del in patients_del:
+                db.session.query(models.PatientInScenario).filter(
+                    models.PatientInScenario.scenario_id == scenario.id,
+                    models.PatientInScenario.name == patient_del["name"]
+                ).delete()
+
+        if patients_add:
+            for patient_add in patients_add:
+                patient = models.PatientInScenario(
                     scenario_id=scenario.id,
-                    patient_id=patient_data["id"]
+                    patient_id=patient_add["id"],
+                    name=patient_add["name"]
                 )
                 db.session.add(patient)
-            elif quantity <= 0:
-                db.session.delete(patient)
-            else:
-                patient.quantity = int(patient_data["quantity"])
+
+        db.session.commit()
+        logging.info(f"Updated patients for scenario {scenario.id}")
     except KeyError:
         raise BadRequest("Invalid or missing parameter for patients detected")
 
 
-def __update_vehicle_in_scenario(scenario, new_vehicles):
+def __update_vehicle_in_scenario(scenario, vehicles_add=None, vehicles_del=None):
     """
     Edits the vehicles registered on the provided scenario. Depending on the
     quantity and existence an entry is created, removed or edited.
     """
+    if vehicles_add and vehicles_del:
+        # if names are marked for deletion as well as addition, do nothing
+        vehicleNamesAdd = [item["name"] for item in vehicles_add]
+        vehicleNamesDel = [item["name"] for item in vehicles_del]
+
+        common_elements = set(vehicleNamesAdd) & set(vehicleNamesDel)
+
+        vehicles_add = [item for item in vehicles_add if item["name"] not in common_elements]
+        vehicles_del = [item for item in vehicles_del if item["name"] not in common_elements]
+
     try:
-        for vehicle_data in new_vehicles:
-            vehicle = models.LocationQuantityInScenario.query.filter_by(
-                scenario_id=scenario.id,
-                location_id=int(vehicle_data["id"])).first()
-            quantity = int(vehicle_data["quantity"])
-            if not vehicle and quantity <= 0:
-                continue
-            elif not vehicle:
-                vehicle = models.TakesPartIn(
-                    quantity=int(vehicle_data["quantity"]),
-                    scenario_id=scenario.id,
-                    patient_id=int(vehicle_data["id"])
-                )
-                db.session.add(vehicle)
-            elif quantity <= 0:
-                db.session.delete(vehicle)
-            else:
-                vehicle.quantity = int(vehicle_data["quantity"])
+        if vehicles_del:
+            for vehicle_del in vehicles_del:
+                db.session.query(models.PlayersToVehicleInExecution).filter(
+                    models.PlayersToVehicleInExecution.scenario_id == scenario.id,
+                    models.PlayersToVehicleInExecution.vehicle_name == vehicle_del["name"]
+                ).delete()
+
+        if vehicles_add:
+            __add_vehicles_to_execution(scenario, vehicles_add)
+
+        db.session.commit()
+        logging.info(f"Updated vehicles for scenario {scenario.id}")
 
     except KeyError:
-        raise BadRequest("Invalid or missing parameter for patients detected")
+        raise BadRequest("Invalid or missing parameter for vehicles detected")
+
+
+def __add_vehicles_to_execution(scenario, vehicles_add):
+    """
+    This method adds a new vehicle to all executions that are referenced with
+    the provided scenario id. In case no execution is created for a scenario,
+    the method used execution_id=0 as wildcard for the initial creation of
+    a corresponding execution.
+    """
+    for vehicle_add in vehicles_add:
+        # Get all execution ids for scenario from PlayersToVehicle Table
+        execution_ids_query = select(distinct(
+            models.PlayersToVehicleInExecution.execution_id)
+        ).where(
+            models.PlayersToVehicleInExecution.scenario_id == scenario.id
+        )
+        execution_ids = [row[0] for row in
+                         db.session.execute(execution_ids_query)]
+
+        if not execution_ids:
+            # Unused scenario in DB -> create entry with id execution_id = 0
+            # Execution ID 0 indicates an uncreated game for scenarios.
+            # Causes changes on how an execution is created
+            vehicle = models.PlayersToVehicleInExecution(
+                execution_id=0,
+                scenario_id=scenario.id,
+                location_id=vehicle_add["id"],
+                vehicle_name=vehicle_add["name"]
+            )
+            db.session.add(vehicle)
+        else:
+            # Add new vehicle to every execution stored
+            for exec_id in execution_ids:
+                vehicle = models.PlayersToVehicleInExecution(
+                    execution_id=exec_id,
+                    scenario_id=scenario.id,
+                    location_id=vehicle_add["id"],
+                    vehicle_name=vehicle_add["name"]
+                )
+                db.session.add(vehicle)

@@ -7,15 +7,15 @@ from media.media_data import MediaData
 from models import (
     Scenario,
     Execution,
-    Location, LocationContainsLocation, LocationQuantityInScenario,
+    Location, LocationContainsLocation,
     Role,
     Player,
     Patient,
-    TakesPartIn,
-    Resource, ResourceQuantityInLocation,
+    PatientInScenario,
+    Resource,
     Action,
     ResourcesNeeded,
-    WebUser,
+    WebUser, ResourceInLocation, PlayersToVehicleInExecution,
 )
 from vars import RESULT_DELIMITER
 
@@ -61,22 +61,22 @@ def __create_resources():
                         MediaData.new_image(
                             "media/static/image/no_image.png")])))
 
-    insert(ResourceQuantityInLocation(id=0, quantity=10,
-                                      location_id=2, resource_id=0))
-    insert(ResourceQuantityInLocation(id=1, quantity=10000,
-                                      location_id=3, resource_id=1))
-    insert(ResourceQuantityInLocation(id=2, quantity=2,
-                                      location_id=1, resource_id=2))
-    insert(ResourceQuantityInLocation(id=3, quantity=1,
-                                      location_id=0, resource_id=3))
-    insert(ResourceQuantityInLocation(id=4, quantity=1,
-                                      location_id=5, resource_id=4))
-    insert(ResourceQuantityInLocation(id=5, quantity=3,
-                                      location_id=3, resource_id=5))
-    insert(ResourceQuantityInLocation(id=6, quantity=4,
-                                      location_id=0, resource_id=6))
-    insert(ResourceQuantityInLocation(id=7, quantity=1,
-                                      location_id=4, resource_id=7))
+    insert(ResourceInLocation(id=0, quantity=10,
+                              location_id=2, resource_id=0))
+    insert(ResourceInLocation(id=1, quantity=10000,
+                              location_id=3, resource_id=1))
+    insert(ResourceInLocation(id=2, quantity=2,
+                              location_id=1, resource_id=2))
+    insert(ResourceInLocation(id=3, quantity=1,
+                              location_id=0, resource_id=3))
+    insert(ResourceInLocation(id=4, quantity=1,
+                              location_id=5, resource_id=4))
+    insert(ResourceInLocation(id=5, quantity=3,
+                              location_id=3, resource_id=5))
+    insert(ResourceInLocation(id=6, quantity=4,
+                              location_id=0, resource_id=6))
+    insert(ResourceInLocation(id=7, quantity=1,
+                              location_id=4, resource_id=7))
 
 
 def __create_locations():
@@ -104,17 +104,13 @@ def __create_locations():
     insert(Location(id=6, name="Holstein Stadion",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/no_image.png")]))
-           )
+                            "media/static/image/no_image.png")])))
 
-    insert(LocationContainsLocation(id=0, parent=0, child=1,))
-    insert(LocationContainsLocation(id=1, parent=0, child=2,))
+    insert(LocationContainsLocation(id=0, parent=0, child=1))
+    insert(LocationContainsLocation(id=1, parent=0, child=2))
     insert(LocationContainsLocation(id=2, parent=0, child=3))
     insert(LocationContainsLocation(id=3, parent=0, child=4))
     insert(LocationContainsLocation(id=4, parent=0, child=5))
-
-    insert(LocationQuantityInScenario(id=0, quantity=3, scenario_id=2,
-                                      location_id=0))
 
 
 def __create_actions():
@@ -197,21 +193,28 @@ def __create_players():
     insert(Player(tan="654WVU", execution_id=2, location_id=0, role_id=3,
                   alerted=False, activation_delay_sec=10))
 
+    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=2, player_tan="123ABC", location_id=0,
+                                       vehicle_name="RTW I"))
+    insert(PlayersToVehicleInExecution(execution_id=2, scenario_id=2, player_tan="987ZYX", location_id=0,
+                                       vehicle_name="RTW I"))
+    insert(PlayersToVehicleInExecution(execution_id=2, scenario_id=2, player_tan="654WVU", location_id=0,
+                                       vehicle_name="RTW II"))
+
 
 def __create_patients():
     ads = get_activity_diagrams()
 
-    insert(Patient(id=0, name="Hans", activity_diagram=()))
+    insert(Patient(id=0, template_name="Alter Mann, ohne Befund", activity_diagram=()))
 
-    insert(Patient(id=1, name="Holger Hooligan",
+    insert(Patient(id=1, template_name="Leichte äußere Verletzungen",
                    activity_diagram=ads[0].to_json()))
-    insert(Patient(id=2, name="Stefan Schiri",
+    insert(Patient(id=2, template_name="Blaues Auge",
                    activity_diagram=ads[1].to_json()))
-    insert(Patient(id=3, name="Hoff Nungs Loserfall",
+    insert(Patient(id=3, template_name="Schwerer Schlaganfall mit inneren Blutungen",
                    activity_diagram=ads[2].to_json()))
-    insert(Patient(id=4, name="Hoff Nungs Vollerfall",
+    insert(Patient(id=4, template_name="Gesund, keine Verletzungen",
                    activity_diagram=ads[3].to_json()))
-    insert(Patient(id=5, name="Gisela", activity_diagram=()))
+    insert(Patient(id=5, template_name="Adipöse Frau", activity_diagram=()))
 
 
 def __create_scenarios():
@@ -222,12 +225,12 @@ def __create_scenarios():
 
 
 def __takes_part_in():
-    insert(TakesPartIn(scenario_id=0, patient_id=0))
-    insert(TakesPartIn(scenario_id=0, patient_id=5))
-    insert(TakesPartIn(scenario_id=2, patient_id=1))
-    insert(TakesPartIn(scenario_id=2, patient_id=2))
-    insert(TakesPartIn(scenario_id=2, patient_id=3))
-    insert(TakesPartIn(scenario_id=2, patient_id=4))
+    insert(PatientInScenario(scenario_id=0, patient_id=0, name="Hans"))
+    insert(PatientInScenario(scenario_id=0, patient_id=5, name="Gisela"))
+    insert(PatientInScenario(scenario_id=2, patient_id=1, name="Holger Hooligan"))
+    insert(PatientInScenario(scenario_id=2, patient_id=2, name="Stefan Schiri"))
+    insert(PatientInScenario(scenario_id=2, patient_id=3, name="Hoff Nungs Loserfall"))
+    insert(PatientInScenario(scenario_id=2, patient_id=4, name="Hoff Nungs Vollerfall"))
 
 
 def __create_executions():
