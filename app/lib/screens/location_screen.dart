@@ -23,6 +23,9 @@ class _LocationScreenState extends State<LocationScreen> {
   late Future<Location?> futureLocation;
   late Future<List<Location>?> futureInventory;
 
+  List<int>? selectedInventoryIdPath;
+  List<int>? selectedLocationIdPath;
+
   @override
   void initState() {
     super.initState();
@@ -39,13 +42,32 @@ class _LocationScreenState extends State<LocationScreen> {
     return PlayerService.getInventory();
   }
 
+  _canTake() {
+    return selectedLocationIdPath != null;
+  }
+
+  _canPut() {
+    return selectedInventoryIdPath != null;
+  }
+
+  _handleTake() {
+    if (_canTake()) {
+
+    }
+  }
+
+  _handlePut() {
+    if (_canPut()) {
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(AppLocalizations.of(context)!
-              .locationScreenName),
+          title: Text(AppLocalizations.of(context)!.locationScreenName),
           actions: const <Widget>[LogoutButton()],
         ),
         body: ApiFutureBuilder<Location>(
@@ -53,24 +75,26 @@ class _LocationScreenState extends State<LocationScreen> {
             builder: (context, location) {
               return Column(children: [
                 Card(child: LocationOverview(location: location)),
-                Text(AppLocalizations.of(context)!.locationScreenAvailableSubLocations),
+                Text(AppLocalizations.of(context)!
+                    .locationScreenAvailableSubLocations),
                 RefreshIndicator(
                     onRefresh: () => refreshLocation(null),
                     child: SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         child: Column(children: [
                           ResourceDirectory(
-                              rootLocationsSelectable: false,
-                              initiallyExpanded: true,
-                              locations: [location],
-                              resourceToggle: (resource) => {},
-                              onLocationSelected:(selectedLocationIdPath) {
-                                if (selectedLocationIdPath != null) {
-                                  print(selectedLocationIdPath);
-                                } else {
-                                  print('no location selected');
-                                }
-                              }),
+                            rootLocationsSelectable: false,
+                            initiallyExpanded: true,
+                            locations: [location],
+                            resourceToggle: (resource) => {},
+                            onLocationSelected:
+                                (currentSelectedLocationIdPath) {
+                              setState(() {
+                                selectedLocationIdPath =
+                                    currentSelectedLocationIdPath;
+                              });
+                            },
+                          ),
                         ]))),
                 Text(AppLocalizations.of(context)!.locationScreenInventory),
                 ApiFutureBuilder<List<Location>>(
@@ -82,19 +106,56 @@ class _LocationScreenState extends State<LocationScreen> {
                               physics: const AlwaysScrollableScrollPhysics(),
                               child: Column(children: [
                                 ResourceDirectory(
-                                    locations: inventory,
-                                    resourceToggle: (resource) => {},
-                                    onLocationSelected: (selectedLocationIdPath) {
-                                      if (selectedLocationIdPath != null) {
-                                        print(selectedLocationIdPath);
-                                      } else {
-                                        print('no location selected');
-                                      }
-                                    },),
+                                  locations: inventory,
+                                  resourceToggle: (resource) => {},
+                                  onLocationSelected:
+                                      (currentSelectedLocationIdPath) {
+                                    setState(() {
+                                      selectedInventoryIdPath =
+                                          currentSelectedLocationIdPath;
+                                    });
+                                  },
+                                ),
+
+
                               ])));
                     }),
               ]);
-            }));
+            }),
+
+        bottomNavigationBar:   Container(
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: SizedBox(
+                    height: 40,
+                    child: ElevatedButton(
+                      onPressed: _canTake() ? _handleTake : null,
+                      child: Text('Nehmen'),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: SizedBox(
+                    height: 40,
+                    child: ElevatedButton(
+                      onPressed: _canPut() ? _handlePut : null,
+                      child: Text('Ablegen'),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+    );
+
+
   }
 
   Future refreshLocation(Location? location) {
