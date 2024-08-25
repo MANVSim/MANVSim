@@ -12,7 +12,7 @@ class ResourceDirectory extends StatefulWidget {
 
   // function to propagate toggling to parent
   final Function(Resource resource) resourceToggle;
-  final Function(List<int>? selectedLocationIdPath)? onLocationSelected;
+  final Function(List<int>? selectedLocationIdPath, List<String>? selectedLocationNamePath)? onLocationSelected;
 
   const ResourceDirectory(
       {super.key,
@@ -50,30 +50,37 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
     
     int? newSelectedLocationIndex;
     List<int>? selectedIndexPath;
+    List<String>? selectedNamePath;
     
     if (_isLocationSelected(index)) {
       newSelectedLocationIndex = null;
       selectedIndexPath = null;
+      selectedNamePath = null;
     } else {
       newSelectedLocationIndex = index;
       selectedIndexPath = [widget.locations[index].id];
+      selectedNamePath = [widget.locations[index].name];
     }
     
     setState(() {
       selectedLocationIndex = newSelectedLocationIndex;
     });
-    widget.onLocationSelected!(selectedIndexPath);
+    widget.onLocationSelected!(selectedIndexPath, selectedNamePath);
   }
 
-  void _handleChildLocationSelected(List<int>? selectedIndexPath, Location location) {
+  void _handleChildLocationSelected(List<int>? selectedIndexPath, List<String>? selectedNamePath, Location location) {
     List<int>? newSelectedIndexPath= selectedIndexPath != null
         ? [location.id, ...selectedIndexPath]
+        : null;
+
+    List<String>? newSelectedNamePath = selectedNamePath != null
+        ? [location.name, ...selectedNamePath]
         : null;
 
     setState(() {
       selectedLocationIndex = null;
     });
-    widget.onLocationSelected!(newSelectedIndexPath);
+    widget.onLocationSelected!(newSelectedIndexPath, newSelectedNamePath);
   }
 
   @override
@@ -132,11 +139,11 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
                   ResourceDirectory(
                     locations: location.locations,
                     resourceToggle: widget.resourceToggle,
-                    onLocationSelected:  widget.onLocationSelected != null
-                            ? (selectedIndexPath) =>
-                                _handleChildLocationSelected(
-                                    selectedIndexPath, location)
-                            : null,
+                    onLocationSelected: widget.onLocationSelected != null
+                        ? (selectedLocationIdPath, selectedLocationNamePath) =>
+                            _handleChildLocationSelected(selectedLocationIdPath,
+                                selectedLocationNamePath, location)
+                        : null,
                     parentLocationSelected: _isLocationSelected(locationIndex),
                   )
                 ],

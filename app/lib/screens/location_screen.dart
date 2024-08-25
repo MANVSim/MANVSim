@@ -24,13 +24,16 @@ class _LocationScreenState extends State<LocationScreen> {
   late Future<List<Location>?> futureInventory;
 
   List<int>? selectedInventoryIdPath;
+  List<String>? selectedInventoryNamePath;
   List<int>? selectedLocationIdPath;
+  late List<String> selectedLocationNamePath;
 
   @override
   void initState() {
     super.initState();
     futureLocation = _findLocationById(widget.locationId);
     futureInventory = _getInventory();
+    selectedInventoryNamePath = ["Inventar"];
   }
 
   _findLocationById(int locationId) {
@@ -52,110 +55,122 @@ class _LocationScreenState extends State<LocationScreen> {
 
   _handleTake() {
     if (_canTake()) {
-
+      print(selectedInventoryIdPath);
+      print(selectedLocationIdPath);
+      print(selectedInventoryNamePath);
+      print(selectedLocationNamePath);
     }
   }
 
   _handlePut() {
     if (_canPut()) {
-
+      print(selectedInventoryIdPath);
+      print(selectedLocationIdPath);
+      print(selectedInventoryNamePath);
+      print(selectedLocationNamePath);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(AppLocalizations.of(context)!.locationScreenName),
-          actions: const <Widget>[LogoutButton()],
-        ),
-        body: ApiFutureBuilder<Location>(
-            future: futureLocation,
-            builder: (context, location) {
-              return Column(children: [
-                Card(child: LocationOverview(location: location)),
-                Text(AppLocalizations.of(context)!
-                    .locationScreenAvailableSubLocations),
-                RefreshIndicator(
-                    onRefresh: () => refreshLocation(null),
-                    child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        child: Column(children: [
-                          ResourceDirectory(
-                            rootLocationsSelectable: false,
-                            initiallyExpanded: true,
-                            locations: [location],
-                            resourceToggle: (resource) => {},
-                            onLocationSelected:
-                                (currentSelectedLocationIdPath) {
-                              setState(() {
-                                selectedLocationIdPath =
-                                    currentSelectedLocationIdPath;
-                              });
-                            },
-                          ),
-                        ]))),
-                Text(AppLocalizations.of(context)!.locationScreenInventory),
-                ApiFutureBuilder<List<Location>>(
-                    future: futureInventory,
-                    builder: (context, inventory) {
-                      return RefreshIndicator(
-                          onRefresh: () => refreshInventory(),
-                          child: SingleChildScrollView(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              child: Column(children: [
-                                ResourceDirectory(
-                                  locations: inventory,
-                                  resourceToggle: (resource) => {},
-                                  onLocationSelected:
-                                      (currentSelectedLocationIdPath) {
-                                    setState(() {
-                                      selectedInventoryIdPath =
-                                          currentSelectedLocationIdPath;
-                                    });
-                                  },
-                                ),
-
-
-                              ])));
-                    }),
-              ]);
-            }),
-
-        bottomNavigationBar:   Container(
-          child: Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: SizedBox(
-                    height: 40,
-                    child: ElevatedButton(
-                      onPressed: _canTake() ? _handleTake : null,
-                      child: Text('Nehmen'),
-                    ),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(AppLocalizations.of(context)!.locationScreenName),
+        actions: const <Widget>[LogoutButton()],
+      ),
+      body: ApiFutureBuilder<Location>(
+          future: futureLocation,
+          builder: (context, location) {
+            return Column(children: [
+              Card(child: LocationOverview(location: location)),
+              Text(AppLocalizations.of(context)!
+                  .locationScreenAvailableSubLocations),
+              RefreshIndicator(
+                  onRefresh: () => refreshLocation(null),
+                  child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: Column(children: [
+                        ResourceDirectory(
+                          rootLocationsSelectable: false,
+                          initiallyExpanded: true,
+                          locations: [location],
+                          resourceToggle: (resource) => {},
+                          onLocationSelected: (currentSelectedLocationIdPath,
+                              currentSelectedLocationNamePath) {
+                            setState(() {
+                              selectedLocationIdPath =
+                                  currentSelectedLocationIdPath;
+                              selectedLocationNamePath =
+                                  currentSelectedLocationNamePath ??
+                                      [location.name];
+                            });
+                          },
+                        ),
+                      ]))),
+              Text(AppLocalizations.of(context)!.locationScreenInventory),
+              ApiFutureBuilder<List<Location>>(
+                  future: futureInventory,
+                  builder: (context, inventory) {
+                    return RefreshIndicator(
+                        onRefresh: () => refreshInventory(),
+                        child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: Column(children: [
+                              ResourceDirectory(
+                                locations: inventory,
+                                resourceToggle: (resource) => {},
+                                onLocationSelected:
+                                    (currentSelectedLocationIdPath,
+                                        currentSelectedLocationNamePath) {
+                                  setState(() {
+                                    selectedInventoryIdPath =
+                                        currentSelectedLocationIdPath;
+                                    selectedInventoryNamePath =
+                                        currentSelectedLocationNamePath != null
+                                            ? [
+                                                "Inventar",
+                                                ...currentSelectedLocationNamePath
+                                              ]
+                                            : ["Inventar"];
+                                  });
+                                },
+                              ),
+                            ])));
+                  }),
+            ]);
+          }),
+      bottomNavigationBar: Container(
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: SizedBox(
+                  height: 40,
+                  child: ElevatedButton(
+                    onPressed: _canTake() ? _handleTake : null,
+                    child: Text('Nehmen'),
                   ),
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: SizedBox(
-                    height: 40,
-                    child: ElevatedButton(
-                      onPressed: _canPut() ? _handlePut : null,
-                      child: Text('Ablegen'),
-                    ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: SizedBox(
+                  height: 40,
+                  child: ElevatedButton(
+                    onPressed: _canPut() ? _handlePut : null,
+                    child: Text('Ablegen'),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     );
-
-
   }
 
   Future refreshLocation(Location? location) {
