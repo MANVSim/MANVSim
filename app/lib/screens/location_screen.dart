@@ -149,7 +149,7 @@ class _LocationScreenState extends State<LocationScreen> {
                   height: 40,
                   child: ElevatedButton(
                     onPressed: _canTake() ? _handleTake : null,
-                    child: Text('Nehmen'),
+                    child: Text(AppLocalizations.of(context)!.locationScreenTake),
                   ),
                 ),
               ),
@@ -161,7 +161,7 @@ class _LocationScreenState extends State<LocationScreen> {
                   height: 40,
                   child: ElevatedButton(
                     onPressed: _canPut() ? _handlePut : null,
-                    child: Text('Ablegen'),
+                    child: Text(AppLocalizations.of(context)!.locationScreenPut),
                   ),
                 ),
               ),

@@ -94,6 +94,8 @@
   },
 
   "locationScreenInventory": "Inventar",
+  "locationScreenTake": "Nehmen",
+  "locationScreenPut": "Ablegen",
   "locationScreenAvailableSubLocations": "An Location verfügbar",
 
   "locationListScreenTypeName": "Name",
