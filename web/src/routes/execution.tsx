@@ -262,7 +262,8 @@ ExecutionRoute.action = async function ({
       formData.delete("tan")
       return togglePlayerStatus(params.executionId, playerTan, formData)
     }
-    case "new-player":
+    case "new-player": {
+
       const response = await createNewPlayer(params.executionId, formData)
       // Instead of redirecting, reload the current page
       if (response.ok) {
@@ -271,6 +272,7 @@ ExecutionRoute.action = async function ({
         console.error('Failed to create player:', response.text());
       }
       return ""
+    }
     default:
       throw new Error(`Case '${id}' is not covered in Execution.action`)
   }

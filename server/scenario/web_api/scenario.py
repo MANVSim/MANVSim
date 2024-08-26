@@ -211,39 +211,28 @@ def __add_vehicles_to_execution(scenario, vehicles_add):
     the method used execution_id=0 as wildcard for the initial creation of
     a corresponding execution.
     """
-    for vehicle_add in vehicles_add:
-        # Get all execution ids for scenario from PlayersToVehicle Table
-        execution_ids_query = select(distinct(
-            models.PlayersToVehicleInExecution.execution_id)
-        ).where(
-            models.PlayersToVehicleInExecution.scenario_id == scenario.id
-        )
-        execution_ids = [row[0] for row in
-                         db.session.execute(execution_ids_query)]
+    # Get all execution ids for scenario from PlayersToVehicle table
+    execution_ids_query = select(
+        distinct(models.PlayersToVehicleInExecution.execution_id)
+    ).where(models.PlayersToVehicleInExecution.scenario_id == scenario.id)
 
-        if not execution_ids:
-            # Unused scenario in DB -> create entry with id execution_id = 0
-            # Execution ID 0 indicates an uncreated game for scenarios.
-            # Causes changes on how an execution is created
-            logging.info(
-                f"creating wildcard-execution for scenario {scenario.id}")
+    execution_ids = [row[0] for row in
+                     db.session.execute(execution_ids_query)]
+
+    if not execution_ids:
+        # Unused scenario in DB -> create entries with id execution_id = 0
+        # (execution_id=0) indicates an uncreated game for scenarios.
+        # Causes changes on how an execution is created
+        execution_ids = [0]
+
+    for vehicle_add in vehicles_add:
+        # Add new vehicle to every execution stored for the scenario
+        for exec_id in execution_ids:
             vehicle = models.PlayersToVehicleInExecution(
-                execution_id=0,
+                execution_id=exec_id,
                 scenario_id=scenario.id,
                 location_id=vehicle_add["id"],
                 vehicle_name=vehicle_add["name"],
                 player_tan=f"empty-{vehicle_add["name"]}"
             )
             db.session.add(vehicle)
-        else:
-            # Add new vehicle to every execution stored
-            for exec_id in execution_ids:
-                logging.info(f"adding vehicle to execution id {exec_id} for scenario {scenario.id}")
-                vehicle = models.PlayersToVehicleInExecution(
-                    execution_id=exec_id,
-                    scenario_id=scenario.id,
-                    location_id=vehicle_add["id"],
-                    vehicle_name=vehicle_add["name"],
-                    player_tan=f"empty-{vehicle_add["name"]}"
-                )
-                db.session.add(vehicle)
