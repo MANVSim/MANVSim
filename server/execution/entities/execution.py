@@ -117,7 +117,7 @@ class Execution:
             new_seat_in_vehicle = models.PlayersToVehicleInExecution(
                 execution_id=player_to_vehicle.execution_id,
                 scenario_id=player_to_vehicle.scenario_id,
-                player_tan=None,
+                player_tan="empty",
                 location_id=player_to_vehicle.location_id,
                 vehicle_name=player_to_vehicle.vehicle_name
             )
