@@ -7,15 +7,15 @@ from media.media_data import MediaData
 from models import (
     Scenario,
     Execution,
-    Location,
+    Location, LocationContainsLocation,
     Role,
     Player,
     Patient,
-    TakesPartIn,
+    PatientInScenario,
     Resource,
     Action,
     ResourcesNeeded,
-    WebUser,
+    WebUser, ResourceInLocation, PlayersToVehicleInExecution,
 )
 from vars import RESULT_DELIMITER
 
@@ -29,77 +29,88 @@ def __create_resources():
     insert(
         Resource(id=0, name="Verband", media_refs=MediaData.list_to_json([
             MediaData.new_image("media/static/image/no_image.png")]),
-                 quantity=10, location_id=2, consumable=True))
+                 consumable=True))
     insert(
         Resource(id=1, name="Pflaster", media_refs=MediaData.list_to_json([
             MediaData.new_image("media/static/image/no_image.png")]),
-                 quantity=10000, location_id=3, consumable=True))
+                 consumable=True))
     insert(Resource(id=2, name="Stetoskop",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
                             "media/static/image/no_image.png")]),
-                    quantity=2, location_id=1, consumable=False))
+                    consumable=False))
     insert(Resource(id=3, name="Knochensäge",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
                             "media/static/image/no_image.png")]),
-                    quantity=1, location_id=0, consumable=False))
-    insert(Resource(id=4, name="EKG", quantity=1,
-                    media_refs=MediaData.list_to_json([
-                        MediaData.new_image(
-                            "media/static/image/tasche_ekg.jpg")]),
-                    location_id=5, consumable=False))
-    insert(Resource(id=5, name="Infusion", quantity=3,
-                    media_refs=MediaData.list_to_json([
-                        MediaData.new_image(
-                            "media/static/image/no_image.png")]),
-                    location_id=3,
                     consumable=False))
-    insert(Resource(id=6, name="Trage", quantity=4,
+    insert(Resource(id=4, name="EKG", consumable=False,
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/no_image.png")]),
-                    location_id=0,
-                    consumable=False))
-    insert(Resource(id=7, name="Beatmungsgerät", quantity=1,
+                            "media/static/image/tasche_ekg.jpg")])))
+    insert(Resource(id=5, name="Infusion", consumable=False,
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/no_image.png")]),
-                    location_id=4,
-                    consumable=False))
+                            "media/static/image/no_image.png")])))
+    insert(Resource(id=6, name="Trage", consumable=False,
+                    media_refs=MediaData.list_to_json([
+                        MediaData.new_image(
+                            "media/static/image/no_image.png")])))
+    insert(Resource(id=7, name="Beatmungsgerät", consumable=False,
+                    media_refs=MediaData.list_to_json([
+                        MediaData.new_image(
+                            "media/static/image/no_image.png")])))
+
+    insert(ResourceInLocation(id=0, quantity=10,
+                              location_id=2, resource_id=0))
+    insert(ResourceInLocation(id=1, quantity=10000,
+                              location_id=3, resource_id=1))
+    insert(ResourceInLocation(id=2, quantity=2,
+                              location_id=1, resource_id=2))
+    insert(ResourceInLocation(id=3, quantity=1,
+                              location_id=0, resource_id=3))
+    insert(ResourceInLocation(id=4, quantity=1,
+                              location_id=5, resource_id=4))
+    insert(ResourceInLocation(id=5, quantity=3,
+                              location_id=3, resource_id=5))
+    insert(ResourceInLocation(id=6, quantity=4,
+                              location_id=0, resource_id=6))
+    insert(ResourceInLocation(id=7, quantity=1,
+                              location_id=4, resource_id=7))
 
 
 def __create_locations():
-    insert(Location(id=0, name="RTW", media_refs=MediaData.list_to_json([
-        MediaData.new_image("media/static/image/rtw_sh.png")])))
+    insert(Location(id=0, name="RTW", is_vehicle=True,
+                    media_refs=MediaData.list_to_json([
+                        MediaData.new_image("media/static/image/rtw_sh.png")])))
     insert(Location(id=1, name="Sichtungstasche",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/tasche_sichtung.jpg")]),
-                    location_id=0))
+                            "media/static/image/tasche_sichtung.jpg")])))
     insert(Location(id=2, name="Verbandskasten",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/tasche_rot.jpg")]),
-                    location_id=1))
+                            "media/static/image/tasche_rot.jpg")])))
     insert(Location(id=3, name="Roter Rucksack",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/rucksack_rot.jpg")]),
-                    location_id=0))
+                            "media/static/image/rucksack_rot.jpg")])))
     insert(Location(id=4, name="Blauer Rucksack",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/rucksack_blau.jpg")]),
-                    location_id=0))
+                            "media/static/image/rucksack_blau.jpg")])))
     insert(Location(id=5, name="EKG", media_refs=MediaData.list_to_json([
-        MediaData.new_image("media/static/image/tasche_ekg.jpg")]),
-                    location_id=0))
+        MediaData.new_image("media/static/image/tasche_ekg.jpg")])))
     insert(Location(id=6, name="Holstein Stadion",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
-                            "media/static/image/no_image.png")]))
-           )
+                            "media/static/image/no_image.png")])))
+
+    insert(LocationContainsLocation(id=0, parent=0, child=1))
+    insert(LocationContainsLocation(id=1, parent=0, child=2))
+    insert(LocationContainsLocation(id=2, parent=0, child=3))
+    insert(LocationContainsLocation(id=3, parent=0, child=4))
+    insert(LocationContainsLocation(id=4, parent=0, child=5))
 
 
 def __create_actions():
@@ -182,21 +193,28 @@ def __create_players():
     insert(Player(tan="654WVU", execution_id=2, location_id=0, role_id=3,
                   alerted=False, activation_delay_sec=10))
 
+    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=2, player_tan="123ABC", location_id=0,
+                                       vehicle_name="RTW I"))
+    insert(PlayersToVehicleInExecution(execution_id=2, scenario_id=2, player_tan="987ZYX", location_id=0,
+                                       vehicle_name="RTW I"))
+    insert(PlayersToVehicleInExecution(execution_id=2, scenario_id=2, player_tan="654WVU", location_id=0,
+                                       vehicle_name="RTW II"))
+
 
 def __create_patients():
     ads = get_activity_diagrams()
 
-    insert(Patient(id=0, name="Hans", activity_diagram=()))
+    insert(Patient(id=0, template_name="Alter Mann, ohne Befund", activity_diagram=()))
 
-    insert(Patient(id=1, name="Holger Hooligan",
+    insert(Patient(id=1, template_name="Leichte äußere Verletzungen",
                    activity_diagram=ads[0].to_json()))
-    insert(Patient(id=2, name="Stefan Schiri",
+    insert(Patient(id=2, template_name="Blaues Auge",
                    activity_diagram=ads[1].to_json()))
-    insert(Patient(id=3, name="Hoff Nungs Loserfall",
+    insert(Patient(id=3, template_name="Schwerer Schlaganfall mit inneren Blutungen",
                    activity_diagram=ads[2].to_json()))
-    insert(Patient(id=4, name="Hoff Nungs Vollerfall",
+    insert(Patient(id=4, template_name="Gesund, keine Verletzungen",
                    activity_diagram=ads[3].to_json()))
-    insert(Patient(id=5, name="Gisela", activity_diagram=()))
+    insert(Patient(id=5, template_name="Adipöse Frau", activity_diagram=()))
 
 
 def __create_scenarios():
@@ -207,12 +225,12 @@ def __create_scenarios():
 
 
 def __takes_part_in():
-    insert(TakesPartIn(scenario_id=0, patient_id=0))
-    insert(TakesPartIn(scenario_id=0, patient_id=5))
-    insert(TakesPartIn(scenario_id=2, patient_id=1))
-    insert(TakesPartIn(scenario_id=2, patient_id=2))
-    insert(TakesPartIn(scenario_id=2, patient_id=3))
-    insert(TakesPartIn(scenario_id=2, patient_id=4))
+    insert(PatientInScenario(scenario_id=0, patient_id=0, name="Hans"))
+    insert(PatientInScenario(scenario_id=0, patient_id=5, name="Gisela"))
+    insert(PatientInScenario(scenario_id=2, patient_id=1, name="Holger Hooligan"))
+    insert(PatientInScenario(scenario_id=2, patient_id=2, name="Stefan Schiri"))
+    insert(PatientInScenario(scenario_id=2, patient_id=3, name="Hoff Nungs Loserfall"))
+    insert(PatientInScenario(scenario_id=2, patient_id=4, name="Hoff Nungs Vollerfall"))
 
 
 def __create_executions():
@@ -234,8 +252,8 @@ with create_app(csrf=csrf, db=db).app_context():
     __create_locations()
     __create_resources()
     __create_actions()
-    __takes_part_in()
     __resource_needed()
+    __takes_part_in()
 
     insert(WebUser(username="wadmin",
                    password=hashpw(b"pw1234", gensalt()).decode(),
