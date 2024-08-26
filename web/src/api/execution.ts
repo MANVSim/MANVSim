@@ -25,7 +25,7 @@ export async function getActiveExecutions(): Promise<ExecutionData[]> {
   throw Error(`Could not load active executions!`)
 }
 
-export async function getExecution(id: string): Promise<ExecutionData> {
+export async function getExecution(id: string | undefined): Promise<ExecutionData> {
   const result = tryFetchJson<ExecutionData>(`execution?id=${id}`)
   return result
 }

@@ -1,7 +1,7 @@
 import logging
 
 from flask import Blueprint, request
-from sqlalchemy import select, distinct
+from sqlalchemy import select, distinct, asc
 from werkzeug.exceptions import NotFound, BadRequest
 
 import models
@@ -51,12 +51,11 @@ def get_scenario(scenario_id: int):
         scenario_id=scenario_id
     )
 
-    vehicle_list = (models.Location.query.join(
-        models.PlayersToVehicleInExecution,
-        models.Location.id == models.PlayersToVehicleInExecution.location_id
-    ).filter(
+    vehicle_query = select(distinct(models.PlayersToVehicleInExecution.vehicle_name),
+                           models.PlayersToVehicleInExecution.location_id).where(
         models.PlayersToVehicleInExecution.scenario_id == scenario_id
-    ).all())
+    ).order_by(asc(models.PlayersToVehicleInExecution.vehicle_name))
+    vehicle_list = db.session.execute(vehicle_query)
 
     return {
         "id": scenario.id,
@@ -70,8 +69,8 @@ def get_scenario(scenario_id: int):
         ],
         "vehicles": [
             {
-                "id": vehicle.id,
-                "name": vehicle.name,
+                "id": vehicle[1],
+                "name": vehicle[0],
             } for vehicle in vehicle_list
         ]
     }
@@ -108,7 +107,8 @@ def edit_scenario(id: int):
 
     try:
         new_name = request_data["name"]
-        scenario.name = new_name
+        if new_name:
+            scenario.name = new_name
     except KeyError:
         logging.info("No name change detected.")
 
