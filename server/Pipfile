@@ -19,6 +19,7 @@ pyright = "*"
 python-string-utils = "*"
 cachetools = "*"
 flask-cors = "*"
+python-magic = "*"
 
 [dev-packages]
 

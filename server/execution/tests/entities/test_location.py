@@ -20,7 +20,9 @@ def test_leave_location(client):
     execution = run.active_executions[2]
     locations = list(execution.scenario.locations.values())
     location_parent = locations[0]
-    location_rm: Location = locations[2]  # "Blauer Rucksack"
+    # "Blauer Rucksack"
+    location_rm: Location = location_parent.get_location_by_id(3) # type: ignore
+
     resources_rm = location_rm.resources
     remove = {location_rm}
 

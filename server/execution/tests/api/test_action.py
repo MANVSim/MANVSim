@@ -118,7 +118,8 @@ def test_perform_action_but_blocked_to_leaving(client):
     # Setup
     execution = run.active_executions[2]
     locations = list(execution.scenario.locations.values())
-    location: Location = locations[3]  # EKG
+    # EKG
+    location: Location = locations[0].get_location_by_id(4)  # type: ignore
 
     # Login
     form = {

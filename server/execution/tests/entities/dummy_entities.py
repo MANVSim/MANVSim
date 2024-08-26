@@ -135,9 +135,6 @@ def create_test_execution(pending: bool = True):
     # Scenario
     location_dict = {
         1: loc_1,
-        2: loc_2,
-        3: loc_3,
-        4: loc_4,
         5: loc_5
     }
     patient_dict = {
