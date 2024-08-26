@@ -61,10 +61,10 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({ data, className
 
             {showSuggestions && filteredSuggestions.length > 0 && (
                 <ul className="list-group suggestions-list bg-white rounded mt-2">
-                    {filteredSuggestions.map((suggestion, index) => (
+                    {filteredSuggestions.map((suggestion) => (
                         <div className='d-flex w-100 mt-1'>
                             <li
-                                key={index}
+                                key={suggestion.id}
                                 className="suggestion-item w-100 ps-2"
                             >
                                 {suggestion.name}

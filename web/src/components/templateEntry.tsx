@@ -34,9 +34,7 @@ export function TemplateEntry({
   }
 
   const handleButtonClickScenario = (event: { stopPropagation: () => void }, scenario_id: number) => {
-    if (isAccordionOpen) {
-      event.stopPropagation() // Prevents the click event from bubbling up
-    }
+    event.stopPropagation() // Prevents the click event from bubbling up
     navigate(`/scenario/${scenario_id}`)
   }
 
@@ -51,8 +49,8 @@ export function TemplateEntry({
         aria-expanded={isAccordionOpen}
       >
         <div className="d-flex justify-content-between w-100">
-          <div className="d-flex align-items-center">
-            <span className="btn-link" onClick={(event: { stopPropagation: () => void }) => handleButtonClickScenario(event, template.id)}>{name}</span>
+          <div className="d-flex align-items-center p-1" onClick={(event: { stopPropagation: () => void }) => handleButtonClickScenario(event, template.id)}>
+            <span className="btn-link">{name}</span>
           </div>
           <div className="me-3">
             <button

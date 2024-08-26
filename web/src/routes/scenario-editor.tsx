@@ -22,6 +22,14 @@ export function ScenarioEditor() {
     const [addVehicleList, setAddVehicleList] = useState<BaseDataStripped[]>([])
     const [deleteVehicleList, setDeleteVehicleList] = useState<BaseDataStripped[]>([])
 
+    const resetCachedData = () => {
+        setEditView(false)
+        setAddPatientList([])
+        setAddVehicleList([])
+        setDeletePatientList([])
+        setDeleteVehicleList([])
+    }
+
     return (
         <section className="mt-5">
             <div id="headline">
@@ -37,7 +45,11 @@ export function ScenarioEditor() {
                         </div>
                         <div className="ms-auto me-5">
                             <button type="submit" className={`btn btn-primary ${editView ? "" : "d-none"} me-3`} onClick={() => { setEditView(false) }}>Speichern</button>
-                            <button type="button" className="btn btn-primary" disabled={editView} onClick={() => (setEditView(true))}>Bearbeiten</button>
+                            {editView ? (
+                                <button type="button" className="btn btn-danger" onClick={resetCachedData}>Abbrechen</button>
+                            ) : (
+                                <button type="button" className="btn btn-primary" disabled={editView} onClick={() => (setEditView(true))}>Bearbeiten</button>
+                            )}
                         </div>
                     </div>
                 </section>
