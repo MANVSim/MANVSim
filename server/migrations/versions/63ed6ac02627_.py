@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: af2f04cbc1e2
+Revision ID: 63ed6ac02627
 Revises: 
-Create Date: 2024-08-26 11:57:04.155636
+Create Date: 2024-08-26 12:24:28.687189
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'af2f04cbc1e2'
+revision = '63ed6ac02627'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -118,7 +118,7 @@ def upgrade():
     op.create_table('player',
     sa.Column('tan', sa.String(), nullable=False),
     sa.Column('execution_id', sa.Integer(), nullable=False),
-    sa.Column('location_id', sa.Integer(), nullable=True),
+    sa.Column('location_id', sa.Integer(), nullable=False),
     sa.Column('role_id', sa.Integer(), nullable=False),
     sa.Column('alerted', sa.Boolean(), nullable=False),
     sa.Column('activation_delay_sec', sa.Integer(), nullable=False),
@@ -138,7 +138,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['player_tan'], ['player.tan'], name=op.f('fk_players_to_vehicle_in_execution_player_tan_player')),
     sa.ForeignKeyConstraint(['scenario_id'], ['scenario.id'], name=op.f('fk_players_to_vehicle_in_execution_scenario_id_scenario')),
     sa.PrimaryKeyConstraint('execution_id', 'player_tan', name=op.f('pk_players_to_vehicle_in_execution')),
-    sa.UniqueConstraint('execution_id', 'scenario_id', 'vehicle_name', 'player_tan', name='unique_execution_vehicle')
+    sa.UniqueConstraint('execution_id', 'scenario_id', 'vehicle_name', name='unique_execution_vehicle')
     )
     # ### end Alembic commands ###
 

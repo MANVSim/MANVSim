@@ -124,7 +124,6 @@ class Event:
         return Event(execution=data["execution"], type=Event.Type[data["type"]], time=data["time"], data=data["data"])
 
     def log(self):
-        evt = LoggedEvent(execution=self.execution,
-                          type=self.type.name, time=self.time, data=self.data)  # type: ignore
+        evt = LoggedEvent(execution=self.execution, type=self.type.name, time=self.time, data=self.data)  # type: ignore
         db.session.add(evt)
         db.session.commit()

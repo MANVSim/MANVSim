@@ -124,14 +124,36 @@ class Execution:
             db.session.add(new_seat_in_vehicle)
             db.session.add(player)
             db.session.commit()
-            print(f"{player.location_id}")
+
+            # load player location -> choose from existing or load new vehicle
+            location = self.__get_location_for_player(player_to_vehicle.vehicle_name)
+            if not location:
+                location = load_location(player_to_vehicle.location_id)
             new_player = Player(tan, None, False, 0,
-                                load_location(player_to_vehicle.location_id),
+                                location,
                                 set(), load_role(role))
+
+            # Add player to execution
             self.players[tan] = new_player
-            register_player(self.id, [new_player])
+            # Register player if execution is activated
+            if self.status is self.Status.PENDING or self.Status.RUNNING:
+                register_player(self.id, [new_player])
         else:
             msg = f"Unable to assign player to vehicle. No entry found for:{self.id}{vehicle}"
             logging.error(msg)
             raise BadRequest(msg)
 
+    def __get_location_for_player(self, vehicle_name):
+        if not self.scenario:
+            return None
+
+        locations = self.scenario.locations
+
+        if not locations:
+            return None
+
+        for location in locations.values():
+            if location.name == vehicle_name:
+                return location
+
+        return None

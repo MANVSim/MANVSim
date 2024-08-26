@@ -52,7 +52,7 @@ def create_resource():
         name="Neue Resource",
         consumable="False",
         quantity=10000,
-        media_refs="[{}]"
+        media_refs=[]
     )
 
     db.session.add(resource)
@@ -62,7 +62,7 @@ def create_resource():
         "id": resource.id,
         "name": resource.name,
         "consumable": resource.consumable,
-        "media_refs": {},
+        "media_refs": [],
     }
 
 

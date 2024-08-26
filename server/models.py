@@ -23,7 +23,7 @@ class Player(db.Model):
     execution_id: Mapped[int] = mapped_column(
         ForeignKey("execution.id"), nullable=False)
     location_id: Mapped[int] = mapped_column(
-        ForeignKey("location.id"), nullable=True)
+        ForeignKey("location.id"), nullable=False)
     role_id: Mapped[int] = mapped_column(ForeignKey("role.id"), nullable=False)
     alerted: Mapped[bool] = mapped_column(nullable=False)
     activation_delay_sec: Mapped[int] = mapped_column(nullable=False)
@@ -128,8 +128,7 @@ class PlayersToVehicleInExecution(db.Model):
     vehicle_name: Mapped[str] = mapped_column(nullable=False)
 
     __table_args__ = (
-        UniqueConstraint("execution_id", "scenario_id", "vehicle_name",
-                         "player_tan", name="unique_execution_vehicle"),
+        UniqueConstraint("execution_id", "scenario_id", "vehicle_name", name="unique_execution_vehicle"),
     )
 
 
