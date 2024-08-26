@@ -6,3 +6,7 @@
     overflow-y: scroll;
     height: 20em;
 }
+
+#data-block {
+    width: 40em
+}

@@ -2,7 +2,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs, useLoaderData } from "react-rou
 import { tryFetchJson } from "../api";
 import { BaseDataStripped, Scenario } from "../types";
 import { CsrfForm } from "../components/CsrfForm";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import ScenarioData from "../components/scenario-data";
 
 export function ScenarioEditor() {
@@ -22,22 +22,20 @@ export function ScenarioEditor() {
                 <h1 className="fs-2">Szenario Übersicht</h1>
             </div>
             <CsrfForm method="PATCH" className="">
+                <input name="id" value={scenario.id} type="hidden" />
                 <section id="scenario-header" className="border-bottom border-2 border-dark mt-5 pb-5">
                     <div className="d-flex d-row">
                         <div className="d-flex ms-5 fs-5">
                             <label className="align-self-center">Name:</label>
-                            <input type="text" className="form-control ms-5" value={`${scenarioName}`} disabled={editView ? false : true} onChange={(event) => setScenarioName(event.target.value)} />
+                            <input type="text" className="form-control ms-5" name="name" value={`${scenarioName}`} disabled={editView ? false : true} onChange={(event) => setScenarioName(event.target.value)} />
                         </div>
                         <div className="ms-auto me-5">
-                            {editView ? (
-                                <button type="submit" className="btn btn-primary">Speichern</button>
-                            ) : (
-                                <button type="button" className="btn btn-primary" onClick={() => (setEditView(true))}>Bearbeiten</button>
-                            )}
+                            <button type="submit" className={`btn btn-primary ${editView ? "" : "d-none"} me-3`} onClick={() => setEditView(false)}>Speichern</button>
+                            <button type="button" className="btn btn-primary" disabled={editView} onClick={() => (setEditView(true))}>Bearbeiten</button>
                         </div>
                     </div>
                 </section>
-                <section id="scenario-body" className="d-flex ms-5 mt-3">
+                <section id="scenario-body" className="d-flex mt-3">
                     <ScenarioData
                         data={scenario.patients}
                         className="flex-fill"
@@ -49,8 +47,8 @@ export function ScenarioEditor() {
                         setDeleteDataList={setDeletePatientList} />
 
                     <ScenarioData
-                        data={scenario.vehicles_quantity}
-                        className="flex-fill ms-5"
+                        data={scenario.vehicles}
+                        className="flex-fill"
                         name="Fahrzeuge"
                         editView={editView}
                         addDataList={addVehicleList}
@@ -58,6 +56,11 @@ export function ScenarioEditor() {
                         setAddDataList={setAddVehicleList}
                         setDeleteDataList={setDeleteVehicleList} />
                 </section>
+                {/* Serialize lists into hidden inputs */}
+                <input type="hidden" name="patients_add" value={JSON.stringify(addPatientList)} />
+                <input type="hidden" name="patients_del" value={JSON.stringify(deletePatientList)} />
+                <input type="hidden" name="vehicles_add" value={JSON.stringify(addVehicleList)} />
+                <input type="hidden" name="vehicles_del" value={JSON.stringify(deleteVehicleList)} />
             </CsrfForm>
         </section>
     )
@@ -69,7 +72,35 @@ ScenarioEditor.loader = async function ({
     return await tryFetchJson<Scenario>(`/scenario?scenario_id=${scenarioId}`)
 }
 
-ScenarioEditor.action = async function ({ request, params: { scenarioId } }: ActionFunctionArgs<Request>) {
-    const formData = await request.formData()
-    //TODO
-}
+ScenarioEditor.action = async function ({ request }: ActionFunctionArgs<Request>) {
+    const formData = await request.formData();
+
+    // Create a plain JavaScript object to hold the form data
+    const data = {
+        id: formData.get("id"),
+        name: formData.get("name"),
+        patients_add: JSON.parse(formData.get("patients_add") as string),
+        patients_del: JSON.parse(formData.get("patients_del") as string),
+        vehicles_add: JSON.parse(formData.get("vehicles_add") as string),
+        vehicles_del: JSON.parse(formData.get("vehicles_del") as string)
+    };
+
+    // Get the CSRF token from the formData
+    const csrf = formData.get("csrf_token") ?? "nischt"
+
+    // Perform the PATCH request with the serialized JSON data
+    const response = await fetch(`/web/scenario`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf.toString(), // Include CSRF token
+        },
+        body: JSON.stringify(data),
+    });
+
+    // Optionally, log the response for debugging
+    const responseText = await response.text();
+    console.log(responseText);
+
+    return "";
+};

@@ -108,7 +108,8 @@ def edit_scenario(id: int):
 
     try:
         new_name = request_data["name"]
-        scenario.name = new_name
+        if new_name:
+            scenario.name = new_name
     except KeyError:
         logging.info("No name change detected.")
 

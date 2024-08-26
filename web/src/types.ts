@@ -140,8 +140,7 @@ const scenario = z.object({
   id: z.number(),
   name: z.string(),
   patients: z.array(baseDataStripped),
-  vehicles: z.array(baseDataStripped),
-  vehicles_quantity: z.array(baseDataStripped)
+  vehicles: z.array(baseDataStripped)
 })
 
 export type Scenario = z.infer<typeof scenario>
