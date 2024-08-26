@@ -61,7 +61,7 @@ def get_location(location_id: int):
 def create_location():
     location = models.Location(
         name="Neue Location",
-        media="[{}]",
+        media_refs=[],
         is_vehicle=False,
     )
 
@@ -72,7 +72,7 @@ def create_location():
         "id": location.id,
         "name": location.name,
         "is_vehicle": location.is_vehicle,
-        "media_refs": "[{}]",
+        "media_refs": [],
         "child_locations": []
     }
 
