@@ -169,7 +169,7 @@ def __get_roles() -> list[models.Role]:
 
 @cache
 def __get_top_level_locations() -> List[models.Location]:
-    return models.Location.query.where(is_vehicle=True).all()  # pyright: ignore
+    return models.Location.query.filter_by(is_vehicle=True).all()  # pyright: ignore
 
 
 def __perform_state_change(new_status: Execution.Status, execution: Execution):

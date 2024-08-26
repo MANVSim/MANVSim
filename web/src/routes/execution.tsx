@@ -32,11 +32,9 @@ import "./executionList"
 import "./execution.css"
 
 export function ExecutionRoute() {
-  const loaderData = useLoaderData()
+  const executionData = useLoaderData() as ExecutionData
 
-  const [execution, setExecution] = useState<null | ExecutionData>(
-    isExecutionData(loaderData) ? loaderData : null,
-  )
+  const [execution, setExecution] = useState<ExecutionData>(executionData)
 
   const [open, setOpen] = useState(false)
   const [notificationDisplay, setNotificationDisplay] = useState(false)
@@ -49,10 +47,10 @@ export function ExecutionRoute() {
   const { executionId } = useParams<{ executionId: string }>()
 
   useEffect(() => {
-    if (isExecutionData(loaderData)) {
-      setExecution(loaderData)
+    if (isExecutionData(executionData)) {
+      setExecution(executionData)
     }
-  }, [loaderData])
+  }, [executionData])
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
@@ -241,7 +239,6 @@ export function ExecutionRoute() {
 ExecutionRoute.loader = async function ({
   params: { executionId },
 }: LoaderFunctionArgs) {
-  if (executionId === undefined) return null
   return getExecution(executionId)
 }
 
