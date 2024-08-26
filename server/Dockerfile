@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.12-slim as setup
 
 WORKDIR /usr/src/app
 
@@ -20,8 +20,16 @@ WORKDIR /usr/src/app/server
 RUN chmod +x scripts/*.sh
 RUN make setup
 
+FROM setup as debug
+
 ENV LOAD_TEST_DATA=true
 
 EXPOSE 5000
 CMD pipenv run flask --app main --debug run --host=0.0.0.0 --port=5000
 
+FROM setup as prod
+
+RUN pipenv install gunicorn
+
+EXPOSE 5000
+CMD pipenv run gunicorn -w 4 -b 0.0.0.0:5000 'main:app'

@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: server/Dockerfile
+      target: prod
     ports:
       - "5000:5000"
 
