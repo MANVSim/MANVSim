@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
 
@@ -7,6 +8,7 @@ import 'package:manvsim/widgets/location_overview.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manvsim/widgets/transfer_dialogue.dart';
 
 import '../widgets/resource_directory.dart';
 
@@ -28,24 +30,13 @@ class _LocationScreenState extends State<LocationScreen> {
   List<Location>? _selectedInventoryPath;
   List<Location>? _selectedLocationPath;
 
+  bool _showInventory = false;
+
   @override
   void initState() {
     super.initState();
     _futureLocation = _findLocationById(widget.locationId);
     _futureInventory = _getInventory();
-  }
-
-  List<String> get _selectedInventoryPathNames {
-    String inventoryName = AppLocalizations.of(context)!.locationScreenInventory;
-    return _selectedInventoryPath != null
-        ? [inventoryName, ..._selectedInventoryPath!.map((e) => e.name)]
-        : [inventoryName];
-  }
-
-  List<String> get _selectedLocationPathNames {
-    return _selectedLocationPath != null
-        ? _selectedLocationPath!.map((e) => e.name).toList()
-        : [_fetchedLocation.name];
   }
 
   _findLocationById(int locationId) {
@@ -67,15 +58,29 @@ class _LocationScreenState extends State<LocationScreen> {
 
   _handleTake() {
     if (_canTake()) {
-      print(_selectedInventoryPathNames);
-      print(_selectedLocationPathNames);
+      showDialog(
+        context: context,
+        builder: (context) => TransferDialogue(
+          operation: TransferDialogueType.take,
+          baseLocation: _fetchedLocation,
+          locationPath: _selectedLocationPath,
+          inventoryPath: _selectedInventoryPath,
+        ),
+      );
     }
   }
 
   _handlePut() {
     if (_canPut()) {
-      print(_selectedInventoryPathNames);
-      print(_selectedLocationPathNames);
+      showDialog(
+        context: context,
+        builder: (context) => TransferDialogue(
+          operation: TransferDialogueType.put,
+          baseLocation: _fetchedLocation,
+          locationPath: _selectedLocationPath,
+          inventoryPath: _selectedInventoryPath,
+        ),
+      );
     }
   }
 
@@ -115,53 +120,93 @@ class _LocationScreenState extends State<LocationScreen> {
                           },
                         ),
                       ]))),
-              Text(AppLocalizations.of(context)!.locationScreenInventory),
-              ApiFutureBuilder<List<Location>>(
-                  future: _futureInventory,
-                  builder: (context, inventory) {
-                    return RefreshIndicator(
-                        onRefresh: () => refreshInventory(),
-                        child: SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            child: Column(children: [
-                              ResourceDirectory(
-                                locations: inventory,
-                                resourceToggle: (resource) => {},
-                                onLocationSelected:
-                                    (currentSelectedLocationPath) {
-                                  setState(() {
-                                    _selectedInventoryPath =
-                                        currentSelectedLocationPath;
-                                  });
-                                },
-                              ),
-                            ])));
-                  }),
+              if (_showInventory)
+              Column(children: [
+                Text(AppLocalizations.of(context)!.locationScreenInventory),
+                ApiFutureBuilder<List<Location>>(
+                    future: _futureInventory,
+                    builder: (context, inventory) {
+                      return RefreshIndicator(
+                          onRefresh: () => refreshInventory(),
+                          child: SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              child: Column(children: [
+                                ResourceDirectory(
+                                  locations: inventory,
+                                  resourceToggle: (resource) => {},
+                                  onLocationSelected:
+                                      (currentSelectedLocationPath) {
+                                    setState(() {
+                                      _selectedInventoryPath =
+                                          currentSelectedLocationPath;
+                                    });
+                                  },
+                                ),
+                              ])));
+                    })
+              ]),
             ]);
           }),
       bottomNavigationBar: Container(
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: SizedBox(
-                  height: 40,
-                  child: ElevatedButton(
-                    onPressed: _canTake() ? _handleTake : null,
-                    child: Text(AppLocalizations.of(context)!.locationScreenTake),
+        child:
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: SizedBox(
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _canTake() ? _handleTake : null,
+                        child: Text(AppLocalizations.of(context)!.locationScreenTake),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: SizedBox(
-                  height: 40,
-                  child: ElevatedButton(
-                    onPressed: _canPut() ? _handlePut : null,
-                    child: Text(AppLocalizations.of(context)!.locationScreenPut),
+                if (_showInventory)
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: SizedBox(
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _canPut() ? _handlePut : null,
+                        child: Text(AppLocalizations.of(context)!.locationScreenPut),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: SizedBox(
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+
+
+                        setState(() {
+                          _selectedInventoryPath = null;
+                          _showInventory = !_showInventory;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _showInventory
+                            ? Colors.lightGreen
+                            : null,
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.inventory_2_outlined),
+                      if (!_showInventory)
+                        const Row(
+                          children: [
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text("Inventar \nanzeigen"),
+                          ],
+                        )
+                    ],
                   ),
                 ),
               ),
