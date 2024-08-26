@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/types.dart';
-import 'package:vector_math/vector_math_64.dart';
+import 'package:vector_math/vector_math_64.dart' as vector_math;
 
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
@@ -66,6 +66,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   Animation<Offset>? _animation;
   late AnimationController _controller;
 
+  Offset direction = Offset(0, 0);
+
   @override
   void initState() {
     super.initState();
@@ -84,33 +86,38 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
         decoration: BoxDecoration(
           border: Border.all(width: 3),
         ),
-        child: Listener(
-            child: GestureDetector(
-                onLongPressStart: _onLongPressDown,
-                onLongPressEnd: (details) {
-                  _controller.stop();
-                },
-                child: ClipRect(
-                    clipBehavior: Clip.hardEdge, //clipBehavior,
-                    child: OverflowBox(
-                        alignment: Alignment.topLeft,
-                        minWidth: 0.0,
-                        minHeight: 0.0,
-                        maxWidth: double.infinity,
-                        maxHeight: double.infinity,
-                        child: Transform(
-                          transform: _transformationController.value,
-                          //alignment: alignment,
-                          child: widget.child,
-                        ))))));
+        child: Stack(children: [
+          Listener(
+              child: GestureDetector(
+                  onLongPressStart: _onLongPressDown,
+                  onLongPressEnd: (details) {
+                    _controller.stop();
+                  },
+                  child: ClipRect(
+                      clipBehavior: Clip.hardEdge, //clipBehavior,
+                      child: OverflowBox(
+                          alignment: Alignment.topLeft,
+                          minWidth: 0.0,
+                          minHeight: 0.0,
+                          maxWidth: double.infinity,
+                          maxHeight: double.infinity,
+                          child: Transform(
+                            transform: _transformationController.value,
+                            //alignment: alignment,
+                            child: widget.child,
+                          ))))),
+          const Center(child: Icon(Icons.location_on, color: Colors.blue)),
+        ]));
   }
 
   void _onLongPressDown(LongPressStartDetails details) {
-    details.localPosition;
+    _controller.reset();
     Offset self = const Offset(width / 2, height / 2);
-    final Vector3 translationVector =
+    final vector_math.Vector3 translationVector =
         _transformationController.value.getTranslation();
     final Offset translation = Offset(translationVector.x, translationVector.y);
+    print(translation);
+    direction = details.localPosition - self;
     _animation =
         Tween<Offset>(begin: translation, end: details.localPosition - self)
             .animate(_controller);
@@ -128,8 +135,25 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   void _onAnimate() {
     _transformationController.value = _transformationController.value.clone()
       ..translate(
-        -(_animation?.value.dx)!,
-        -(_animation?.value.dy)!,
+        -direction.dx.sign,
+        -direction.dy.sign,
       );
+    print(_transformationController.value);
+  }
+
+  void _onAnimate2() {
+    // Translate such that the resulting translation is _animation.value.
+    final vector_math.Vector3 translationVector =
+        _transformationController.value.getTranslation();
+    final Offset translation = Offset(translationVector.x, translationVector.y);
+    final Offset translationScene = _transformationController.toScene(
+      translation,
+    );
+    final Offset animationScene = _transformationController.toScene(
+      _animation!.value,
+    );
+    final Offset translationChangeScene = animationScene - translationScene;
+    _transformationController.value = _transformationController.value.clone()
+      ..translate(-translationChangeScene.dx, -translationChangeScene.dy);
   }
 }

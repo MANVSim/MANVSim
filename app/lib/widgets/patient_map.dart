@@ -20,8 +20,8 @@ class PatientMap extends StatelessWidget {
         height: size.height + padding,
         width: size.width + padding,
         decoration: BoxDecoration(
-            border: Border.all(width: 5, color: Colors.black26),
-            gradient: LinearGradient(
+            border: Border.all(width: 8, color: Colors.black26),
+            gradient: const LinearGradient(
                 colors: [Colors.white, Colors.amberAccent],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight)),
