@@ -1,12 +1,18 @@
-import { ActionFunctionArgs, LoaderFunctionArgs, useLoaderData } from "react-router";
+import { ActionFunctionArgs, LoaderFunctionArgs, redirect, useLoaderData, useNavigate } from "react-router";
 import { tryFetchJson } from "../api";
 import { BaseDataStripped, Scenario } from "../types";
 import { CsrfForm } from "../components/CsrfForm";
 import { useState } from "react";
 import ScenarioData from "../components/scenario-data";
 
+type ScenarioLoaderType = {
+    scenario: Scenario,
+    all_vehicles: BaseDataStripped[],
+    all_patients: BaseDataStripped[]
+}
+
 export function ScenarioEditor() {
-    const scenario = useLoaderData() as Scenario
+    const { scenario, all_vehicles, all_patients } = useLoaderData() as ScenarioLoaderType
     const [editView, setEditView] = useState(false)
 
     const [scenarioName, setScenarioName] = useState<string>(scenario.name)
@@ -30,7 +36,7 @@ export function ScenarioEditor() {
                             <input type="text" className="form-control ms-5" name="name" value={`${scenarioName}`} disabled={editView ? false : true} onChange={(event) => setScenarioName(event.target.value)} />
                         </div>
                         <div className="ms-auto me-5">
-                            <button type="submit" className={`btn btn-primary ${editView ? "" : "d-none"} me-3`} onClick={() => setEditView(false)}>Speichern</button>
+                            <button type="submit" className={`btn btn-primary ${editView ? "" : "d-none"} me-3`} onClick={() => { setEditView(false) }}>Speichern</button>
                             <button type="button" className="btn btn-primary" disabled={editView} onClick={() => (setEditView(true))}>Bearbeiten</button>
                         </div>
                     </div>
@@ -38,6 +44,7 @@ export function ScenarioEditor() {
                 <section id="scenario-body" className="d-flex mt-3">
                     <ScenarioData
                         data={scenario.patients}
+                        searchBarData={all_patients}
                         className="flex-fill"
                         name="Patienten"
                         editView={editView}
@@ -48,6 +55,7 @@ export function ScenarioEditor() {
 
                     <ScenarioData
                         data={scenario.vehicles}
+                        searchBarData={all_vehicles}
                         className="flex-fill"
                         name="Fahrzeuge"
                         editView={editView}
@@ -69,15 +77,19 @@ export function ScenarioEditor() {
 ScenarioEditor.loader = async function ({
     params: { scenarioId },
 }: LoaderFunctionArgs) {
-    return await tryFetchJson<Scenario>(`/scenario?scenario_id=${scenarioId}`)
+    const scenario = await tryFetchJson<Scenario>(`/scenario?scenario_id=${scenarioId}`)
+    const all_vehicles = await tryFetchJson<BaseDataStripped[]>(`/data/location/all`)
+    const all_patients = await tryFetchJson<BaseDataStripped[]>(`/data/patient/all`)
+    return { scenario, all_vehicles, all_patients }
 }
 
 ScenarioEditor.action = async function ({ request }: ActionFunctionArgs<Request>) {
     const formData = await request.formData();
 
+    const scenario_id = formData.get("id")
     // Create a plain JavaScript object to hold the form data
     const data = {
-        id: formData.get("id"),
+        id: scenario_id,
         name: formData.get("name"),
         patients_add: JSON.parse(formData.get("patients_add") as string),
         patients_del: JSON.parse(formData.get("patients_del") as string),
@@ -102,5 +114,11 @@ ScenarioEditor.action = async function ({ request }: ActionFunctionArgs<Request>
     const responseText = await response.text();
     console.log(responseText);
 
-    return "";
+    // Instead of redirecting, reload the current page
+    if (response.ok) {
+        window.location.reload();
+    } else {
+        console.error('Failed to update scenario:', responseText);
+    }
+    return ""
 };

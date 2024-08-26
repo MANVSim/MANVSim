@@ -19,7 +19,9 @@ web_api = Blueprint("web_api-location", __name__)
 @web_api.get("/location/all")
 def get_all_locations():
     """ Returns a json of all locations stored. """
-    location_list = models.Location.query.all()
+    location_list = models.Location.query.filter_by(
+        is_vehicle=True
+    ).all()
     return [
         {
             "id": location.id,
@@ -41,7 +43,7 @@ def get_location(location_id: int):
         parent=location.id
     )
 
-    resource_relations = models.ResourceQuantityInLocation.query.filter_by(
+    resource_relations = models.ResourceInLocation.query.filter_by(
         location_id=location_id
     ).all()
 
@@ -50,7 +52,7 @@ def get_location(location_id: int):
         "name": location.name,
         "is_vehicle": location.is_vehicle,
         "media_refs": json.loads(
-            location.media_refs) if location.media_refs else {},
+            location.media_refs) if location.media_refs else [],
         "child_locations": [
             {
                 "id": location_relation.child_location.id,

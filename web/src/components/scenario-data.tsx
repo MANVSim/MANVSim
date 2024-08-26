@@ -6,6 +6,7 @@ import "./scenario-data.css"
 
 interface ScenarioDataProps {
     data: BaseDataStripped[],
+    searchBarData: BaseDataStripped[],
     className: string,
     name: string,
     editView: boolean,
@@ -17,6 +18,7 @@ interface ScenarioDataProps {
 
 const ScenarioData: React.FC<ScenarioDataProps> = ({
     data,
+    searchBarData,
     className = "",
     name = "",
     editView,
@@ -127,7 +129,7 @@ const ScenarioData: React.FC<ScenarioDataProps> = ({
             <div id="data-block" className={`${editViewData ? "mt-1 " : "mt-5"} border rounded p-3 pb-5 bg-light`}>
                 <h2 className="fs-4">{name}</h2>
                 <SearchableDropdown
-                    data={data}
+                    data={searchBarData}
                     className={`ms-3 mt-3 border-bottom border-top border-2 border-dark pb-2 pt-2 ${editView ? "" : "d-none"}`}
                     onAddItem={handleAddItemToDatas}
                 />
