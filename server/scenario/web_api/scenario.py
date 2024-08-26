@@ -225,20 +225,25 @@ def __add_vehicles_to_execution(scenario, vehicles_add):
             # Unused scenario in DB -> create entry with id execution_id = 0
             # Execution ID 0 indicates an uncreated game for scenarios.
             # Causes changes on how an execution is created
+            logging.info(
+                f"creating wildcard-execution for scenario {scenario.id}")
             vehicle = models.PlayersToVehicleInExecution(
                 execution_id=0,
                 scenario_id=scenario.id,
                 location_id=vehicle_add["id"],
-                vehicle_name=vehicle_add["name"]
+                vehicle_name=vehicle_add["name"],
+                player_tan=f"empty-{vehicle_add["name"]}"
             )
             db.session.add(vehicle)
         else:
             # Add new vehicle to every execution stored
             for exec_id in execution_ids:
+                logging.info(f"adding vehicle to execution id {exec_id} for scenario {scenario.id}")
                 vehicle = models.PlayersToVehicleInExecution(
                     execution_id=exec_id,
                     scenario_id=scenario.id,
                     location_id=vehicle_add["id"],
-                    vehicle_name=vehicle_add["name"]
+                    vehicle_name=vehicle_add["name"],
+                    player_tan=f"empty-{vehicle_add["name"]}"
                 )
                 db.session.add(vehicle)

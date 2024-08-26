@@ -89,6 +89,8 @@ def get_execution(id: int):
 @required("scenario_id", int, RequiredValueSource.FORM)
 @required("name", str, RequiredValueSource.FORM)
 def create_execution(scenario_id: int, name: str):
+
+    # TODO implement validator to prevent empty scenarios
     try:
         new_execution = models.Execution(scenario_id=scenario_id, name=name)  # type: ignore
         db.session.add(new_execution)
