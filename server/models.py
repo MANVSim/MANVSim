@@ -128,7 +128,7 @@ class PlayersToVehicleInExecution(db.Model):
     vehicle_name: Mapped[str] = mapped_column(nullable=False)
 
     __table_args__ = (
-        UniqueConstraint("execution_id", "scenario_id", "vehicle_name"
+        UniqueConstraint("execution_id", "scenario_id", "vehicle_name",
                          "player_tan", name="unique_execution_vehicle"),
     )
 
