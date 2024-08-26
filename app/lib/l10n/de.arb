@@ -178,6 +178,7 @@
 
   "resourceDirectorySelectLocation": "Auswählen",
   "resourceDirectoryUnselectLocation": "Abwählen",
+  "resourceDirectoryEmpty": "Keine Resourcen verfügbar",
 
   "actionNeededResources": "Benötigte Resourcen: ",
   "actionNoNeededResources": "Keine Resourcen benötigt.",
@@ -209,5 +210,15 @@
   },
   "qrCodeScanButton"  : "QR Code scannen",
 
-  "ok": "Ok"
+  "ok": "Ok",
+
+  "transferDialogueCancel": "Abbrechen",
+  "transferDialogueConfirm": "Bestätigen",
+  "transferDialogueTakeTitle": "Nehmen bestätigen",
+  "transferDialoguePutTitle": "Ablegen bestätigen",
+  "transferDialogueFromLocation": "von",
+  "transferDialogueToLocation": "nach",
+  "transferDialogueTransferObject": "Objekt",
+  "transferDialogueTransferTitle": "Objekt wird verschoben"
+
 }
