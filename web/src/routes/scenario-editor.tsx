@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, LoaderFunctionArgs, redirect, useLoaderData, useNavigate } from "react-router";
+import { ActionFunctionArgs, LoaderFunctionArgs, useLoaderData, } from "react-router";
 import { tryFetchJson } from "../api";
 import { BaseDataStripped, Scenario } from "../types";
 import { CsrfForm } from "../components/CsrfForm";
