@@ -322,6 +322,8 @@ paths:
           description: (Put-/to-) Location not found. Update your current location-access.
         '409':
           description: Unable to access runtime object. A timeout-error occurred.
+        '418':
+          description: Trying to move a top level location. You ain't that strong.
       security:
         - bearerAuth: [ ]
 

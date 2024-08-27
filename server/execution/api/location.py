@@ -71,7 +71,7 @@ def get_location_out_of_location(take_location_ids, to_location_ids):
         take_location_id_list: list[int] = ast.literal_eval(take_location_ids)
         to_location_id_list: list[int] = ast.literal_eval(to_location_ids)
 
-        if not take_location_id_list or to_location_id_list:
+        if not take_location_id_list:
             return "Empty id-list provided. Unable to identify location.", 400
 
         if not player.location:
@@ -118,7 +118,7 @@ def get_location_out_of_location(take_location_ids, to_location_ids):
                                  take_location_ids=take_location_id_list,
                                  to_location_ids=to_location_id_list).log()
 
-        return {"player_location": player.location.to_dict()}
+        return "Location successfully transferred", 200
 
     except KeyError | ValueError:
         return "Missing or invalid request parameter detected.", 400
@@ -181,7 +181,7 @@ def put_location_to_location(put_location_ids, to_location_ids):
                                       player=player.tan,
                                       put_location_ids=put_location_id_list,
                                       to_location_ids=to_location_id_list).log()
-                return {"player_location": {}}
+                return "Location successfully transferred", 200
 
         else:
             # player has patient access. Inventory is located at patients location
@@ -219,7 +219,7 @@ def put_location_to_location(put_location_ids, to_location_ids):
                               put_location_ids=put_location_id_list,
                               to_location_ids=to_location_id_list).log()
 
-        return {"player_location": player.location.to_dict()}
+        return "Location successfully transferred", 200
 
     except KeyError | ValueError:
         return "Missing or invalid request parameter detected.", 400
