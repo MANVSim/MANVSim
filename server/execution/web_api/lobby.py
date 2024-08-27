@@ -180,6 +180,8 @@ def __perform_state_change(new_status: Execution.Status, execution: Execution):
             elif new_status is Execution.Status.UNKNOWN:
                 # TODO unregister execution
                 pass
+            elif new_status is Execution.Status.PENDING:
+                pass
             else:
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
@@ -189,13 +191,18 @@ def __perform_state_change(new_status: Execution.Status, execution: Execution):
             elif new_status is Execution.Status.FINISHED:
                 # TODO archive result of execution
                 pass
+            elif new_status is Execution.Status.RUNNING:
+                pass
             else:
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
         case Execution.Status.FINISHED:
-            # no repetition allowed at this point.
-            raise BadRequest("Process manipulation detected. "
-                             "Invalid State change")
+            if new_status is Execution.Status.FINISHED:
+                pass
+            else:
+                # no repetition allowed at this point.
+                raise BadRequest("Process manipulation detected. "
+                                 "Invalid State change")
         case Execution.Status.UNKNOWN:
             # indicates no registration of execution. Status is set by
             # activating the execution

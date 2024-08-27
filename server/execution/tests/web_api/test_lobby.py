@@ -41,7 +41,7 @@ def test_execution_state_change(client):
 
     # Status: PENDING
     # test illegal state changes
-    _test_illegal_state_changes(1, ["FINISHED", "UNKNOWN"])
+    _test_illegal_state_changes(1, ["FINISHED"])
 
     # test legal state changes
     _test_legal_state_changes(1, ["PENDING", "RUNNING"])
@@ -55,14 +55,16 @@ def test_execution_state_change(client):
                               ["PENDING", "RUNNING", "FINISHED"])
 
     # Status: FINISHED
-    # TODO
+    # test illegal state changes
+    run.active_executions[2].status = Execution.Status.FINISHED
+    _test_illegal_state_changes(2, ["PENDING", "RUNNING", "UNKNOWN"])
+
+    # test legal state changes
+    _test_legal_state_changes(2, ["FINISHED"])
 
     # Status: UNKNOWN
     # test illegal state changes
     _test_illegal_state_changes(3,
-                                ["RUNNING", "FINISHED", "UNKNOWN"])
-    # test legal state changes
-    _test_legal_state_changes(3,
-                              ["PENDING"])
+                                ["RUNNING", "FINISHED", "UNKNOWN", "PENDING"])
 
 
