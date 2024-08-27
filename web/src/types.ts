@@ -90,7 +90,7 @@ export const isLoginResponse = isTypeFactory<LoginResponse>(loginResponse)
 const baseDataStripped = z.object({
   id: z.number(),
   name: z.string(),
-  quantity: z.number().or(z.null())
+  quantity: z.number().optional()
 })
 
 export type BaseDataStripped = z.infer<typeof baseDataStripped>
@@ -152,6 +152,12 @@ export const ExecutionStatusEnum = z.enum([
   "UNKNOWN",
 ])
 
+const notifications = z.object({
+  text: z.string(),
+  timestamp: z.string(),
+})
+export type Notifications = z.infer<typeof notifications>
+
 export type ExecutionStatus = z.infer<typeof ExecutionStatusEnum>
 
 const executionData = z.object({
@@ -161,7 +167,7 @@ const executionData = z.object({
   status: ExecutionStatusEnum,
   roles: z.array(baseDataStripped),
   locations: z.array(baseDataStripped),
-  notifications: z.array(z.string())
+  notifications: z.array(notifications)
 })
 
 export type ExecutionData = z.infer<typeof executionData>

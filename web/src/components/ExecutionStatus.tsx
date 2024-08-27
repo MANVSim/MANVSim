@@ -16,7 +16,7 @@ export function ExecutionStatus({ execution }: ExecutionStatusProps) {
   }, [execution])
 
   return (
-    <div>
+    <div className="border-bottom border-dark border-2 pb-3">
       <div className="d-flex mt-5">
         <span className="fs-4">Aktueller Status:</span>
         <div className="d-flex ms-3 align-items-center">
