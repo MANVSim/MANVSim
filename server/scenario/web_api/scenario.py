@@ -6,7 +6,7 @@ from werkzeug.exceptions import NotFound, BadRequest
 
 import models
 from models import WebUser
-from app_config import db
+from app_config import db, csrf
 from utils.decorator import role_required, required, RequiredValueSource
 
 web_api = Blueprint("web_api-scenario", __name__)
@@ -77,6 +77,7 @@ def get_scenario(scenario_id: int):
 
 
 @web_api.post("/scenario")
+@csrf.exempt
 def create_scenario():
     """ Creates an empty scenario dbo. """
     scenario = models.Scenario(name="Neues Scenario")
@@ -106,9 +107,12 @@ def edit_scenario(id: int):
     request_data = request.get_json()
 
     try:
+        print("updating name")
         new_name = request_data["name"]
+        print(f"new name: {new_name}")
         if new_name:
             scenario.name = new_name
+            print("name has changed")
     except KeyError:
         logging.info("No name change detected.")
 

@@ -6,7 +6,7 @@ import {
 } from "react-router"
 import { getActiveExecutions, getTemplates, tryFetchJson } from "../api"
 import { Accordion } from "react-bootstrap"
-import { ExecutionData, Template } from "../types"
+import { ExecutionData, Scenario, Template } from "../types"
 import { ReactElement } from "react"
 import { TemplateEntry } from "../components/templateEntry"
 
@@ -21,6 +21,20 @@ export function ExecutionListRoute(): ReactElement {
   const loaderData = useLoaderData() as ExecutionsLoaderData
   const { templates, activeExecutions } = loaderData
   const navigate = useNavigate()
+
+  const handleNewScenario = async () => {
+    try {
+      const response = await fetch("/web/scenario", { method: "POST" })
+      if (response.ok) {
+        const response_json = await response.json()
+        navigate(`/scenario/${response_json.id}`)
+      } else {
+        console.error('Failed to create scenario');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
   return (
     <div className="mt-3">
       <div>
@@ -70,7 +84,7 @@ export function ExecutionListRoute(): ReactElement {
           <div className="d-flex">
             <button
               className="btn btn-outline-primary ps-5 pe-5 align-self-end mb-3"
-              onClick={() => alert("Not yet implemented")}
+              onClick={handleNewScenario}
             >
               Neu
             </button>
