@@ -172,36 +172,32 @@ def __get_top_level_locations() -> List[models.Location]:
 
 
 def __perform_state_change(new_status: Execution.Status, execution: Execution):
-    match new_status:
-        case Execution.Status.RUNNING:
-            # RUNNING only occurs after a PENDING
-            if execution.status == Execution.Status.RUNNING:
-                return
-            elif execution.status == Execution.Status.PENDING:
+    # current status
+    match execution.status:
+        case Execution.Status.PENDING:
+            if new_status is Execution.Status.RUNNING:
                 execution.start_execution()
+            elif new_status is Execution.Status.UNKNOWN:
+                # TODO unregister execution
+                pass
             else:
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
-        case Execution.Status.PENDING:
-            # PENDING occurs after UNKNOWN (DB load) and RUNNING
-            if execution.status == Execution.Status.PENDING:
-                return
-            elif execution.status == Execution.Status.RUNNING:
+        case Execution.Status.RUNNING:
+            if new_status is Execution.Status.PENDING:
                 execution.pause_execution()
-            elif execution.status == Execution.Status.UNKNOWN:
-                run.activate_execution(execution)
+            elif new_status is Execution.Status.FINISHED:
+                # TODO archive result of execution
+                pass
             else:
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
         case Execution.Status.FINISHED:
-            if execution.status == Execution.Status.FINISHED:
-                return
-            elif execution.status == Execution.Status.RUNNING:
-                # TODO implement archive mechanisms
-                return
-            else:
-                raise BadRequest("Process manipulation detected. "
-                                 "Invalid State change")
-        case _:
+            # no repetition allowed at this point.
+            raise BadRequest("Process manipulation detected. "
+                             "Invalid State change")
+        case Execution.Status.UNKNOWN:
+            # indicates no registration of execution. Status is set by
+            # activating the execution
             raise BadRequest("Process manipulation detected. "
                              "Invalid State change")
