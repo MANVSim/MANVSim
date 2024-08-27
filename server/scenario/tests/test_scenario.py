@@ -3,8 +3,12 @@ import json
 import models
 from conftest import flask_app
 
+"""
+Tests are deactivated, because they are designed for Debugging Cases in IDE.
+They are not appliable for pipeline.
+"""
 
-def test_get_scenario(client):
+def ttest_get_scenario(client):
     response = client.get("/web/scenario?scenario_id=2")
     response_data = response.get_json()
     assert response.status_code
@@ -14,7 +18,38 @@ def test_get_scenario(client):
     assert "vehicles" in response_data.keys()
 
 
-def test_create_scenario(client):
+def ttest_add_vehicle_to_scenario(client):
+
+    response = client.get("/web/csrf")
+    csrf_token = response.json["csrf_token"]
+    csrf_header = {
+        "X-CSRFToken": csrf_token
+    }
+
+    form = {
+        "id": 1,
+        "vehicles_add": [
+            {
+                "id": 0,
+                "name": "RTW I-0"
+            },
+            {
+                "id": 0,
+                "name": "RTW I-1"
+            },
+
+        ],
+        "vehicles_del": [],
+    }
+
+    response = client.patch("/web/scenario", data=json.dumps(form),
+                            headers=csrf_header,
+                            content_type='application/json')
+
+    assert response.status_code == 200
+
+
+def ttest_create_scenario(client):
 
     response = client.get("/web/csrf")
     csrf_token = response.json["csrf_token"]
@@ -22,7 +57,7 @@ def test_create_scenario(client):
         "X-CSRFToken": csrf_token
     }
     form = {
-        "id": 2,
+        "id": 1,
         "name": "neuer Name",
         "vehicles_add": [
             {
@@ -46,6 +81,9 @@ def test_create_scenario(client):
                             content_type='application/json')
     assert response.status_code == 200
     with flask_app.app_context():
+        zero_vehicles = models.PlayersToVehicleInExecution.query.filter_by(
+            execution_id=0,
+        ).all()
         vehicle = models.PlayersToVehicleInExecution.query.filter_by(
             scenario_id=2,
             location_id=0,

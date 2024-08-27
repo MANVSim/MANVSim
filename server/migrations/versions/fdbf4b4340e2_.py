@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 72ac8e39e8a0
+Revision ID: fdbf4b4340e2
 Revises: 
-Create Date: 2024-08-26 12:05:51.648895
+Create Date: 2024-08-26 13:01:32.316693
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '72ac8e39e8a0'
+revision = 'fdbf4b4340e2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -138,7 +138,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['player_tan'], ['player.tan'], name=op.f('fk_players_to_vehicle_in_execution_player_tan_player')),
     sa.ForeignKeyConstraint(['scenario_id'], ['scenario.id'], name=op.f('fk_players_to_vehicle_in_execution_scenario_id_scenario')),
     sa.PrimaryKeyConstraint('execution_id', 'player_tan', name=op.f('pk_players_to_vehicle_in_execution')),
-    sa.UniqueConstraint('execution_id', 'scenario_id', 'vehicle_name', name='unique_execution_vehicle')
+    sa.UniqueConstraint('execution_id', 'scenario_id', 'vehicle_name', 'player_tan', name='unique_execution_vehicle')
     )
     # ### end Alembic commands ###
 
