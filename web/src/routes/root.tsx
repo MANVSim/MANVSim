@@ -32,7 +32,6 @@ export function Root(): ReactElement {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <NavLink to="/" name="Home" />
               <NavLink to="/executions" name="Ausführungen" />
               <NavLink to="/data" name="Stammdaten" />
               <NavDropdown title="Benutzer">
