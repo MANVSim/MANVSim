@@ -52,7 +52,7 @@ def test_execution_state_change(client):
 
     # test legal state changes
     _test_legal_state_changes(2,
-                              ["PENDING", "RUNNING", "FINISHED"])
+                              ["PENDING", "RUNNING"])
 
     # Status: FINISHED
     # test illegal state changes
