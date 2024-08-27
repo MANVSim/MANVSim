@@ -27,7 +27,10 @@ class Location:
         self.name = name
         self.media_references = media_references
         self.resources = resources
+
+        # type 'set', because inventory can be managed by union and - operations
         self.sub_locations = sub_locations
+
         self.is_vehicle = is_vehicle
 
         self.res_lock = TimeoutLock()

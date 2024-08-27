@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required
 from app_config import csrf
 from execution.entities.execution import Execution
 from execution.entities.location import Location
+from execution.entities.player import Player
 from execution.utils import util
 from event_logging.event import Event
 from utils import time
@@ -70,15 +71,23 @@ def get_location_out_of_location(take_location_ids, to_location_ids):
         take_location_id_list: list[int] = ast.literal_eval(take_location_ids)
         to_location_id_list: list[int] = ast.literal_eval(to_location_ids)
 
-        # locate the new location in the players location
-        to_location = get_location_from_index_list(to_location_id_list,
-                                                   execution)
+        if not take_location_id_list or to_location_id_list:
+            return "Empty id-list provided. Unable to identify location.", 400
+
+        if not player.location:
+            # no top level assignment -> identify location in inventory
+            to_location = get_location_from_inventory(to_location_id_list,
+                                                      player)
+        else:
+            # locate the new location in the players location
+            to_location = get_location_from_index_list(to_location_id_list,
+                                                       execution)
 
         if to_location is None:
             return ("To-Location not found. Update your current "
                     "location-access."), 404
 
-        take_location_parent: Location | None= get_location_from_index_list(
+        take_location_parent: Location | None = get_location_from_index_list(
                                 take_location_id_list[:-1], execution)
         if not take_location_parent:
             return ("Take-Location not found. Update your current "
@@ -92,9 +101,6 @@ def get_location_out_of_location(take_location_ids, to_location_ids):
                     "location-access."), 404
 
         to_location.add_locations({take_location})
-
-        if not player.location:
-            return "Player is not assigned to a toplevel location.", 418
 
         if to_location.id == player.location.id:
             # if to_location is the player location -> the take_location should
@@ -145,18 +151,48 @@ def put_location_to_location(put_location_ids, to_location_ids):
         put_location_id_list: list[int] = ast.literal_eval(put_location_ids)
         to_location_id_list: list[int] = ast.literal_eval(to_location_ids)
 
+        if not put_location_id_list or not to_location_id_list:
+            return "Empty id-list provided. Unable to identify location.", 400
+
         to_location = get_location_from_index_list(to_location_id_list,
                                                    execution)
         if not to_location:
             return ("To-Location not found. Update your current "
                     "location-access."), 404
 
-        put_location_parent: Location | None = get_location_from_index_list(
-                                put_location_id_list[:-1], execution)
+        if not player.location:
+            # player has no patient access
+            put_location_parent: Location | None = get_location_from_inventory(
+                put_location_id_list[:-1], player.accessible_locations
+            )
+            if not put_location_parent and len(put_location_id_list) > 1:
+                # required sub-location not found in the inventory
+                return ("Put-location not found in the players inventory.",
+                        400)
+            elif len(put_location_id_list) == 1:
+                # required put-location is top-level in the inventory
+                put_location = player.get_location_from_inventory(
+                    put_location_id_list[0])
+                player.accessible_locations.remove(put_location)
+                to_location.add_locations({put_location})
 
-        if not put_location_parent:
-            return ("Put-Location not found. Update your current "
-                    "location-access."), 404
+                Event.location_put_to(execution_id=execution.id,
+                                      time=time.current_time_s(),
+                                      player=player.tan,
+                                      put_location_ids=put_location_id_list,
+                                      to_location_ids=to_location_id_list).log()
+                return {"player_location": {}}
+
+        else:
+            # player has patient access. Inventory is located at patients location
+            put_location_parent: Location | None = get_location_from_index_list(
+                                    put_location_id_list[:-1], execution)
+            if not put_location_parent and len(put_location_id_list) > 1:
+                return ("Put-Location not found. Update your current "
+                        "location-access."), 404
+            elif len(put_location_id_list) == 1:
+                return ("Trying to move a top level location. You ain't that "
+                        "strong"), 418
 
         put_location = put_location_parent.get_location_by_id(
             put_location_id_list[len(put_location_id_list)-1])
@@ -164,9 +200,6 @@ def put_location_to_location(put_location_ids, to_location_ids):
         if not put_location:
             return ("Put-Location not found. Update your current "
                     "location-access."), 404
-
-        if not player.location:
-            return "Player is not assigned to a toplevel location.", 418
 
         if put_location_parent == player.location.id:
             # if location parent is the players current location -> only the
@@ -224,6 +257,23 @@ def get_location_from_index_list(id_list: list[int], execution: Execution):
     for i in range(len(id_list)):
         if i == 0:
             target_location = execution.scenario.locations[id_list[i]]
+        elif not target_location:
+            # target location can be None if the first is 'skipped'...
+            return target_location
+        else:
+            target_location = target_location.get_location_by_id(id_list[i])
+
+    return target_location
+
+
+def get_location_from_inventory(id_list: list[int], player: Player):
+    target_location = None
+    if not id_list:
+        return target_location
+
+    for i in range(len(id_list)):
+        if i == 0:
+            target_location = player.get_location_from_inventory(id_list[i])
         elif not target_location:
             # target location can be None if the first is 'skipped'...
             return target_location
