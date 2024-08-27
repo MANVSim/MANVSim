@@ -128,7 +128,7 @@ def create_test_execution(pending: bool = True):
     patient_3 = Patient(id=3, name="Hoff Nungs Loserfall",
                         activity_diagram=ads[2],
                         location=loc_5)
-    patient_4 = Patient(id=3, name="Hoff Nungs Vollerfall",
+    patient_4 = Patient(id=4, name="Hoff Nungs Vollerfall",
                         activity_diagram=ads[3],
                         location=loc_5)
 
