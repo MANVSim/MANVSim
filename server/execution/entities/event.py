@@ -1,5 +1,8 @@
 import json
 from enum import Enum
+from typing import Optional
+
+import utils.time
 from app_config import db
 
 from models import LoggedEvent
@@ -14,6 +17,7 @@ class Event:
     class Type(Enum):
         PERFORMED_ACTION = "performed_action"
         EXECUTION_STARTED = "execution_started"
+        EXECUTION_PAUSED = "execution_paused"
         EXECUTION_FINISHED = "execution_finished"
         LOCATION_TAKE_FROM = "location_take_from"
         LOCATION_ARRIVE = "location_arrive"
@@ -27,18 +31,31 @@ class Event:
         self.data = data
 
     @staticmethod
-    def execution_started(execution_id: int, time: int):
+    def execution_started(ex_id: int, ex_data: str, time: Optional[int] = None):
         """
         Creates an event representing the start of an execution.
         """
-        return Event(execution=execution_id, type=Event.Type.EXECUTION_STARTED, time=time, data={})
+        if not time:
+            time = utils.time.current_time_s()
+        return Event(execution=ex_id, type=Event.Type.EXECUTION_STARTED, time=time, data=ex_data)
 
     @staticmethod
-    def execution_finished(execution_id: int, time: int):
+    def execution_paused(ex_id: int, time: Optional[int] = None):
+        """
+        Creates an event representing the start of an execution.
+        """
+        if not time:
+            time = utils.time.current_time_s()
+        return Event(execution=ex_id, type=Event.Type.EXECUTION_PAUSED, time=time, data={})
+
+    @staticmethod
+    def execution_finished(ex_id: int, ex_data: str, time: Optional[int] = None):
         """
         Creates an event representing the end of an execution.
         """
-        return Event(execution=execution_id, type=Event.Type.EXECUTION_FINISHED, time=time, data={})
+        if not time:
+            time = utils.time.current_time_s()
+        return Event(execution=ex_id, type=Event.Type.EXECUTION_STARTED, time=time, data=ex_data)
 
     @staticmethod
     def action_performed(execution_id: int, time: int, player: str, action: int, patient: int, duration_s: int):

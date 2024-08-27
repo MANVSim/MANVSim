@@ -1,9 +1,9 @@
-from flask import Blueprint, request
+from flask import Blueprint
 from flask_jwt_extended import jwt_required
 
 from app_config import csrf
 from execution.utils import util
-from event_logging.event import Event
+from execution.entities.event import Event
 from utils import time
 from utils.decorator import required, RequiredValueSource
 

@@ -7,7 +7,7 @@ from werkzeug.exceptions import NotFound, BadRequest, InternalServerError
 
 import models
 from app_config import csrf, db
-from event_logging.event import Event
+from execution.entities.event import Event
 from execution import run
 from execution.entities.execution import Execution
 from execution.services import entityloader
@@ -178,8 +178,7 @@ def __perform_state_change(new_status: Execution.Status, execution: Execution):
             if new_status is Execution.Status.RUNNING:
                 execution.start_execution()
             elif new_status is Execution.Status.UNKNOWN:
-                # TODO unregister execution
-                pass
+                run.deactivate_execution(execution.id)
             elif new_status is Execution.Status.PENDING:
                 pass
             else:
@@ -189,8 +188,8 @@ def __perform_state_change(new_status: Execution.Status, execution: Execution):
             if new_status is Execution.Status.PENDING:
                 execution.pause_execution()
             elif new_status is Execution.Status.FINISHED:
-                # TODO archive result of execution
-                pass
+                execution.archive()
+                run.deactivate_execution(execution.id)
             elif new_status is Execution.Status.RUNNING:
                 pass
             else:
