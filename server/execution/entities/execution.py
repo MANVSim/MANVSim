@@ -184,4 +184,8 @@ class Execution:
                 db.session.query(models.ArchivedExecution).filter_by(execution_id=self.id).delete()
             # Write new archived execution
             db.session.add(archived_execution)
+            # Delete logged events (now stored in archive)
+            if logged_events:
+                db.session.query(models.LoggedEvent).filter_by(execution=self.id).delete()
+
             db.session.commit()

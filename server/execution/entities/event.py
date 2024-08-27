@@ -55,7 +55,7 @@ class Event:
         """
         if not time:
             time = utils.time.current_time_s()
-        return Event(execution=ex_id, type=Event.Type.EXECUTION_STARTED, time=time, data=ex_data)
+        return Event(execution=ex_id, type=Event.Type.EXECUTION_FINISHED, time=time, data=ex_data)
 
     @staticmethod
     def action_performed(execution_id: int, time: int, player: str, action: int, patient: int, duration_s: int):
