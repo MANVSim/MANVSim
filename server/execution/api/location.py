@@ -206,6 +206,9 @@ def put_location_to_location(put_location_ids, to_location_ids):
             # inventory is edited to guarantee a valid leave action.
             player.accessible_locations.remove(put_location)
         else:
+            if player.get_location_from_inventory(put_location.id):
+                # put location is top-level in inventory
+                player.accessible_locations.remove(put_location)
             # otherwise perform default remove and add action
             put_location_parent.remove_location_by_id(put_location.id)
             to_location.add_locations({put_location})
