@@ -160,9 +160,8 @@ def put_location_to_location(put_location_ids, to_location_ids):
         if not player.location:
             # player has no patient access
             put_location_parent: Location | None = get_location_from_inventory(
-                put_location_id_list[:-1], player.accessible_locations
-            )
-            if not put_location_parent and len(put_location_id_list) > 1:
+                put_location_id_list[:-1], player)
+            if len(put_location_id_list) > 1 and not put_location_parent:
                 # required sub-location not found in the inventory
                 return ("Put-location not found in the players inventory.",
                         400)
@@ -170,6 +169,7 @@ def put_location_to_location(put_location_ids, to_location_ids):
                 # required put-location is top-level in the inventory
                 put_location = player.get_location_from_inventory(
                     put_location_id_list[0])
+                assert put_location
                 player.accessible_locations.remove(put_location)
                 to_location.add_locations({put_location})
 
@@ -184,12 +184,16 @@ def put_location_to_location(put_location_ids, to_location_ids):
             # player has patient access -> inventory is located at patients location
             put_location_parent: Location | None = get_location_from_index_list(
                                     put_location_id_list[:-1], execution)
-            if not put_location_parent and len(put_location_id_list) > 1:
+            if len(put_location_id_list) > 1 and not put_location_parent:
                 return ("Put-Location not found. Update your current "
                         "location-access."), 404
             elif len(put_location_id_list) == 1:
                 return ("Trying to move a top level location. You ain't that "
                         "strong"), 418
+
+        if not put_location_parent:
+            # clause for pyright. Not sure when this 'if' would apply...
+            return "Illegal state detected. Please evaluate the case with the developers."
 
         put_location = put_location_parent.get_location_by_id(
             put_location_id_list[len(put_location_id_list)-1])
@@ -198,7 +202,7 @@ def put_location_to_location(put_location_ids, to_location_ids):
             return ("Put-Location not found. Update your current "
                     "location-access."), 404
 
-        if put_location_parent == player.location.id:
+        if player.location and put_location_parent == player.location.id:
             # if location parent is the players current location -> only the
             # inventory is edited to guarantee a valid leave action.
             player.accessible_locations.remove(put_location)
