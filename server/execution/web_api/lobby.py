@@ -180,7 +180,7 @@ def __get_roles() -> list[models.Role]:
 
 @cache
 def __get_top_level_locations(execution_id: int) -> List[models.Location]:
-    return models.PlayersToVehicleInExecution.query.filter_by(execution_id=execution_id)
+    return models.PlayersToVehicleInExecution.query.filter_by(execution_id=execution_id).all()
 
 
 def __perform_state_change(new_status: Execution.Status, execution: Execution):
