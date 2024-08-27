@@ -107,12 +107,9 @@ def edit_scenario(id: int):
     request_data = request.get_json()
 
     try:
-        print("updating name")
         new_name = request_data["name"]
-        print(f"new name: {new_name}")
         if new_name:
             scenario.name = new_name
-            print("name has changed")
     except KeyError:
         logging.info("No name change detected.")
 
