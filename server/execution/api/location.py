@@ -74,19 +74,6 @@ def get_location_out_of_location(take_location_ids, to_location_ids):
         if not take_location_id_list:
             return "Empty id-list provided. Unable to identify location.", 400
 
-        if not player.location:
-            # no top level assignment -> identify location in inventory
-            to_location = get_location_from_inventory(to_location_id_list,
-                                                      player)
-        else:
-            # locate the new location in the players location
-            to_location = get_location_from_index_list(to_location_id_list,
-                                                       execution)
-
-        if to_location is None:
-            return ("To-Location not found. Update your current "
-                    "location-access."), 404
-
         take_location_parent: Location | None = get_location_from_index_list(
                                 take_location_id_list[:-1], execution)
         if not take_location_parent:
@@ -100,17 +87,27 @@ def get_location_out_of_location(take_location_ids, to_location_ids):
             return ("Take-Location not found. Update your current "
                     "location-access."), 404
 
-        to_location.add_locations({take_location})
-
-        if to_location.id == player.location.id:
-            # if to_location is the player location -> the take_location should
-            # be placed in the inventory to guarantee a valid leave action.
-            player.accessible_locations.add(take_location)
-        else:
-            # delete only from the location if the player location is different.
-            # In this case the player does not share the resources with any
-            # other player
+        if not to_location_ids:
+            # location is not nested in inventory
             take_location_parent.remove_location_by_id(take_location.id)
+            player.accessible_locations.add(take_location)
+            if player.location:
+                # if a player takes something from the current location without
+                # leaving the location should be still provided at the location
+                player.location.add_locations({take_location})
+
+            return "Location successfully transferred", 200
+
+        to_location = get_location_from_inventory(to_location_id_list,
+                                                  player)
+
+        if not to_location:
+            return ("To-Location not found. Update your current "
+                    "location-access."), 404
+
+        # nest new location into players inventory.
+        to_location.add_locations({take_location})
+        take_location_parent.remove_location_by_id(take_location.id)
 
         Event.location_take_from(execution_id=execution.id,
                                  time=time.current_time_s(),
@@ -184,7 +181,7 @@ def put_location_to_location(put_location_ids, to_location_ids):
                 return "Location successfully transferred", 200
 
         else:
-            # player has patient access. Inventory is located at patients location
+            # player has patient access -> inventory is located at patients location
             put_location_parent: Location | None = get_location_from_index_list(
                                     put_location_id_list[:-1], execution)
             if not put_location_parent and len(put_location_id_list) > 1:
