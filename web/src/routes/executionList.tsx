@@ -36,7 +36,7 @@ export function ExecutionListRoute(): ReactElement {
     }
   }
   return (
-    <div className="mt-3">
+    <div className="mt-3 pb-5">
       <div>
         <h2>Aktive Ausführungen</h2>
         <p>Die folgenden Ausführungen sind gestartet:</p>
