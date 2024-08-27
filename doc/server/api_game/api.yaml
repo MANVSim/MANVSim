@@ -259,14 +259,7 @@ paths:
                   example: "[1,2,3]"
       responses:
         '200':
-          description: accessible locations (the inventory) are updated.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  player_location:
-                    $ref: '#/components/schemas/LocationDTO'
+          description: Location successfully transferred.
         '204':
           description: No running execution detected.
         '400':
@@ -304,14 +297,7 @@ paths:
                   example: "[1,2,3]"
       responses:
         '200':
-          description: accessible locations (the inventory) are updated.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  player_location:
-                    $ref: '#/components/schemas/LocationDTO'
+          description: Location successfully transferred.
         '204':
           description: No running execution detected.
         '400':
@@ -322,6 +308,8 @@ paths:
           description: (Put-/to-) Location not found. Update your current location-access.
         '409':
           description: Unable to access runtime object. A timeout-error occurred.
+        '418':
+          description: Trying to move a top level location. You ain't that strong.
       security:
         - bearerAuth: [ ]
 
