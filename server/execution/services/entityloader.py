@@ -227,7 +227,7 @@ def __load_players(exec_id: int) -> dict[str, Player] | None:
         player_loc = None
         if db_player_loc.is_vehicle:
             name_mapping = db.session.query(models.PlayersToVehicleInExecution).filter_by(
-                player_id=p.tan).first()
+                player_tan=p.tan).first()
             if name_mapping:
                 player_loc = vehicles[name_mapping.vehicle_name]
         # ... otherwise load the given location (if it has not been loaded) ...

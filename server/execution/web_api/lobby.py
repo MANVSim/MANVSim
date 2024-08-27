@@ -67,7 +67,7 @@ def get_execution(id: int):
                 "name": player.name,
                 "alerted": player.alerted,
                 "logged_in": player.logged_in,
-                "role": player.to_dict(
+                "role": player.role.to_dict(
                     include=["id", "name"]) if player.role else None,
                 "location": player.location.to_dict(
                     include=["id", "name"]) if player.location else None
@@ -77,9 +77,9 @@ def get_execution(id: int):
                 "name": x.name
             } for x in __get_roles()],
             "locations": [{
-                "id": x.id,
-                "name": x.name
-            } for x in __get_top_level_locations()],
+                "id": x.location_id,
+                "name": x.vehicle_name
+            } for x in __get_top_level_locations(execution.id)],
             "notifications": execution.notifications
         }
 
@@ -89,11 +89,23 @@ def get_execution(id: int):
 @required("scenario_id", int, RequiredValueSource.FORM)
 @required("name", str, RequiredValueSource.FORM)
 def create_execution(scenario_id: int, name: str):
+
+    # TODO implement validator to prevent empty scenarios
     try:
         new_execution = models.Execution(scenario_id=scenario_id, name=name)  # type: ignore
         db.session.add(new_execution)
         db.session.commit()
-        print(f"new execution created with id: {new_execution.id}")
+
+        # Case: first execution of scenario -> reassign wildcard entries in PlayersToVehicle
+        vehicle_list = models.PlayersToVehicleInExecution.query.filter_by(
+            execution_id=0,  # wildcard id
+            scenario_id=scenario_id
+        ).all()
+        for vehicle in vehicle_list:
+            vehicle.execution_id = new_execution.id
+
+        db.session.commit()
+        logging.info(f"new execution created with id: {new_execution.id}")
         return {"id": new_execution.id}, 201
     except Exception:
         message = ("Unable to save execution. "
@@ -147,10 +159,10 @@ def change_player_status(id: int, tan: str, alerted: bool):
 @role_required(WebUser.Role.GAME_MASTER)
 @required("id", int, RequiredValueSource.ARGS)
 @required("role", int, RequiredValueSource.FORM)
-@required("location", int, RequiredValueSource.FORM)
-def add_new_player(id: int, role: int, location: int):
+@required("vehicle", str, RequiredValueSource.FORM)
+def add_new_player(id: int, role: int, vehicle: str):
     execution = try_get_execution(id)
-    execution.add_new_player(role, location)
+    execution.add_new_player(role, vehicle)
     return Response(status=200)
 
 
@@ -167,8 +179,8 @@ def __get_roles() -> list[models.Role]:
 
 
 @cache
-def __get_top_level_locations() -> List[models.Location]:
-    return models.Location.query.filter_by(is_vehicle=True).all()  # pyright: ignore
+def __get_top_level_locations(execution_id: int) -> List[models.Location]:
+    return models.PlayersToVehicleInExecution.query.filter_by(execution_id=execution_id).all()
 
 
 def __perform_state_change(new_status: Execution.Status, execution: Execution):

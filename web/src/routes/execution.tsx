@@ -177,10 +177,10 @@ export function ExecutionRoute() {
                     </Form.Select>
                   </FloatingLabel>
                   <FloatingLabel label="Ort">
-                    <Form.Select name="location">
+                    <Form.Select name="vehicle">
                       {execution.locations.map((location: Location) => {
                         return (
-                          <option key={location.id} value={location.id}>
+                          <option key={location.id} value={location.name}>
                             {location.name}
                           </option>
                         )
@@ -262,8 +262,17 @@ ExecutionRoute.action = async function ({
       formData.delete("tan")
       return togglePlayerStatus(params.executionId, playerTan, formData)
     }
-    case "new-player":
-      return createNewPlayer(params.executionId, formData)
+    case "new-player": {
+
+      const response = await createNewPlayer(params.executionId, formData)
+      // Instead of redirecting, reload the current page
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        console.error('Failed to create player:', response.text());
+      }
+      return ""
+    }
     default:
       throw new Error(`Case '${id}' is not covered in Execution.action`)
   }
