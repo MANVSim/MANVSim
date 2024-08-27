@@ -6,7 +6,7 @@ import {
 } from "react-router"
 import { getActiveExecutions, getTemplates, tryFetchJson } from "../api"
 import { Accordion } from "react-bootstrap"
-import { ExecutionData, Scenario, Template } from "../types"
+import { ExecutionData, Template } from "../types"
 import { ReactElement } from "react"
 import { TemplateEntry } from "../components/templateEntry"
 
