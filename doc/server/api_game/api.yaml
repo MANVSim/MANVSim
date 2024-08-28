@@ -237,12 +237,13 @@ paths:
 
   /run/location/take-to:
     post:
-      summary: A player takes any location which is not a registered top-level location and places another selected location. 
+      summary: A player takes any location which is not a registered top-level location and places it into another selected location. 
                It is designed to create a valuable state among all locations and player inventories. However an invalid use may 
                create an invalid game state. 
-               Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). 
-               The 'take_location_ids' list starts with the players current location. 
-               The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
+               The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory.
+               The list should start with a toplevel location.
+               The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory.
+               If the list is empty, the item is placed as in the root level of the inventory.
       requestBody:
         required: true
         content:
@@ -278,9 +279,8 @@ paths:
       summary: A player puts any location which is not a registered top-level location and places it into another selected location. 
                It is designed to create a valuable state among all locations and player inventories. However an invalid use may 
                create an invalid game state. 
-               Remember -
-               The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory.
-               The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
+               The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer.
+               The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
       requestBody:
         required: true
         content:
