@@ -73,6 +73,7 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**runPatientAllIdsGet**](doc//DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 *DefaultApi* | [**runPatientArrivePost**](doc//DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
 *DefaultApi* | [**runPatientLeavePost**](doc//DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
+*DefaultApi* | [**runPlayerInventoryGet**](doc//DefaultApi.md#runplayerinventoryget) | **GET** /run/player/inventory | Get Player Inventory
 *DefaultApi* | [**scenarioStartTimeGet**](doc//DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
 
 
@@ -102,6 +103,7 @@ Class | Method | HTTP request | Description
  - [RunPatientArrivePost200Response](doc//RunPatientArrivePost200Response.md)
  - [RunPatientArrivePostRequest](doc//RunPatientArrivePostRequest.md)
  - [RunPatientLeavePost200Response](doc//RunPatientLeavePost200Response.md)
+ - [RunPlayerInventoryGet200Response](doc//RunPlayerInventoryGet200Response.md)
  - [ScenarioStartTimeGet200Response](doc//ScenarioStartTimeGet200Response.md)
 
 

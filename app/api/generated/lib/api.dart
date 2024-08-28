@@ -54,6 +54,7 @@ part 'model/run_patient_all_ids_get200_response.dart';
 part 'model/run_patient_arrive_post200_response.dart';
 part 'model/run_patient_arrive_post_request.dart';
 part 'model/run_patient_leave_post200_response.dart';
+part 'model/run_player_inventory_get200_response.dart';
 part 'model/scenario_start_time_get200_response.dart';
 
 

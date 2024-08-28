@@ -230,6 +230,8 @@ class ApiClient {
           return RunPatientArrivePostRequest.fromJson(value);
         case 'RunPatientLeavePost200Response':
           return RunPatientLeavePost200Response.fromJson(value);
+        case 'RunPlayerInventoryGet200Response':
+          return RunPlayerInventoryGet200Response.fromJson(value);
         case 'ScenarioStartTimeGet200Response':
           return ScenarioStartTimeGet200Response.fromJson(value);
         default:
