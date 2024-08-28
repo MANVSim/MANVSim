@@ -6,7 +6,7 @@ from werkzeug.exceptions import NotFound, BadRequest
 
 import models
 from models import WebUser
-from app_config import db
+from app_config import db, csrf
 from utils.decorator import role_required, required, RequiredValueSource
 
 web_api = Blueprint("web_api-scenario", __name__)
@@ -77,6 +77,7 @@ def get_scenario(scenario_id: int):
 
 
 @web_api.post("/scenario")
+@csrf.exempt
 def create_scenario():
     """ Creates an empty scenario dbo. """
     scenario = models.Scenario(name="Neues Scenario")

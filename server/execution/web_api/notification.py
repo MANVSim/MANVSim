@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint, request
 
 from execution import run
@@ -21,8 +23,15 @@ def add_notification_to_execution():
         exec_id = int(form["exec_id"])
         notification = form["notification"]
         execution = run.active_executions[exec_id]
-
-        execution.notifications.append(notification)
+        current_time = datetime.now()
+        formatted_time = current_time.strftime("%d.%m.%Y %H.%M")
+        execution.notifications.append(
+            {
+                "timestamp": formatted_time,
+                "text": notification
+            }
+        )
         return "Post successful", 200
     except KeyError:
-        return {"error": "Unable to post notification. Invalid parameter detected."}, 400
+        return {
+            "error": "Unable to post notification. Invalid parameter detected."}, 400

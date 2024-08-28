@@ -16,8 +16,8 @@ from utils.decorator import required, RequiredValueSource
 web_api = Blueprint("web_api-location", __name__)
 
 
-@web_api.get("/location/all")
-def get_all_locations():
+@web_api.get("/location/all-vehicles")
+def get_all_vehicle_locations():
     """ Returns a json of all locations stored. """
     location_list = models.Location.query.filter_by(
         is_vehicle=True
@@ -29,6 +29,17 @@ def get_all_locations():
         } for location in location_list
     ]
 
+
+@web_api.get("/location/all")
+def get_all_locations():
+    """ Returns a json of all locations stored. """
+    location_list = models.Location.query.all()
+    return [
+        {
+            "id": location.id,
+            "name": location.name,
+        } for location in location_list
+    ]
 
 @web_api.get("/location")
 @required("location_id", int, RequiredValueSource.ARGS)

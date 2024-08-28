@@ -41,7 +41,10 @@ export function ScenarioEditor() {
                     <div className="d-flex d-row">
                         <div className="d-flex ms-5 fs-5">
                             <label className="align-self-center">Name:</label>
-                            <input type="text" className="form-control ms-5" name="name" value={`${scenarioName}`} disabled={editView ? false : true} onChange={(event) => setScenarioName(event.target.value)} />
+                            <input type="text" className="form-control ms-5" name="name" value={`${scenarioName}`} disabled={!editView} onChange={(event) => setScenarioName(event.target.value)} />
+                            {!editView && (
+                                <input type="hidden" name="name" value={`${scenarioName}`} />
+                            )}
                         </div>
                         <div className="ms-auto me-5">
                             <button type="submit" className={`btn btn-primary ${editView ? "" : "d-none"} me-3`} onClick={() => { setEditView(false) }}>Speichern</button>
@@ -90,7 +93,7 @@ ScenarioEditor.loader = async function ({
     params: { scenarioId },
 }: LoaderFunctionArgs) {
     const scenario = await tryFetchJson<Scenario>(`/scenario?scenario_id=${scenarioId}`)
-    const all_vehicles = await tryFetchJson<BaseDataStripped[]>(`/data/location/all`)
+    const all_vehicles = await tryFetchJson<BaseDataStripped[]>(`/data/location/all-vehicles`)
     const all_patients = await tryFetchJson<BaseDataStripped[]>(`/data/patient/all`)
     return { scenario, all_vehicles, all_patients }
 }
@@ -99,7 +102,6 @@ ScenarioEditor.action = async function ({ request }: ActionFunctionArgs<Request>
     const formData = await request.formData();
 
     const scenario_id = formData.get("id")
-    // Create a plain JavaScript object to hold the form data
     const data = {
         id: scenario_id,
         name: formData.get("name"),

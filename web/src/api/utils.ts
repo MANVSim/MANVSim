@@ -20,5 +20,8 @@ export async function tryFetchJson<T = object>(
   body: RequestInit = {},
 ): Promise<T> {
   const response = await tryFetchApi(url, body)
+  if ([401].includes(response.status)){
+    throw Error("Unauthorized request detected.")
+  }
   return response.json()
 }

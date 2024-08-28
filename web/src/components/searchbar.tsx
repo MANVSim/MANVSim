@@ -54,7 +54,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({ data, className
                     onChange={handleInputChange}
                     onFocus={handleInputFocus} // Show all suggestions on first click with no input
                     onBlur={handleInputBlur} // Hide suggestions when input loses focus
-                    placeholder="Search..."
+                    placeholder="Suche..."
                     className="form-control search-input"
                 />
             </div>

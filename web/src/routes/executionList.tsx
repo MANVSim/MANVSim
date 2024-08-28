@@ -21,8 +21,22 @@ export function ExecutionListRoute(): ReactElement {
   const loaderData = useLoaderData() as ExecutionsLoaderData
   const { templates, activeExecutions } = loaderData
   const navigate = useNavigate()
+
+  const handleNewScenario = async () => {
+    try {
+      const response = await fetch("/web/scenario", { method: "POST" })
+      if (response.ok) {
+        const response_json = await response.json()
+        navigate(`/scenario/${response_json.id}`)
+      } else {
+        console.error('Failed to create scenario');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
   return (
-    <div className="mt-3">
+    <div className="mt-3 pb-5">
       <div>
         <h2>Aktive Ausführungen</h2>
         <p>Die folgenden Ausführungen sind gestartet:</p>
@@ -70,7 +84,7 @@ export function ExecutionListRoute(): ReactElement {
           <div className="d-flex">
             <button
               className="btn btn-outline-primary ps-5 pe-5 align-self-end mb-3"
-              onClick={() => alert("Not yet implemented")}
+              onClick={handleNewScenario}
             >
               Neu
             </button>
