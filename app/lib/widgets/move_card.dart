@@ -59,7 +59,7 @@ class _MoveCardState extends State<MoveCard> {
         ),
 
         if (selectedLocationIndex != null)
-          Column(children: [
+          ...[
             const SizedBox(height: 8),
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               ElevatedButton(
@@ -71,7 +71,7 @@ class _MoveCardState extends State<MoveCard> {
               ),
             ]),
             const SizedBox(height: 8),
-          ])
+          ]
       ],
     ));
   }
