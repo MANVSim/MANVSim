@@ -210,7 +210,7 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **runActionPerformMovePatientPost**
-> runActionPerformMovePatientPost(runActionPerformMovePatientPostRequest)
+> RunPatientArrivePost200Response runActionPerformMovePatientPost(runActionPerformMovePatientPostRequest)
 
 Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
 
@@ -228,7 +228,8 @@ final api_instance = DefaultApi();
 final runActionPerformMovePatientPostRequest = RunActionPerformMovePatientPostRequest(); // RunActionPerformMovePatientPostRequest | 
 
 try {
-    api_instance.runActionPerformMovePatientPost(runActionPerformMovePatientPostRequest);
+    final result = api_instance.runActionPerformMovePatientPost(runActionPerformMovePatientPostRequest);
+    print(result);
 } catch (e) {
     print('Exception when calling DefaultApi->runActionPerformMovePatientPost: $e\n');
 }
@@ -242,7 +243,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-void (empty response body)
+[**RunPatientArrivePost200Response**](RunPatientArrivePost200Response.md)
 
 ### Authorization
 

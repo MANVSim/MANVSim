@@ -155,12 +155,12 @@ class _ActionSelectionState extends State<ActionSelection> {
   }
 
   void movePatient(Location moveTo) async {
-    await Navigator.push(
+    Patient? movedPatient = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>
                 MoveScreen(patient: widget.patient, moveTo: moveTo)));
 
-    widget.refreshPatient(null);
+    widget.refreshPatient(movedPatient);
   }
 }

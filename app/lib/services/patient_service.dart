@@ -37,12 +37,13 @@ class PatientService {
         .whenComplete(() => LocationService.leaveLocation());
   }
 
-  static Future<Duration> movePatient(Patient patient, Location moveTo) async {
-    const int waitTimeSeconds = 5;
+  static Future<Patient?> movePatient(Patient patient, Location moveTo) async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return apiService.api
         .runActionPerformMovePatientPost(RunActionPerformMovePatientPostRequest(
             patientId: patient.id, newLocationId: moveTo.id))
-        .then((value) => const Duration(seconds: waitTimeSeconds));
+        .then((response) => (response?.patient != null
+        ? Patient.fromApi((response?.patient)!)
+        : null));
   }
 }
