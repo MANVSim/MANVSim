@@ -101,6 +101,8 @@
   "patientResources": "Resourcen: ",
   "patientActions": "Maßnahmen: ",
   "patientNoActions": "Keine Maßnahmen mit den ausgewählten Resourcen",
+  "patientMoveSection": "Bewegen: ",
+  "patientMoveSelection": "Patienten bewegen nach",
 
   "actionScreenTitle": "{action} bei {patientName}",
   "@actionScreenTitle": {
@@ -116,10 +118,48 @@
     }
   },
 
+  "moveScreenTitle": "Bewege {patientName} von {source} nach {destination}",
+  "@moveScreenTitle": {
+    "placeholders": {
+      "patientName": {
+        "type": "String",
+        "example": "Bob"
+      },
+      "source": {
+        "type": "String",
+        "example": "Location"
+      }  ,
+      "destination": {
+        "type": "String",
+        "example": "Location"
+      }
+    }
+  },
+
+  "moveScreenSuccess": "Der Patient {patientName} wurde erfolgreich von {source} nach {destination} bewegt",
+  "@moveScreenSuccess": {
+    "placeholders": {
+      "patientName": {
+        "type": "String",
+        "example": "Bob"
+      },
+      "source": {
+        "type": "String",
+        "example": "Location"
+      }  ,
+      "destination": {
+        "type": "String",
+        "example": "Location"
+      }
+    }
+  },
+  "moveFailure": "Leider konnte der Patient nicht erfolgreich bewegt werden.\nBitte versuche es erneut.",
+
   "actionNeededResources": "Benötigte Resourcen: ",
   "actionNoNeededResources": "Keine Resourcen benötigt.",
   "actionPerform": "Durchführen",
   "actionFailure": "Leider konnte diese Maßnahme nicht ausgeführt werden.\nGehe sicher, dass genügend Resourcen verfügbar sind und versuche es erneut.",
+
 
   "notificationScreenName": "Benachrichtigungen",
 

@@ -63,11 +63,13 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**notificationsGet**](doc//DefaultApi.md#notificationsget) | **GET** /notifications | notification polling
 *DefaultApi* | [**playerSetNamePost**](doc//DefaultApi.md#playersetnamepost) | **POST** /player/set-name | Set username for the TAN
 *DefaultApi* | [**runActionAllGet**](doc//DefaultApi.md#runactionallget) | **GET** /run/action/all | Returns a list of actions available to the user.
+*DefaultApi* | [**runActionPerformMovePatientPost**](doc//DefaultApi.md#runactionperformmovepatientpost) | **POST** /run/action/perform/move/patient | Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
 *DefaultApi* | [**runActionPerformPost**](doc//DefaultApi.md#runactionperformpost) | **POST** /run/action/perform | Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
 *DefaultApi* | [**runActionPerformResultGet**](doc//DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action and officially finishes/dequeues the action of the patient.
 *DefaultApi* | [**runLocationAllGet**](doc//DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of  top-level accessible locations.
 *DefaultApi* | [**runLocationLeavePost**](doc//DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
-*DefaultApi* | [**runLocationTakeFromPost**](doc//DefaultApi.md#runlocationtakefrompost) | **POST** /run/location/take-from | A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+*DefaultApi* | [**runLocationPutToPost**](doc//DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
+*DefaultApi* | [**runLocationTakeToPost**](doc//DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
 *DefaultApi* | [**runPatientAllIdsGet**](doc//DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 *DefaultApi* | [**runPatientArrivePost**](doc//DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
 *DefaultApi* | [**runPatientLeavePost**](doc//DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
@@ -77,6 +79,7 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [ActionDTO](doc//ActionDTO.md)
+ - [ActionDTOMediaReferencesInner](doc//ActionDTOMediaReferencesInner.md)
  - [Error](doc//Error.md)
  - [LocationDTO](doc//LocationDTO.md)
  - [LoginPost200Response](doc//LoginPost200Response.md)
@@ -87,13 +90,14 @@ Class | Method | HTTP request | Description
  - [PlayerSetNamePostRequest](doc//PlayerSetNamePostRequest.md)
  - [ResourceDTO](doc//ResourceDTO.md)
  - [RunActionAllGet200Response](doc//RunActionAllGet200Response.md)
+ - [RunActionPerformMovePatientPostRequest](doc//RunActionPerformMovePatientPostRequest.md)
  - [RunActionPerformPost200Response](doc//RunActionPerformPost200Response.md)
  - [RunActionPerformPostRequest](doc//RunActionPerformPostRequest.md)
  - [RunActionPerformResultGet200Response](doc//RunActionPerformResultGet200Response.md)
  - [RunLocationAllGet200Response](doc//RunLocationAllGet200Response.md)
  - [RunLocationLeavePost200Response](doc//RunLocationLeavePost200Response.md)
- - [RunLocationTakeFromPost200Response](doc//RunLocationTakeFromPost200Response.md)
- - [RunLocationTakeFromPostRequest](doc//RunLocationTakeFromPostRequest.md)
+ - [RunLocationPutToPostRequest](doc//RunLocationPutToPostRequest.md)
+ - [RunLocationTakeToPostRequest](doc//RunLocationTakeToPostRequest.md)
  - [RunPatientAllIdsGet200Response](doc//RunPatientAllIdsGet200Response.md)
  - [RunPatientArrivePost200Response](doc//RunPatientArrivePost200Response.md)
  - [RunPatientArrivePostRequest](doc//RunPatientArrivePostRequest.md)

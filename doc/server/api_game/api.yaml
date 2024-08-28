@@ -487,6 +487,16 @@ paths:
       responses:
         '200':
           description: Returns the current player location and patient location.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ patient ]
+                properties:
+                  player_location:
+                    $ref: '#/components/schemas/LocationDTO'
+                  patient:
+                    $ref: '#/components/schemas/PatientDTO'
         '204':
           description: No running execution detected.
         '400':

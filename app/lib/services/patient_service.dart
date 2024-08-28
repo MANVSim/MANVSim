@@ -5,6 +5,7 @@ import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/services/location_service.dart';
 
+import '../models/location.dart';
 import '../screens/patient_screen.dart';
 
 /// Provides methods to manage [Patient].
@@ -34,5 +35,15 @@ class PatientService {
             MaterialPageRoute(
                 builder: (context) => PatientScreen(patientId: patientId)))
         .whenComplete(() => LocationService.leaveLocation());
+  }
+
+  static Future<Patient?> movePatient(Patient patient, Location moveTo) async {
+    ApiService apiService = GetIt.instance.get<ApiService>();
+    return apiService.api
+        .runActionPerformMovePatientPost(RunActionPerformMovePatientPostRequest(
+            patientId: patient.id, newLocationId: moveTo.id))
+        .then((response) => (response?.patient != null
+        ? Patient.fromApi((response?.patient)!)
+        : null));
   }
 }

@@ -4,11 +4,15 @@ import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/models/resource.dart';
 import 'package:manvsim/screens/action_screen.dart';
+import 'package:manvsim/screens/move_screen.dart';
 import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/action_card.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
+import 'package:manvsim/widgets/move_card.dart';
 import 'package:manvsim/widgets/resource_directory.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../services/location_service.dart';
 
 class ActionSelection extends StatefulWidget {
   final List<Location> locations;
@@ -27,6 +31,7 @@ class ActionSelection extends StatefulWidget {
 
 class _ActionSelectionState extends State<ActionSelection> {
   late Future<List<PatientAction>> futureActions;
+  late Future<List<Location>?> futureLocationIdList;
 
   Iterable<Resource> resources = [];
   Iterable<PatientAction> possibleActions = [];
@@ -43,6 +48,7 @@ class _ActionSelectionState extends State<ActionSelection> {
   void initState() {
     resources = Location.flattenResourcesFromList(widget.locations);
     futureActions = ActionService.fetchActions();
+    futureLocationIdList = LocationService.fetchLocations();
     super.initState();
   }
 
@@ -88,6 +94,15 @@ class _ActionSelectionState extends State<ActionSelection> {
                       patient: widget.patient,
                       canBePerformed: false,
                     )),
+            Text(AppLocalizations.of(context)!.patientMoveSection),
+            ApiFutureBuilder(
+                future: futureLocationIdList,
+                builder: (context, locations) => MoveCard(
+                    locations: locations
+                        .where((location) =>
+                            location.id != widget.patient.location.id)
+                        .toList(),
+                onPerform: movePatient)),
             Text(AppLocalizations.of(context)!.patientResources),
             ResourceDirectory(
                 locations: widget.locations, resourceToggle: toggleResource),
@@ -137,5 +152,15 @@ class _ActionSelectionState extends State<ActionSelection> {
                 patient: widget.patient,
                 resourceIds: resourceIds)));
     widget.refreshPatient(patient);
+  }
+
+  void movePatient(Location moveTo) async {
+    Patient? movedPatient = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                MoveScreen(patient: widget.patient, moveTo: moveTo)));
+
+    widget.refreshPatient(movedPatient);
   }
 }

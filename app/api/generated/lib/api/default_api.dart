@@ -222,6 +222,58 @@ class DefaultApi {
     return null;
   }
 
+  /// Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [RunActionPerformMovePatientPostRequest] runActionPerformMovePatientPostRequest (required):
+  Future<Response> runActionPerformMovePatientPostWithHttpInfo(RunActionPerformMovePatientPostRequest runActionPerformMovePatientPostRequest,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/run/action/perform/move/patient';
+
+    // ignore: prefer_final_locals
+    Object? postBody = runActionPerformMovePatientPostRequest;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>['application/json'];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
+  ///
+  /// Parameters:
+  ///
+  /// * [RunActionPerformMovePatientPostRequest] runActionPerformMovePatientPostRequest (required):
+  Future<RunPatientArrivePost200Response?> runActionPerformMovePatientPost(RunActionPerformMovePatientPostRequest runActionPerformMovePatientPostRequest,) async {
+    final response = await runActionPerformMovePatientPostWithHttpInfo(runActionPerformMovePatientPostRequest,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientArrivePost200Response',) as RunPatientArrivePost200Response;
+    
+    }
+    return null;
+  }
+
   /// Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
   ///
   /// Note: This method returns the HTTP [Response].
@@ -425,19 +477,19 @@ class DefaultApi {
     return null;
   }
 
-  /// A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+  /// A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
   ///
   /// Note: This method returns the HTTP [Response].
   ///
   /// Parameters:
   ///
-  /// * [RunLocationTakeFromPostRequest] runLocationTakeFromPostRequest (required):
-  Future<Response> runLocationTakeFromPostWithHttpInfo(RunLocationTakeFromPostRequest runLocationTakeFromPostRequest,) async {
+  /// * [RunLocationPutToPostRequest] runLocationPutToPostRequest (required):
+  Future<Response> runLocationPutToPostWithHttpInfo(RunLocationPutToPostRequest runLocationPutToPostRequest,) async {
     // ignore: prefer_const_declarations
-    final path = r'/run/location/take-from';
+    final path = r'/run/location/put-to';
 
     // ignore: prefer_final_locals
-    Object? postBody = runLocationTakeFromPostRequest;
+    Object? postBody = runLocationPutToPostRequest;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -457,24 +509,60 @@ class DefaultApi {
     );
   }
 
-  /// A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+  /// A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
   ///
   /// Parameters:
   ///
-  /// * [RunLocationTakeFromPostRequest] runLocationTakeFromPostRequest (required):
-  Future<RunLocationTakeFromPost200Response?> runLocationTakeFromPost(RunLocationTakeFromPostRequest runLocationTakeFromPostRequest,) async {
-    final response = await runLocationTakeFromPostWithHttpInfo(runLocationTakeFromPostRequest,);
+  /// * [RunLocationPutToPostRequest] runLocationPutToPostRequest (required):
+  Future<void> runLocationPutToPost(RunLocationPutToPostRequest runLocationPutToPostRequest,) async {
+    final response = await runLocationPutToPostWithHttpInfo(runLocationPutToPostRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
-    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunLocationTakeFromPost200Response',) as RunLocationTakeFromPost200Response;
-    
+  }
+
+  /// A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [RunLocationTakeToPostRequest] runLocationTakeToPostRequest (required):
+  Future<Response> runLocationTakeToPostWithHttpInfo(RunLocationTakeToPostRequest runLocationTakeToPostRequest,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/run/location/take-to';
+
+    // ignore: prefer_final_locals
+    Object? postBody = runLocationTakeToPostRequest;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>['application/json'];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
+  ///
+  /// Parameters:
+  ///
+  /// * [RunLocationTakeToPostRequest] runLocationTakeToPostRequest (required):
+  Future<void> runLocationTakeToPost(RunLocationTakeToPostRequest runLocationTakeToPostRequest,) async {
+    final response = await runLocationTakeToPostWithHttpInfo(runLocationTakeToPostRequest,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    return null;
   }
 
   /// Returns a list of all patient ids.
