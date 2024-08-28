@@ -1,4 +1,5 @@
 .gitignore
+.openapi-generator-ignore
 .travis.yml
 README.md
 analysis_options.yaml
@@ -22,7 +23,6 @@ doc/RunActionPerformResultGet200Response.md
 doc/RunLocationAllGet200Response.md
 doc/RunLocationLeavePost200Response.md
 doc/RunLocationPutToPostRequest.md
-doc/RunLocationTakeToPost200Response.md
 doc/RunLocationTakeToPostRequest.md
 doc/RunPatientAllIdsGet200Response.md
 doc/RunPatientArrivePost200Response.md
@@ -59,7 +59,6 @@ lib/model/run_action_perform_result_get200_response.dart
 lib/model/run_location_all_get200_response.dart
 lib/model/run_location_leave_post200_response.dart
 lib/model/run_location_put_to_post_request.dart
-lib/model/run_location_take_to_post200_response.dart
 lib/model/run_location_take_to_post_request.dart
 lib/model/run_patient_all_ids_get200_response.dart
 lib/model/run_patient_arrive_post200_response.dart
@@ -87,7 +86,6 @@ test/run_action_perform_result_get200_response_test.dart
 test/run_location_all_get200_response_test.dart
 test/run_location_leave_post200_response_test.dart
 test/run_location_put_to_post_request_test.dart
-test/run_location_take_to_post200_response_test.dart
 test/run_location_take_to_post_request_test.dart
 test/run_patient_all_ids_get200_response_test.dart
 test/run_patient_arrive_post200_response_test.dart

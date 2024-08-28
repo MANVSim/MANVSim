@@ -441,7 +441,7 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **runLocationPutToPost**
-> RunLocationTakeToPost200Response runLocationPutToPost(runLocationPutToPostRequest)
+> runLocationPutToPost(runLocationPutToPostRequest)
 
 A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
 
@@ -459,8 +459,7 @@ final api_instance = DefaultApi();
 final runLocationPutToPostRequest = RunLocationPutToPostRequest(); // RunLocationPutToPostRequest | 
 
 try {
-    final result = api_instance.runLocationPutToPost(runLocationPutToPostRequest);
-    print(result);
+    api_instance.runLocationPutToPost(runLocationPutToPostRequest);
 } catch (e) {
     print('Exception when calling DefaultApi->runLocationPutToPost: $e\n');
 }
@@ -474,7 +473,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**RunLocationTakeToPost200Response**](RunLocationTakeToPost200Response.md)
+void (empty response body)
 
 ### Authorization
 
@@ -488,7 +487,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **runLocationTakeToPost**
-> RunLocationTakeToPost200Response runLocationTakeToPost(runLocationTakeToPostRequest)
+> runLocationTakeToPost(runLocationTakeToPostRequest)
 
 A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
 
@@ -506,8 +505,7 @@ final api_instance = DefaultApi();
 final runLocationTakeToPostRequest = RunLocationTakeToPostRequest(); // RunLocationTakeToPostRequest | 
 
 try {
-    final result = api_instance.runLocationTakeToPost(runLocationTakeToPostRequest);
-    print(result);
+    api_instance.runLocationTakeToPost(runLocationTakeToPostRequest);
 } catch (e) {
     print('Exception when calling DefaultApi->runLocationTakeToPost: $e\n');
 }
@@ -521,7 +519,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**RunLocationTakeToPost200Response**](RunLocationTakeToPost200Response.md)
+void (empty response body)
 
 ### Authorization
 

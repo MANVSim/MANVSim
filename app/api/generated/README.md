@@ -97,7 +97,6 @@ Class | Method | HTTP request | Description
  - [RunLocationAllGet200Response](doc//RunLocationAllGet200Response.md)
  - [RunLocationLeavePost200Response](doc//RunLocationLeavePost200Response.md)
  - [RunLocationPutToPostRequest](doc//RunLocationPutToPostRequest.md)
- - [RunLocationTakeToPost200Response](doc//RunLocationTakeToPost200Response.md)
  - [RunLocationTakeToPostRequest](doc//RunLocationTakeToPostRequest.md)
  - [RunPatientAllIdsGet200Response](doc//RunPatientAllIdsGet200Response.md)
  - [RunPatientArrivePost200Response](doc//RunPatientArrivePost200Response.md)

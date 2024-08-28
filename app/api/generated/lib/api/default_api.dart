@@ -514,19 +514,11 @@ class DefaultApi {
   /// Parameters:
   ///
   /// * [RunLocationPutToPostRequest] runLocationPutToPostRequest (required):
-  Future<RunLocationTakeToPost200Response?> runLocationPutToPost(RunLocationPutToPostRequest runLocationPutToPostRequest,) async {
+  Future<void> runLocationPutToPost(RunLocationPutToPostRequest runLocationPutToPostRequest,) async {
     final response = await runLocationPutToPostWithHttpInfo(runLocationPutToPostRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
-    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunLocationTakeToPost200Response',) as RunLocationTakeToPost200Response;
-    
-    }
-    return null;
   }
 
   /// A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
@@ -566,19 +558,11 @@ class DefaultApi {
   /// Parameters:
   ///
   /// * [RunLocationTakeToPostRequest] runLocationTakeToPostRequest (required):
-  Future<RunLocationTakeToPost200Response?> runLocationTakeToPost(RunLocationTakeToPostRequest runLocationTakeToPostRequest,) async {
+  Future<void> runLocationTakeToPost(RunLocationTakeToPostRequest runLocationTakeToPostRequest,) async {
     final response = await runLocationTakeToPostWithHttpInfo(runLocationTakeToPostRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
-    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunLocationTakeToPost200Response',) as RunLocationTakeToPost200Response;
-    
-    }
-    return null;
   }
 
   /// Returns a list of all patient ids.
