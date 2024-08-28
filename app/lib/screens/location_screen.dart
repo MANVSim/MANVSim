@@ -211,12 +211,12 @@ class _LocationScreenState extends State<LocationScreen> {
               children: [
                 const Icon(Icons.inventory_2_outlined),
                 if (!_showInventory)
-                  const Row(
+                  Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
-                      Text("Inventar \nanzeigen"),
+                      Text(AppLocalizations.of(context)!.locationScreenShowInventory,)
                     ],
                   )
               ],
