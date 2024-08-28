@@ -9,7 +9,8 @@ class PatientMap extends StatelessWidget {
 
   static const double padding = 50;
 
-  PatientMap(this.patientLocations) : size = Size(width, height);
+  const PatientMap(this.patientLocations, {super.key})
+      : size = const Size(width, height);
 
   final List<PatientPosition> patientLocations;
   final Size size;
@@ -33,12 +34,12 @@ class PatientMap extends StatelessWidget {
   List<Positioned> getPatients(BuildContext context) {
     return patientLocations
         .map((patientPosition) => Positioned(
+              top: patientPosition.position.y,
+              left: patientPosition.position.x,
               child: IconButton(
                   onPressed: () => PatientService.goToPatientScreen(
                       patientPosition.id, context),
-                  icon: Icon(Icons.person)),
-              top: patientPosition.position.y,
-              left: patientPosition.position.x,
+                  icon: const Icon(Icons.person)),
             ))
         .toList();
   }

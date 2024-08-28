@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/types.dart';
-import 'package:vector_math/vector_math_64.dart' as vector_math;
+import 'package:vector_math/vector_math_64.dart' hide Colors;
 
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
@@ -51,7 +51,7 @@ class _PatientMapScreenState extends State<PatientMapScreen> {
 class PatientMapOverlay extends StatefulWidget {
   const PatientMapOverlay({super.key, required this.child});
 
-  final Widget child;
+  final PatientMap child;
 
   @override
   State<StatefulWidget> createState() => _PatientMapOverlayState();
@@ -59,14 +59,19 @@ class PatientMapOverlay extends StatefulWidget {
 
 class _PatientMapOverlayState extends State<PatientMapOverlay>
     with TickerProviderStateMixin {
+  /// width of the viewport
   static const width = 300.0;
+  /// height of the viewport
   static const height = 300.0;
+  /// middle of the viewport
+  final Offset middle = const Offset(width / 2, height / 2);
 
+  /// Controller for the Matrix4 transformations.
   late final TransformationController _transformationController;
+
+  /// Animation "moving the center".
   Animation<Offset>? _animation;
   late AnimationController _controller;
-
-  Offset direction = Offset(0, 0);
 
   @override
   void initState() {
@@ -75,7 +80,14 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       ..addListener(_onTransformationControllerChange);
     _controller = AnimationController(
       vsync: this,
-    )..addListener(_onAnimate);
+    );
+  }
+
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -89,9 +101,12 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
         child: Stack(children: [
           Listener(
               child: GestureDetector(
-                  onLongPressStart: _onLongPressDown,
-                  onLongPressEnd: (details) {
-                    _controller.stop();
+                  onLongPressStart: (details) =>
+                      _onNewTargetOffset(details.localPosition),
+                  onLongPressUp: _onMoveEnd,
+                  onLongPressMoveUpdate: (details) {
+                    _onMoveEnd();
+                    _onNewTargetOffset(details.localPosition);
                   },
                   child: ClipRect(
                       clipBehavior: Clip.hardEdge, //clipBehavior,
@@ -110,20 +125,22 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
         ]));
   }
 
-  void _onLongPressDown(LongPressStartDetails details) {
-    _controller.reset();
-    Offset self = const Offset(width / 2, height / 2);
-    final vector_math.Vector3 translationVector =
-        _transformationController.value.getTranslation();
-    final Offset translation = Offset(translationVector.x, translationVector.y);
-    print(translation);
-    direction = details.localPosition - self;
-    _animation =
-        Tween<Offset>(begin: translation, end: details.localPosition - self)
-            .animate(_controller);
-    _controller.duration = Duration(seconds: 10);
+  /// Start animation moving the middle to the edge.
+  void _onNewTargetOffset(Offset tappedPosition) {
+    Offset self = _transformationController.toScene(middle);
+    Offset target = getTarget(tappedPosition, self);
+    _animation = Tween<Offset>(begin: self - middle, end: target - middle)
+        .animate(_controller)
+      ..addListener(_onAnimate);
+    double distance = (target - self).distance;
+    _controller.duration = Duration(seconds: distance.floor() ~/ 100);
     _controller.forward();
-    print(details.localPosition);
+  }
+
+  void _onMoveEnd() {
+    _animation?.removeListener(_onAnimate);
+    _controller.stop();
+    _controller.reset();
   }
 
   void _onTransformationControllerChange() {
@@ -132,28 +149,26 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     setState(() {});
   }
 
+  /// Translates the Transform Matrix4 during the animation.
   void _onAnimate() {
     _transformationController.value = _transformationController.value.clone()
-      ..translate(
-        -direction.dx.sign,
-        -direction.dy.sign,
-      );
-    print(_transformationController.value);
+      ..setTranslation(
+          Vector3(-_animation!.value.dx, -_animation!.value.dy, 0));
   }
 
-  void _onAnimate2() {
-    // Translate such that the resulting translation is _animation.value.
-    final vector_math.Vector3 translationVector =
-        _transformationController.value.getTranslation();
-    final Offset translation = Offset(translationVector.x, translationVector.y);
-    final Offset translationScene = _transformationController.toScene(
-      translation,
-    );
-    final Offset animationScene = _transformationController.toScene(
-      _animation!.value,
-    );
-    final Offset translationChangeScene = animationScene - translationScene;
-    _transformationController.value = _transformationController.value.clone()
-      ..translate(-translationChangeScene.dx, -translationChangeScene.dy);
+  /// Uses vector_math to determine where the path hits the edge.
+  Offset getTarget(Offset originalTarget, Offset origin) {
+    var renderBox = Aabb3.fromQuad(Quad.points(
+        Vector3.zero(),
+        Vector3(widget.child.size.width, 0, 0),
+        Vector3(0, widget.child.size.height, 0),
+        Vector3(widget.child.size.width, widget.child.size.height, 0)));
+    Offset direction =
+        middle - _transformationController.toScene(originalTarget);
+    Ray dirRay = Ray.originDirection(Vector3(middle.dx, middle.dy, 0),
+        Vector3(direction.dx, direction.dy, 0));
+    double distance = dirRay.intersectsWithAabb3(renderBox) ?? 0; // TODO
+    Vector3 intersectionPoint = dirRay.at(distance);
+    return Offset(intersectionPoint.x, intersectionPoint.y);
   }
 }
