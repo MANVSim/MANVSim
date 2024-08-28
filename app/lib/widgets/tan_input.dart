@@ -1,22 +1,21 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class TanInputController extends ChangeNotifier {
+class TanInputController extends ChangeNotifier
+    implements ValueListenable<String> {
+
   static const int TAN_LENGTH = 6;
   final List<String> code = List.generate(TAN_LENGTH, (index) => '');
 
-  String get tan {
-    if (code.every((element) => element.isNotEmpty)) {
-      return code.join();
-    } else {
-      return "";
-    }
-  }
+  /// May return an incomplete tan. See [isComplete].
+  @override
+  String get value => code.join();
 
-  String get incompleteTan => code.join();
+  bool get isComplete => code.every((element) => element.isNotEmpty);
 
   void updateValue(int index, String value) {
-    if (index < TAN_LENGTH) {
+    if (index >= 0 && index < TAN_LENGTH) {
       code[index] = value;
       notifyListeners();
     }
@@ -47,42 +46,36 @@ class TanInputField extends StatefulWidget {
 }
 
 class TanInputFieldState extends State<TanInputField> {
-  static const int TAN_LENGTH = 6;
+  static const int TAN_LENGTH = TanInputController.TAN_LENGTH;
 
-  final List<FocusNode> _focusNodes = List.generate(TAN_LENGTH, (index) => FocusNode());
-  final List<TextEditingController> _controllers = List.generate(6, (index) => TextEditingController());
+  final List<FocusNode> _focusNodes =
+      List.generate(TAN_LENGTH, (index) => FocusNode());
+  final List<TextEditingController> _controllers =
+      List.generate(TAN_LENGTH, (index) => TextEditingController());
 
   @override
   void initState() {
     super.initState();
     widget.controller.addListener(() {
-
       for (int i = 0; i < TAN_LENGTH; i++) {
         _controllers[i].text = widget.controller.code[i];
       }
 
-      if (widget.onChanged != null) {
-        widget.onChanged!(widget.controller.incompleteTan);
-      }
+      widget.onChanged?.call(widget.controller.value);
     });
   }
 
   @override
   void dispose() {
-    for (var node in _focusNodes) {
-      node.dispose();
+    for (var notifier in [..._focusNodes, ..._controllers]) {
+      notifier.dispose();
     }
-
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-
     super.dispose();
   }
 
   void _handleInputChange(int index, String value) {
+    widget.controller.updateValue(index, value);
     if (value.isNotEmpty) {
-      widget.controller.updateValue(index, value);
       if (index + 1 < TAN_LENGTH) {
         FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
       } else {
@@ -117,7 +110,7 @@ class TanInputFieldState extends State<TanInputField> {
               border: widget.decoration?.border ?? const OutlineInputBorder(),
             ),
             onChanged: (value) {
-               _handleInputChange(index, value);
+              _handleInputChange(index, value);
             },
           ),
         );
