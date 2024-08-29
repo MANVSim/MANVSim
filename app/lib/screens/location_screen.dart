@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
 
 import 'package:manvsim/services/location_service.dart';
-import 'package:manvsim/services/player_service.dart';
+import 'package:manvsim/services/inventory_service.dart';
 import 'package:manvsim/widgets/location_overview.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
@@ -45,7 +45,7 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   _getInventory() {
-    return PlayerService.getInventory();
+    return InventoryService.getInventory();
   }
 
   _canTake() {

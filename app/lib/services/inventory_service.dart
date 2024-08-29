@@ -4,7 +4,7 @@ import 'package:manvsim/models/location.dart';
 
 import 'api_service.dart';
 
-class PlayerService {
+class InventoryService {
   static Future<List<Location>> getInventory() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api

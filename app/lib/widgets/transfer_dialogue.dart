@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:manvsim/services/player_service.dart';
+import 'package:manvsim/services/inventory_service.dart';
 import 'package:manvsim/widgets/error_box.dart';
 
 import '../models/location.dart';
@@ -179,9 +179,9 @@ class TransferDialogueState extends State<TransferDialogue> {
 
   Widget _executionDialogue(BuildContext context) {
     Future<void> waitFuture = (widget.operation == TransferDialogueType.put)
-        ? PlayerService.putItem(
+        ? InventoryService.putItem(
             widget.baseLocation, widget.inventoryPath, widget.locationPath)
-        : PlayerService.takeItem(
+        : InventoryService.takeItem(
             widget.baseLocation, widget.inventoryPath, widget.locationPath);
 
     waitFuture
