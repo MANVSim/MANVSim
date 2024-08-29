@@ -5,7 +5,7 @@ from flask_jwt_extended import jwt_required
 from werkzeug.exceptions import InternalServerError
 
 from app_config import csrf
-from event_logging.event import Event
+from execution.entities.event import Event
 from execution.api.location import leave_location
 from execution.api.patient import get_patient
 from execution.entities.action import Action

@@ -168,11 +168,17 @@ class LoggedEvent(db.Model):
     type: Mapped[str] = mapped_column(nullable=False)
     data = db.Column(db.JSON(), nullable=False)
 
+class ArchivedExecution(db.Model):
+    execution_id: Mapped[int] = mapped_column(primary_key=True)
+    events = db.Column(db.JSON(), nullable=False)
+    timestamp: Mapped[int] = mapped_column(nullable=False)
+    incomplete: Mapped[bool] = mapped_column(nullable=False)
 
 # -- Web --
 
 # pyright: reportAttributeAccessIssue=false
 class WebUser(db.Model):
+
     class Role(IntEnum):
         """
         Defines all Roles a User could have where the value of each role is its

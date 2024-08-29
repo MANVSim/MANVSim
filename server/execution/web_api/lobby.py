@@ -7,7 +7,7 @@ from werkzeug.exceptions import NotFound, BadRequest, InternalServerError
 
 import models
 from app_config import csrf, db
-from event_logging.event import Event
+from execution.entities.event import Event
 from execution import run
 from execution.entities.execution import Execution
 from execution.services import entityloader
@@ -184,36 +184,38 @@ def __get_top_level_locations(execution_id: int) -> List[models.Location]:
 
 
 def __perform_state_change(new_status: Execution.Status, execution: Execution):
-    match new_status:
-        case Execution.Status.RUNNING:
-            # RUNNING only occurs after a PENDING
-            if execution.status == Execution.Status.RUNNING:
-                return
-            elif execution.status == Execution.Status.PENDING:
+    # current status
+    match execution.status:
+        case Execution.Status.PENDING:
+            if new_status is Execution.Status.RUNNING:
                 execution.start_execution()
+            elif new_status is Execution.Status.UNKNOWN:
+                run.deactivate_execution(execution.id)
+            elif new_status is Execution.Status.PENDING:
+                pass
             else:
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
-        case Execution.Status.PENDING:
-            # PENDING occurs after UNKNOWN (DB load) and RUNNING
-            if execution.status == Execution.Status.PENDING:
-                return
-            elif execution.status == Execution.Status.RUNNING:
+        case Execution.Status.RUNNING:
+            if new_status is Execution.Status.PENDING:
                 execution.pause_execution()
-            elif execution.status == Execution.Status.UNKNOWN:
-                run.activate_execution(execution)
+            elif new_status is Execution.Status.FINISHED:
+                execution.archive()
+                run.deactivate_execution(execution.id)
+            elif new_status is Execution.Status.RUNNING:
+                pass
             else:
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
         case Execution.Status.FINISHED:
-            if execution.status == Execution.Status.FINISHED:
-                return
-            elif execution.status == Execution.Status.RUNNING:
-                # TODO implement archive mechanisms
-                return
+            if new_status is Execution.Status.FINISHED:
+                pass
             else:
+                # no repetition allowed at this point.
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
-        case _:
+        case Execution.Status.UNKNOWN:
+            # indicates no registration of execution. Status is set by
+            # activating the execution
             raise BadRequest("Process manipulation detected. "
                              "Invalid State change")

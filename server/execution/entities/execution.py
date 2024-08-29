@@ -2,14 +2,18 @@ import json
 import logging
 from enum import Enum
 
+from flask import current_app
 from werkzeug.exceptions import InternalServerError, BadRequest
 
 import models
+import utils.time
 from app_config import db
+from execution.entities.event import Event
 from execution.entities.player import Player
 from execution.entities.scenario import Scenario
 
 
+# pyright: reportCallIssue=false
 class Execution:
 
     class Status(Enum):
@@ -37,6 +41,9 @@ class Execution:
         if not self.scenario:
             raise InternalServerError("Execution without a scenario detected.")
         elif self.status == Execution.Status.PENDING:
+            if not self.starting_time:
+                self.starting_time = utils.time.current_time_s()
+            Event.execution_started(self.id, self.to_json()).log()
             # enables the patients activity-diagrams
             self.scenario.run_patients()
         else:
@@ -50,6 +57,7 @@ class Execution:
         elif self.status == Execution.Status.RUNNING:
             # enables the patients activity-diagrams
             self.scenario.pause_patients()
+            Event.execution_paused(self.id).log()
         else:
             raise BadRequest("Process manipulation detected. Execution must be "
                              "RUNNING before pause.")
@@ -151,3 +159,33 @@ class Execution:
                 return location
 
         return None
+
+    def archive(self):
+        """
+        Archives an execution by storing all associated events in a separate table
+        and deactivating it.
+
+        Note: If the same execution gets archived twice, the first version will be overwritten.
+        """
+        incomplete = self.status != Execution.Status.FINISHED
+
+        with current_app.app_context():
+            # Retrieve all associated events
+            logged_events = map(lambda e: Event.from_logged_event(e).to_dict(),
+                                db.session.query(models.LoggedEvent).filter_by(execution=self.id)
+                                .order_by(models.LoggedEvent.time).all())
+            # Create new archived execution
+            archived_execution = models.ArchivedExecution(execution_id=self.id,
+                                                          events=str(logged_events),
+                                                          timestamp=utils.time.current_time_s(),
+                                                          incomplete=incomplete)
+            # Delete existing archived execution
+            if db.session.query(models.ArchivedExecution).filter_by(execution_id=self.id).first():
+                db.session.query(models.ArchivedExecution).filter_by(execution_id=self.id).delete()
+            # Write new archived execution
+            db.session.add(archived_execution)
+            # Delete logged events (now stored in archive)
+            if logged_events:
+                db.session.query(models.LoggedEvent).filter_by(execution=self.id).delete()
+
+            db.session.commit()

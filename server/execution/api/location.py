@@ -8,7 +8,7 @@ from execution.entities.execution import Execution
 from execution.entities.location import Location
 from execution.entities.player import Player
 from execution.utils import util
-from event_logging.event import Event
+from execution.entities.event import Event
 from utils import time
 from utils.decorator import required, RequiredValueSource
 

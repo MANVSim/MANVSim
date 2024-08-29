@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: fdbf4b4340e2
+Revision ID: 3037d9a7bdcd
 Revises: 
-Create Date: 2024-08-26 13:01:32.316693
+Create Date: 2024-08-27 16:58:40.225109
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'fdbf4b4340e2'
+revision = '3037d9a7bdcd'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,6 +26,13 @@ def upgrade():
     sa.Column('duration_secs', sa.Integer(), nullable=False),
     sa.Column('results', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_action'))
+    )
+    op.create_table('archived_execution',
+    sa.Column('execution_id', sa.Integer(), nullable=False),
+    sa.Column('events', sa.JSON(), nullable=False),
+    sa.Column('timestamp', sa.Integer(), nullable=False),
+    sa.Column('incomplete', sa.Boolean(), nullable=False),
+    sa.PrimaryKeyConstraint('execution_id', name=op.f('pk_archived_execution'))
     )
     op.create_table('location',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -159,5 +166,6 @@ def downgrade():
     op.drop_table('resource')
     op.drop_table('logged_event')
     op.drop_table('location')
+    op.drop_table('archived_execution')
     op.drop_table('action')
     # ### end Alembic commands ###
