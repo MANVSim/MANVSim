@@ -220,6 +220,10 @@
   "transferDialogueFromLocation": "von",
   "transferDialogueToLocation": "nach",
   "transferDialogueTransferObject": "Objekt",
-  "transferDialogueTransferTitle": "Objekt wird verschoben"
+  "transferDialogueTransferTitle": "Objekt wird verschoben",
+  "transferDialogueErrorTitle": "Verschieben fehlgeschlagen",
+  "transferDialogueDefaultError": "Unbekannter Fehler",
+  "transferDialogueErrorText": "Beim verschieben ist ein Fehler aufgetreten. Bitte später erneut versuchen.",
+  "transferDialogueErrorClose": "Schließen"
 
 }

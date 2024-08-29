@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/services/player_service.dart';
+import 'package:manvsim/widgets/error_box.dart';
 
 import '../models/location.dart';
 
@@ -25,7 +26,6 @@ class TransferDialogue extends StatefulWidget {
 }
 
 class TransferDialogueState extends State<TransferDialogue> {
-
   bool _confirmed = false;
   String? _errorMessage;
 
@@ -41,13 +41,13 @@ class TransferDialogueState extends State<TransferDialogue> {
       ? widget.locationPath!.map((e) => e.name).toList()
       : [widget.baseLocation.name];
 
-
   void _onError(String? message) {
     setState(() {
-      _errorMessage = message?? "Error";
+      _errorMessage =
+          message ?? AppLocalizations.of(context)!.transferDialogueDefaultError;
     });
   }
-  
+
   Widget _confirmationDialogue(BuildContext context) {
     final Location transferLocation =
         widget.operation == TransferDialogueType.put
@@ -112,7 +112,9 @@ class TransferDialogueState extends State<TransferDialogue> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(AppLocalizations.of(context)!.transferDialogueTransferObject,
+                    child: Text(
+                        AppLocalizations.of(context)!
+                            .transferDialogueTransferObject,
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   const SizedBox(width: 6),
@@ -126,7 +128,9 @@ class TransferDialogueState extends State<TransferDialogue> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(AppLocalizations.of(context)!.transferDialogueFromLocation,
+                    child: Text(
+                        AppLocalizations.of(context)!
+                            .transferDialogueFromLocation,
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   const SizedBox(width: 6),
@@ -140,7 +144,9 @@ class TransferDialogueState extends State<TransferDialogue> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(AppLocalizations.of(context)!.transferDialogueToLocation,
+                    child: Text(
+                        AppLocalizations.of(context)!
+                            .transferDialogueToLocation,
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   const SizedBox(width: 6),
@@ -173,12 +179,14 @@ class TransferDialogueState extends State<TransferDialogue> {
 
   Widget _executionDialogue(BuildContext context) {
     Future<void> waitFuture = (widget.operation == TransferDialogueType.put)
-        ? PlayerService.putItem(widget.baseLocation, widget.inventoryPath, widget.locationPath)
-        : PlayerService.takeItem(widget.baseLocation, widget.inventoryPath, widget.locationPath);
+        ? PlayerService.putItem(
+            widget.baseLocation, widget.inventoryPath, widget.locationPath)
+        : PlayerService.takeItem(
+            widget.baseLocation, widget.inventoryPath, widget.locationPath);
 
     waitFuture
         .then((value) => Navigator.of(context).pop())
-        .onError((error, stackTrace) =>_onError(error.toString()));
+        .onError((error, stackTrace) => _onError(error.toString()));
 
     return AlertDialog(
       title: Text(AppLocalizations.of(context)!.transferDialogueTransferTitle),
@@ -192,7 +200,29 @@ class TransferDialogueState extends State<TransferDialogue> {
   }
 
   Widget _errorDialogue(BuildContext context) {
-    throw UnimplementedError();
+    return AlertDialog(
+      title: Text(AppLocalizations.of(context)!.transferDialogueErrorTitle),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ErrorBox(
+              errorText: _errorMessage ??
+                  AppLocalizations.of(context)!.transferDialogueDefaultError),
+          const SizedBox(
+            height: 8,
+          ),
+          Text(AppLocalizations.of(context)!.transferDialogueErrorText),
+        ],
+      ),
+      actions: [
+        ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child:
+                Text(AppLocalizations.of(context)!.transferDialogueErrorClose))
+      ],
+    );
   }
 
   @override
