@@ -141,40 +141,32 @@ class LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
     });
 
-    String? failureMessage;
-    bool failureOccurred = false;
-
     ApiService apiService = GetIt.instance.get<ApiService>();
     try {
       await apiService.login(tan, url, context);
     } catch (e) {
-      failureMessage = e.toString();
-      failureOccurred = true;
+      _handleLoginError(e);
+      _tanInputController.clear();
+      return;
     }
+    _navigateToNext();
+  }
 
+  void _handleLoginError(dynamic error) {
+    String failureMessage = error.toString();
     int maxLength = 80;
-    String? shortFailureMessage = ((failureMessage?.length ?? 0) > maxLength)
-        ? '${failureMessage?.substring(0, maxLength).trim()}...'
-        : failureMessage?.trim();
+    String shortFailureMessage = (failureMessage.length > maxLength)
+        ? '${failureMessage.substring(0, maxLength).trim()}...'
+        : failureMessage.trim();
 
     shortFailureMessage =
-        shortFailureMessage?.replaceAll(RegExp(r'[\n\t]'), ' ');
+        shortFailureMessage.replaceAll(RegExp(r'[\n\t]'), ' ');
 
     setState(() {
-      _errorMessage = failureOccurred
-          ? AppLocalizations.of(context)!
-              .loginWarningRequestFailed(shortFailureMessage ?? 'unknown error')
-          : null;
+      _errorMessage = AppLocalizations.of(context)!
+          .loginWarningRequestFailed(shortFailureMessage);
       _isLoading = false;
-      _tanInputFailure = false;
-      _urlInputFailure = false;
     });
-
-    if (!failureOccurred) {
-      _navigateToNext();
-    } else {
-      _tanInputController.clear();
-    }
   }
 
   _onQRCodeScan() async {
