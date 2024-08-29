@@ -35,7 +35,10 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
   void didUpdateWidget(ResourceDirectory oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.parentLocationSelected && selectedLocationIndex != null) {
+    bool parentLocationBecomeSelected = widget.parentLocationSelected && selectedLocationIndex != null;
+    bool locationsChanged = widget.onLocationSelected != null && widget.locations != oldWidget.locations;
+
+    if (parentLocationBecomeSelected || locationsChanged) {
       setState(() {
         selectedLocationIndex = null;
       });

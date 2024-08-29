@@ -56,51 +56,32 @@ class _LocationScreenState extends State<LocationScreen> {
     return _selectedInventoryPath != null;
   }
 
-  _handleTake() {
-    if (_canTake()) {
-      showDialog(
-        context: context,
-        builder: (context) => TransferDialogue(
-          operation: TransferDialogueType.take,
-          baseLocation: _fetchedLocation,
-          locationPath: _selectedLocationPath,
-          inventoryPath: _selectedInventoryPath,
-        ),
-      ).then((value) => _refreshData());
-    }
-  }
-
-  _handlePut() {
-    if (_canPut()) {
-      showDialog(
-        context: context,
-        builder: (context) => TransferDialogue(
-          operation: TransferDialogueType.put,
-          baseLocation: _fetchedLocation,
-          locationPath: _selectedLocationPath,
-          inventoryPath: _selectedInventoryPath,
-        ),
-      ).then((value) => _refreshData());
-    }
-  }
-
-  Future _refreshLocation() {
-    setState(() {
-      _futureLocation = _findLocationById(widget.locationId);
-    });
-    return _futureLocation;
-  }
-
-  Future _refreshInventory() {
-    setState(() {
-      _futureInventory = _getInventory();
-    });
-    return _futureInventory;
+  _handleTransfer(BuildContext context, TransferDialogueType transferType) {
+    showDialog(
+      context: context,
+      builder: (context) => TransferDialogue(
+        operation: transferType,
+        baseLocation: _fetchedLocation,
+        locationPath: _selectedLocationPath,
+        inventoryPath: _selectedInventoryPath,
+      ),
+    ).then((value) => _completeTransfer());
   }
 
   _refreshData() {
-    _refreshLocation();
-    _refreshInventory();
+    setState(() {
+      _futureLocation = _findLocationById(widget.locationId);
+      _futureInventory = _getInventory();
+    });
+  }
+
+  _completeTransfer() {
+    setState(() {
+      _selectedInventoryPath = null;
+      _selectedLocationPath = null;
+    });
+    _refreshData();
+
   }
 
   @override
@@ -172,25 +153,32 @@ class _LocationScreenState extends State<LocationScreen> {
               child: SizedBox(
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _canTake() ? _handleTake : null,
+                  onPressed: _canTake()
+                      ? () =>
+                          _handleTransfer(context, TransferDialogueType.take)
+                      : null,
                   child: Text(AppLocalizations.of(context)!.locationScreenTake),
                 ),
               ),
             ),
           ),
           if (_showInventory)
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: SizedBox(
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _canPut() ? _handlePut : null,
-                  child: Text(AppLocalizations.of(context)!.locationScreenPut),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: SizedBox(
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: _canPut()
+                        ? () =>
+                            _handleTransfer(context, TransferDialogueType.put)
+                        : null,
+                    child:
+                        Text(AppLocalizations.of(context)!.locationScreenPut),
+                  ),
                 ),
               ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.all(4),
             child: SizedBox(
