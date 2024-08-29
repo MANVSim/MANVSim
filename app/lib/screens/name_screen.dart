@@ -22,73 +22,51 @@ class NameScreenState extends State<NameScreen> {
   final TextEditingController _nameController = TextEditingController();
 
   String? _errorMessage;
-  bool _nameInputFailure = false;
   bool _isLoading = false;
 
-  InputDecoration _textFieldDecoration(bool hasInputFailure, String text) {
-    return InputDecoration(
-      labelText: text,
-      fillColor: hasInputFailure ? Colors.red.shade50 : null,
-      filled: hasInputFailure,
-      border: hasInputFailure
-          ? const OutlineInputBorder(borderSide: BorderSide(color: Colors.red),)
-          : null,
-    );
-  }
-
   void _resetErrorMessage() {
-    if (_errorMessage != null || _nameInputFailure) {
+    if (_errorMessage != null) {
       setState(() {
         _errorMessage = null;
-        _nameInputFailure = false;
       });
     }
   }
 
-  void _handleSetName() async {
-    String name = _nameController.text;
+  /// Assumes name is not empty.
+  void _handleSetName(String name) async {
+    setState(() {
+      _isLoading = true;
+    });
 
-    if (name.isEmpty) {
-      setState(() {
-        _nameInputFailure = true;
-        _errorMessage = AppLocalizations.of(context)!.nameWarningEmptyFields;
-      });
-    } else {
-      setState(() {
-        _isLoading = true;
-      });
+    String? failureMessage;
 
-      String? failureMessage;
+    ApiService apiService = GetIt.instance.get<ApiService>();
 
-      ApiService apiService = GetIt.instance.get<ApiService>();
+    try {
+      await apiService.api
+          .playerSetNamePost(PlayerSetNamePostRequest(name: name));
+    } on ApiException catch (e) {
+      apiService.handleErrorCode(e, context);
+      failureMessage = e.toString();
+    } catch (e) {
+      failureMessage = e.toString();
+    }
 
-      try {
-        await apiService.api
-            .playerSetNamePost(PlayerSetNamePostRequest(name: name));
-      } on ApiException catch (e) {
-        apiService.handleErrorCode(e, context);
-        failureMessage = e.toString();
-      } catch (e) {
-        failureMessage = e.toString();
-      }
+    setState(() {
+      _errorMessage = failureMessage;
+      _isLoading = false;
+    });
 
-      setState(() {
-        _nameInputFailure = false;
-        _errorMessage = failureMessage;
-        _isLoading = false;
-      });
+    if (failureMessage == null) {
+      TanUser user = Provider.of<TanUser>(context, listen: false);
+      user.name = name;
+      await user.persist();
 
-      if (failureMessage == null) {
-        TanUser user = Provider.of<TanUser>(context, listen: false);
-        user.name = name;
-        await user.persist();
-
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const WaitScreen()),
-              (Route<dynamic> route) => false,
-        );
-      }
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const WaitScreen()),
+        (Route<dynamic> route) => false,
+      );
     }
   }
 
@@ -98,10 +76,7 @@ class NameScreenState extends State<NameScreen> {
       appBar: AppBar(
         actions: const <Widget>[LogoutButton()],
         title: Text(AppLocalizations.of(context)!.nameScreenName),
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
         child: Padding(
@@ -114,16 +89,23 @@ class NameScreenState extends State<NameScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _nameController,
-                decoration: _textFieldDecoration(
-                    _nameInputFailure, AppLocalizations.of(context)!.nameName),
                 onChanged: (value) => _resetErrorMessage(),
               ),
               const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: _handleSetName,
-                icon: const Icon(Icons.start),
-                label: Text(AppLocalizations.of(context)!.nameSubmit),
-              ),
+              if (_isLoading)
+                const CircularProgressIndicator()
+              else
+                // Button only clickable when text is not empty
+                ValueListenableBuilder(
+                  valueListenable: _nameController,
+                  builder: (context, value, child) => ElevatedButton.icon(
+                    onPressed: value.text.isEmpty
+                        ? null
+                        : () => _handleSetName(value.text),
+                    icon: const Icon(Icons.start),
+                    label: Text(AppLocalizations.of(context)!.nameSubmit),
+                  ),
+                )
             ],
           ),
         ),
