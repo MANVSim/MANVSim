@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:manv_api/api.dart';
 import 'package:manvsim/models/location.dart';
 
 import 'api_service.dart';
@@ -13,11 +14,34 @@ class PlayerService {
         : []);
   }
 
-  static Future<void> takeItem(int locationId) async {
-    ApiService apiService = GetIt.instance.get<ApiService>();
-    //await apiService.api.runLocationTakeToPost(RunLocationTakeToPostRequest(
-    //    takeLocationIds: "takeLocationIds", toLocationIds: "toLocationIds"));
+  static String _getPathString(List<Location> path) {
 
-    await Future.delayed(const Duration(seconds: 2));
+    return '[${path.map((e) => e.id).join(",")}]';
+  }
+
+  static Future<void> putItem(Location baseLocation,
+      List<Location>? inventoryPath, List<Location>? locationPath) async {
+
+    List<Location> newLocationPath = locationPath ?? [baseLocation];
+    List<Location> newInventoryPath = inventoryPath!;
+
+
+    ApiService apiService = GetIt.instance.get<ApiService>();
+    await apiService.api.runLocationPutToPost(RunLocationPutToPostRequest(
+        putLocationIds: _getPathString(newInventoryPath),
+        toLocationIds: _getPathString(newLocationPath)));
+  }
+
+  static Future<void> takeItem(Location baseLocation,
+      List<Location>? inventoryPath, List<Location>? locationPath) async {
+    List<Location> newLocationPath = locationPath!;
+    List<Location> newInventoryPath = inventoryPath ?? [];
+
+    print(_getPathString(newInventoryPath));
+
+    ApiService apiService = GetIt.instance.get<ApiService>();
+    await apiService.api.runLocationTakeToPost(RunLocationTakeToPostRequest(
+        takeLocationIds: _getPathString(newLocationPath),
+        toLocationIds: _getPathString(newInventoryPath)));
   }
 }

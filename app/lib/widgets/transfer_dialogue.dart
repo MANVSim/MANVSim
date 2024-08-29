@@ -172,7 +172,9 @@ class TransferDialogueState extends State<TransferDialogue> {
   }
 
   Widget _executionDialogue(BuildContext context) {
-    Future<void> waitFuture = PlayerService.takeItem(1);
+    Future<void> waitFuture = (widget.operation == TransferDialogueType.put)
+        ? PlayerService.putItem(widget.baseLocation, widget.inventoryPath, widget.locationPath)
+        : PlayerService.takeItem(widget.baseLocation, widget.inventoryPath, widget.locationPath);
 
     waitFuture
         .then((value) => Navigator.of(context).pop())
