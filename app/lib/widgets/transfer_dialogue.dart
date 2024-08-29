@@ -38,7 +38,7 @@ class TransferDialogueState extends State<TransferDialogue> {
   }
 
   List<String> get _selectedLocationPathNames => widget.locationPath != null
-      ? [widget.baseLocation.name, ...widget.locationPath!.map((e) => e.name)]
+      ? widget.locationPath!.map((e) => e.name).toList()
       : [widget.baseLocation.name];
 
 
