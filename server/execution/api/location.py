@@ -87,7 +87,7 @@ def get_location_out_of_location(take_location_ids, to_location_ids):
             return ("Take-Location not found. Update your current "
                     "location-access."), 404
 
-        if not to_location_ids:
+        if not to_location_id_list:
             # location is not nested in inventory
             take_location_parent.remove_location_by_id(take_location.id)
             player.accessible_locations.add(take_location)
