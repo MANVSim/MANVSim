@@ -81,7 +81,6 @@ class _LocationScreenState extends State<LocationScreen> {
       _selectedLocationPath = null;
     });
     _refreshData();
-
   }
 
   @override
@@ -95,20 +94,17 @@ class _LocationScreenState extends State<LocationScreen> {
       body: ApiFutureBuilder<Location>(
           future: _futureLocation,
           builder: (context, location) {
-
             _fetchedLocation = location;
 
             return RefreshIndicator(
                 onRefresh: () => _refreshData(),
                 child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    child:
-
-                    Column(children: [
-              Card(child: LocationOverview(location: location)),
-              Text(AppLocalizations.of(context)!
-                  .locationScreenAvailableSubLocations),
-              Column(children: [
+                    child: Column(children: [
+                      Card(child: LocationOverview(location: location)),
+                      Text(AppLocalizations.of(context)!
+                          .locationScreenAvailableSubLocations),
+                      Column(children: [
                         ResourceDirectory(
                           rootLocationsSelectable: false,
                           initiallyExpanded: true,
@@ -122,28 +118,29 @@ class _LocationScreenState extends State<LocationScreen> {
                           },
                         ),
                       ]),
-              if (_showInventory)
-              Column(children: [
-                Text(AppLocalizations.of(context)!.locationScreenInventory),
-                ApiFutureBuilder<List<Location>>(
-                    future: _futureInventory,
-                    builder: (context, inventory) {
-                      return Column(children: [
-                                ResourceDirectory(
-                                  locations: inventory,
-                                  resourceToggle: (resource) => {},
-                                  onLocationSelected:
-                                      (currentSelectedLocationPath) {
-                                    setState(() {
-                                      _selectedInventoryPath =
-                                          currentSelectedLocationPath;
-                                    });
-                                  },
-                                ),
-                              ]);
-                    })
-              ]),
-            ])));
+                      if (_showInventory)
+                        Column(children: [
+                          Text(AppLocalizations.of(context)!
+                              .locationScreenInventory),
+                          ApiFutureBuilder<List<Location>>(
+                              future: _futureInventory,
+                              builder: (context, inventory) {
+                                return Column(children: [
+                                  ResourceDirectory(
+                                    locations: inventory,
+                                    resourceToggle: (resource) => {},
+                                    onLocationSelected:
+                                        (currentSelectedLocationPath) {
+                                      setState(() {
+                                        _selectedInventoryPath =
+                                            currentSelectedLocationPath;
+                                      });
+                                    },
+                                  ),
+                                ]);
+                              })
+                        ]),
+                    ])));
           }),
       bottomNavigationBar: Row(
         children: [
@@ -191,31 +188,30 @@ class _LocationScreenState extends State<LocationScreen> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _showInventory
-                      ? Colors.lightGreen
-                      : null,
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.inventory_2_outlined),
-                if (!_showInventory)
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Text(AppLocalizations.of(context)!.locationScreenShowInventory,)
-                    ],
-                  )
-              ],
+                  backgroundColor: _showInventory ? Colors.lightGreen : null,
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.inventory_2_outlined),
+                    if (!_showInventory)
+                      Row(
+                        children: [
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            AppLocalizations.of(context)!
+                                .locationScreenShowInventory,
+                          )
+                        ],
+                      )
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
-                ],
-              ),
     );
   }
-
-
 }

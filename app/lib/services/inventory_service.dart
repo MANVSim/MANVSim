@@ -7,24 +7,22 @@ import 'api_service.dart';
 class InventoryService {
   static Future<List<Location>> getInventory() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
-    return await apiService.api
-        .runPlayerInventoryGet()
-        .then((response) => (response?.accessibleLocations != null)
-        ? response!.accessibleLocations.map((dto) => Location.fromApi(dto)).toList()
-        : []);
+    return await apiService.api.runPlayerInventoryGet().then((response) =>
+        (response?.accessibleLocations != null)
+            ? response!.accessibleLocations
+                .map((dto) => Location.fromApi(dto))
+                .toList()
+            : []);
   }
 
   static String _getPathString(List<Location> path) {
-
     return '[${path.map((e) => e.id).join(",")}]';
   }
 
   static Future<void> putItem(Location baseLocation,
       List<Location>? inventoryPath, List<Location>? locationPath) async {
-
     List<Location> newLocationPath = locationPath ?? [baseLocation];
     List<Location> newInventoryPath = inventoryPath!;
-
 
     ApiService apiService = GetIt.instance.get<ApiService>();
     await apiService.api.runLocationPutToPost(RunLocationPutToPostRequest(
@@ -36,8 +34,6 @@ class InventoryService {
       List<Location>? inventoryPath, List<Location>? locationPath) async {
     List<Location> newLocationPath = locationPath!;
     List<Location> newInventoryPath = inventoryPath ?? [];
-
-    print(_getPathString(newInventoryPath));
 
     ApiService apiService = GetIt.instance.get<ApiService>();
     await apiService.api.runLocationTakeToPost(RunLocationTakeToPostRequest(
