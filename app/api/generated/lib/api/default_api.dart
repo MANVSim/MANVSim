@@ -477,7 +477,7 @@ class DefaultApi {
     return null;
   }
 
-  /// A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
+  /// A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
   ///
   /// Note: This method returns the HTTP [Response].
   ///
@@ -509,7 +509,7 @@ class DefaultApi {
     );
   }
 
-  /// A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
+  /// A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
   ///
   /// Parameters:
   ///
@@ -521,7 +521,7 @@ class DefaultApi {
     }
   }
 
-  /// A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
+  /// A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
   ///
   /// Note: This method returns the HTTP [Response].
   ///
@@ -553,7 +553,7 @@ class DefaultApi {
     );
   }
 
-  /// A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
+  /// A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
   ///
   /// Parameters:
   ///
@@ -704,6 +704,50 @@ class DefaultApi {
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientLeavePost200Response',) as RunPatientLeavePost200Response;
+    
+    }
+    return null;
+  }
+
+  /// Get Player Inventory
+  ///
+  /// Note: This method returns the HTTP [Response].
+  Future<Response> runPlayerInventoryGetWithHttpInfo() async {
+    // ignore: prefer_const_declarations
+    final path = r'/run/player/inventory';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Get Player Inventory
+  Future<RunPlayerInventoryGet200Response?> runPlayerInventoryGet() async {
+    final response = await runPlayerInventoryGetWithHttpInfo();
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPlayerInventoryGet200Response',) as RunPlayerInventoryGet200Response;
     
     }
     return null;

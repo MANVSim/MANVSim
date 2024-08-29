@@ -18,11 +18,12 @@ Method | HTTP request | Description
 [**runActionPerformResultGet**](DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action and officially finishes/dequeues the action of the patient.
 [**runLocationAllGet**](DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of  top-level accessible locations.
 [**runLocationLeavePost**](DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
-[**runLocationPutToPost**](DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
-[**runLocationTakeToPost**](DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
+[**runLocationPutToPost**](DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
+[**runLocationTakeToPost**](DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
 [**runPatientAllIdsGet**](DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 [**runPatientArrivePost**](DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
 [**runPatientLeavePost**](DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
+[**runPlayerInventoryGet**](DefaultApi.md#runplayerinventoryget) | **GET** /run/player/inventory | Get Player Inventory
 [**scenarioStartTimeGet**](DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
 
 
@@ -443,7 +444,7 @@ This endpoint does not need any parameter.
 # **runLocationPutToPost**
 > runLocationPutToPost(runLocationPutToPostRequest)
 
-A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
+A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
 
 ### Example
 ```dart
@@ -489,7 +490,7 @@ void (empty response body)
 # **runLocationTakeToPost**
 > runLocationTakeToPost(runLocationTakeToPostRequest)
 
-A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
+A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
 
 ### Example
 ```dart
@@ -655,6 +656,49 @@ This endpoint does not need any parameter.
 ### Return type
 
 [**RunPatientLeavePost200Response**](RunPatientLeavePost200Response.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **runPlayerInventoryGet**
+> RunPlayerInventoryGet200Response runPlayerInventoryGet()
+
+Get Player Inventory
+
+### Example
+```dart
+import 'package:manv_api/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+
+try {
+    final result = api_instance.runPlayerInventoryGet();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->runPlayerInventoryGet: $e\n');
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**RunPlayerInventoryGet200Response**](RunPlayerInventoryGet200Response.md)
 
 ### Authorization
 
