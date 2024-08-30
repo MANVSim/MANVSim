@@ -140,7 +140,9 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
                         ? (selectedLocationPath) =>
                             _handleChildLocationSelected(selectedLocationPath, location)
                         : null,
-                    parentLocationSelected: _isLocationSelected(locationIndex),
+                    parentLocationSelected: (widget.parentLocationSelected)
+                        ? true
+                        : _isLocationSelected(locationIndex),
                   )
                 ],
               ));
