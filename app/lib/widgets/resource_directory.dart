@@ -16,12 +16,12 @@ class ResourceDirectory extends StatefulWidget {
 
   const ResourceDirectory(
       {super.key,
-      required this.locations,
-      required this.resourceToggle,
-      this.initiallyExpanded = false,
-      this.onLocationSelected,
-      this.rootLocationsSelectable = true,
-      this.parentLocationSelected = false});
+        required this.locations,
+        required this.resourceToggle,
+        this.initiallyExpanded = false,
+        this.onLocationSelected,
+        this.rootLocationsSelectable = true,
+        this.parentLocationSelected = false});
 
   @override
   State<ResourceDirectory> createState() => _ResourceDirectoryState();
@@ -29,10 +29,64 @@ class ResourceDirectory extends StatefulWidget {
 
 class _ResourceDirectoryState extends State<ResourceDirectory> {
 
+  Location? _selectedLocation;
+
+  _handleLocationSelected(List<Location>? selectedLocationPath) {
+    setState(() {
+      _selectedLocation = selectedLocationPath != null
+          ? selectedLocationPath[selectedLocationPath.length - 1]
+          : null;
+    });
+
+    widget.onLocationSelected!(selectedLocationPath);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return _InternalResourceDirectory(
+      locations: widget.locations,
+      globalSelectedLocation: _selectedLocation,
+      resourceToggle: widget.resourceToggle,
+      initiallyExpanded: widget.initiallyExpanded,
+      onLocationSelected: widget.onLocationSelected != null
+          ? (selectedLocationPath) =>
+              _handleLocationSelected(selectedLocationPath)
+          : null,
+      rootLocationsSelectable: widget.rootLocationsSelectable,
+      parentLocationSelected: widget.parentLocationSelected,
+    );
+  }
+}
+
+class _InternalResourceDirectory extends StatefulWidget {
+  final List<Location> locations;
+  final Location? globalSelectedLocation;
+  final bool initiallyExpanded;
+  final bool rootLocationsSelectable;
+  final bool parentLocationSelected;
+
+  // function to propagate toggling to parent
+  final Function(Resource resource) resourceToggle;
+  final Function(List<Location>? selectedLocationPath)? onLocationSelected;
+
+  const _InternalResourceDirectory({super.key,
+    required this.locations,
+    required this.resourceToggle,
+    required this.globalSelectedLocation,
+    this.initiallyExpanded = false,
+    this.onLocationSelected,
+    this.rootLocationsSelectable = true,
+    this.parentLocationSelected = false});
+
+  @override
+  State<_InternalResourceDirectory> createState() => _InternalResourceDirectoryState();
+}
+
+class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> {
+
   int? selectedLocationIndex;
 
   @override
-  void didUpdateWidget(ResourceDirectory oldWidget) {
+  void didUpdateWidget(_InternalResourceDirectory oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     bool parentLocationBecomeSelected = widget.parentLocationSelected && selectedLocationIndex != null;
@@ -42,6 +96,14 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
       setState(() {
         selectedLocationIndex = null;
       });
+    }
+
+    if (selectedLocationIndex != null) {
+      if (widget.globalSelectedLocation != widget.locations[selectedLocationIndex!]) {
+        setState(() {
+          selectedLocationIndex = null;
+        });
+      }
     }
   }
   
@@ -68,9 +130,9 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
     widget.onLocationSelected!(currentSelectedPath);
   }
 
-  void _handleChildLocationSelected(List<Location>? oldSelectedLocationPath, Location location) {
-    List<Location>? newSelectedLocationPath= oldSelectedLocationPath != null
-      ? [location, ...oldSelectedLocationPath]
+  void _handleChildLocationSelected(List<Location>? childSelectedLocationPath, Location location) {
+    List<Location>? newSelectedLocationPath= childSelectedLocationPath != null
+      ? [location, ...childSelectedLocationPath]
       : null;
 
     setState(() {
@@ -133,7 +195,8 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
                               }));
                     },
                   ),
-                  ResourceDirectory(
+                  _InternalResourceDirectory(
+                    globalSelectedLocation: widget.globalSelectedLocation,
                     locations: location.locations,
                     resourceToggle: widget.resourceToggle,
                     onLocationSelected: widget.onLocationSelected != null
