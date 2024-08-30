@@ -2,6 +2,7 @@ import http
 import io
 
 from conftest import generate_webtoken
+from media.media_data import MediaData
 from models import WebUser
 
 TEST_IMG_1 = "media/static/image/rucksack_rot.jpg"
@@ -32,6 +33,32 @@ def test_post_instance_media_file(client):
                                content_type="multipart/form-data", data=data)
 
     assert response.status_code == http.HTTPStatus.CREATED
+
+    # Test access of posted image
+    response = client.get("/media/instance/image/test.jpg")
+    assert response.status_code == http.HTTPStatus.OK
+
+
+def test_post_instance_media_file_with_attributes(client):
+    # Disable CSRF for this test
+    client.application.config['WTF_CSRF_METHODS'] = []
+
+    auth_header = generate_webtoken(client.application, WebUser.Role.SCENARIO_ADMIN)
+
+    # Test post image
+    with open(TEST_IMG_1, 'rb') as image_file:
+        data = {
+            "file": (io.BytesIO(image_file.read()), "test.jpg"),
+            "text": "Some test text.",
+            "title": "The Title"
+        }
+        response = client.post("/media/test.jpg", headers=auth_header,
+                               content_type="multipart/form-data", data=data)
+
+    assert response.status_code == http.HTTPStatus.CREATED
+    assert response.data
+    assert MediaData.from_json(response.data).title == "The Title"
+    assert MediaData.from_json(response.data).text == "Some test text."
 
     # Test access of posted image
     response = client.get("/media/instance/image/test.jpg")
