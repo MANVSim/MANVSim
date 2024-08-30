@@ -1,14 +1,9 @@
 name: iOS Build
 
 on:
-  push:
-    branches:
-      - main
-  push:
-    branches-ignore:
-      - main
-    paths:
-      - 'app/**'
+ push:
+  paths: 
+   - 'app/**'
 
    
 jobs:
