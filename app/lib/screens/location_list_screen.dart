@@ -6,6 +6,8 @@ import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:manvsim/constants/icons.dart' as constants;
+
 class LocationListScreen extends StatefulWidget {
   const LocationListScreen({super.key});
 
@@ -70,7 +72,7 @@ class _LocationListScreenState extends State<LocationListScreen> {
                   itemCount: locationIds.length,
                   itemBuilder: (context, index) => Card(
                       child: ListTile(
-                          leading: const Icon(Icons.map),
+                          leading: const Icon(constants.Icons.location),
                           title: Text(_selectedShowAs[0]
                               ? locationIds[index].name
                               : AppLocalizations.of(context)!
