@@ -29,22 +29,39 @@ class ResourceDirectory extends StatefulWidget {
 
 class _ResourceDirectoryState extends State<ResourceDirectory> {
 
-  Location? _selectedLocation;
+  List<Location>? _selectedLocationPath;
 
   _handleLocationSelected(List<Location>? selectedLocationPath) {
     setState(() {
-      _selectedLocation = selectedLocationPath != null
-          ? selectedLocationPath[selectedLocationPath.length - 1]
-          : null;
+      _selectedLocationPath = selectedLocationPath;
     });
 
     widget.onLocationSelected!(selectedLocationPath);
+  }
+
+  _handleCollapse(List<Location> collapsePath) {
+    if (_selectedLocationPath != null && collapsePath.length < _selectedLocationPath!.length) {
+      for (int i = 0; i < collapsePath.length; i++) {
+        if (collapsePath[i] != _selectedLocationPath![i]) {
+          return;
+        }
+      }
+
+      if (widget.onLocationSelected != null) {
+        widget.onLocationSelected!(null);
+      }
+
+      setState(() {
+        _selectedLocationPath = null;
+      });
+    }
   }
   @override
   Widget build(BuildContext context) {
     return _InternalResourceDirectory(
       locations: widget.locations,
-      globalSelectedLocation: _selectedLocation,
+      globalSelectedLocation: _selectedLocationPath?.last,
+      onCollapse: _handleCollapse,
       resourceToggle: widget.resourceToggle,
       initiallyExpanded: widget.initiallyExpanded,
       onLocationSelected: widget.onLocationSelected != null
@@ -67,11 +84,13 @@ class _InternalResourceDirectory extends StatefulWidget {
   // function to propagate toggling to parent
   final Function(Resource resource) resourceToggle;
   final Function(List<Location>? selectedLocationPath)? onLocationSelected;
+  final Function(List<Location> selectedLocationPath) onCollapse;
 
   const _InternalResourceDirectory({super.key,
     required this.locations,
     required this.resourceToggle,
     required this.globalSelectedLocation,
+    required this.onCollapse,
     this.initiallyExpanded = false,
     this.onLocationSelected,
     this.rootLocationsSelectable = true,
@@ -130,6 +149,10 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
     widget.onLocationSelected!(currentSelectedPath);
   }
 
+  _handleChildCollapsed(List<Location> collapsePath, Location location) {
+    widget.onCollapse([location, ...collapsePath]);
+  }
+
   void _handleChildLocationSelected(List<Location>? childSelectedLocationPath, Location location) {
     List<Location>? newSelectedLocationPath= childSelectedLocationPath != null
       ? [location, ...childSelectedLocationPath]
@@ -157,6 +180,11 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
                       ? Colors.lightGreen.shade200
                       : Theme.of(context).cardColor,
               child: ExpansionTile(
+                onExpansionChanged: (expanded) {
+                  if (!expanded) {
+                    widget.onCollapse([location]);
+                  }
+                },
                 initiallyExpanded: widget.initiallyExpanded,
                 title: Row(
                   children: [
@@ -196,6 +224,8 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
                     },
                   ),
                   _InternalResourceDirectory(
+                    onCollapse: (childSelectedLocationPath) =>
+                        _handleChildCollapsed(childSelectedLocationPath, location),
                     globalSelectedLocation: widget.globalSelectedLocation,
                     locations: location.locations,
                     resourceToggle: widget.resourceToggle,
