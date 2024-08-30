@@ -83,6 +83,120 @@ class _LocationScreenState extends State<LocationScreen> {
     _refreshData();
   }
 
+  Widget _buildButtonBar() {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: SizedBox(
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _canTake()
+                    ? () =>
+                    _handleTransfer(context, TransferDialogueType.take)
+                    : null,
+                child: Text(AppLocalizations.of(context)!.locationScreenTake),
+              ),
+            ),
+          ),
+        ),
+        if (_showInventory)
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: SizedBox(
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _canPut()
+                      ? () =>
+                      _handleTransfer(context, TransferDialogueType.put)
+                      : null,
+                  child:
+                  Text(AppLocalizations.of(context)!.locationScreenPut),
+                ),
+              ),
+            ),
+          ),
+        Padding(
+          padding: const EdgeInsets.all(4),
+          child: SizedBox(
+            height: 50,
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _selectedInventoryPath = null;
+                  _showInventory = !_showInventory;
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _showInventory ? Colors.lightGreen : null,
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.inventory_2_outlined),
+                  if (!_showInventory)
+                    Row(
+                      children: [
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!
+                              .locationScreenShowInventory,
+                        )
+                      ],
+                    )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInventory() {
+    return Column(children: [
+      Text(AppLocalizations.of(context)!
+          .locationScreenInventory),
+      ApiFutureBuilder<List<Location>>(
+          future: _futureInventory,
+          builder: (context, inventory) {
+            return Column(children: [
+              ResourceDirectory(
+                locations: inventory,
+                resourceToggle: (resource) => {},
+                onLocationSelected:
+                    (currentSelectedLocationPath) {
+                  setState(() {
+                    _selectedInventoryPath =
+                        currentSelectedLocationPath;
+                  });
+                },
+              ),
+            ]);
+          })
+    ]);
+  }
+
+  Widget _buildLocationDirectory(Location location) {
+    return                     Column(children: [
+      ResourceDirectory(
+        rootLocationsSelectable: false,
+        initiallyExpanded: true,
+        locations: [location],
+        resourceToggle: (resource) => {},
+        onLocationSelected: (currentSelectedLocationPath) {
+          setState(() {
+            _selectedLocationPath =
+                currentSelectedLocationPath;
+          });
+        },
+      ),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,114 +218,14 @@ class _LocationScreenState extends State<LocationScreen> {
                       Card(child: LocationOverview(location: location)),
                       Text(AppLocalizations.of(context)!
                           .locationScreenAvailableSubLocations),
-                      Column(children: [
-                        ResourceDirectory(
-                          rootLocationsSelectable: false,
-                          initiallyExpanded: true,
-                          locations: [location],
-                          resourceToggle: (resource) => {},
-                          onLocationSelected: (currentSelectedLocationPath) {
-                            setState(() {
-                              _selectedLocationPath =
-                                  currentSelectedLocationPath;
-                            });
-                          },
-                        ),
-                      ]),
+
+                      _buildLocationDirectory(location),
+
                       if (_showInventory)
-                        Column(children: [
-                          Text(AppLocalizations.of(context)!
-                              .locationScreenInventory),
-                          ApiFutureBuilder<List<Location>>(
-                              future: _futureInventory,
-                              builder: (context, inventory) {
-                                return Column(children: [
-                                  ResourceDirectory(
-                                    locations: inventory,
-                                    resourceToggle: (resource) => {},
-                                    onLocationSelected:
-                                        (currentSelectedLocationPath) {
-                                      setState(() {
-                                        _selectedInventoryPath =
-                                            currentSelectedLocationPath;
-                                      });
-                                    },
-                                  ),
-                                ]);
-                              })
-                        ]),
+                        _buildInventory(),
                     ])));
           }),
-      bottomNavigationBar: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: SizedBox(
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _canTake()
-                      ? () =>
-                          _handleTransfer(context, TransferDialogueType.take)
-                      : null,
-                  child: Text(AppLocalizations.of(context)!.locationScreenTake),
-                ),
-              ),
-            ),
-          ),
-          if (_showInventory)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: SizedBox(
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: _canPut()
-                        ? () =>
-                            _handleTransfer(context, TransferDialogueType.put)
-                        : null,
-                    child:
-                        Text(AppLocalizations.of(context)!.locationScreenPut),
-                  ),
-                ),
-              ),
-            ),
-          Padding(
-            padding: const EdgeInsets.all(4),
-            child: SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _selectedInventoryPath = null;
-                    _showInventory = !_showInventory;
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _showInventory ? Colors.lightGreen : null,
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.inventory_2_outlined),
-                    if (!_showInventory)
-                      Row(
-                        children: [
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Text(
-                            AppLocalizations.of(context)!
-                                .locationScreenShowInventory,
-                          )
-                        ],
-                      )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      bottomNavigationBar: _buildButtonBar()
     );
   }
 }

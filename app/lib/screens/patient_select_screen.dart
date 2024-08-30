@@ -18,7 +18,10 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
 
   final List<bool> _selectedSearchType = [true, false];
 
-
+  final List<Icon> _selectedIcon = [
+    const Icon(Icons.person),
+    const Icon(Icons.map)
+  ];
 
   handleScan(TextEditingController textController) async {
     final scannedQR = await Navigator.push(
@@ -38,17 +41,12 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
     if (_selectedSearchType[0]) {
       PatientService.goToPatientScreen(id, context);
     } else {
-      LocationService.goToPatientScreen(id, context);
+      LocationService.goToLocationScreen(id, context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
-    final List<Icon> selectedIcon = [
-      const Icon(Icons.person),
-      const Icon(Icons.map)
-    ];
 
     final List<String> searchType = [
       AppLocalizations.of(context)!.selectScreenTypePatient,
@@ -80,8 +78,8 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
                 isSelected: _selectedSearchType,
                 constraints: BoxConstraints(minWidth: (MediaQuery.of(context).size.width - 20) / 2),
                 children: [
-                  Row(children: [selectedIcon[0], Text(searchType[0])]),
-                  Row(children: [selectedIcon[1],  Text(searchType[1])])
+                  Row(children: [_selectedIcon[0], Text(searchType[0])]),
+                  Row(children: [_selectedIcon[1],  Text(searchType[1])])
                 ],
               ),
               const SizedBox(height: 8),
@@ -109,7 +107,7 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
                   valueListenable: _idController,
                   builder: (context, patientIdValue, child) => Expanded(
                     child: ElevatedButton.icon(
-                      icon: _selectedSearchType[0] ? selectedIcon[0] : selectedIcon[1],
+                      icon: _selectedSearchType[0] ? _selectedIcon[0] : _selectedIcon[1],
                       onPressed: patientIdValue.text.isEmpty
                           ? null
                           : () => handleSubmit(),

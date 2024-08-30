@@ -22,11 +22,11 @@ class LocationService {
         .then((response) => response?.message);
   }
 
-  static void goToPatientScreen(int locationId, BuildContext context) {
+  static void goToLocationScreen(int locationId, BuildContext context) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => LocationScreen(locationId: locationId)))
-        .whenComplete(() => {}); // TODO leave location
+        .whenComplete(() => {});
   }
 }
