@@ -1,12 +1,15 @@
 name: Android Build
 
 on:
- push:
-  paths: 
-   - 'app/**'
- pull_request:
-   paths:
-   - 'app/**'
+  push:
+    branches:
+      - main
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - 'app/**'
+
 jobs:
  build:
   runs-on: ubuntu-latest
