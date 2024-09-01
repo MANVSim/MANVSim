@@ -145,6 +145,32 @@ paths:
       security:
         - bearerAuth: [ ]
 
+
+  /run/player/inventory:
+    get:
+      summary: Get Player Inventory
+      responses:
+        '200':
+          description: A successful response containing the player's inventory.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessible_locations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LocationDTO'
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+      security:
+        - bearerAuth: [ ]
+
   /run/patient/arrive:
     post:
       summary: Returns a specified patient.

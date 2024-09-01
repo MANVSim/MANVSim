@@ -3,6 +3,7 @@
 
   "frameHome": "Home",
   "framePatients": "Patienten",
+  "frameLocations": "Locations",
   "frameNotifications": "Benachrichtigungen",
 
   "startScreenAppName": "MANVSim",
@@ -70,6 +71,7 @@
   "nameWarningEmptyFields": "Bitte tragen Sie einen Namen ein",
 
   "patientListScreenName": "Patientenliste",
+  "locationListScreenName": "Locationliste",
 
   "patientScreenName": "Patient: {patientId}",
   "@patientScreenName": {
@@ -80,6 +82,25 @@
       }
     }
   },
+  "locationScreenName": "Location Übersicht",
+  "locationNameFromId": "Location {locationId}",
+  "@locationNameFromId": {
+    "placeholders": {
+      "locationId": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+
+  "locationScreenInventory": "Inventar",
+  "locationScreenShowInventory": "Inventar \n anzeigen",
+  "locationScreenTake": "Nehmen",
+  "locationScreenPut": "Ablegen",
+  "locationScreenAvailableSubLocations": "An Location verfügbar",
+
+  "locationListScreenTypeName": "Name",
+  "locationListScreenTypeId": "ID",
   "patientName": "Name: {patientName}",
   "@patientName": {
     "placeholders": {
@@ -155,6 +176,11 @@
   },
   "moveFailure": "Leider konnte der Patient nicht erfolgreich bewegt werden.\nBitte versuche es erneut.",
 
+
+  "resourceDirectorySelectLocation": "Auswählen",
+  "resourceDirectoryUnselectLocation": "Abwählen",
+  "resourceDirectoryEmpty": "Keine Resourcen verfügbar",
+
   "actionNeededResources": "Benötigte Resourcen: ",
   "actionNoNeededResources": "Keine Resourcen benötigt.",
   "actionPerform": "Durchführen",
@@ -162,12 +188,42 @@
 
 
   "notificationScreenName": "Benachrichtigungen",
-
-  "patientSelectScreenName": "Home",
-  "patientSelectTextField": "Patienten ID",
-  "patientSelectSubmit": "Patient anzeigen",
-
+  "selectScreenName": "Home",
+  "selectScreenTypePatient": "Patient",
+  "selectScreenTypeLocation": "Location",
+  "selectScreenTextField": "{type} ID",
+  "@selectScreenTextField": {
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Patienten"
+      }
+    }
+  },
+  "selectScreenSubmit": "{type} anzeigen",
+  "@homeSelectedSubmit": {
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Patienten"
+      }
+    }
+  },
   "qrCodeScanButton"  : "QR Code scannen",
 
-  "ok": "Ok"
+  "ok": "Ok",
+
+  "transferDialogueCancel": "Abbrechen",
+  "transferDialogueConfirm": "Bestätigen",
+  "transferDialogueTakeTitle": "Nehmen bestätigen",
+  "transferDialoguePutTitle": "Ablegen bestätigen",
+  "transferDialogueFromLocation": "von",
+  "transferDialogueToLocation": "nach",
+  "transferDialogueTransferObject": "Objekt",
+  "transferDialogueTransferTitle": "Objekt wird verschoben",
+  "transferDialogueErrorTitle": "Verschieben fehlgeschlagen",
+  "transferDialogueDefaultError": "Unbekannter Fehler",
+  "transferDialogueErrorText": "Beim Verschieben ist ein Fehler aufgetreten. Bitte später erneut versuchen.",
+  "transferDialogueErrorClose": "Schließen"
+
 }

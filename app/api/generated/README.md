@@ -68,11 +68,12 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**runActionPerformResultGet**](doc//DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action and officially finishes/dequeues the action of the patient.
 *DefaultApi* | [**runLocationAllGet**](doc//DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of  top-level accessible locations.
 *DefaultApi* | [**runLocationLeavePost**](doc//DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
-*DefaultApi* | [**runLocationPutToPost**](doc//DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
-*DefaultApi* | [**runLocationTakeToPost**](doc//DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | A player takes any location which is not a registered top-level location and places another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). The 'take_location_ids' list starts with the players current location. The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
+*DefaultApi* | [**runLocationPutToPost**](doc//DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
+*DefaultApi* | [**runLocationTakeToPost**](doc//DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
 *DefaultApi* | [**runPatientAllIdsGet**](doc//DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 *DefaultApi* | [**runPatientArrivePost**](doc//DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
 *DefaultApi* | [**runPatientLeavePost**](doc//DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
+*DefaultApi* | [**runPlayerInventoryGet**](doc//DefaultApi.md#runplayerinventoryget) | **GET** /run/player/inventory | Get Player Inventory
 *DefaultApi* | [**scenarioStartTimeGet**](doc//DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
 
 
@@ -102,6 +103,7 @@ Class | Method | HTTP request | Description
  - [RunPatientArrivePost200Response](doc//RunPatientArrivePost200Response.md)
  - [RunPatientArrivePostRequest](doc//RunPatientArrivePostRequest.md)
  - [RunPatientLeavePost200Response](doc//RunPatientLeavePost200Response.md)
+ - [RunPlayerInventoryGet200Response](doc//RunPlayerInventoryGet200Response.md)
  - [ScenarioStartTimeGet200Response](doc//ScenarioStartTimeGet200Response.md)
 
 
