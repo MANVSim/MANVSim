@@ -622,6 +622,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ResourceDTO'
+
+        media_references:
+          $ref: '#/components/schemas/MediaReferencesDTO'
         sub_locations:
           type: array
           items:
@@ -667,6 +670,33 @@ components:
                 type: string
             required: [media_type]
       required: [ id, name, duration_sec, resources_needed ]
+
+    MediaReferencesDTO:
+          type: array
+          items:
+            type: object
+            properties:
+              media_reference:
+                type: string
+                description: The path or URL to the media resource.
+              media_type:
+                type: string
+                enum:
+                  - IMAGE
+                  - VIDEO
+                  - TEXT
+                description: The type of media referenced.
+              text:
+                type:
+                  string
+                description: Optional text associated with the media reference.
+              title:
+                type:
+                  string
+                description: Optional title associated with the media reference.
+            required:
+              - media_type
+            additionalProperties: false
 
     Error:
       type: object
