@@ -203,7 +203,6 @@ class _LocationScreenState extends State<LocationScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(AppLocalizations.of(context)!.locationScreenName),
-        actions: const <Widget>[LogoutButton()],
       ),
       body: ApiFutureBuilder<Location>(
           future: _futureLocation,
