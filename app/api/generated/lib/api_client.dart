@@ -194,6 +194,8 @@ class ApiClient {
           return LoginPost200Response.fromJson(value);
         case 'LoginPostRequest':
           return LoginPostRequest.fromJson(value);
+        case 'MediaReferencesDTOInner':
+          return MediaReferencesDTOInner.fromJson(value);
         case 'NotificationsGet200Response':
           return NotificationsGet200Response.fromJson(value);
         case 'PatientDTO':

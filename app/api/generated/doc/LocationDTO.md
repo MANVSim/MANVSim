@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **id** | **int** |  | 
 **name** | **String** |  | 
 **resources** | [**List<ResourceDTO>**](ResourceDTO.md) |  | [default to const []]
+**mediaReferences** | [**List<MediaReferencesDTOInner>**](MediaReferencesDTOInner.md) |  | [optional] [default to const []]
 **subLocations** | [**List<LocationDTO>**](LocationDTO.md) |  | [default to const []]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

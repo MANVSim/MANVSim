@@ -36,6 +36,7 @@ part 'model/error.dart';
 part 'model/location_dto.dart';
 part 'model/login_post200_response.dart';
 part 'model/login_post_request.dart';
+part 'model/media_references_dto_inner.dart';
 part 'model/notifications_get200_response.dart';
 part 'model/patient_dto.dart';
 part 'model/player_set_name_post401_response.dart';
