@@ -89,6 +89,9 @@ def __handle_file_upload():
     else:
         return "Unsupported file format", 415
 
+    result.title = request.form.get("title")
+    result.text = request.form.get("text")
+
     save_path = os.path.join(current_app.root_path, reference_path, filename)
     file.save(save_path)
     return result.to_json(), 201
