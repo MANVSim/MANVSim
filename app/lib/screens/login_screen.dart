@@ -21,6 +21,7 @@ class LoginScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => LoginScreenState();
 }
+
 enum _LoginInputType { TAN, URL }
 
 class LoginScreenState extends State<LoginScreen> {
@@ -78,50 +79,50 @@ class LoginScreenState extends State<LoginScreen> {
   void _navigateToNext() {
     TanUser user = Provider.of<TanUser>(context, listen: false);
 
-    if (user.name != null && user.name!.isNotEmpty) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title:
-                Text(AppLocalizations.of(context)!.loginAlreadyLoggedInHeader),
-            content: Text(AppLocalizations.of(context)!
-                .loginAlreadyLoggedInText(user.name!)),
-            actions: <Widget>[
-              TextButton(
-                child: Text(AppLocalizations.of(context)!
-                    .loginAlreadyLoggedInButtonCancel),
-                onPressed: () {
-                  ApiService apiService = GetIt.instance.get<ApiService>();
-                  apiService.logout(context);
-                },
-              ),
-              TextButton(
-                child: Text(AppLocalizations.of(context)!
-                    .loginAlreadyLoggedInButtonContinue),
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const WaitScreen()),
-                    (Route<dynamic> route) => false,
-                  );
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } else {
+    if (user.name == null || user.name!.isEmpty) {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const NameScreen()),
         (Route<dynamic> route) => false,
       );
+      return;
     }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.loginAlreadyLoggedInHeader),
+          content: Text(AppLocalizations.of(context)!
+              .loginAlreadyLoggedInText(user.name!)),
+          actions: <Widget>[
+            TextButton(
+              child: Text(AppLocalizations.of(context)!
+                  .loginAlreadyLoggedInButtonCancel),
+              onPressed: () {
+                ApiService apiService = GetIt.instance.get<ApiService>();
+                apiService.logout(context);
+              },
+            ),
+            TextButton(
+              child: Text(AppLocalizations.of(context)!
+                  .loginAlreadyLoggedInButtonContinue),
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const WaitScreen()),
+                  (Route<dynamic> route) => false,
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  void _handleLogin() async {
-    String tan = _tanInputController.tan;
+  /// Assumes that [tan] is complete.
+  void _handleLogin(String tan) async {
     String url = _serverUrlController.text;
 
     if (tan.isEmpty || url.isEmpty) {
@@ -130,45 +131,57 @@ class LoginScreenState extends State<LoginScreen> {
         _urlInputFailure = url.isEmpty;
         _errorMessage = AppLocalizations.of(context)!.loginWarningEmptyFields;
       });
-    } else {
-      setState(() {
-        _tanInputFailure = false;
-        _urlInputFailure = false;
-        _errorMessage = null;
-        _isLoading = true;
-      });
+      return;
+    }
 
-      String? failureMessage;
-      bool failureOccurred = false;
+    setState(() {
+      _tanInputFailure = false;
+      _urlInputFailure = false;
+      _errorMessage = null;
+      _isLoading = true;
+    });
 
-      ApiService apiService = GetIt.instance.get<ApiService>();
-      try {
-        await apiService.login(tan, url, context);
-      } catch (e) {
-        failureMessage = e.toString();
-        failureOccurred = true;
-      }
+    ApiService apiService = GetIt.instance.get<ApiService>();
+    try {
+      await apiService.login(tan, url, context);
+    } catch (e) {
+      _handleLoginError(e);
+      _tanInputController.clear();
+      return;
+    }
+    _navigateToNext();
+  }
 
-      int maxLength = 80;
-      String? shortFailureMessage = ((failureMessage?.length ?? 0) > maxLength)
-          ? '${failureMessage?.substring(0, maxLength).trim()}...'
-          : failureMessage?.trim();
+  void _handleLoginError(dynamic error) {
+    String failureMessage = error.toString();
+    int maxLength = 80;
+    String shortFailureMessage = (failureMessage.length > maxLength)
+        ? '${failureMessage.substring(0, maxLength).trim()}...'
+        : failureMessage.trim();
 
-      shortFailureMessage =
-          shortFailureMessage?.replaceAll(RegExp(r'[\n\t]'), ' ');
+    shortFailureMessage =
+        shortFailureMessage.replaceAll(RegExp(r'[\n\t]'), ' ');
 
-      setState(() {
-        _errorMessage = failureOccurred
-            ? AppLocalizations.of(context)!.loginWarningRequestFailed(
-                shortFailureMessage ?? 'unknown error')
-            : null;
-        _isLoading = false;
-        _tanInputFailure = false;
-        _urlInputFailure = false;
-      });
+    setState(() {
+      _errorMessage = AppLocalizations.of(context)!
+          .loginWarningRequestFailed(shortFailureMessage);
+      _isLoading = false;
+    });
+  }
 
-      if (!failureOccurred) {
-        _navigateToNext();
+  _onQRCodeScan() async {
+    final scannedQR = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const QRScreen(),
+      ),
+    );
+    if (scannedQR case String scannedText) {
+      final [url, ..., tan] = scannedText.split(';');
+
+      _serverUrlController.text = url;
+      for (int i = 0; i < min(TanInputController.TAN_LENGTH, tan.length); i++) {
+        _tanInputController.updateValue(i, tan.toUpperCase()[i]);
       }
     }
   }
@@ -234,35 +247,24 @@ class LoginScreenState extends State<LoginScreen> {
                         icon: const Icon(Icons.qr_code_scanner),
                         label: Text(
                             AppLocalizations.of(context)!.qrCodeScanButton),
-                        onPressed: () async {
-
-                          final scannedQR = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const QRScreen(),
-                            ),
-                          );
-                          if (scannedQR case String scannedText) {
-
-                            final [url, ..., tan] = scannedText.split(';');
-
-                            _serverUrlController.text = url;
-                            for(int i=0; i<min(TanInputController.TAN_LENGTH, tan.length); i++) {
-                              _tanInputController.updateValue(i, tan.toUpperCase()[i]);
-                            }
-                          }
-
-                        },
+                        onPressed: _onQRCodeScan,
                       ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: ElevatedButton.icon(
-                        icon: const Icon(Icons.login),
-                        onPressed: _handleLogin,
-                        label: Text(AppLocalizations.of(context)!.loginSubmit),
+                      // Button only clickable when tan is complete
+                      child: ValueListenableBuilder(
+                        valueListenable: _tanInputController,
+                        builder: (context, tan, child) => ElevatedButton.icon(
+                          icon: const Icon(Icons.login),
+                          onPressed: _tanInputController.isComplete
+                              ? () => _handleLogin(tan)
+                              : null,
+                          label:
+                              Text(AppLocalizations.of(context)!.loginSubmit),
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
             ],

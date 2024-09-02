@@ -130,9 +130,9 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [ tans ]
+                required: [ patient_ids ]
                 properties:
-                  tans:
+                  patient_ids:
                     type: array
                     items:
                       type: integer

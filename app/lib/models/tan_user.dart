@@ -21,10 +21,11 @@ class TanUser extends ChangeNotifier{
   TanUserAuth auth = TanUserAuth();
 
   bool isComplete() {
-    return tan != null && name != null && role != null && auth.token != null && auth.url != null;
+    return tan != null && name != null && role != null &&
+        auth.token != null && auth.url != null;
   }
 
-  _setPref(String key, String? value, SharedPreferences prefs) async {
+  Future<void> _setPref(String key, String? value, SharedPreferences prefs) async {
     if (value != null) {
       await prefs.setString(key, value);
     } else {
@@ -32,7 +33,7 @@ class TanUser extends ChangeNotifier{
     }
   }
 
-  persist() async{
+  Future<void> persist() async {
     final prefs = await SharedPreferences.getInstance();
 
     await _setPref(PREF_TAN, tan, prefs);
@@ -42,7 +43,7 @@ class TanUser extends ChangeNotifier{
     await _setPref(PREF_AUTH_URL, auth.url, prefs);
   }
 
-  load() async{
+  Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
 
     tan = prefs.getString(PREF_TAN);
@@ -53,5 +54,4 @@ class TanUser extends ChangeNotifier{
 
     notifyListeners();
   }
-
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:manvsim/screens/name_screen.dart';
 import 'package:manvsim/screens/wait_screen.dart';
 import 'package:manvsim/services/api_service.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,7 @@ class StartScreen extends StatelessWidget {
     if (tanUser.isComplete()) {
       ApiService apiService = GetIt.instance.get<ApiService>();
       if (context.mounted) await apiService.recover(context);
-      return const WaitScreen();
+      return tanUser.name!.isEmpty ? const NameScreen() : const WaitScreen();
     } else {
       return const LoginScreen();
     }

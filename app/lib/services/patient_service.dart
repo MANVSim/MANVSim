@@ -25,7 +25,7 @@ class PatientService {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api
         .runPatientAllIdsGet()
-        .then((response) => response?.tans);
+        .then((response) => response?.patientIds);
   }
 
   /// Navigates to [PatientScreen] and leaves location after.

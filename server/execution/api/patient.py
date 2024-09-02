@@ -52,7 +52,7 @@ def get_all_patient():
     try:
         execution, _ = util.get_execution_and_player()
         return {
-            "tans": list(execution.scenario.patients.keys())
+            "patient_ids": list(execution.scenario.patients.keys())
         }
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
