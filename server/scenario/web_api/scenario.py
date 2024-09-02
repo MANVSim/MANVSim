@@ -37,6 +37,7 @@ def get_templates():
 # -- DBO Scenario
 
 @web_api.get("/scenario")
+@role_required(WebUser.Role.READ_ONLY)
 @required("scenario_id", int, RequiredValueSource.ARGS)
 def get_scenario(scenario_id: int):
     """

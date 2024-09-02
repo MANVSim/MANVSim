@@ -7,7 +7,7 @@ from werkzeug.exceptions import NotFound, BadRequest
 import models
 from app_config import db
 from scenario.web_api.utils import update_media
-from utils.decorator import required, RequiredValueSource
+from utils.decorator import required, RequiredValueSource, role_required
 
 # pyright: reportCallIssue=false
 # pyright: reportAttributeAccessIssue=false
@@ -17,6 +17,7 @@ web_api = Blueprint("web_api-location", __name__)
 
 
 @web_api.get("/location/all-vehicles")
+@role_required(models.WebUser.Role.READ_ONLY)
 def get_all_vehicle_locations():
     """ Returns a json of all locations stored. """
     location_list = models.Location.query.filter_by(
@@ -31,6 +32,7 @@ def get_all_vehicle_locations():
 
 
 @web_api.get("/location/all")
+@role_required(models.WebUser.Role.READ_ONLY)
 def get_all_locations():
     """ Returns a json of all locations stored. """
     location_list = models.Location.query.all()
@@ -42,6 +44,7 @@ def get_all_locations():
     ]
 
 @web_api.get("/location")
+@role_required(models.WebUser.Role.READ_ONLY)
 @required("location_id", int, RequiredValueSource.ARGS)
 def get_location(location_id: int):
 
