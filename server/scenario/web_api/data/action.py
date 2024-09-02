@@ -7,7 +7,7 @@ from werkzeug.exceptions import NotFound
 import models
 from app_config import db
 from scenario.web_api.utils import update_media
-from utils.decorator import RequiredValueSource, required
+from utils.decorator import RequiredValueSource, required, role_required
 from vars import RESULT_DELIMITER
 
 # pyright: reportCallIssue=false
@@ -19,6 +19,7 @@ web_api = Blueprint("web_api-action", __name__)
 
 
 @web_api.get("/action/all")
+@role_required(models.WebUser.Role.READ_ONLY)
 def get_all_actions():
     """ Returns a json of all actions stored. """
     action_list = models.Action.query.all()
@@ -31,6 +32,7 @@ def get_all_actions():
 
 
 @web_api.get("/action")
+@role_required(models.WebUser.Role.READ_ONLY)
 @required("action_id", int, RequiredValueSource.ARGS)
 def get_action(action_id: int):
     """ Returns an action with all its related entries. """
@@ -65,6 +67,7 @@ def get_action(action_id: int):
 
 
 @web_api.post("/action")
+@role_required(models.WebUser.Role.SCENARIO_ADMIN)
 def create_action():
     """ Creates an empty Action and returns the dbo as JSON. """
     action = models.Action(
@@ -91,6 +94,7 @@ def create_action():
 
 
 @web_api.patch("/action")
+@role_required(models.WebUser.Role.SCENARIO_ADMIN)
 @required("id", int, RequiredValueSource.JSON)
 def edit_action(id: int):
     """

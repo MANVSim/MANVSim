@@ -7,7 +7,7 @@ from werkzeug.exceptions import NotFound
 import models
 from app_config import db
 from scenario.web_api.utils import update_media
-from utils.decorator import RequiredValueSource, required
+from utils.decorator import RequiredValueSource, required, role_required
 
 # pyright: reportCallIssue=false
 # pyright: reportAttributeAccessIssue=false
@@ -17,6 +17,7 @@ web_api = Blueprint("web_api-resource", __name__)
 
 
 @web_api.get("/resource/all")
+@role_required(models.WebUser.Role.READ_ONLY)
 def get_all_resources():
     """ Returns a json of all resources stored. """
     resource_list = models.Resource.query.all()
@@ -29,6 +30,7 @@ def get_all_resources():
 
 
 @web_api.get("/resource")
+@role_required(models.WebUser.Role.READ_ONLY)
 @required("resource_id", int, RequiredValueSource.ARGS)
 def get_resource(resource_id: int):
 
@@ -47,6 +49,7 @@ def get_resource(resource_id: int):
 
 
 @web_api.post("/resource")
+@role_required(models.WebUser.Role.SCENARIO_ADMIN)
 def create_resource():
     resource = models.Resource(
         name="Neue Resource",
@@ -67,6 +70,7 @@ def create_resource():
 
 
 @web_api.patch("/resource")
+@role_required(models.WebUser.Role.SCENARIO_ADMIN)
 @required("id", int, RequiredValueSource.JSON)
 def edit_resource(id: int):
 
