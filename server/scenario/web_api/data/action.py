@@ -67,7 +67,6 @@ def get_action(action_id: int):
 
 
 @web_api.post("/action")
-@role_required(models.WebUser.Role.SCENARIO_ADMIN)
 def create_action():
     """ Creates an empty Action and returns the dbo as JSON. """
     action = models.Action(
@@ -94,7 +93,6 @@ def create_action():
 
 
 @web_api.patch("/action")
-@role_required(models.WebUser.Role.SCENARIO_ADMIN)
 @required("id", int, RequiredValueSource.JSON)
 def edit_action(id: int):
     """

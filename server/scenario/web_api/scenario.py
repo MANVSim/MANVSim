@@ -78,7 +78,6 @@ def get_scenario(scenario_id: int):
 
 
 @web_api.post("/scenario")
-@role_required(WebUser.Role.SCENARIO_ADMIN)
 @csrf.exempt
 def create_scenario():
     """ Creates an empty scenario dbo. """
@@ -95,7 +94,6 @@ def create_scenario():
 
 
 @web_api.patch("/scenario")
-@role_required(WebUser.Role.SCENARIO_ADMIN)
 @required("id", int, RequiredValueSource.JSON)
 def edit_scenario(id: int):
     """

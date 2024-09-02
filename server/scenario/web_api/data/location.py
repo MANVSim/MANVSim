@@ -84,7 +84,6 @@ def get_location(location_id: int):
 
 
 @web_api.post("/location")
-@role_required(models.WebUser.Role.SCENARIO_ADMIN)
 def create_location():
     location = models.Location(
         name="Neue Location",
@@ -105,7 +104,6 @@ def create_location():
 
 
 @web_api.patch("/location")
-@role_required(models.WebUser.Role.SCENARIO_ADMIN)
 @required("id", int, RequiredValueSource.JSON)
 def edit_location(id: int):
 

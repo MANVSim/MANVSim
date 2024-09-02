@@ -10,7 +10,6 @@ web_api = Blueprint("web_api-notification", __name__)
 
 
 @web_api.post("/notifications/post")
-@role_required(WebUser.Role.GAME_MASTER)
 def add_notification_to_execution():
     """
     Endpoint for adding a notification to an execution via the execution id.

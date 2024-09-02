@@ -49,7 +49,6 @@ def get_resource(resource_id: int):
 
 
 @web_api.post("/resource")
-@role_required(models.WebUser.Role.SCENARIO_ADMIN)
 def create_resource():
     resource = models.Resource(
         name="Neue Resource",
@@ -70,7 +69,6 @@ def create_resource():
 
 
 @web_api.patch("/resource")
-@role_required(models.WebUser.Role.SCENARIO_ADMIN)
 @required("id", int, RequiredValueSource.JSON)
 def edit_resource(id: int):
 
