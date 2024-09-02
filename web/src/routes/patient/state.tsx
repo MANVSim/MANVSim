@@ -19,7 +19,7 @@ function StateEntry({ state }: StateEntryProps): ReactElement {
         Folgezustand nach Zeitlimit: {state.after_time_state_uuid || "-"}
       </div>
       <div>Behandlungen:</div>
-      <div>Zustände:</div>
+      <div>Parameter:</div>
     </ListGroup.Item>
   )
 }
