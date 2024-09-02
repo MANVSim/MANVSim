@@ -1,7 +1,7 @@
 # MANVSim Flutter App
 
 The App is developed in the [Flutter](https://docs.flutter.dev/get-started/install) Framework for easy multiplatform
-development.
+development. To build the app, Flutter Version 3.24.1 and Dart Version 3.5.1 are required.
 
 ### API library
 
