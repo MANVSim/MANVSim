@@ -53,8 +53,8 @@ class PatientService {
 
   static Future<List<PatientPosition>?> fetchPatientPositions() {
     var rnd = Random();
-    return PatientService.fetchPatientsIDs().then((idList) => idList
-        ?.map((id) => (
+    return PatientService.fetchPatientsIDs().then((idList) => [...?idList, ...?idList]
+        .map((id) => (
               position: Point<double>(
                   rnd.nextDouble() * PatientMap.width,
                   rnd.nextDouble() * PatientMap.height),

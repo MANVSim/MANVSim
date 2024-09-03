@@ -18,10 +18,14 @@ class PatientMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: size.height + padding,
-        width: size.width + padding,
+        height: size.height,
+        width: size.width,
         decoration: BoxDecoration(
             border: Border.all(width: 8, color: Colors.black26),
+            image: const DecorationImage(
+                opacity: 0.05,
+                repeat: ImageRepeat.repeat,
+                image: AssetImage("assets/map_background.jpg")),
             gradient: const LinearGradient(
                 colors: [Colors.white, Colors.amberAccent],
                 begin: Alignment.topLeft,
