@@ -97,6 +97,15 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             if p_loc:
                 patient_locations[p.location] = p_loc
 
+        # Load Media
+        p_media = p.media_refs
+        try:
+            p_media = MediaData.list_from_json(p_media)
+        except JSONDecodeError:
+            p_media = []
+        except TypeError:
+            p_media = []
+
         # Load Activity Diagram
         p_ad = p.activity_diagram
         try:
@@ -107,9 +116,8 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_ad = ActivityDiagram()  # empty diagram with an empty root state
 
         # Create Patient
-        patients[p.id] = Patient(id=__generate_id(), name=mapping.name, activity_diagram=p_ad,
-                                 # type: ignore
-                                 location=p_loc, performed_actions=[])  # type: ignore
+        patients[p.id] = Patient(id=__generate_id(), name=mapping.name, activity_diagram=p_ad, # type: ignore
+                                 location=p_loc, performed_actions=[], media_references=p_media)  # type: ignore
 
     return patients
 

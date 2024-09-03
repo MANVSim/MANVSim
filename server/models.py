@@ -56,6 +56,7 @@ class Patient(db.Model):
     location: Mapped[int] = mapped_column(
         ForeignKey("location.id"), nullable=True)
     activity_diagram = db.Column(db.JSON(), nullable=False)
+    media_refs = db.Column(db.JSON(), nullable=True)
 
 
 class Action(db.Model):
