@@ -595,7 +595,21 @@ components:
           type: string
         location:
           $ref: '#/components/schemas/LocationDTO'
-      required: [ id, name, location ]
+        media_references:
+          type: array
+          items:
+            type: object
+            properties:
+              media_type:
+                type: string
+              title:
+                type: string
+              text:
+                type: string
+              media_reference:
+                type: string
+            required: [ media_type ]
+      required: [ id, name, location, media_references ]
 
     LocationDTO:
       type: object
