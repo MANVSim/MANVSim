@@ -115,6 +115,8 @@ def _check_patients(scenario: Scenario):
         if db_patient.location is not None:
             assert db_patient.location == exec_patient.location.id
             _check_location(exec_patient.location, scenario)
+        if db_patient.media_refs is not None:
+            assert db_patient.media_refs == MediaData.list_to_json(exec_patient.media_references)
 
 
 def _check_actions(scenario: Scenario):
