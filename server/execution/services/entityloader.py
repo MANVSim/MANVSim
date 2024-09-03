@@ -97,15 +97,17 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             if p_loc:
                 patient_locations[p.location] = p_loc
 
-        # Load Activity Diagram
-        p_ad = p.activity_diagram
+        # Load Media
         p_media = p.media_refs
         try:
+            p_media = MediaData.list_from_json(p_media)
+        except JSONDecodeError | TypeError:
+            p_media = []
+
+        # Load Activity Diagram
+        p_ad = p.activity_diagram
+        try:
             p_ad = ActivityDiagram().from_json(json_string=p_ad)
-            if p_media:
-                p_media = MediaData.list_from_json(p_media)
-            else:
-                p_media = []
         except JSONDecodeError:  # thrown if p_ad is None or an invalid json string
             p_ad = ActivityDiagram()  # empty diagram with an empty root state
         except TypeError:
