@@ -1,9 +1,5 @@
 import { ReactElement } from "react"
-import {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  useLoaderData,
-} from "react-router"
+import { LoaderFunctionArgs, useLoaderData } from "react-router"
 import { getPatient } from "../../api"
 import { ActivityDiagram, Patient, State } from "../../types"
 import { Button, ListGroup } from "react-bootstrap"
@@ -15,15 +11,10 @@ interface StateEntryProps {
   updateActivityDiagram: Updater<ActivityDiagram>
 }
 
-function StateEntry({
-  state,
-  updateActivityDiagram,
-}: StateEntryProps): ReactElement {
+function StateEntry({ state }: StateEntryProps): ReactElement {
   return (
     <ListGroup.Item key={state.uuid}>
       <div>{state.uuid}</div>
-      <div>Pausierte Zeit: {state.pause_time}</div>
-      <div>Startzeit: {state.start_time}</div>
       <div>Zeitlimit: {state.timelimit}</div>
       <div>
         Folgezustand nach Zeitlimit: {state.after_time_state_uuid || "-"}
@@ -75,6 +66,6 @@ StateRoute.loader = async function ({
   }
 }
 
-StateRoute.action = async function ({ params }: ActionFunctionArgs) {
+StateRoute.action = async function () {
   return null
 }
