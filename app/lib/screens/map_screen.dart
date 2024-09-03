@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/types.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
@@ -61,8 +63,10 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     with TickerProviderStateMixin {
   /// width of the viewport
   static const width = 300.0;
+
   /// height of the viewport
-  static const height = 300.0;
+  static const height = 400.0;
+
   /// middle of the viewport
   final Offset middle = const Offset(width / 2, height / 2);
 
@@ -70,15 +74,16 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   late final TransformationController _transformationController;
 
   /// Animation "moving the center".
-  Animation<Offset>? _animation;
-  late AnimationController _controller;
+  Animation<Offset> _offsetAnimation =
+      const AlwaysStoppedAnimation(Offset.zero);
+  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
     _transformationController = TransformationController()
       ..addListener(_onTransformationControllerChange);
-    _controller = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
     );
   }
@@ -86,7 +91,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   @override
   void dispose() {
     _transformationController.dispose();
-    _controller.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -129,18 +134,17 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   void _onNewTargetOffset(Offset tappedPosition) {
     Offset self = _transformationController.toScene(middle);
     Offset target = getTarget(tappedPosition, self);
-    _animation = Tween<Offset>(begin: self - middle, end: target - middle)
-        .animate(_controller)
+    _offsetAnimation = Tween<Offset>(begin: self - middle, end: target - middle)
+        .animate(_animationController)
       ..addListener(_onAnimate);
     double distance = (target - self).distance;
-    _controller.duration = Duration(seconds: distance.floor() ~/ 100);
-    _controller.forward();
+    _animationController.duration = Duration(seconds: max(distance ~/ 100, 1));
+    _animationController.forward();
   }
 
   void _onMoveEnd() {
-    _animation?.removeListener(_onAnimate);
-    _controller.stop();
-    _controller.reset();
+    _offsetAnimation.removeListener(_onAnimate);
+    _animationController.reset();
   }
 
   void _onTransformationControllerChange() {
@@ -152,23 +156,22 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Translates the Transform Matrix4 during the animation.
   void _onAnimate() {
     _transformationController.value = _transformationController.value.clone()
-      ..setTranslation(
-          Vector3(-_animation!.value.dx, -_animation!.value.dy, 0));
+      ..setTranslation(vector3FromOffset(-_offsetAnimation.value));
   }
 
   /// Uses vector_math to determine where the path hits the edge.
   Offset getTarget(Offset originalTarget, Offset origin) {
-    var renderBox = Aabb3.fromQuad(Quad.points(
-        Vector3.zero(),
-        Vector3(widget.child.size.width, 0, 0),
-        Vector3(0, widget.child.size.height, 0),
-        Vector3(widget.child.size.width, widget.child.size.height, 0)));
-    Offset direction =
-        middle - _transformationController.toScene(originalTarget);
-    Ray dirRay = Ray.originDirection(Vector3(middle.dx, middle.dy, 0),
-        Vector3(direction.dx, direction.dy, 0));
+    Offset direction = middle - originalTarget;
+    var renderBox = Aabb3.minMax(Vector3.zero(),
+        Vector3(widget.child.size.width, widget.child.size.height, 0));
+    Ray dirRay = Ray.originDirection(
+        vector3FromOffset(origin), vector3FromOffset(direction));
     double distance = dirRay.intersectsWithAabb3(renderBox) ?? 0; // TODO
     Vector3 intersectionPoint = dirRay.at(distance);
-    return Offset(intersectionPoint.x, intersectionPoint.y);
+    return offsetFromVector3(intersectionPoint);
   }
+
+  Vector3 vector3FromOffset(Offset offset) => Vector3(offset.dx, offset.dy, 0);
+
+  Offset offsetFromVector3(Vector3 vector3) => Offset(vector3.x, vector3.y);
 }
