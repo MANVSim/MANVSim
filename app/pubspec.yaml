@@ -46,6 +46,7 @@ dependencies:
   shared_preferences: ^2.2.3
   mobile_scanner: ^5.1.0
   video_player: ^2.9.1
+  chewie: ^1.8.3
 
 
 dev_dependencies:

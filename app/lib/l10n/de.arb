@@ -250,5 +250,20 @@
         "example": "Fehlermeldung"
       }
     }
+  },
+
+
+  "multiMediaViewVideoError": "Video '{path}' konnte nicht geladen werden: {errorMsg}",
+  "@multiMediaVideoImageError": {
+    "placeholders": {
+      "path": {
+        "type": "String",
+        "example": "/media/image1.png"
+      },
+      "errorMsg": {
+        "type": "String",
+        "example": "Fehlermeldung"
+      }
+    }
   }
 }

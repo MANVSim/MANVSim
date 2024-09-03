@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:manvsim/models/multi_media.dart';
 import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/widgets/error_box.dart';
+import 'package:manvsim/widgets/video_player.dart';
 
 
 class MultiMediaView extends StatefulWidget {
@@ -99,7 +100,7 @@ class _MultiMediaViewState extends State<MultiMediaView> {
   }
 
   Widget _buildVideoItem(MultiMediaItem item) {
-    throw UnimplementedError();
+    return  VideoPlayer(videoUrl: buildMediaUrl(item.reference!));
   }
 
   Widget _buildTextItem(MultiMediaItem item) {
