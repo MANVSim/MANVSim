@@ -34,4 +34,4 @@ FROM setup AS prod
 RUN pipenv install gunicorn
 
 EXPOSE 5000
-CMD pipenv run gunicorn -w 4 -b 0.0.0.0:5000 'main:app'
+CMD pipenv run gunicorn -b 0.0.0.0:5000 'main:app'
