@@ -1,14 +1,24 @@
 import { ReactElement } from "react"
-import { LoaderFunctionArgs, useLoaderData } from "react-router"
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  useLoaderData,
+} from "react-router"
 import { getPatient } from "../../api"
-import { Patient, State } from "../../types"
-import { ListGroup } from "react-bootstrap"
+import { ActivityDiagram, Patient, State } from "../../types"
+import { Button, ListGroup } from "react-bootstrap"
+import { Updater, useImmer } from "use-immer"
+import { Form } from "react-router-dom"
 
 interface StateEntryProps {
   state: State
+  updateActivityDiagram: Updater<ActivityDiagram>
 }
 
-function StateEntry({ state }: StateEntryProps): ReactElement {
+function StateEntry({
+  state,
+  updateActivityDiagram,
+}: StateEntryProps): ReactElement {
   return (
     <ListGroup.Item key={state.uuid}>
       <div>{state.uuid}</div>
@@ -26,16 +36,26 @@ function StateEntry({ state }: StateEntryProps): ReactElement {
 
 export default function StateRoute(): ReactElement {
   const patient = useLoaderData() as Patient
+  const [activityDiagram, updateActivityDiagram] = useImmer(
+    patient.activity_diagram,
+  )
   return (
     <div>
       <h1>Zustände</h1>
       <div>Patient: {patient.name}</div>
       <hr />
-      <ListGroup>
-        {Object.values(patient.activity_diagram.states).map((state: State) => (
-          <StateEntry state={state} key={state.uuid} />
-        ))}
-      </ListGroup>
+      <Form method="PUT" className="d-grid gap-2">
+        <ListGroup>
+          {Object.values(activityDiagram.states).map((state: State) => (
+            <StateEntry
+              key={state.uuid}
+              state={state}
+              updateActivityDiagram={updateActivityDiagram}
+            />
+          ))}
+        </ListGroup>
+        <Button type="submit">Speichern</Button>
+      </Form>
     </div>
   )
 }
@@ -53,4 +73,8 @@ StateRoute.loader = async function ({
     ...patient,
     activity_diagram: JSON.parse(patient.activity_diagram || "{}"),
   }
+}
+
+StateRoute.action = async function ({ params }: ActionFunctionArgs) {
+  return null
 }
