@@ -103,6 +103,8 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_media = MediaData.list_from_json(p_media)
         except JSONDecodeError:
             p_media = []
+        except TypeError:
+            p_media = []
 
         # Load Activity Diagram
         p_ad = p.activity_diagram
