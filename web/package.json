@@ -19,6 +19,7 @@
     "@uiw/react-codemirror": "^4.23.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "immer": "^10.1.1",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
@@ -27,6 +28,7 @@
     "react-qr-code": "^2.0.14",
     "react-router-bootstrap": "^0.26.3",
     "react-router-dom": "^6.23.1",
+    "use-immer": "^0.10.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
