@@ -76,12 +76,14 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Animation "moving the center".
   Animation<Offset> _offsetAnimation =
       const AlwaysStoppedAnimation(Offset.zero);
-  late AnimationController _animationController;
+  late final AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    _transformationController = TransformationController()
+    _transformationController = TransformationController(Matrix4.identity()
+      ..setTranslation(Vector3(
+          -widget.child.size.width / 2, -widget.child.size.height / 2, 0)))
       ..addListener(_onTransformationControllerChange);
     _animationController = AnimationController(
       vsync: this,
@@ -134,7 +136,9 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   void _onNewTargetOffset(Offset tappedPosition) {
     Offset self = _transformationController.toScene(middle);
     Offset target = getTarget(tappedPosition, self);
-    _offsetAnimation = Tween<Offset>(begin: self - middle, end: target - middle)
+    _offsetAnimation = Tween<Offset>(
+            begin: targetCenterToTranslation(self),
+            end: targetCenterToTranslation(target))
         .animate(_animationController)
       ..addListener(_onAnimate);
     double distance = (target - self).distance;
@@ -156,7 +160,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Translates the Transform Matrix4 during the animation.
   void _onAnimate() {
     _transformationController.value = _transformationController.value.clone()
-      ..setTranslation(vector3FromOffset(-_offsetAnimation.value));
+      ..setTranslation(vector3FromOffset(_offsetAnimation.value));
   }
 
   /// Uses vector_math to determine where the path hits the edge.
@@ -174,4 +178,6 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   Vector3 vector3FromOffset(Offset offset) => Vector3(offset.dx, offset.dy, 0);
 
   Offset offsetFromVector3(Vector3 vector3) => Offset(vector3.x, vector3.y);
+
+  Offset targetCenterToTranslation(Offset center) => -(center - middle);
 }
