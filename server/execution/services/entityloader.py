@@ -102,7 +102,10 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
         p_media = p.media_refs
         try:
             p_ad = ActivityDiagram().from_json(json_string=p_ad)
-            p_media = MediaData.list_from_json(p_media)
+            if p_media:
+                p_media = MediaData.list_from_json(p_media)
+            else:
+                p_media = []
         except JSONDecodeError:  # thrown if p_ad is None or an invalid json string
             p_ad = ActivityDiagram()  # empty diagram with an empty root state
         except TypeError:

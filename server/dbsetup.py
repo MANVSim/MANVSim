@@ -194,14 +194,11 @@ def __create_players():
                   alerted=False, activation_delay_sec=10))
 
     insert(PlayersToVehicleInExecution(execution_id=4, scenario_id=2, player_tan="123ABC",
-                                       location_id=0,
-                                       vehicle_name="RTW I"))
+                                       location_id=0, vehicle_name="RTW I"))
     insert(PlayersToVehicleInExecution(execution_id=5, scenario_id=2, player_tan="987ZYX",
-                                       location_id=0,
-                                       vehicle_name="RTW I"))
+                                       location_id=0, vehicle_name="RTW I"))
     insert(PlayersToVehicleInExecution(execution_id=5, scenario_id=2, player_tan="654WVU",
-                                       location_id=0,
-                                       vehicle_name="RTW II"))
+                                       location_id=0, vehicle_name="RTW II"))
 
 
 def __create_patients():
@@ -210,12 +207,12 @@ def __create_patients():
     insert(Patient(id=0, template_name="Alter Mann, ohne Befund", activity_diagram=(),
                    media_refs=MediaData.list_to_json(
                        [MediaData.new_image("media/static/image/no_image.png")])))
-
     insert(Patient(id=1, template_name="Leichte äußere Verletzungen",
                    activity_diagram=ads[0].to_json(), media_refs=MediaData.list_to_json(
                        [MediaData.new_image("media/static/image/no_image.png")])))
     insert(Patient(id=2, template_name="Blaues Auge",
-                   activity_diagram=ads[1].to_json()))
+                   activity_diagram=ads[1].to_json(), media_refs=MediaData.list_to_json(
+                       [MediaData.new_text("Eine beispielhafte Patientenbeschreibung")])))
     insert(Patient(id=3, template_name="Schwerer Schlaganfall mit inneren Blutungen",
                    activity_diagram=ads[2].to_json()))
     insert(Patient(id=4, template_name="Gesund, keine Verletzungen",
