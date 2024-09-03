@@ -32,7 +32,7 @@ class NameScreenState extends State<NameScreen> {
     }
   }
 
-  /// Assumes name is not empty.
+  /// Assumes [name] is not empty.
   void _handleSetName(String name) async {
     setState(() {
       _isLoading = true;

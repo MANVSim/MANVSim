@@ -215,7 +215,9 @@ class LoginScreenState extends State<LoginScreen> {
               TanInputField(
                 controller: _tanInputController,
                 decoration: _textFieldDecoration(_tanInputFailure, ""),
-                onChanged: (value) => _resetErrorMessage(_LoginInputType.TAN),
+                onChanged: (value) {
+                  if (value.isNotEmpty) _resetErrorMessage(_LoginInputType.TAN);
+                },
               ),
               const SizedBox(height: 32),
               TextButton(

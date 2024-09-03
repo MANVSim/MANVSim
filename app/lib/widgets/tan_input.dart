@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,7 +98,7 @@ class TanInputFieldState extends State<TanInputField> {
             textAlign: TextAlign.center,
             onTap: () => _controllers[index].selection = TextSelection(
                 baseOffset: 0,
-                extentOffset: min(_controllers[index].text.length, 0)),
+                extentOffset: _controllers[index].text.length),
             inputFormatters: [
               LengthLimitingTextInputFormatter(1),
               TextInputFormatter.withFunction((oldValue, newValue) {
