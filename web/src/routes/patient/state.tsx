@@ -23,35 +23,41 @@ function StateEntry({
     <ListGroup.Item>
       <div>{uuid}</div>
       <Stack direction="horizontal" className="gap-1">
-        <div>Zeitlimit:</div>
-        <input
-          type="number"
-          value={state.timelimit}
-          onChange={(event: ChangeEvent<HTMLInputElement>) => {
-            updateActivityDiagram(
-              (draft: WritableDraft<ActivityDiagram>): void => {
-                draft.states[uuid].timelimit = parseInt(event.target.value)
-              },
-            )
-          }}
-        />
-      </Stack>
-      <Stack direction="horizontal" className="gap-1">
         <div>Folgezustand nach Zeitlimit:</div>
         <select
           value={state.after_time_state_uuid}
           onChange={(event: ChangeEvent<HTMLSelectElement>): void => {
-            (draft: WritableDraft<ActivityDiagram>): void => {
-              draft.states[uuid].after_time_state_uuid = event.target.value
-            }
+            updateActivityDiagram(
+              (draft: WritableDraft<ActivityDiagram>): void => {
+                console.log(event.target.value)
+
+                draft.states[uuid].after_time_state_uuid = event.target.value
+              },
+            )
           }}
         >
-          <option>-</option>
+          <option value="">-</option>
           {Object.values(activityDiagram.states).map((s: State) => (
             <option key={s.uuid}>{s.uuid}</option>
           ))}
         </select>
       </Stack>
+      {state.after_time_state_uuid && (
+        <Stack direction="horizontal" className="gap-1">
+          <div>Zeitlimit:</div>
+          <input
+            type="number"
+            value={state.timelimit}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              updateActivityDiagram(
+                (draft: WritableDraft<ActivityDiagram>): void => {
+                  draft.states[uuid].timelimit = parseInt(event.target.value)
+                },
+              )
+            }}
+          />
+        </Stack>
+      )}
       <div>Behandlungen:</div>
       <div>Parameter:</div>
     </ListGroup.Item>
