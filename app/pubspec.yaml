@@ -46,6 +46,7 @@ dependencies:
   provider: ^6.1.2
   shared_preferences: ^2.2.3
   mobile_scanner: ^5.1.0
+  vector_math: ^2.1.4
   url_launcher: ^6.3.0
   video_player: ^2.9.1
   chewie: ^1.8.3

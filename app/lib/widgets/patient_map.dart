@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/patient_service.dart';
 
@@ -9,10 +8,11 @@ class PatientMap extends StatelessWidget {
 
   static const double padding = 50;
 
-  const PatientMap(this.patientLocations, {super.key})
+  const PatientMap(this.patientLocations, this.buildings, {super.key})
       : size = const Size(width, height);
 
   final List<PatientPosition> patientLocations;
+  final List<Rect> buildings;
   final Size size;
 
   @override
@@ -31,7 +31,10 @@ class PatientMap extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight)),
         child: Stack(
-          children: getPatients(context),
+          children: [
+            CustomPaint(painter: _MapRaw(buildings)),
+            ...getPatients(context)
+          ],
         ));
   }
 
@@ -46,5 +49,25 @@ class PatientMap extends StatelessWidget {
                   icon: const Icon(Icons.person)),
             ))
         .toList();
+  }
+}
+
+class _MapRaw extends CustomPainter {
+  _MapRaw(this.buildings);
+
+  final List<Rect> buildings;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint buildingPaint = Paint();
+    for (var building in buildings) {
+      canvas.drawRect(building, buildingPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    // TODO: implement shouldRepaint
+    throw UnimplementedError();
   }
 }
