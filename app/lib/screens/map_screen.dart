@@ -87,9 +87,9 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   @override
   void initState() {
     super.initState();
-    _transformationController = TransformationController(Matrix4.identity()
-      ..setTranslation(Vector3(
-          -widget.child.size.width / 2, -widget.child.size.height / 2, 0)))
+    _transformationController = TransformationController(
+        Matrix4.identity()
+          ..setTranslation(-Vector3(mapSize.width, mapSize.height, 0) / 2))
       ..addListener(_onTransformationControllerChange);
     _animationController = AnimationController(
       vsync: this,
@@ -172,18 +172,34 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Uses vector_math to determine where the path hits the edge.
   Offset getTarget(Offset originalTarget, Offset origin) {
     Offset direction = middle - originalTarget;
-    var renderBox = Aabb3.minMax(Vector3.zero(),
-        Vector3(widget.child.size.width, widget.child.size.height, 0));
     Ray dirRay = Ray.originDirection(
         vector3FromOffset(origin), vector3FromOffset(direction));
-    double distance = dirRay.intersectsWithAabb3(renderBox) ?? 0; // TODO
-    Vector3 intersectionPoint = dirRay.at(distance);
+    Vector3 intersectionPoint = [mapAabb3, ...buildings.map(rectToAabb3)]
+        .map(dirRay.intersectsWithAabb3)
+        .whereType<double>()
+        .map((e) => e * 0.99)
+        .where((element) => element < 0)
+        .map(dirRay.at)
+        .reduce((value, element) =>
+            value.distanceTo(dirRay.origin) < element.distanceTo(dirRay.origin)
+                ? value
+                : element);
     return offsetFromVector3(intersectionPoint);
   }
+
+  List<Rect> get buildings => widget.child.buildings;
+
+  Size get mapSize => widget.child.size;
+
+  Aabb3 get mapAabb3 =>
+      Aabb3.minMax(Vector3.zero(), Vector3(mapSize.width, mapSize.height, 0));
 
   Vector3 vector3FromOffset(Offset offset) => Vector3(offset.dx, offset.dy, 0);
 
   Offset offsetFromVector3(Vector3 vector3) => Offset(vector3.x, vector3.y);
 
   Offset targetCenterToTranslation(Offset center) => -(center - middle);
+
+  Aabb3 rectToAabb3(Rect rect) => Aabb3.minMax(
+      Vector3(rect.left, rect.top, 0), Vector3(rect.right, rect.bottom, 0));
 }

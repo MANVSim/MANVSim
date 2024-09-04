@@ -21,7 +21,6 @@ class PatientMap extends StatelessWidget {
         height: size.height,
         width: size.width,
         decoration: BoxDecoration(
-            border: Border.all(width: 8, color: Colors.black26),
             image: const DecorationImage(
                 opacity: 0.05,
                 repeat: ImageRepeat.repeat,
