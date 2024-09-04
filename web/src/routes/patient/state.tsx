@@ -1,24 +1,57 @@
-import { ReactElement } from "react"
+import { ChangeEvent, ReactElement } from "react"
 import { LoaderFunctionArgs, useLoaderData } from "react-router"
 import { getPatient } from "../../api"
 import { ActivityDiagram, Patient, State } from "../../types"
-import { Button, ListGroup } from "react-bootstrap"
+import { Button, ListGroup, Stack } from "react-bootstrap"
 import { Updater, useImmer } from "use-immer"
 import { Form } from "react-router-dom"
+import { WritableDraft } from "immer"
 
 interface StateEntryProps {
-  state: State
+  uuid: string
+  activityDiagram: ActivityDiagram
   updateActivityDiagram: Updater<ActivityDiagram>
 }
 
-function StateEntry({ state }: StateEntryProps): ReactElement {
+function StateEntry({
+  uuid,
+  activityDiagram,
+  updateActivityDiagram,
+}: StateEntryProps): ReactElement {
+  const state = activityDiagram.states[uuid]
   return (
-    <ListGroup.Item key={state.uuid}>
-      <div>{state.uuid}</div>
-      <div>Zeitlimit: {state.timelimit}</div>
-      <div>
-        Folgezustand nach Zeitlimit: {state.after_time_state_uuid || "-"}
-      </div>
+    <ListGroup.Item>
+      <div>{uuid}</div>
+      <Stack direction="horizontal" className="gap-1">
+        <div>Zeitlimit:</div>
+        <input
+          type="number"
+          value={state.timelimit}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            updateActivityDiagram(
+              (draft: WritableDraft<ActivityDiagram>): void => {
+                draft.states[uuid].timelimit = parseInt(event.target.value)
+              },
+            )
+          }}
+        />
+      </Stack>
+      <Stack direction="horizontal" className="gap-1">
+        <div>Folgezustand nach Zeitlimit:</div>
+        <select
+          value={state.after_time_state_uuid}
+          onChange={(event: ChangeEvent<HTMLSelectElement>): void => {
+            (draft: WritableDraft<ActivityDiagram>): void => {
+              draft.states[uuid].after_time_state_uuid = event.target.value
+            }
+          }}
+        >
+          <option>-</option>
+          {Object.values(activityDiagram.states).map((s: State) => (
+            <option key={s.uuid}>{s.uuid}</option>
+          ))}
+        </select>
+      </Stack>
       <div>Behandlungen:</div>
       <div>Parameter:</div>
     </ListGroup.Item>
@@ -40,7 +73,8 @@ export default function StateRoute(): ReactElement {
           {Object.values(activityDiagram.states).map((state: State) => (
             <StateEntry
               key={state.uuid}
-              state={state}
+              uuid={state.uuid}
+              activityDiagram={activityDiagram}
               updateActivityDiagram={updateActivityDiagram}
             />
           ))}
