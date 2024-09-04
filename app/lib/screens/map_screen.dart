@@ -175,7 +175,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     Ray dirRay = Ray.originDirection(
         vector3FromOffset(origin), vector3FromOffset(direction));
     Vector3 intersectionPoint = [mapAabb3, ...buildings.map(rectToAabb3)]
-        .map(dirRay.intersectsWithAabb3)
+        .map(dirRay.customIntersectsWithAabb3)
         .whereType<double>()
         .map((e) => e * 0.99)
         .where((element) => element < 0)
@@ -202,4 +202,48 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   Aabb3 rectToAabb3(Rect rect) => Aabb3.minMax(
       Vector3(rect.left, rect.top, 0), Vector3(rect.right, rect.bottom, 0));
+}
+
+extension RayIntersectsAabb2 on Ray {
+  double? customIntersectsWithAabb3(Aabb3 aabb3) {
+    final otherMin = aabb3.min;
+    final otherMax = aabb3.max;
+
+    var tNear = -double.maxFinite;
+    var tFar = double.maxFinite;
+
+    for (var i = 0; i < 3; ++i) {
+      if (direction[i] == 0.0) {
+        if (origin[i] < otherMin[i] || origin[i] > otherMax[i]) {
+          return null;
+        }
+      } else {
+        var t1 = (otherMin[i] - origin[i]) / direction[i];
+        var t2 = (otherMax[i] - origin[i]) / direction[i];
+
+        if (t1 > t2) {
+          final temp = t1;
+          t1 = t2;
+          t2 = temp;
+        }
+
+        if (t1 > tNear) {
+          tNear = t1;
+        }
+
+        if (t2 < tFar) {
+          tFar = t2;
+        }
+
+        if (tNear > tFar) {
+          return null;
+        }
+      }
+    }
+    if (tFar < 0) {
+      return tFar;
+    }
+
+    return tNear;
+  }
 }
