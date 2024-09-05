@@ -105,6 +105,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   @override
   Widget build(BuildContext context) {
+    var locationIcon = const Icon(Icons.location_on, color: Colors.blue);
     return Container(
         width: width,
         height: height,
@@ -134,7 +135,12 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
                             //alignment: alignment,
                             child: widget.child,
                           ))))),
-          const Center(child: Icon(Icons.location_on, color: Colors.blue)),
+          Center(
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              locationIcon,
+              Visibility(visible: false, child: locationIcon)
+            ]),
+          )
         ]));
   }
 
