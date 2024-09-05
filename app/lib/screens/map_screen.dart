@@ -174,16 +174,12 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     Offset direction = middle - originalTarget;
     Ray dirRay = Ray.originDirection(
         vector3FromOffset(origin), vector3FromOffset(direction));
-    Vector3 intersectionPoint = [mapAabb3, ...buildings.map(rectToAabb3)]
-        .map(dirRay.customIntersectsWithAabb3)
+    Vector3 intersectionPoint = dirRay.at([mapRect, ...buildings]
+        .map(dirRay.intersectsWithRect)
         .whereType<double>()
-        .map((e) => e * 0.99)
         .where((element) => element < 0)
-        .map(dirRay.at)
-        .reduce((value, element) =>
-            value.distanceTo(dirRay.origin) < element.distanceTo(dirRay.origin)
-                ? value
-                : element);
+        .map((distance) => distance * 0.99)
+        .reduce(max));
     return offsetFromVector3(intersectionPoint);
   }
 
@@ -191,28 +187,26 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   Size get mapSize => widget.child.size;
 
-  Aabb3 get mapAabb3 =>
-      Aabb3.minMax(Vector3.zero(), Vector3(mapSize.width, mapSize.height, 0));
+  Rect get mapRect => Offset.zero & mapSize;
 
   Vector3 vector3FromOffset(Offset offset) => Vector3(offset.dx, offset.dy, 0);
 
   Offset offsetFromVector3(Vector3 vector3) => Offset(vector3.x, vector3.y);
 
   Offset targetCenterToTranslation(Offset center) => -(center - middle);
-
-  Aabb3 rectToAabb3(Rect rect) => Aabb3.minMax(
-      Vector3(rect.left, rect.top, 0), Vector3(rect.right, rect.bottom, 0));
 }
 
 extension RayIntersectsAabb2 on Ray {
-  double? customIntersectsWithAabb3(Aabb3 aabb3) {
-    final otherMin = aabb3.min;
-    final otherMax = aabb3.max;
+  /// Computes the intersection of [rect] and [this].
+  /// Returns the nearest distance, the origin lies inside or outside the graph.
+  double? intersectsWithRect(Rect rect) {
+    final otherMin = Vector2(rect.left, rect.top);
+    final otherMax = Vector2(rect.right, rect.bottom);
 
     var tNear = -double.maxFinite;
     var tFar = double.maxFinite;
 
-    for (var i = 0; i < 3; ++i) {
+    for (var i = 0; i < 2; ++i) {
       if (direction[i] == 0.0) {
         if (origin[i] < otherMin[i] || origin[i] > otherMax[i]) {
           return null;
