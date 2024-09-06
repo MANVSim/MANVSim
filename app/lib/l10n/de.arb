@@ -223,7 +223,8 @@
   "transferDialogueErrorTitle": "Verschieben fehlgeschlagen",
   "transferDialogueDefaultError": "Unbekannter Fehler",
   "transferDialogueErrorText": "Beim Verschieben ist ein Fehler aufgetreten. Bitte später erneut versuchen.",
-  "transferDialogueErrorClose": "Schließen",
+
+  "dialogueClose": "Schließen",
 
   "multiMediaViewImageTitle": "Bild {number}: {title}",
   "@multiMediaViewImageTitle": {

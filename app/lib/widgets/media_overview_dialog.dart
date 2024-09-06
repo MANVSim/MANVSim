@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/multi_media.dart';
 import 'package:manvsim/widgets/muti_media_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MediaOverViewDialog extends StatefulWidget {
 
@@ -30,7 +31,7 @@ class _MediaOverViewDialogState extends State<MediaOverViewDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Schließen'),
+          child: Text(AppLocalizations.of(context)!.dialogueClose),
         ),
       ],
     );

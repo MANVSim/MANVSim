@@ -220,7 +220,7 @@ class TransferDialogueState extends State<TransferDialogue> {
               Navigator.of(context).pop();
             },
             child:
-                Text(AppLocalizations.of(context)!.transferDialogueErrorClose))
+                Text(AppLocalizations.of(context)!.dialogueClose))
       ],
     );
   }
