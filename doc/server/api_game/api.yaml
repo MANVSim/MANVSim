@@ -596,19 +596,7 @@ components:
         location:
           $ref: '#/components/schemas/LocationDTO'
         media_references:
-          type: array
-          items:
-            type: object
-            properties:
-              media_type:
-                type: string
-              title:
-                type: string
-              text:
-                type: string
-              media_reference:
-                type: string
-            required: [ media_type ]
+          $ref: '#/components/schemas/MediaReferencesDTO'
       required: [ id, name, location, media_references ]
 
     LocationDTO:
@@ -634,6 +622,8 @@ components:
     ResourceDTO:
       type: object
       properties:
+        media_references:
+          $ref: '#/components/schemas/MediaReferencesDTO'
         id:
           type: integer
         name:
@@ -656,19 +646,7 @@ components:
           items:
             type: string
         media_references:
-          type: array
-          items:
-            type: object
-            properties:
-              media_type:
-                type: string
-              title:
-                type: string
-              text:
-                type: string
-              media_reference:
-                type: string
-            required: [media_type]
+          $ref: '#/components/schemas/MediaReferencesDTO'
       required: [ id, name, duration_sec, resources_needed ]
 
     MediaReferencesDTO:
