@@ -178,12 +178,14 @@ class MediaReferencesDTOInnerMediaTypeEnum {
   static const IMAGE = MediaReferencesDTOInnerMediaTypeEnum._(r'IMAGE');
   static const VIDEO = MediaReferencesDTOInnerMediaTypeEnum._(r'VIDEO');
   static const TEXT = MediaReferencesDTOInnerMediaTypeEnum._(r'TEXT');
+  static const AUDIO = MediaReferencesDTOInnerMediaTypeEnum._(r'AUDIO');
 
   /// List of all possible values in this [enum][MediaReferencesDTOInnerMediaTypeEnum].
   static const values = <MediaReferencesDTOInnerMediaTypeEnum>[
     IMAGE,
     VIDEO,
     TEXT,
+    AUDIO,
   ];
 
   static MediaReferencesDTOInnerMediaTypeEnum? fromJson(dynamic value) => MediaReferencesDTOInnerMediaTypeEnumTypeTransformer().decode(value);
@@ -225,6 +227,7 @@ class MediaReferencesDTOInnerMediaTypeEnumTypeTransformer {
         case r'IMAGE': return MediaReferencesDTOInnerMediaTypeEnum.IMAGE;
         case r'VIDEO': return MediaReferencesDTOInnerMediaTypeEnum.VIDEO;
         case r'TEXT': return MediaReferencesDTOInnerMediaTypeEnum.TEXT;
+        case r'AUDIO': return MediaReferencesDTOInnerMediaTypeEnum.AUDIO;
         default:
           if (!allowNull) {
             throw ArgumentError('Unknown enum value to decode: $data');

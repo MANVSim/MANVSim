@@ -663,6 +663,7 @@ components:
                   - IMAGE
                   - VIDEO
                   - TEXT
+                  - AUDIO
                 description: The type of media referenced.
               text:
                 type:
