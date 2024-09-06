@@ -3,7 +3,8 @@ import 'package:manv_api/api.dart';
 enum MediaType {
   image,
   video,
-  text;
+  text,
+  audio;
 
   static MediaType fromString(String type) {
     switch (type.toLowerCase()) {
@@ -13,6 +14,8 @@ enum MediaType {
         return MediaType.video;
       case 'text':
         return MediaType.text;
+      case 'audio':
+        return MediaType.audio;
       default:
         throw ArgumentError('Unknown media type: $type');
     }
