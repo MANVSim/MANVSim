@@ -19,6 +19,7 @@ services:
     build:
       context: app
       dockerfile: Dockerfile
+      target: serve-prod
     ports:
       - "5001:5001"
     depends_on:
