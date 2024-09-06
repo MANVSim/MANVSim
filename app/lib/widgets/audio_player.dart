@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 
-
 class AudioPlayerWidget extends StatefulWidget {
   final AudioPlayer player;
 
@@ -46,14 +45,14 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     _playerState = player.state;
     player.getDuration().then(
           (value) => setState(() {
-        _duration = value;
-      }),
-    );
+            _duration = value;
+          }),
+        );
     player.getCurrentPosition().then(
           (value) => setState(() {
-        _position = value;
-      }),
-    );
+            _position = value;
+          }),
+        );
     _initStreams();
   }
 
@@ -79,68 +78,68 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   Widget build(BuildContext context) {
     final color = Theme.of(context).primaryColor;
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: color,
-          width: 1,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: color,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(4.0),
         ),
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              key: const Key('play_button'),
-              onPressed: _isPlaying ? null : _play,
-              iconSize: 48.0,
-              icon: const Icon(Icons.play_arrow),
-              color: color,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  key: const Key('play_button'),
+                  onPressed: _isPlaying ? null : _play,
+                  iconSize: 48.0,
+                  icon: const Icon(Icons.play_arrow),
+                  color: color,
+                ),
+                IconButton(
+                  key: const Key('pause_button'),
+                  onPressed: _isPlaying ? _pause : null,
+                  iconSize: 48.0,
+                  icon: const Icon(Icons.pause),
+                  color: color,
+                ),
+                IconButton(
+                  key: const Key('stop_button'),
+                  onPressed: _isPlaying || _isPaused ? _stop : null,
+                  iconSize: 48.0,
+                  icon: const Icon(Icons.stop),
+                  color: color,
+                ),
+              ],
             ),
-            IconButton(
-              key: const Key('pause_button'),
-              onPressed: _isPlaying ? _pause : null,
-              iconSize: 48.0,
-              icon: const Icon(Icons.pause),
-              color: color,
+            Slider(
+              onChanged: (value) {
+                final duration = _duration;
+                if (duration == null) {
+                  return;
+                }
+                final position = value * duration.inMilliseconds;
+                player.seek(Duration(milliseconds: position.round()));
+              },
+              value: (_position != null &&
+                      _duration != null &&
+                      _position!.inMilliseconds > 0 &&
+                      _position!.inMilliseconds < _duration!.inMilliseconds)
+                  ? _position!.inMilliseconds / _duration!.inMilliseconds
+                  : 0.0,
             ),
-            IconButton(
-              key: const Key('stop_button'),
-              onPressed: _isPlaying || _isPaused ? _stop : null,
-              iconSize: 48.0,
-              icon: const Icon(Icons.stop),
-              color: color,
+            Text(
+              _position != null
+                  ? '$_positionText / $_durationText'
+                  : _duration != null
+                      ? _durationText
+                      : '',
+              style: const TextStyle(fontSize: 16.0),
             ),
           ],
-        ),
-        Slider(
-          onChanged: (value) {
-            final duration = _duration;
-            if (duration == null) {
-              return;
-            }
-            final position = value * duration.inMilliseconds;
-            player.seek(Duration(milliseconds: position.round()));
-          },
-          value: (_position != null &&
-              _duration != null &&
-              _position!.inMilliseconds > 0 &&
-              _position!.inMilliseconds < _duration!.inMilliseconds)
-              ? _position!.inMilliseconds / _duration!.inMilliseconds
-              : 0.0,
-        ),
-        Text(
-          _position != null
-              ? '$_positionText / $_durationText'
-              : _duration != null
-              ? _durationText
-              : '',
-          style: const TextStyle(fontSize: 16.0),
-        ),
-      ],
-    ));
+        ));
   }
 
   void _initStreams() {
@@ -149,7 +148,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     });
 
     _positionSubscription = player.onPositionChanged.listen(
-          (p) => setState(() => _position = p),
+      (p) => setState(() => _position = p),
     );
 
     _playerCompleteSubscription = player.onPlayerComplete.listen((event) {
@@ -161,10 +160,10 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
     _playerStateChangeSubscription =
         player.onPlayerStateChanged.listen((state) {
-          setState(() {
-            _playerState = state;
-          });
-        });
+      setState(() {
+        _playerState = state;
+      });
+    });
   }
 
   Future<void> _play() async {

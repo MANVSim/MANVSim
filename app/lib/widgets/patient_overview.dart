@@ -5,7 +5,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:manvsim/widgets/media_overview_expansion.dart';
 
-
 class PatientOverview extends StatefulWidget {
   final Patient patient;
 
@@ -16,7 +15,6 @@ class PatientOverview extends StatefulWidget {
 }
 
 class _PatientOverviewState extends State<PatientOverview> {
-
   @override
   Widget build(BuildContext context) {
     return MediaOverviewExpansion(media: widget.patient.media, children: [

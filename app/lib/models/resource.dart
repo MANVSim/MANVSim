@@ -9,9 +9,17 @@ class Resource {
   int quantity;
   bool selected = false;
 
-  Resource({required this.id, required this.name, required this.quantity, required this.media});
+  Resource(
+      {required this.id,
+      required this.name,
+      required this.quantity,
+      required this.media});
 
   factory Resource.fromApi(ResourceDTO dto) {
-    return Resource(id: dto.id, name: dto.name, quantity: dto.quantity, media: MultiMediaCollectionExtension.fromApi(dto.mediaReferences));
+    return Resource(
+        id: dto.id,
+        name: dto.name,
+        quantity: dto.quantity,
+        media: MultiMediaCollectionExtension.fromApi(dto.mediaReferences));
   }
 }

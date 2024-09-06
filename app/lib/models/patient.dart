@@ -8,14 +8,17 @@ class Patient {
   final Location location;
   final MultiMediaCollection media;
 
-  Patient({required this.id, required this.name, required this.location, required this.media});
+  Patient(
+      {required this.id,
+      required this.name,
+      required this.location,
+      required this.media});
 
   factory Patient.fromApi(PatientDTO dto) {
     return Patient(
         id: dto.id,
         name: dto.name,
         location: Location.fromApi(dto.location),
-        media:
-            MultiMediaCollectionExtension.fromApi(dto.mediaReferences));
+        media: MultiMediaCollectionExtension.fromApi(dto.mediaReferences));
   }
 }

@@ -29,7 +29,6 @@ class MultiMediaItem {
   String? title;
 
   factory MultiMediaItem.fromApi(MediaReferencesDTOInner referenceDto) {
-
     return MultiMediaItem(
       reference: referenceDto.mediaReference,
       type: MediaType.fromString(referenceDto.mediaType.toString()),
@@ -44,7 +43,8 @@ class MultiMediaItem {
 typedef MultiMediaCollection = List<MultiMediaItem>;
 
 extension MultiMediaCollectionExtension on MultiMediaCollection {
-  static MultiMediaCollection fromApi(List<MediaReferencesDTOInner> mediaReferencesDTOList) {
+  static MultiMediaCollection fromApi(
+      List<MediaReferencesDTOInner> mediaReferencesDTOList) {
     return mediaReferencesDTOList
         .map((mediaReferenceDto) => MultiMediaItem.fromApi(mediaReferenceDto))
         .toList();

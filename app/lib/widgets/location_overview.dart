@@ -15,7 +15,6 @@ class LocationOverview extends StatefulWidget {
 }
 
 class _LocationOverviewState extends State<LocationOverview> {
-
   @override
   Widget build(BuildContext context) {
     return MediaOverviewExpansion(media: widget.location.media, children: [

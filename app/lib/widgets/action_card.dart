@@ -36,15 +36,14 @@ class _ActionCardState extends State<ActionCard> {
             title: Text(widget.action.name),
             trailing: (widget.action.media.isNotEmpty)
                 ? IconButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) =>
-                          MediaOverViewDialog(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => MediaOverViewDialog(
                               title: widget.action.name,
                               media: widget.action.media));
-                },
-                icon: const Icon(icons.Icons.info))
+                    },
+                    icon: const Icon(icons.Icons.info))
                 : null,
             controlAffinity: ListTileControlAffinity.leading,
             // removes border on top and bottom

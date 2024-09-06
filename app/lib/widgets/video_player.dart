@@ -14,7 +14,6 @@ class VideoPlayer extends StatefulWidget {
 }
 
 class _VideoPlayerState extends State<VideoPlayer> {
-
   late flutter_video_player.VideoPlayerController _controller;
   bool _loading = true;
 

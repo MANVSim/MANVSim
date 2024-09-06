@@ -21,7 +21,6 @@ class PatientAction {
         name: dto.name,
         durationInSeconds: dto.durationSec,
         resourceNamesNeeded: dto.resourcesNeeded,
-        media: MultiMediaCollectionExtension.fromApi(dto.mediaReferences)
-    );
+        media: MultiMediaCollectionExtension.fromApi(dto.mediaReferences));
   }
 }
