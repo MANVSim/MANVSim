@@ -5,14 +5,12 @@ class PatientAction {
   final String name;
   final int durationInSeconds;
   final List<String> resourceNamesNeeded;
-  final String? pictureRef;
 
   PatientAction(
       {required this.id,
       required this.name,
       required this.durationInSeconds,
-      required this.resourceNamesNeeded,
-      this.pictureRef});
+      required this.resourceNamesNeeded});
 
   factory PatientAction.fromApi(ActionDTO dto) {
     return PatientAction(
@@ -20,7 +18,6 @@ class PatientAction {
         name: dto.name,
         durationInSeconds: dto.durationSec,
         resourceNamesNeeded: dto.resourcesNeeded,
-        pictureRef: null // TODO
     );
   }
 }
