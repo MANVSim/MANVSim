@@ -83,11 +83,11 @@ class MediaData:
     @classmethod
     def new_video(cls, video_reference: str,
                   title: Optional[str] = None) -> 'MediaData':
-        return cls(media_type=cls.Type.IMAGE, media_reference=video_reference,
+        return cls(media_type=cls.Type.VIDEO, media_reference=video_reference,
                    title=title)
 
     @classmethod
     def new_audio(cls, audio_reference: str,
               title: Optional[str] = None) -> 'MediaData':
-        return cls(media_type=cls.Type.IMAGE, media_reference=audio_reference,
+        return cls(media_type=cls.Type.AUDIO, media_reference=audio_reference,
                    title=title)
