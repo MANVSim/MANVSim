@@ -70,7 +70,7 @@ class _MultiMediaViewState extends State<MultiMediaView> {
   Widget _buildSubtitledItem(
       {required MultiMediaItem item,
       required int index,
-      required String subtitle,
+      required String Function(int, String) getSubtitle,
       required Widget child}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +86,7 @@ class _MultiMediaViewState extends State<MultiMediaView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                subtitle,
+                getSubtitle(getMediaTypeNumber(index), item.title!),
                 style: Theme.of(context).textTheme.labelMedium,
               ),
             ],
@@ -103,8 +103,7 @@ class _MultiMediaViewState extends State<MultiMediaView> {
     return _buildSubtitledItem(
         item: item,
         index: index,
-        subtitle: AppLocalizations.of(context)!
-            .multiMediaViewAudioTitle(getMediaTypeNumber(index), item.title!),
+        getSubtitle: AppLocalizations.of(context)!.multiMediaViewAudioTitle,
         child: AudioPlayerWidget(player: player));
   }
 
@@ -120,8 +119,7 @@ class _MultiMediaViewState extends State<MultiMediaView> {
                 item.reference ?? "", error.toString()),
           ),
         ),
-        subtitle: AppLocalizations.of(context)!
-            .multiMediaViewImageTitle(getMediaTypeNumber(index), item.title!));
+        getSubtitle: AppLocalizations.of(context)!.multiMediaViewImageTitle);
   }
 
   Widget _buildVideoItem(MultiMediaItem item, int index) {
@@ -129,8 +127,7 @@ class _MultiMediaViewState extends State<MultiMediaView> {
         item: item,
         index: index,
         child: VideoPlayer(videoUrl: buildMediaUrl(item.reference!)),
-        subtitle: AppLocalizations.of(context)!
-            .multiMediaViewVideoTitle(getMediaTypeNumber(index), item.title!));
+        getSubtitle: AppLocalizations.of(context)!.multiMediaViewVideoTitle);
   }
 
   Widget _buildTextItem(MultiMediaItem item) {
