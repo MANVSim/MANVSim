@@ -291,7 +291,7 @@ class LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               const SizedBox(
-                height: 30,
+                height: 32,
               ),
               if (kIsWeb) _androidAppDownloadButton()
             ],

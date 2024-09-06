@@ -20,11 +20,11 @@ jobs:
      with:
        flutter-version: '3.24.1'
        channel: stable
-   - name: pub get 
+   - name: pub get
      working-directory: app
      run: flutter pub get
      
-   - working-directory: app 
+   - working-directory: app
      run: flutter build apk
     
    - working-directory: app 
