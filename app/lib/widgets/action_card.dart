@@ -4,6 +4,10 @@ import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/patient_action.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:manvsim/constants/icons.dart' as icons;
+
+import 'media_overview_dialog.dart';
+
 class ActionCard extends StatefulWidget {
   final PatientAction action;
   final Patient patient;
@@ -30,6 +34,18 @@ class _ActionCardState extends State<ActionCard> {
             : Theme.of(context).disabledColor.withOpacity(0.2),
         child: ExpansionTile(
             title: Text(widget.action.name),
+            trailing: (widget.action.media.isNotEmpty)
+                ? IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) =>
+                          MediaOverViewDialog(
+                              title: widget.action.name,
+                              media: widget.action.media));
+                },
+                icon: const Icon(icons.Icons.info))
+                : null,
             controlAffinity: ListTileControlAffinity.leading,
             // removes border on top and bottom
             shape: const Border(),
