@@ -170,6 +170,10 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
 
   @override
   Widget build(BuildContext context) {
+
+    bool selectable =
+        widget.onLocationSelected != null && widget.rootLocationsSelectable;
+
     return ListView.builder(
         shrinkWrap: true, // nested scrolling
         physics: const ClampingScrollPhysics(),
@@ -189,18 +193,31 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
                   }
                 },
                 initiallyExpanded: widget.initiallyExpanded,
-                title: Row(
-                  children: [
-                    Text(location.name),
-                    const Spacer(),
-                    if (widget.onLocationSelected != null && widget.rootLocationsSelectable)
-                      ElevatedButton(
-                          child: Text(_isLocationSelected(locationIndex)
-                              ? (AppLocalizations.of(context)!.resourceDirectoryUnselectLocation)
-                              : (AppLocalizations.of(context)!.resourceDirectorySelectLocation)),
-                          onPressed: () => _locationSelected(locationIndex))
-                  ],
-                ),
+                title: Text(location.name),
+                trailing: (selectable || (location.media.isNotEmpty && widget.rootLocationsSelectable))
+                    ? Row(mainAxisSize: MainAxisSize.min,
+                    children: [
+                        if (selectable)
+                          ElevatedButton(
+                              child: Text(_isLocationSelected(locationIndex)
+                                  ? (AppLocalizations.of(context)!
+                                      .resourceDirectoryUnselectLocation)
+                                  : (AppLocalizations.of(context)!
+                                      .resourceDirectorySelectLocation)),
+                              onPressed: () =>
+                                  _locationSelected(locationIndex)),
+                        if (location.media.isNotEmpty && widget.rootLocationsSelectable)
+                          IconButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => MediaOverViewDialog(
+                                        title: location.name,
+                                        media: location.media));
+                              },
+                              icon: const Icon(icons.Icons.info))
+                      ])
+                    : null,
                 controlAffinity: ListTileControlAffinity.leading,
                 // removes border on top and bottom
                 shape: const Border(),
