@@ -12,6 +12,7 @@ services:
       - "5000:5000"
     volumes:
       - manvsim-db:/usr/src/app/server/instance
+      - manvsim-db:/usr/src/app/server/media/instance
 
 
   app:
