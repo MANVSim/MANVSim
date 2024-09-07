@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/resource.dart';
 
-import 'package:manvsim/constants/icons.dart' as icons;
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:manvsim/widgets/media_overview_dialog.dart';
+import 'package:manvsim/widgets/media_info.dart';
 
 class ResourceDirectory extends StatefulWidget {
   final List<Location> locations;
@@ -214,15 +212,7 @@ class _InternalResourceDirectoryState
                                   _locationSelected(locationIndex)),
                         if (location.media.isNotEmpty &&
                             widget.rootLocationsSelectable)
-                          IconButton(
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => MediaOverViewDialog(
-                                        title: location.name,
-                                        media: location.media));
-                              },
-                              icon: const Icon(icons.Icons.info))
+                          MediaInfo(title: location.name, media: location.media)
                       ])
                     : null,
                 controlAffinity: ListTileControlAffinity.leading,
@@ -246,16 +236,9 @@ class _InternalResourceDirectoryState
                                   : '\u221e'),
                               title: Text(resource.name),
                               trailing: (resource.media.isNotEmpty)
-                                  ? IconButton(
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) =>
-                                                MediaOverViewDialog(
-                                                    title: resource.name,
-                                                    media: resource.media));
-                                      },
-                                      icon: const Icon(icons.Icons.info))
+                                  ? MediaInfo(
+                                      title: resource.name,
+                                      media: resource.media)
                                   : null,
                               onTap: () {
                                 widget.resourceToggle(resource);
