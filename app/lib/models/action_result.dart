@@ -1,6 +1,6 @@
 import 'package:manv_api/api.dart';
 import 'package:manvsim/models/patient.dart';
-import 'package:manvsim/models/patient_action.dart';
+import 'package:manvsim/models/performed_actions.dart';
 
 import 'conditions.dart';
 
@@ -8,14 +8,17 @@ class ActionResult {
 
   final Patient patient;
   final Conditions conditions;
-  final PatientAction action;
+  final PerformedAction performedAction;
 
-  ActionResult({required this.patient, required this.conditions, required this.action});
+  ActionResult({required this.patient, required this.conditions, required this.performedAction});
 
-  factory ActionResult.fromApi(RunActionPerformResultGet200Response response, PatientAction sourceAction) {
+  factory ActionResult.fromApi(RunActionPerformResultGet200Response response, String resultId) {
+
+    Patient patient = Patient.fromApi(response.patient);
+
     return ActionResult(
-        action: sourceAction,
-        patient: Patient.fromApi(response.patient),
+        performedAction: patient.getPerformedActionById(resultId),
+        patient: patient,
         conditions: ConditionsExtension.fromApi(response.conditions)
     );
   }
