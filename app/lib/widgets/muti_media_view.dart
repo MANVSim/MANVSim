@@ -137,7 +137,7 @@ class _MultiMediaViewState extends State<MultiMediaView> {
         if (item.title != null)
           Text(
             item.title!,
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
         if (item.text != null)
           Text(
