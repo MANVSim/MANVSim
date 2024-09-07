@@ -44,7 +44,6 @@ class _ActionScreenState extends State<ActionScreen> {
       MaterialPageRoute(
         builder: (context) => ActionResultScreen(
             patient: widget.patient,
-            performedAction: widget.action,
             performedActionId: actionId),
       ),
     );

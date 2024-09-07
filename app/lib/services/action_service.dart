@@ -4,6 +4,8 @@ import 'package:manvsim/models/action_result.dart';
 import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/services/api_service.dart';
 
+import '../models/patient.dart';
+
 /// Provides methods to manage [PatientAction].
 ///
 /// Doesn't offer error handling.
@@ -24,12 +26,12 @@ class ActionService {
   }
 
   static Future<ActionResult?> fetchActionResult(
-      int patientId, String performedActionId, PatientAction sourceAction) async {
+      Patient patient, String performedActionId) async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api
-        .runActionPerformResultGet(performedActionId, patientId)
+        .runActionPerformResultGet(performedActionId, patient.id)
         .then((response) => response != null
-            ? ActionResult.fromApi(response, sourceAction)
+            ? ActionResult.fromApi(response, performedActionId)
             : null);
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/conditions.dart';
-import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/action_overview.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
@@ -16,9 +15,8 @@ class ActionResultScreen extends StatefulWidget {
 
   final Patient patient;
   final String performedActionId;
-  final PatientAction performedAction;
 
-  const ActionResultScreen({super.key, required this.patient, required this.performedActionId, required this.performedAction});
+  const ActionResultScreen({super.key, required this.patient, required this.performedActionId});
 
   @override
   State<ActionResultScreen> createState() => _ActionResultScreenState();
@@ -32,7 +30,7 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
   void initState() {
     super.initState();
     futureActionResult = ActionService.fetchActionResult(
-        widget.patient.id, widget.performedActionId, widget.performedAction);
+        widget.patient, widget.performedActionId);
   }
 
   _buildConditionOverview(Condition condition) {
@@ -91,10 +89,10 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
                 return Column(children: [
                   Card(
                       child: ActionOverview(
-                          action: actionResult.action,
+                          action: actionResult.performedAction.action,
                           patient: actionResult.patient)),
                   const Text('Verwendete Ressourcen'),
-                  _buildUsedResources(actionResult.action.resourceNamesNeeded),
+                  _buildUsedResources(actionResult.performedAction.action.resourceNamesNeeded),
                   const Text('Ergebnis(se)'),
                   ListView.builder(
                     shrinkWrap: true, // nested scrolling
