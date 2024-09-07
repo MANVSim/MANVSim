@@ -8,4 +8,6 @@ class Icons {
   static const IconData locationOutlined = material.Icons.location_on_outlined;
 
   static const IconData info = material.Icons.info;
+
+  static const IconData action = material.Icons.medical_information_rounded;
 }

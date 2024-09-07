@@ -1,15 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:manvsim/models/action_result.dart';
 import 'package:manvsim/models/patient.dart';
 
 import 'package:manvsim/models/patient_action.dart';
-import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/action_service.dart';
+import 'package:manvsim/widgets/action_overview.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
-import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'action_result_screen.dart';
 
 class ActionScreen extends StatefulWidget {
   final PatientAction action;
@@ -28,7 +30,6 @@ class ActionScreen extends StatefulWidget {
 
 class _ActionScreenState extends State<ActionScreen> {
   late Future<String?> futureActionId;
-  late Future<ConditionPatient?> futureResult;
   Patient? patient;
 
   @override
@@ -45,21 +46,30 @@ class _ActionScreenState extends State<ActionScreen> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(AppLocalizations.of(context)!
               .actionScreenTitle(widget.patient.name, widget.action.name)),
-          actions: const <Widget>[LogoutButton()],
           automaticallyImplyLeading: false,
         ),
-        body: Center(
-            child: ApiFutureBuilder<String>(
-                future: futureActionId,
-                builder: (context, actionId) {
-                  return TimerWidget(
-                    duration: Duration(seconds: widget.action.durationInSeconds),
-                    onTimerComplete: () =>
-                        showResultDialog(successContent(actionId)),
-                  );
-                },
-                onError: () =>
-                    Timer.run(() => showResultDialog(failureContent())))));
+        body: Column(
+          children: [
+            Card(
+              child: ActionOverview(
+                  action: widget.action, patient: widget.patient, showMediaInfo: false,),
+            ),
+            Expanded(
+                child: Center(
+                    child: ApiFutureBuilder<String>(
+                        future: futureActionId,
+                        builder: (context, actionId) {
+                          return TimerWidget(
+                            duration: Duration(
+                                seconds: widget.action.durationInSeconds),
+                            onTimerComplete: () =>
+                                showResultDialog(successContent(actionId)),
+                          );
+                        },
+                        onError: () => Timer.run(
+                            () => showResultDialog(failureContent())))))
+          ],
+        ));
   }
 
   void showResultDialog(Widget content) {
@@ -83,24 +93,27 @@ class _ActionScreenState extends State<ActionScreen> {
   }
 
   Widget successContent(String performedActionId) {
-    futureResult =
-        ActionService.fetchActionResult(widget.patient.id, performedActionId);
-    return ApiFutureBuilder<ConditionPatient>(
-        future: futureResult,
-        builder: (context, conditionPatient) {
-          var (condition, patient) = conditionPatient;
-          this.patient = patient;
-          var conditionList = condition.entries.toList();
-          return ListView.builder(
-              shrinkWrap: true, // nested scrolling
-              physics: const ClampingScrollPhysics(),
-              itemCount: conditionList.length,
-              itemBuilder: (context, index) => Row(children: [
-                    Text("${conditionList[index].key}: ",
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text(conditionList[index].value)
-                  ]));
-        });
+    late Future<ActionResult?> futureResult = ActionService.fetchActionResult(
+        widget.patient.id, performedActionId, widget.action);
+
+    futureResult.then((result) {
+      if (result != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ActionResultScreen(actionResult: result),
+          ),
+        );
+      } else {
+      }
+    });
+
+    return const Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CircularProgressIndicator(),
+      ],
+    );
   }
 
   Widget failureContent() {
