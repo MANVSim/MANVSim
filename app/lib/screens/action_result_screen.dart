@@ -4,7 +4,7 @@ import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/action_overview.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/media_info.dart';
-import 'package:manvsim/widgets/muti_media_view.dart';
+import 'package:manvsim/widgets/media_overview_expansion.dart';
 
 import '../models/action_result.dart';
 
@@ -41,18 +41,8 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
     );
 
     return Card(
-        child: condition.media.isEmpty
-            ? Padding(padding: const EdgeInsets.all(8), child: title)
-            : ExpansionTile(
-                controlAffinity: ListTileControlAffinity.trailing,
-                initiallyExpanded: true,
-                shape: const Border(),
-                childrenPadding: const EdgeInsets.only(left: 8.0),
-                title: title,
-                children: [
-                  MultiMediaView(multiMediaCollection: condition.media),
-                ],
-              ));
+        child:
+            MediaOverviewExpansion(media: condition.media, children: [title]));
   }
 
   _buildUsedResources(List<Resource> resources) {
@@ -60,7 +50,7 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
         child: SizedBox(
             width: double.infinity,
             child: Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(16),
                 child: (resources.isEmpty)
                     ? Text(
                         AppLocalizations.of(context)!.actionNoNeededResources)
