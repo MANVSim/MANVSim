@@ -1,8 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
-import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/models/action_result.dart';
 import 'package:manvsim/models/patient_action.dart';
-import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/api_service.dart';
 
 /// Provides methods to manage [PatientAction].
@@ -24,13 +23,13 @@ class ActionService {
         .then((response) => response?.performedActionId);
   }
 
-  static Future<ConditionPatient?> fetchActionResult(
-      int patientId, String performedActionId) async {
+  static Future<ActionResult?> fetchActionResult(
+      int patientId, String performedActionId, PatientAction sourceAction) async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api
         .runActionPerformResultGet(performedActionId, patientId)
-        .then((response) => response?.patient != null
-            ? ((response?.conditions)!, Patient.fromApi((response?.patient)!))
+        .then((response) => response != null
+            ? ActionResult.fromApi(response, sourceAction)
             : null);
   }
 }
