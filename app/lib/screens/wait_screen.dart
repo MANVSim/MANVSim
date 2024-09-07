@@ -219,7 +219,7 @@ class _WaitScreenState extends State<WaitScreen> {
                   duration: Duration(seconds: _waitTimeSeconds),
                   onTimerComplete: _handleTimerComplete)
             else
-              CircularProgressIndicator(),
+              const CircularProgressIndicator(),
             if (true) ...[ // TODO: #228 use kDebugMode instead of true
               const SizedBox(height: 64),
               ElevatedButton.icon(

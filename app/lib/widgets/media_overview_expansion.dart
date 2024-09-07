@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/constants/icons.dart' as icons;
 import 'package:manvsim/models/multi_media.dart';

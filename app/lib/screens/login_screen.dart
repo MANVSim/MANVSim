@@ -22,7 +22,7 @@ class LoginScreen extends StatefulWidget {
   State<StatefulWidget> createState() => LoginScreenState();
 }
 
-enum _LoginInputType { TAN, URL }
+enum _LoginInputType { tan, url }
 
 class LoginScreenState extends State<LoginScreen> {
 
@@ -57,10 +57,10 @@ class LoginScreenState extends State<LoginScreen> {
       bool tanFailure = _tanInputFailure;
       bool urlFailure = _urlInputFailure;
       switch (inputType) {
-        case _LoginInputType.TAN:
+        case _LoginInputType.tan:
           tanFailure = false;
           break;
-        case _LoginInputType.URL:
+        case _LoginInputType.url:
           urlFailure = false;
           break;
         case null:
@@ -180,7 +180,7 @@ class LoginScreenState extends State<LoginScreen> {
       final [url, ..., tan] = scannedText.split(';');
 
       _serverUrlController.text = url;
-      for (int i = 0; i < min(TanInputController.TAN_LENGTH, tan.length); i++) {
+      for (int i = 0; i < min(TanInputController.tanLength, tan.length); i++) {
         _tanInputController.updateValue(i, tan.toUpperCase()[i]);
       }
     }
@@ -216,7 +216,7 @@ class LoginScreenState extends State<LoginScreen> {
                 controller: _tanInputController,
                 decoration: _textFieldDecoration(_tanInputFailure, ""),
                 onChanged: (value) {
-                  if (value.isNotEmpty) _resetErrorMessage(_LoginInputType.TAN);
+                  if (value.isNotEmpty) _resetErrorMessage(_LoginInputType.tan);
                 },
               ),
               const SizedBox(height: 32),
@@ -235,7 +235,7 @@ class LoginScreenState extends State<LoginScreen> {
                   controller: _serverUrlController,
                   decoration: _textFieldDecoration(_urlInputFailure,
                       AppLocalizations.of(context)!.loginServerUrl),
-                  onChanged: (value) => _resetErrorMessage(_LoginInputType.URL),
+                  onChanged: (value) => _resetErrorMessage(_LoginInputType.url),
                 ),
               const SizedBox(height: 32),
               if (_isLoading)
