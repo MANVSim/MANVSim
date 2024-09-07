@@ -481,9 +481,7 @@ paths:
                 required: [ conditions, patient ]
                 properties:
                   conditions:
-                    type: object
-                    additionalProperties:
-                      type: string
+                    $ref: '#/components/schemas/ConditionDTO'
                   patient:
                     $ref: '#/components/schemas/PatientDTO'
         '204':
@@ -677,6 +675,10 @@ components:
               - media_type
             additionalProperties: false
 
+    ConditionDTO:
+        type: object
+        additionalProperties:
+          $ref: '#/components/schemas/MediaReferencesDTO'
     Error:
       type: object
       properties:
