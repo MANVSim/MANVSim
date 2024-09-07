@@ -198,6 +198,8 @@ class ApiClient {
           return NotificationsGet200Response.fromJson(value);
         case 'PatientDTO':
           return PatientDTO.fromJson(value);
+        case 'PerformedActionDTO':
+          return PerformedActionDTO.fromJson(value);
         case 'PlayerSetNamePost401Response':
           return PlayerSetNamePost401Response.fromJson(value);
         case 'PlayerSetNamePostRequest':

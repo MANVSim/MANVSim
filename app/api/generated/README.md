@@ -87,6 +87,7 @@ Class | Method | HTTP request | Description
  - [MediaReferencesDTOInner](doc//MediaReferencesDTOInner.md)
  - [NotificationsGet200Response](doc//NotificationsGet200Response.md)
  - [PatientDTO](doc//PatientDTO.md)
+ - [PerformedActionDTO](doc//PerformedActionDTO.md)
  - [PlayerSetNamePost401Response](doc//PlayerSetNamePost401Response.md)
  - [PlayerSetNamePostRequest](doc//PlayerSetNamePostRequest.md)
  - [ResourceDTO](doc//ResourceDTO.md)
