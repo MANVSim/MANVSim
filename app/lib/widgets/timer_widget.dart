@@ -76,7 +76,7 @@ class TimerWidgetState extends State<TimerWidget> {
             value: progressValue,
             strokeWidth: 8.0,
             backgroundColor: Colors.grey[200],
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary,),
           ),
         ),
         Text(
