@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:manvsim/models/action_result.dart';
 import 'package:manvsim/models/patient.dart';
 
 import 'package:manvsim/models/patient_action.dart';
@@ -39,6 +38,18 @@ class _ActionScreenState extends State<ActionScreen> {
     super.initState();
   }
 
+  void onTimerComplete(String actionId) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ActionResultScreen(
+            patient: widget.patient,
+            performedAction: widget.action,
+            performedActionId: actionId),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,8 +73,7 @@ class _ActionScreenState extends State<ActionScreen> {
                           return TimerWidget(
                             duration: Duration(
                                 seconds: widget.action.durationInSeconds),
-                            onTimerComplete: () =>
-                                showResultDialog(successContent(actionId)),
+                            onTimerComplete: () => onTimerComplete(actionId),
                           );
                         },
                         onError: () => Timer.run(
@@ -90,30 +100,6 @@ class _ActionScreenState extends State<ActionScreen> {
     dialogFuture.whenComplete(() {
       Navigator.pop(context, patient);
     });
-  }
-
-  Widget successContent(String performedActionId) {
-    late Future<ActionResult?> futureResult = ActionService.fetchActionResult(
-        widget.patient.id, performedActionId, widget.action);
-
-    futureResult.then((result) {
-      if (result != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ActionResultScreen(actionResult: result),
-          ),
-        );
-      } else {
-      }
-    });
-
-    return const Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CircularProgressIndicator(),
-      ],
-    );
   }
 
   Widget failureContent() {

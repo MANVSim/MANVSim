@@ -1,25 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/conditions.dart';
+import 'package:manvsim/models/patient_action.dart';
+import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/action_overview.dart';
+import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/muti_media_view.dart';
 
 import '../models/action_result.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ActionResultScreen extends StatefulWidget {
-  final ActionResult actionResult;
+import '../models/patient.dart';
 
-  const ActionResultScreen({super.key, required this.actionResult});
+class ActionResultScreen extends StatefulWidget {
+
+  final Patient patient;
+  final String performedActionId;
+  final PatientAction performedAction;
+
+  const ActionResultScreen({super.key, required this.patient, required this.performedActionId, required this.performedAction});
 
   @override
   State<ActionResultScreen> createState() => _ActionResultScreenState();
 }
 
 class _ActionResultScreenState extends State<ActionResultScreen> {
+
+  late Future<ActionResult?> futureActionResult;
+
   @override
   void initState() {
     super.initState();
+    futureActionResult = ActionService.fetchActionResult(
+        widget.patient.id, widget.performedActionId, widget.performedAction);
   }
 
   _buildConditionOverview(Condition condition) {
@@ -43,23 +56,21 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
               ));
   }
 
-  _buildUsedResources() {
+  _buildUsedResources(List<String> resourceNamesNeeded) {
     return Card(
         child: SizedBox(
             width: double.infinity,
             child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: (widget.actionResult.action.resourceNamesNeeded.isEmpty)
+                child: (resourceNamesNeeded.isEmpty)
                     ? Text(
                         AppLocalizations.of(context)!.actionNoNeededResources)
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
-                        itemCount: widget
-                            .actionResult.action.resourceNamesNeeded.length,
+                        itemCount: resourceNamesNeeded.length,
                         itemBuilder: (context, index) {
-                          return Text(widget
-                              .actionResult.action.resourceNamesNeeded[index]);
+                          return Text(resourceNamesNeeded[index]);
                         },
                       ))));
   }
@@ -75,24 +86,30 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
             width: double.infinity,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(children: [
-                Card(
-                    child: ActionOverview(
-                        action: widget.actionResult.action,
-                        patient: widget.actionResult.patient)),
-                const Text('Verwendete Ressourcen'),
-                _buildUsedResources(),
-                const Text('Ergebnis(se)'),
-                ListView.builder(
-                  shrinkWrap: true, // nested scrolling
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: widget.actionResult.conditions.length,
-                  itemBuilder: (context, index) {
-                    return _buildConditionOverview(
-                        widget.actionResult.conditions[index]);
-                  },
-                ),
-              ]),
+              child: ApiFutureBuilder(future: this.futureActionResult, builder: (context, actionResult) {
+
+                return Column(children: [
+                  Card(
+                      child: ActionOverview(
+                          action: actionResult.action,
+                          patient: actionResult.patient)),
+                  const Text('Verwendete Ressourcen'),
+                  _buildUsedResources(actionResult.action.resourceNamesNeeded),
+                  const Text('Ergebnis(se)'),
+                  ListView.builder(
+                    shrinkWrap: true, // nested scrolling
+                    physics: const ClampingScrollPhysics(),
+                    itemCount: actionResult.conditions.length,
+                    itemBuilder: (context, index) {
+                      return _buildConditionOverview(
+                          actionResult.conditions[index]);
+                    },
+                  ),
+                ]);
+
+
+
+              },),
             )));
   }
 }
