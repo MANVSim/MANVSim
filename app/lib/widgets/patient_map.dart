@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/types.dart';
-import 'package:manvsim/screens/map_screen.dart';
+import 'package:manvsim/widgets/map_overlay.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 
