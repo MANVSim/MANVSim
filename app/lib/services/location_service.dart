@@ -24,9 +24,9 @@ class LocationService {
 
   static void goToLocationScreen(int locationId, BuildContext context) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => LocationScreen(locationId: locationId)))
+            context,
+            MaterialPageRoute(
+                builder: (context) => LocationScreen(locationId: locationId)))
         .whenComplete(() => {});
   }
 }

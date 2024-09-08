@@ -25,7 +25,6 @@ class LoginScreen extends StatefulWidget {
 enum _LoginInputType { tan, url }
 
 class LoginScreenState extends State<LoginScreen> {
-
   final TanInputController _tanInputController = TanInputController();
   final TextEditingController _serverUrlController =
       TextEditingController(text: "http://localhost:5000/api");
@@ -195,8 +194,6 @@ class LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
-
               const SizedBox(height: 8),
               Text(
                 AppLocalizations.of(context)!.loginTANHeader,
@@ -208,7 +205,6 @@ class LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 4),
               Text(AppLocalizations.of(context)!.loginTANText),
               const SizedBox(height: 16),
-
               if (_errorMessage != null) // Show error message if it's not null
                 ErrorBox(errorText: _errorMessage!),
               const SizedBox(height: 16),

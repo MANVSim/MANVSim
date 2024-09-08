@@ -46,8 +46,7 @@ class _ActionScreenState extends State<ActionScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => ActionResultScreen(
-            patient: widget.patient,
-            performedActionId: actionId),
+            patient: widget.patient, performedActionId: actionId),
       ),
     );
   }
@@ -73,7 +72,10 @@ class _ActionScreenState extends State<ActionScreen> {
           children: [
             Card(
               child: ActionOverview(
-                  action: widget.action, patient: widget.patient, showMediaInfo: false,),
+                action: widget.action,
+                patient: widget.patient,
+                showMediaInfo: false,
+              ),
             ),
             Expanded(
                 child: Center(
@@ -89,8 +91,4 @@ class _ActionScreenState extends State<ActionScreen> {
           ],
         ));
   }
-
-
-
-
 }

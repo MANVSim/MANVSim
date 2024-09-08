@@ -6,8 +6,7 @@ class TanUserAuth {
   String? url;
 }
 
-
-class TanUser extends ChangeNotifier{
+class TanUser extends ChangeNotifier {
   static const String preferenceTan = 'user.tan';
   static const String preferenceName = 'user.name';
   static const String preferenceRole = 'user.role';
@@ -21,11 +20,15 @@ class TanUser extends ChangeNotifier{
   TanUserAuth auth = TanUserAuth();
 
   bool isComplete() {
-    return tan != null && name != null && role != null &&
-        auth.token != null && auth.url != null;
+    return tan != null &&
+        name != null &&
+        role != null &&
+        auth.token != null &&
+        auth.url != null;
   }
 
-  Future<void> _setPref(String key, String? value, SharedPreferences prefs) async {
+  Future<void> _setPref(
+      String key, String? value, SharedPreferences prefs) async {
     if (value != null) {
       await prefs.setString(key, value);
     } else {

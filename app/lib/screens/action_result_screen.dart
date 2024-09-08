@@ -49,7 +49,8 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
   }
 
   String _formatDateTime(DateTime dateTime) {
-    return DateFormat('dd.MM.yyyy HH:mm:ss').format(dateTime);
+    return DateFormat(AppLocalizations.of(context)!.dateTimeFormat)
+        .format(dateTime);
   }
 
   String _formatDuration(Duration d) {

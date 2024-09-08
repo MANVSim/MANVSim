@@ -15,7 +15,7 @@ class PerformedAction {
       required this.playerTan,
       required this.resources,
       required this.startTime});
-  
+
   factory PerformedAction.fromApi(PerformedActionDTO dto) {
     return PerformedAction(
         action: PatientAction.fromApi(dto.action),

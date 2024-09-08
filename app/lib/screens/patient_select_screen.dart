@@ -48,7 +48,6 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final List<String> searchType = [
       AppLocalizations.of(context)!.selectScreenTypePatient,
       AppLocalizations.of(context)!.selectScreenTypeLocation
@@ -77,17 +76,21 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
                 },
                 borderRadius: BorderRadius.circular(2),
                 isSelected: _selectedSearchType,
-                constraints: BoxConstraints(minWidth: (MediaQuery.of(context).size.width - 20) / 2),
+                constraints: BoxConstraints(
+                    minWidth: (MediaQuery.of(context).size.width - 20) / 2),
                 children: [
                   Row(children: [_selectedIcon[0], Text(searchType[0])]),
-                  Row(children: [_selectedIcon[1],  Text(searchType[1])])
+                  Row(children: [_selectedIcon[1], Text(searchType[1])])
                 ],
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: _idController,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.selectScreenTextField(_selectedSearchType[0] ? searchType[0] : searchType[1]),
+                  labelText: AppLocalizations.of(context)!
+                      .selectScreenTextField(_selectedSearchType[0]
+                          ? searchType[0]
+                          : searchType[1]),
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[
@@ -108,12 +111,18 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
                   valueListenable: _idController,
                   builder: (context, patientIdValue, child) => Expanded(
                     child: ElevatedButton.icon(
-                      icon: _selectedSearchType[0] ? _selectedIcon[0] : _selectedIcon[1],
+                      icon: _selectedSearchType[0]
+                          ? _selectedIcon[0]
+                          : _selectedIcon[1],
                       onPressed: patientIdValue.text.isEmpty
                           ? null
                           : () => handleSubmit(),
                       label: Text(
-                          AppLocalizations.of(context)!.selectScreenSubmit(_selectedSearchType[0] ? searchType[0] : searchType[1]),),
+                        AppLocalizations.of(context)!.selectScreenSubmit(
+                            _selectedSearchType[0]
+                                ? searchType[0]
+                                : searchType[1]),
+                      ),
                     ),
                   ),
                 ),

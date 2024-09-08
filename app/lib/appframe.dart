@@ -36,13 +36,11 @@ class _AppFrameState extends State<AppFrame> {
           NavigationDestination(
               selectedIcon: const Icon(constants.Icons.patientOutlined),
               icon: const Icon(constants.Icons.patient),
-              label: AppLocalizations.of(context)!.framePatients
-          ),
+              label: AppLocalizations.of(context)!.framePatients),
           NavigationDestination(
               selectedIcon: const Icon(constants.Icons.locationOutlined),
               icon: const Icon(constants.Icons.location),
-              label: AppLocalizations.of(context)!.frameLocations
-          ),
+              label: AppLocalizations.of(context)!.frameLocations),
           NavigationDestination(
             icon: const Badge(child: Icon(Icons.notifications_sharp)),
             label: AppLocalizations.of(context)!.frameNotifications,

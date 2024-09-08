@@ -5,21 +5,22 @@ import 'package:manvsim/models/performed_actions.dart';
 import 'conditions.dart';
 
 class ActionResult {
-
   final Patient patient;
   final Conditions conditions;
   final PerformedAction performedAction;
 
-  ActionResult({required this.patient, required this.conditions, required this.performedAction});
+  ActionResult(
+      {required this.patient,
+      required this.conditions,
+      required this.performedAction});
 
-  factory ActionResult.fromApi(RunActionPerformResultGet200Response response, String resultId) {
-
+  factory ActionResult.fromApi(
+      RunActionPerformResultGet200Response response, String resultId) {
     Patient patient = Patient.fromApi(response.patient);
 
     return ActionResult(
         performedAction: patient.getPerformedActionById(resultId),
         patient: patient,
-        conditions: ConditionsExtension.fromApi(response.conditions)
-    );
+        conditions: ConditionsExtension.fromApi(response.conditions));
   }
 }

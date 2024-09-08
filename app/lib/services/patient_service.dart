@@ -43,7 +43,7 @@ class PatientService {
         .runActionPerformMovePatientPost(RunActionPerformMovePatientPostRequest(
             patientId: patient.id, newLocationId: moveTo.id))
         .then((response) => (response?.patient != null
-        ? Patient.fromApi((response?.patient)!)
-        : null));
+            ? Patient.fromApi((response?.patient)!)
+            : null));
   }
 }

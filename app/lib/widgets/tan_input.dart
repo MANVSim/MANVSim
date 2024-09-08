@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 class TanInputController extends ChangeNotifier
     implements ValueListenable<String> {
-
   static const int tanLength = 6;
   final List<String> code = List.generate(tanLength, (index) => '');
 
@@ -97,8 +96,7 @@ class TanInputFieldState extends State<TanInputField> {
             keyboardType: TextInputType.text,
             textAlign: TextAlign.center,
             onTap: () => _controllers[index].selection = TextSelection(
-                baseOffset: 0,
-                extentOffset: _controllers[index].text.length),
+                baseOffset: 0, extentOffset: _controllers[index].text.length),
             inputFormatters: [
               LengthLimitingTextInputFormatter(1),
               TextInputFormatter.withFunction((oldValue, newValue) {

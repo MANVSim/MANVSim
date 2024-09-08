@@ -57,21 +57,21 @@ class _MoveCardState extends State<MoveCard> {
                     }));
           },
         ),
-
-        if (selectedLocationIndex != null)
-          ...[
-            const SizedBox(height: 8),
-            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightGreen,
-                ),
-                onPressed: () {widget.onPerform(widget.locations[selectedLocationIndex!]);},
-                child: Text(AppLocalizations.of(context)!.actionPerform),
+        if (selectedLocationIndex != null) ...[
+          const SizedBox(height: 8),
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
               ),
-            ]),
-            const SizedBox(height: 8),
-          ]
+              onPressed: () {
+                widget.onPerform(widget.locations[selectedLocationIndex!]);
+              },
+              child: Text(AppLocalizations.of(context)!.actionPerform),
+            ),
+          ]),
+          const SizedBox(height: 8),
+        ]
       ],
     ));
   }
