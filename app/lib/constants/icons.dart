@@ -10,4 +10,8 @@ class Icons {
   static const IconData info = material.Icons.info;
 
   static const IconData action = material.Icons.medical_information_rounded;
+
+  static const IconData time = material.Icons.access_time;
+  static const IconData duration = material.Icons.timelapse;
+  static const IconData user = material.Icons.person_pin;
 }

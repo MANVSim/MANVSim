@@ -21,18 +21,16 @@ class _MediaOverviewExpansionState extends State<MediaOverviewExpansion> {
   Widget _title() {
     return SizedBox(
         width: double.infinity,
-        child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
+        child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: widget.children,
-            )));
+            ));
   }
 
   @override
   Widget build(BuildContext context) {
     return (widget.media.isEmpty)
-        ? _title()
+        ? Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 8), child: _title())
         : ExpansionTile(
             title: _title(),
             controlAffinity: ListTileControlAffinity.trailing,

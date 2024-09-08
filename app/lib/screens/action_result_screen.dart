@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:manvsim/models/conditions.dart';
 import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/action_overview.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/media_info.dart';
 import 'package:manvsim/widgets/media_overview_expansion.dart';
+
+import 'package:manvsim/constants/icons.dart' as icons;
 
 import '../models/action_result.dart';
 
@@ -43,6 +46,72 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
     return Card(
         child:
             MediaOverviewExpansion(media: condition.media, children: [title]));
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    return DateFormat('dd.MM.yyyy HH:mm:ss').format(dateTime);
+  }
+
+  String _formatDuration(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String hours = twoDigits(d.inHours);
+    String minutes = twoDigits(d.inMinutes.remainder(60));
+    String seconds = twoDigits(d.inSeconds.remainder(60));
+
+    return "$hours:$minutes:$seconds";
+  }
+
+  _buildDetailEntry(
+      String key, String value, IconData icon, BuildContext context) {
+    return Row(children: [
+      Icon(icon),
+      const SizedBox(width: 8),
+      Text(key, style: Theme.of(context).textTheme.bodyMedium),
+      Expanded(
+          child: Text(value,
+              textAlign: TextAlign.right,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium)),
+    ]);
+  }
+
+  _buildDetails(ActionResult actionResult, BuildContext context) {
+    DateTime endTime = actionResult.performedAction.startTime
+        .add(actionResult.performedAction.action.duration);
+
+    return Card(
+        child: SizedBox(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDetailEntry(
+                AppLocalizations.of(context)!.actionResultScreenDetailStart,
+                _formatDateTime(actionResult.performedAction.startTime),
+                icons.Icons.time,
+                context),
+            _buildDetailEntry(
+                AppLocalizations.of(context)!.actionResultScreenDetailEnd,
+                _formatDateTime(endTime),
+                icons.Icons.time,
+                context),
+            _buildDetailEntry(
+                AppLocalizations.of(context)!.actionResultScreenDetailDuration,
+                _formatDuration(actionResult.performedAction.action.duration),
+                icons.Icons.duration,
+                context),
+            _buildDetailEntry(
+                AppLocalizations.of(context)!.actionResultScreenDetailPlayer,
+                actionResult.performedAction.playerTan,
+                icons.Icons.user,
+                context),
+          ],
+        ),
+      ),
+    ));
   }
 
   _buildUsedResources(List<Resource> resources) {
@@ -84,23 +153,28 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('Maßname Erfolgreich'),
+          title: Text(AppLocalizations.of(context)!.actionResultScreenTitle),
         ),
         body: SizedBox(
             width: double.infinity,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: ApiFutureBuilder(
-                future: this.futureActionResult,
+                future: futureActionResult,
                 builder: (context, actionResult) {
                   return Column(children: [
                     Card(
                         child: ActionOverview(
                             action: actionResult.performedAction.action,
                             patient: actionResult.patient)),
-                    const Text('Verwendete Ressourcen'),
+                    Text(AppLocalizations.of(context)!
+                        .actionResultScreenDetails),
+                    _buildDetails(actionResult, context),
+                    Text(AppLocalizations.of(context)!
+                        .actionResultScreenUsedResources),
                     _buildUsedResources(actionResult.performedAction.resources),
-                    const Text('Ergebnis(se)'),
+                    Text(AppLocalizations.of(context)!
+                        .actionResultScreenResults),
                     ListView.builder(
                       shrinkWrap: true, // nested scrolling
                       physics: const ClampingScrollPhysics(),

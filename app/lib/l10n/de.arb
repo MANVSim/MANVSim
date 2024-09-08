@@ -292,5 +292,16 @@
         "example": "Fehlermeldung"
       }
     }
-  }
+  },
+
+  "actionResultScreenTitle": "Maßname Erfolgreich",
+  "actionResultScreenResults": "Ergebnis(se)",
+  "actionResultScreenUsedResources": "Verwendete Resourcen",
+  "actionResultScreenDetails": "Details",
+  "actionResultScreenDetailStart": "Start",
+  "actionResultScreenDetailEnd": "Ende",
+  "actionResultScreenDetailDuration": "Dauer",
+  "actionResultScreenDetailPlayer": "Nutzer",
+
+  "defaultError": "Ein Unbekannter Fehler ist aufgetreten"
 }

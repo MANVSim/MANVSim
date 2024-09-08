@@ -22,7 +22,7 @@ class PerformedAction {
         id: dto.id,
         playerTan: dto.playerTan,
         resources: dto.resourcesUsed.map(Resource.fromApi).toList(),
-        startTime: DateTime.fromMillisecondsSinceEpoch(dto.time));
+        startTime: DateTime.fromMillisecondsSinceEpoch(dto.time * 1000));
   }
 }
 
