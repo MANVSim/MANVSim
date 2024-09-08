@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:manvsim/constants/icons.dart' as icons;
+import 'package:manvsim/constants/manv_icons.dart';
 
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/patient_action.dart';
@@ -29,7 +29,7 @@ class ActionOverview extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              const Icon(icons.Icons.action),
+              const Icon(ManvIcons.action),
               const SizedBox(width: 8),
               Expanded(
                   child: Text(action.name,
@@ -39,7 +39,7 @@ class ActionOverview extends StatelessWidget {
                 MediaInfo(title: action.name, media: action.media),
             ]),
             Row(children: [
-              const Icon(icons.Icons.patient),
+              const Icon(ManvIcons.patient),
               const SizedBox(width: 8),
               Expanded(
                   child: Text(patient.name,
@@ -49,7 +49,7 @@ class ActionOverview extends StatelessWidget {
                 MediaInfo(title: patient.name, media: patient.media),
             ]),
             Row(children: [
-              const Icon(icons.Icons.location),
+              const Icon(ManvIcons.location),
               const SizedBox(width: 8),
               Expanded(
                   child: Text(patient.location.name,

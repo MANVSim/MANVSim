@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart' as material;
-class Icons {
+
+class ManvIcons {
   static const IconData patient = material.Icons.person;
   static const IconData patientOutlined = material.Icons.person_outlined;
 

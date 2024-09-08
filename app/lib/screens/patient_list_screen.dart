@@ -5,7 +5,7 @@ import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:manvsim/constants/icons.dart' as constants;
+import 'package:manvsim/constants/manv_icons.dart';
 
 class PatientListScreen extends StatefulWidget {
   const PatientListScreen({super.key});
@@ -44,7 +44,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                   itemCount: patientIds.length,
                   itemBuilder: (context, index) => Card(
                       child: ListTile(
-                          leading: const Icon(constants.Icons.patient),
+                          leading: const Icon(ManvIcons.patient),
                           title: Text(AppLocalizations.of(context)!
                               .patientScreenName(patientIds[index])),
                           onTap: () => PatientService.goToPatientScreen(

@@ -5,7 +5,7 @@ import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:manvsim/constants/icons.dart' as constants;
+import 'package:manvsim/constants/manv_icons.dart';
 
 class PatientSelectScreen extends StatefulWidget {
   const PatientSelectScreen({super.key});
@@ -20,8 +20,8 @@ class PatientSelectScreenState extends State<PatientSelectScreen> {
   final List<bool> _selectedSearchType = [true, false];
 
   final List<Icon> _selectedIcon = [
-    const Icon(constants.Icons.patient),
-    const Icon(constants.Icons.location)
+    const Icon(ManvIcons.patient),
+    const Icon(ManvIcons.location)
   ];
 
   handleScan(TextEditingController textController) async {

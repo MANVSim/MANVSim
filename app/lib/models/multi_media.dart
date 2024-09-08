@@ -45,8 +45,6 @@ typedef MultiMediaCollection = List<MultiMediaItem>;
 extension MultiMediaCollectionExtension on MultiMediaCollection {
   static MultiMediaCollection fromApi(
       List<MediaReferencesDTOInner> mediaReferencesDTOList) {
-    return mediaReferencesDTOList
-        .map((mediaReferenceDto) => MultiMediaItem.fromApi(mediaReferenceDto))
-        .toList();
+    return mediaReferencesDTOList.map(MultiMediaItem.fromApi).toList();
   }
 }

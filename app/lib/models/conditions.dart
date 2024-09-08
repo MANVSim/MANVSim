@@ -20,6 +20,6 @@ typedef Conditions = List<Condition>;
 extension ConditionsExtension on Conditions {
   static Conditions fromApi(
       Map<String, List<MediaReferencesDTOInner>> conditions) {
-    return conditions.entries.map((entry) => Condition.fromApi(entry)).toList();
+    return conditions.entries.map(Condition.fromApi).toList();
   }
 }

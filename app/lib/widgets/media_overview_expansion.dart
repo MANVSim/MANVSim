@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:manvsim/constants/icons.dart' as icons;
+import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/models/multi_media.dart';
 
-import 'muti_media_view.dart';
+import 'multi_media_view.dart';
 
 class MediaOverviewExpansion extends StatefulWidget {
   final List<Widget> children;
@@ -38,7 +38,7 @@ class _MediaOverviewExpansionState extends State<MediaOverviewExpansion> {
             shape: const Border(),
             childrenPadding: const EdgeInsets.only(left: 8.0),
             initiallyExpanded: _detailsVisible,
-            trailing: (_detailsVisible) ? null : const Icon(icons.Icons.info),
+            trailing: (_detailsVisible) ? null : const Icon(ManvIcons.info),
             onExpansionChanged: (expanded) {
               setState(() {
                 _detailsVisible = expanded;

@@ -3,7 +3,7 @@ import 'package:manvsim/models/multi_media.dart';
 
 import 'media_overview_dialog.dart';
 
-import 'package:manvsim/constants/icons.dart' as icons;
+import 'package:manvsim/constants/manv_icons.dart';
 
 class MediaInfo extends StatelessWidget {
   final String title;
@@ -20,6 +20,6 @@ class MediaInfo extends StatelessWidget {
               builder: (context) =>
                   MediaOverViewDialog(title: title, media: media));
         },
-        icon: const Icon(icons.Icons.info));
+        icon: const Icon(ManvIcons.info));
   }
 }

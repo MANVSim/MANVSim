@@ -11,8 +11,9 @@ class LocationService {
   static Future<List<Location>> fetchLocations() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     // TODO method for getting apiService?
-    return apiService.api.runLocationAllGet().then((response) =>
-        response!.locations.map((dto) => Location.fromApi(dto)).toList());
+    return apiService.api
+        .runLocationAllGet()
+        .then((response) => response!.locations.map(Location.fromApi).toList());
   }
 
   static Future<String?> leaveLocation() {

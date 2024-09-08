@@ -7,7 +7,7 @@ import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/media_info.dart';
 import 'package:manvsim/widgets/media_overview_expansion.dart';
 
-import 'package:manvsim/constants/icons.dart' as icons;
+import 'package:manvsim/constants/manv_icons.dart';
 
 import '../models/action_result.dart';
 
@@ -92,22 +92,22 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
             _buildDetailEntry(
                 AppLocalizations.of(context)!.actionResultScreenDetailStart,
                 _formatDateTime(actionResult.performedAction.startTime),
-                icons.Icons.time,
+                ManvIcons.time,
                 context),
             _buildDetailEntry(
                 AppLocalizations.of(context)!.actionResultScreenDetailEnd,
                 _formatDateTime(endTime),
-                icons.Icons.time,
+                ManvIcons.time,
                 context),
             _buildDetailEntry(
                 AppLocalizations.of(context)!.actionResultScreenDetailDuration,
                 _formatDuration(actionResult.performedAction.action.duration),
-                icons.Icons.duration,
+                ManvIcons.duration,
                 context),
             _buildDetailEntry(
                 AppLocalizations.of(context)!.actionResultScreenDetailPlayer,
                 actionResult.performedAction.playerTan,
-                icons.Icons.user,
+                ManvIcons.user,
                 context),
           ],
         ),

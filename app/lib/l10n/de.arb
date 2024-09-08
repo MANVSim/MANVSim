@@ -226,9 +226,17 @@
 
   "dialogueClose": "Schließen",
 
-  "multiMediaViewImageTitle": "Bild {number}: {title}",
-  "@multiMediaViewImageTitle": {
+  "multiMediaTypeImage": "Bild",
+  "multiMediaTypeVideo": "Video",
+  "multiMediaTypeAudio": "Audio",
+
+  "multiMediaViewMediaTitle": "{mediaType} {number}: {title}",
+  "@multiMediaViewMediaTitle": {
     "placeholders": {
+        "mediaType": {
+            "type": "String",
+            "example": "Bild"
+        },
       "number": {
         "type": "int",
         "example": "1"
@@ -239,50 +247,14 @@
         }
     }
   },
-  "multiMediaViewVideoTitle": "Video {number}: {title}",
-  "@multiMediaViewVideoTitle": {
-    "placeholders": {
-      "number": {
-        "type": "int",
-        "example": "1"
-      },
-      "title": {
-        "type": "String",
-        "example": "Bild"
-      }
-    }
-  },
-  "multiMediaViewAudioTitle": "Audio {number}: {title}",
-  "@multiMediaViewAudioTitle": {
-    "placeholders": {
-      "number": {
-        "type": "int",
-        "example": "1"
-      },
-      "title": {
-        "type": "String",
-        "example": "Bild"
-      }
-    }
-  },
-  "multiMediaViewImageError": "Bild '{path}' konnte nicht geladen werden: {errorMsg}",
-  "@multiMediaViewImageError": {
-    "placeholders": {
-      "path": {
-        "type": "String",
-        "example": "/media/image1.png"
-      },
-      "errorMsg": {
-        "type": "String",
-        "example": "Fehlermeldung"
-      }
-    }
-  },
 
-
-  "multiMediaViewVideoError": "Video '{path}' konnte nicht geladen werden: {errorMsg}",
-  "@multiMediaVideoImageError": {
+  "multiMediaViewError": "Die {mediaType} Datei '{path}' konnte nicht geladen werden: {errorMsg}",
+  "@multiMediaViewError": {
     "placeholders": {
+        "mediaType": {
+            "type": "String",
+            "example": "Video"
+        },
       "path": {
         "type": "String",
         "example": "/media/image1.png"

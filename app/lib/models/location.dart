@@ -22,12 +22,10 @@ class Location {
         id: dto.id,
         name: dto.name,
         resources: dto.resources // TODO filter quantity 0
-            .map((resourceDto) => Resource.fromApi(resourceDto))
+            .map(Resource.fromApi)
             .toList(),
         media: MultiMediaCollectionExtension.fromApi(dto.mediaReferences),
-        locations: dto.subLocations
-            .map((locationDto) => Location.fromApi(locationDto))
-            .toList());
+        locations: dto.subLocations.map(Location.fromApi).toList());
   }
 
   List<Resource> flattenResources() {

@@ -9,9 +9,7 @@ class InventoryService {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api.runPlayerInventoryGet().then((response) =>
         (response?.accessibleLocations != null)
-            ? response!.accessibleLocations
-                .map((dto) => Location.fromApi(dto))
-                .toList()
+            ? response!.accessibleLocations.map(Location.fromApi).toList()
             : []);
   }
 

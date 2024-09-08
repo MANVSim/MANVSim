@@ -13,7 +13,7 @@ class ActionService {
   static Future<List<PatientAction>> fetchActions() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api.runActionAllGet().then((response) =>
-        response?.actions.map((e) => PatientAction.fromApi(e)).toList() ?? []);
+        response?.actions.map(PatientAction.fromApi).toList() ?? []);
   }
 
   static Future<String?> performAction(
