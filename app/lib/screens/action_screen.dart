@@ -29,12 +29,15 @@ class ActionScreen extends StatefulWidget {
 
 class _ActionScreenState extends State<ActionScreen> {
   late Future<String?> futureActionId;
+
+  late bool _hasError;
   Patient? patient;
 
   @override
   void initState() {
     futureActionId = ActionService.performAction(
         widget.patient.id, widget.action.id, widget.resourceIds);
+    _hasError = false;
     super.initState();
   }
 
@@ -49,6 +52,14 @@ class _ActionScreenState extends State<ActionScreen> {
     );
   }
 
+  void onError() {
+    Timer.run(() {
+      setState(() {
+        _hasError = true;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +67,7 @@ class _ActionScreenState extends State<ActionScreen> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(AppLocalizations.of(context)!
               .actionScreenTitle(widget.patient.name, widget.action.name)),
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: _hasError,
         ),
         body: Column(
           children: [
@@ -68,40 +79,18 @@ class _ActionScreenState extends State<ActionScreen> {
                 child: Center(
                     child: ApiFutureBuilder<String>(
                         future: futureActionId,
+                        onErrorNotify: (error) => onError(),
                         builder: (context, actionId) {
                           return TimerWidget(
-                            duration: Duration(
-                                seconds: widget.action.durationInSeconds),
+                            duration: widget.action.duration,
                             onTimerComplete: () => onTimerComplete(actionId),
                           );
-                        },
-                        onError: () => Timer.run(
-                            () => showResultDialog(failureContent())))))
+                        })))
           ],
         ));
   }
 
-  void showResultDialog(Widget content) {
-    Future dialogFuture = showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-          title: Text(AppLocalizations.of(context)!
-              .actionScreenTitle(widget.patient.name, widget.action.name)),
-          actions: [
-            ElevatedButton(
-                onPressed: () => Navigator.pop(context), // close dialog
-                child: Text(AppLocalizations.of(context)!.ok))
-          ],
-          content: content),
-    );
-    // close action_screen
-    dialogFuture.whenComplete(() {
-      Navigator.pop(context, patient);
-    });
-  }
 
-  Widget failureContent() {
-    return Text(AppLocalizations.of(context)!.actionFailure);
-  }
+
+
 }
