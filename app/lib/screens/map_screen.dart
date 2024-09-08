@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/map_service.dart';
@@ -49,17 +50,17 @@ class _PatientMapScreenState extends State<PatientMapScreen> {
                 var patientPositions = list[0] as List<PatientPosition>;
                 var buildings = list[1] as List<Rect>;
                 return Center(
-                    child: PatientMapOverlay(
-                        child: PatientMap(patientPositions, buildings)));
+                    child: PatientMapOverlay(patientPositions, buildings));
               })),
     );
   }
 }
 
 class PatientMapOverlay extends StatefulWidget {
-  const PatientMapOverlay({super.key, required this.child});
+  const PatientMapOverlay(this.patientLocations, this.buildings, {super.key});
 
-  final PatientMap child;
+  final List<PatientPosition> patientLocations;
+  final List<Rect> buildings;
 
   @override
   State<StatefulWidget> createState() => _PatientMapOverlayState();
@@ -84,9 +85,14 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       const AlwaysStoppedAnimation(Offset.zero);
   late final AnimationController _animationController;
 
+  late PatientMap child;
+  late ValueNotifier<Offset> positionNotifier;
+
   @override
   void initState() {
     super.initState();
+    positionNotifier = ValueNotifier(const Offset(400, 400));
+    child = PatientMap(widget.patientLocations, buildings, positionNotifier);
     _transformationController = TransformationController(
         Matrix4.identity()
           ..setTranslation(-Vector3(mapSize.width, mapSize.height, 0) / 2))
@@ -94,6 +100,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     _animationController = AnimationController(
       vsync: this,
     );
+    positionNotifier.value = _transformationController.toScene(middle);
   }
 
   @override
@@ -133,7 +140,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
                           child: Transform(
                             transform: _transformationController.value,
                             //alignment: alignment,
-                            child: widget.child,
+                            child: child,
                           ))))),
           Center(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -173,13 +180,13 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   void _onAnimate() {
     _transformationController.value = _transformationController.value.clone()
       ..setTranslation(vector3FromOffset(_offsetAnimation.value));
+    positionNotifier.value = _transformationController.toScene(middle);
   }
 
   /// Uses vector_math to determine where the path hits the edge.
   Offset getTarget(Offset originalTarget, Offset origin) {
     Offset direction = middle - originalTarget;
-    Ray dirRay = Ray.originDirection(
-        vector3FromOffset(origin), vector3FromOffset(direction));
+    Ray dirRay = rayFromOffsets(origin, direction);
     Vector3 intersectionPoint = dirRay.at([mapRect, ...buildings]
         .map(dirRay.intersectsWithRect)
         .whereType<double>()
@@ -189,20 +196,23 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     return offsetFromVector3(intersectionPoint);
   }
 
-  List<Rect> get buildings => widget.child.buildings;
+  List<Rect> get buildings => widget.buildings;
 
-  Size get mapSize => widget.child.size;
+  Size get mapSize => child.size;
 
   Rect get mapRect => Offset.zero & mapSize;
-
-  Vector3 vector3FromOffset(Offset offset) => Vector3(offset.dx, offset.dy, 0);
-
-  Offset offsetFromVector3(Vector3 vector3) => Offset(vector3.x, vector3.y);
 
   Offset targetCenterToTranslation(Offset center) => -(center - middle);
 }
 
-extension RayIntersectsAabb2 on Ray {
+Vector3 vector3FromOffset(Offset offset) => Vector3(offset.dx, offset.dy, 0);
+
+Offset offsetFromVector3(Vector3 vector3) => Offset(vector3.x, vector3.y);
+
+Ray rayFromOffsets(Offset origin, Offset direction) => Ray.originDirection(
+    vector3FromOffset(origin), vector3FromOffset(direction));
+
+extension RayIntersectsRect on Ray {
   /// Computes the intersection of [rect] and [this].
   /// Returns the nearest distance, the origin lies inside or outside the graph.
   double? intersectsWithRect(Rect rect) {
