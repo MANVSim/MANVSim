@@ -59,7 +59,7 @@ class _MoveScreenState extends State<MoveScreen> {
                         content: successContent(), movedPatient: movedPatient),
                   );
                 },
-                onError: () =>
+                onError: (error) =>
                     Timer.run(() => showResultDialog(content: failureContent())))));
   }
 
