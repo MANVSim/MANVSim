@@ -209,7 +209,7 @@ class _WaitScreenState extends State<WaitScreen> {
             if (_showError()) ...[
               ErrorBox(
                   errorText: AppLocalizations.of(context)!
-                      .waitErrorOccured(_errorText!)),
+                      .waitErrorOccurred(_errorText!)),
               const SizedBox(height: 32),
             ],
             Text(_waitStateText()),

@@ -56,8 +56,8 @@
   "waitTextWaitForArrival": "Spieler wurde alarmiert. Warten auf Ankunft am Zielort",
   "waitTextWaitForTravelTime": "Warten auf Alarmierung",
   "waitTextInitial": "Ankunftszeiten werden geladen",
-  "waitErrorOccured": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten: '{error}'",
-    "@waitErrorOccured": {
+  "waitErrorOccurred": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten: '{error}'",
+    "@waitErrorOccurred": {
         "placeholders": {
         "error": {
             "type": "String",
@@ -266,7 +266,7 @@
     }
   },
 
-  "actionResultScreenTitle": "Maßname Erfolgreich",
+  "actionResultScreenTitle": "Maßnahme Erfolgreich",
   "actionResultScreenResults": "Ergebnis(se)",
   "actionResultScreenUsedResources": "Verwendete Resourcen",
   "actionResultScreenDetails": "Details",
@@ -275,7 +275,7 @@
   "actionResultScreenDetailDuration": "Dauer",
   "actionResultScreenDetailPlayer": "Nutzer",
 
-  "defaultError": "Ein Unbekannter Fehler ist aufgetreten",
+  "defaultError": "Ein Unbekannter Fehler ist aufgetreten.",
 
   "dateTimeFormat": "dd.MM.yyyy HH:mm:ss"
 }
