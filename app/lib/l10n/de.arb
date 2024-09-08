@@ -200,7 +200,7 @@
     }
   },
   "selectScreenSubmit": "{type} anzeigen",
-  "@homeSelectedSubmit": {
+  "@selectScreenSubmit": {
     "placeholders": {
       "type": {
         "type": "String",
@@ -223,6 +223,74 @@
   "transferDialogueErrorTitle": "Verschieben fehlgeschlagen",
   "transferDialogueDefaultError": "Unbekannter Fehler",
   "transferDialogueErrorText": "Beim Verschieben ist ein Fehler aufgetreten. Bitte später erneut versuchen.",
-  "transferDialogueErrorClose": "Schließen"
 
+  "dialogueClose": "Schließen",
+
+  "multiMediaViewImageTitle": "Bild {number}: {title}",
+  "@multiMediaViewImageTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "example": "1"
+      },
+        "title": {
+            "type": "String",
+            "example": "Bild"
+        }
+    }
+  },
+  "multiMediaViewVideoTitle": "Video {number}: {title}",
+  "@multiMediaViewVideoTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "example": "1"
+      },
+      "title": {
+        "type": "String",
+        "example": "Bild"
+      }
+    }
+  },
+  "multiMediaViewAudioTitle": "Audio {number}: {title}",
+  "@multiMediaViewAudioTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "example": "1"
+      },
+      "title": {
+        "type": "String",
+        "example": "Bild"
+      }
+    }
+  },
+  "multiMediaViewImageError": "Bild '{path}' konnte nicht geladen werden: {errorMsg}",
+  "@multiMediaViewImageError": {
+    "placeholders": {
+      "path": {
+        "type": "String",
+        "example": "/media/image1.png"
+      },
+      "errorMsg": {
+        "type": "String",
+        "example": "Fehlermeldung"
+      }
+    }
+  },
+
+
+  "multiMediaViewVideoError": "Video '{path}' konnte nicht geladen werden: {errorMsg}",
+  "@multiMediaVideoImageError": {
+    "placeholders": {
+      "path": {
+        "type": "String",
+        "example": "/media/image1.png"
+      },
+      "errorMsg": {
+        "type": "String",
+        "example": "Fehlermeldung"
+      }
+    }
+  }
 }

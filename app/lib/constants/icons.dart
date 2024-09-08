@@ -6,4 +6,6 @@ class Icons {
 
   static const IconData location = material.Icons.location_on;
   static const IconData locationOutlined = material.Icons.location_on_outlined;
+
+  static const IconData info = material.Icons.info;
 }

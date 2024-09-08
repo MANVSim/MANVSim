@@ -28,7 +28,7 @@ class ActionDTO {
 
   List<String> resourcesNeeded;
 
-  List<ActionDTOMediaReferencesInner> mediaReferences;
+  List<MediaReferencesDTOInner> mediaReferences;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ActionDTO &&
@@ -85,7 +85,7 @@ class ActionDTO {
         resourcesNeeded: json[r'resources_needed'] is Iterable
             ? (json[r'resources_needed'] as Iterable).cast<String>().toList(growable: false)
             : const [],
-        mediaReferences: ActionDTOMediaReferencesInner.listFromJson(json[r'media_references']),
+        mediaReferences: MediaReferencesDTOInner.listFromJson(json[r'media_references']),
       );
     }
     return null;

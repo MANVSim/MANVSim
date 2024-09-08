@@ -6,7 +6,6 @@ import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/inventory_service.dart';
 import 'package:manvsim/widgets/location_overview.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
-import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/widgets/transfer_dialogue.dart';
 
@@ -93,8 +92,7 @@ class _LocationScreenState extends State<LocationScreen> {
               height: 50,
               child: ElevatedButton(
                 onPressed: _canTake()
-                    ? () =>
-                    _handleTransfer(context, TransferDialogueType.take)
+                    ? () => _handleTransfer(context, TransferDialogueType.take)
                     : null,
                 child: Text(AppLocalizations.of(context)!.locationScreenTake),
               ),
@@ -109,11 +107,9 @@ class _LocationScreenState extends State<LocationScreen> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: _canPut()
-                      ? () =>
-                      _handleTransfer(context, TransferDialogueType.put)
+                      ? () => _handleTransfer(context, TransferDialogueType.put)
                       : null,
-                  child:
-                  Text(AppLocalizations.of(context)!.locationScreenPut),
+                  child: Text(AppLocalizations.of(context)!.locationScreenPut),
                 ),
               ),
             ),
@@ -158,8 +154,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
   Widget _buildInventory() {
     return Column(children: [
-      Text(AppLocalizations.of(context)!
-          .locationScreenInventory),
+      Text(AppLocalizations.of(context)!.locationScreenInventory),
       ApiFutureBuilder<List<Location>>(
           future: _futureInventory,
           builder: (context, inventory) {
@@ -167,11 +162,9 @@ class _LocationScreenState extends State<LocationScreen> {
               ResourceDirectory(
                 locations: inventory,
                 resourceToggle: (resource) => {},
-                onLocationSelected:
-                    (currentSelectedLocationPath) {
+                onLocationSelected: (currentSelectedLocationPath) {
                   setState(() {
-                    _selectedInventoryPath =
-                        currentSelectedLocationPath;
+                    _selectedInventoryPath = currentSelectedLocationPath;
                   });
                 },
               ),
@@ -181,7 +174,7 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   Widget _buildLocationDirectory(Location location) {
-    return                     Column(children: [
+    return Column(children: [
       ResourceDirectory(
         rootLocationsSelectable: false,
         initiallyExpanded: true,
@@ -189,8 +182,7 @@ class _LocationScreenState extends State<LocationScreen> {
         resourceToggle: (resource) => {},
         onLocationSelected: (currentSelectedLocationPath) {
           setState(() {
-            _selectedLocationPath =
-                currentSelectedLocationPath;
+            _selectedLocationPath = currentSelectedLocationPath;
           });
         },
       ),
@@ -200,32 +192,27 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(AppLocalizations.of(context)!.locationScreenName),
-        actions: const <Widget>[LogoutButton()],
-      ),
-      body: ApiFutureBuilder<Location>(
-          future: _futureLocation,
-          builder: (context, location) {
-            _fetchedLocation = location;
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(AppLocalizations.of(context)!.locationScreenName),
+        ),
+        body: ApiFutureBuilder<Location>(
+            future: _futureLocation,
+            builder: (context, location) {
+              _fetchedLocation = location;
 
-            return RefreshIndicator(
-                onRefresh: () => _refreshData(),
-                child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Column(children: [
-                      Card(child: LocationOverview(location: location)),
-                      Text(AppLocalizations.of(context)!
-                          .locationScreenAvailableSubLocations),
-
-                      _buildLocationDirectory(location),
-
-                      if (_showInventory)
-                        _buildInventory(),
-                    ])));
-          }),
-      bottomNavigationBar: _buildButtonBar()
-    );
+              return RefreshIndicator(
+                  onRefresh: () => _refreshData(),
+                  child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: Column(children: [
+                        Card(child: LocationOverview(location: location)),
+                        Text(AppLocalizations.of(context)!
+                            .locationScreenAvailableSubLocations),
+                        _buildLocationDirectory(location),
+                        if (_showInventory) _buildInventory(),
+                      ])));
+            }),
+        bottomNavigationBar: _buildButtonBar());
   }
 }

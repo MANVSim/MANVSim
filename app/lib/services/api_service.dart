@@ -91,6 +91,23 @@ class ApiService {
     }
   }
 
+
+  /// Builds a media URL from a media reference.
+  String buildMediaUrl(BuildContext context, String mediaReference) {
+    final user = Provider.of<TanUser>(context, listen: false);
+    var baseUrl = user.auth.url!;
+
+    if (baseUrl.endsWith('/')) {
+      baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+    }
+
+    if (baseUrl.endsWith('/api')) {
+      baseUrl = baseUrl.substring(0, baseUrl.length - 4); // Fix substring length for "/api"
+    }
+
+    return '$baseUrl/$mediaReference';
+  }
+
   /// Handles some common error codes.
   /// Return value indicates whether the error was handled.
   bool handleErrorCode(ApiException e, BuildContext context) {

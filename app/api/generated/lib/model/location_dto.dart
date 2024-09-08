@@ -16,6 +16,7 @@ class LocationDTO {
     required this.id,
     required this.name,
     this.resources = const [],
+    this.mediaReferences = const [],
     this.subLocations = const [],
   });
 
@@ -25,6 +26,8 @@ class LocationDTO {
 
   List<ResourceDTO> resources;
 
+  List<MediaReferencesDTOInner> mediaReferences;
+
   List<LocationDTO> subLocations;
 
   @override
@@ -32,6 +35,7 @@ class LocationDTO {
     other.id == id &&
     other.name == name &&
     _deepEquality.equals(other.resources, resources) &&
+    _deepEquality.equals(other.mediaReferences, mediaReferences) &&
     _deepEquality.equals(other.subLocations, subLocations);
 
   @override
@@ -40,16 +44,18 @@ class LocationDTO {
     (id.hashCode) +
     (name.hashCode) +
     (resources.hashCode) +
+    (mediaReferences.hashCode) +
     (subLocations.hashCode);
 
   @override
-  String toString() => 'LocationDTO[id=$id, name=$name, resources=$resources, subLocations=$subLocations]';
+  String toString() => 'LocationDTO[id=$id, name=$name, resources=$resources, mediaReferences=$mediaReferences, subLocations=$subLocations]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'id'] = this.id;
       json[r'name'] = this.name;
       json[r'resources'] = this.resources;
+      json[r'media_references'] = this.mediaReferences;
       json[r'sub_locations'] = this.subLocations;
     return json;
   }
@@ -76,6 +82,7 @@ class LocationDTO {
         id: mapValueOfType<int>(json, r'id')!,
         name: mapValueOfType<String>(json, r'name')!,
         resources: ResourceDTO.listFromJson(json[r'resources']),
+        mediaReferences: MediaReferencesDTOInner.listFromJson(json[r'media_references']),
         subLocations: LocationDTO.listFromJson(json[r'sub_locations']),
       );
     }

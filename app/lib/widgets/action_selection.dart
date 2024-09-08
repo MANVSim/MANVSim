@@ -102,7 +102,7 @@ class _ActionSelectionState extends State<ActionSelection> {
                         .where((location) =>
                             location.id != widget.patient.location.id)
                         .toList(),
-                onPerform: movePatient)),
+                    onPerform: movePatient)),
             Text(AppLocalizations.of(context)!.patientResources),
             ResourceDirectory(
                 locations: widget.locations, resourceToggle: toggleResource),

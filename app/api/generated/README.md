@@ -80,11 +80,11 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [ActionDTO](doc//ActionDTO.md)
- - [ActionDTOMediaReferencesInner](doc//ActionDTOMediaReferencesInner.md)
  - [Error](doc//Error.md)
  - [LocationDTO](doc//LocationDTO.md)
  - [LoginPost200Response](doc//LoginPost200Response.md)
  - [LoginPostRequest](doc//LoginPostRequest.md)
+ - [MediaReferencesDTOInner](doc//MediaReferencesDTOInner.md)
  - [NotificationsGet200Response](doc//NotificationsGet200Response.md)
  - [PatientDTO](doc//PatientDTO.md)
  - [PlayerSetNamePost401Response](doc//PlayerSetNamePost401Response.md)

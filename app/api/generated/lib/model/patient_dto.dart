@@ -16,6 +16,7 @@ class PatientDTO {
     required this.id,
     required this.name,
     required this.location,
+    this.mediaReferences = const [],
   });
 
   int id;
@@ -24,27 +25,32 @@ class PatientDTO {
 
   LocationDTO location;
 
+  List<MediaReferencesDTOInner> mediaReferences;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is PatientDTO &&
     other.id == id &&
     other.name == name &&
-    other.location == location;
+    other.location == location &&
+    _deepEquality.equals(other.mediaReferences, mediaReferences);
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (id.hashCode) +
     (name.hashCode) +
-    (location.hashCode);
+    (location.hashCode) +
+    (mediaReferences.hashCode);
 
   @override
-  String toString() => 'PatientDTO[id=$id, name=$name, location=$location]';
+  String toString() => 'PatientDTO[id=$id, name=$name, location=$location, mediaReferences=$mediaReferences]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'id'] = this.id;
       json[r'name'] = this.name;
       json[r'location'] = this.location;
+      json[r'media_references'] = this.mediaReferences;
     return json;
   }
 
@@ -70,6 +76,7 @@ class PatientDTO {
         id: mapValueOfType<int>(json, r'id')!,
         name: mapValueOfType<String>(json, r'name')!,
         location: LocationDTO.fromJson(json[r'location'])!,
+        mediaReferences: MediaReferencesDTOInner.listFromJson(json[r'media_references']),
       );
     }
     return null;
@@ -120,6 +127,7 @@ class PatientDTO {
     'id',
     'name',
     'location',
+    'media_references',
   };
 }
 

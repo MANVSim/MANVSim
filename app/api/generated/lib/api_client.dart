@@ -184,8 +184,6 @@ class ApiClient {
           return value is DateTime ? value : DateTime.tryParse(value);
         case 'ActionDTO':
           return ActionDTO.fromJson(value);
-        case 'ActionDTOMediaReferencesInner':
-          return ActionDTOMediaReferencesInner.fromJson(value);
         case 'Error':
           return Error.fromJson(value);
         case 'LocationDTO':
@@ -194,6 +192,8 @@ class ApiClient {
           return LoginPost200Response.fromJson(value);
         case 'LoginPostRequest':
           return LoginPostRequest.fromJson(value);
+        case 'MediaReferencesDTOInner':
+          return MediaReferencesDTOInner.fromJson(value);
         case 'NotificationsGet200Response':
           return NotificationsGet200Response.fromJson(value);
         case 'PatientDTO':

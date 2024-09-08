@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/resource.dart';
 
+import 'package:manvsim/constants/icons.dart' as icons;
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manvsim/widgets/media_overview_dialog.dart';
 
 class ResourceDirectory extends StatefulWidget {
   final List<Location> locations;
@@ -16,19 +19,18 @@ class ResourceDirectory extends StatefulWidget {
 
   const ResourceDirectory(
       {super.key,
-        required this.locations,
-        required this.resourceToggle,
-        this.initiallyExpanded = false,
-        this.onLocationSelected,
-        this.rootLocationsSelectable = true,
-        this.parentLocationSelected = false});
+      required this.locations,
+      required this.resourceToggle,
+      this.initiallyExpanded = false,
+      this.onLocationSelected,
+      this.rootLocationsSelectable = true,
+      this.parentLocationSelected = false});
 
   @override
   State<ResourceDirectory> createState() => _ResourceDirectoryState();
 }
 
 class _ResourceDirectoryState extends State<ResourceDirectory> {
-
   List<Location>? _selectedLocationPath;
 
   _handleLocationSelected(List<Location>? selectedLocationPath) {
@@ -40,7 +42,8 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
   }
 
   _handleCollapse(List<Location> collapsePath) {
-    if (_selectedLocationPath != null && collapsePath.length < _selectedLocationPath!.length) {
+    if (_selectedLocationPath != null &&
+        collapsePath.length < _selectedLocationPath!.length) {
       for (int i = 0; i < collapsePath.length; i++) {
         if (collapsePath[i] != _selectedLocationPath![i]) {
           return;
@@ -56,6 +59,7 @@ class _ResourceDirectoryState extends State<ResourceDirectory> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return _InternalResourceDirectory(
@@ -86,30 +90,34 @@ class _InternalResourceDirectory extends StatefulWidget {
   final Function(List<Location>? selectedLocationPath)? onLocationSelected;
   final Function(List<Location> selectedLocationPath) onCollapse;
 
-  const _InternalResourceDirectory({super.key,
-    required this.locations,
-    required this.resourceToggle,
-    required this.globalSelectedLocation,
-    required this.onCollapse,
-    this.initiallyExpanded = false,
-    this.onLocationSelected,
-    this.rootLocationsSelectable = true,
-    this.parentLocationSelected = false});
+  const _InternalResourceDirectory(
+      {super.key,
+      required this.locations,
+      required this.resourceToggle,
+      required this.globalSelectedLocation,
+      required this.onCollapse,
+      this.initiallyExpanded = false,
+      this.onLocationSelected,
+      this.rootLocationsSelectable = true,
+      this.parentLocationSelected = false});
 
   @override
-  State<_InternalResourceDirectory> createState() => _InternalResourceDirectoryState();
+  State<_InternalResourceDirectory> createState() =>
+      _InternalResourceDirectoryState();
 }
 
-class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> {
-
+class _InternalResourceDirectoryState
+    extends State<_InternalResourceDirectory> {
   int? selectedLocationIndex;
 
   @override
   void didUpdateWidget(_InternalResourceDirectory oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    bool parentLocationBecomeSelected = widget.parentLocationSelected && selectedLocationIndex != null;
-    bool locationsChanged = widget.onLocationSelected != null && widget.locations != oldWidget.locations;
+    bool parentLocationBecomeSelected =
+        widget.parentLocationSelected && selectedLocationIndex != null;
+    bool locationsChanged = widget.onLocationSelected != null &&
+        widget.locations != oldWidget.locations;
 
     if (parentLocationBecomeSelected || locationsChanged) {
       setState(() {
@@ -118,23 +126,23 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
     }
 
     if (selectedLocationIndex != null) {
-      if (widget.globalSelectedLocation != widget.locations[selectedLocationIndex!]) {
+      if (widget.globalSelectedLocation !=
+          widget.locations[selectedLocationIndex!]) {
         setState(() {
           selectedLocationIndex = null;
         });
       }
     }
   }
-  
+
   bool _isLocationSelected(int index) {
     return selectedLocationIndex == index;
   }
 
   void _locationSelected(int index) {
-    
     int? newSelectedLocationIndex;
     List<Location>? currentSelectedPath;
-    
+
     if (_isLocationSelected(index)) {
       newSelectedLocationIndex = null;
       currentSelectedPath = null;
@@ -142,7 +150,7 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
       newSelectedLocationIndex = index;
       currentSelectedPath = [widget.locations[index]];
     }
-    
+
     setState(() {
       selectedLocationIndex = newSelectedLocationIndex;
     });
@@ -153,10 +161,11 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
     widget.onCollapse([location, ...collapsePath]);
   }
 
-  void _handleChildLocationSelected(List<Location>? childSelectedLocationPath, Location location) {
-    List<Location>? newSelectedLocationPath= childSelectedLocationPath != null
-      ? [location, ...childSelectedLocationPath]
-      : null;
+  void _handleChildLocationSelected(
+      List<Location>? childSelectedLocationPath, Location location) {
+    List<Location>? newSelectedLocationPath = childSelectedLocationPath != null
+        ? [location, ...childSelectedLocationPath]
+        : null;
 
     setState(() {
       selectedLocationIndex = null;
@@ -167,6 +176,9 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
 
   @override
   Widget build(BuildContext context) {
+    bool selectable =
+        widget.onLocationSelected != null && widget.rootLocationsSelectable;
+
     return ListView.builder(
         shrinkWrap: true, // nested scrolling
         physics: const ClampingScrollPhysics(),
@@ -186,18 +198,33 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
                   }
                 },
                 initiallyExpanded: widget.initiallyExpanded,
-                title: Row(
-                  children: [
-                    Text(location.name),
-                    const Spacer(),
-                    if (widget.onLocationSelected != null && widget.rootLocationsSelectable)
-                      ElevatedButton(
-                          child: Text(_isLocationSelected(locationIndex)
-                              ? (AppLocalizations.of(context)!.resourceDirectoryUnselectLocation)
-                              : (AppLocalizations.of(context)!.resourceDirectorySelectLocation)),
-                          onPressed: () => _locationSelected(locationIndex))
-                  ],
-                ),
+                title: Text(location.name),
+                trailing: (selectable ||
+                        (location.media.isNotEmpty &&
+                            widget.rootLocationsSelectable))
+                    ? Row(mainAxisSize: MainAxisSize.min, children: [
+                        if (selectable)
+                          ElevatedButton(
+                              child: Text(_isLocationSelected(locationIndex)
+                                  ? (AppLocalizations.of(context)!
+                                      .resourceDirectoryUnselectLocation)
+                                  : (AppLocalizations.of(context)!
+                                      .resourceDirectorySelectLocation)),
+                              onPressed: () =>
+                                  _locationSelected(locationIndex)),
+                        if (location.media.isNotEmpty &&
+                            widget.rootLocationsSelectable)
+                          IconButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => MediaOverViewDialog(
+                                        title: location.name,
+                                        media: location.media));
+                              },
+                              icon: const Icon(icons.Icons.info))
+                      ])
+                    : null,
                 controlAffinity: ListTileControlAffinity.leading,
                 // removes border on top and bottom
                 shape: const Border(),
@@ -218,6 +245,18 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
                                   ? '${resource.quantity}'
                                   : '\u221e'),
                               title: Text(resource.name),
+                              trailing: (resource.media.isNotEmpty)
+                                  ? IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) =>
+                                                MediaOverViewDialog(
+                                                    title: resource.name,
+                                                    media: resource.media));
+                                      },
+                                      icon: const Icon(icons.Icons.info))
+                                  : null,
                               onTap: () {
                                 widget.resourceToggle(resource);
                               }));
@@ -225,13 +264,15 @@ class _InternalResourceDirectoryState extends State<_InternalResourceDirectory> 
                   ),
                   _InternalResourceDirectory(
                     onCollapse: (childSelectedLocationPath) =>
-                        _handleChildCollapsed(childSelectedLocationPath, location),
+                        _handleChildCollapsed(
+                            childSelectedLocationPath, location),
                     globalSelectedLocation: widget.globalSelectedLocation,
                     locations: location.locations,
                     resourceToggle: widget.resourceToggle,
                     onLocationSelected: widget.onLocationSelected != null
                         ? (selectedLocationPath) =>
-                            _handleChildLocationSelected(selectedLocationPath, location)
+                            _handleChildLocationSelected(
+                                selectedLocationPath, location)
                         : null,
                     parentLocationSelected: (widget.parentLocationSelected)
                         ? true
