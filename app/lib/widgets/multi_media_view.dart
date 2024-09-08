@@ -70,7 +70,7 @@ class _MultiMediaViewState extends State<MultiMediaView> {
   Widget _buildSubtitledItem(
       {required MultiMediaItem item,
       required int index,
-      required String Function(int, String) getSubtitle,
+      required String mediaType,
       required Widget child}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +86,8 @@ class _MultiMediaViewState extends State<MultiMediaView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                getSubtitle(getMediaTypeNumber(index), item.title!),
+                AppLocalizations.of(context)!.multiMediaViewMediaTitle(
+                    mediaType, getMediaTypeNumber(index), item.title!),
                 style: Theme.of(context).textTheme.labelMedium,
               ),
             ],
@@ -103,31 +104,33 @@ class _MultiMediaViewState extends State<MultiMediaView> {
     return _buildSubtitledItem(
         item: item,
         index: index,
-        getSubtitle: AppLocalizations.of(context)!.multiMediaViewAudioTitle,
+        mediaType: AppLocalizations.of(context)!.multiMediaTypeAudio,
         child: AudioPlayerWidget(player: player));
   }
 
   Widget _buildImageItem(MultiMediaItem item, int index) {
     return _buildSubtitledItem(
+        mediaType: AppLocalizations.of(context)!.multiMediaTypeImage,
         item: item,
         index: index,
         child: Image.network(
           buildMediaUrl(item.reference!),
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) => ErrorBox(
-            errorText: AppLocalizations.of(context)!.multiMediaViewImageError(
-                item.reference ?? "", error.toString()),
+            errorText: AppLocalizations.of(context)!.multiMediaViewError(
+                AppLocalizations.of(context)!.multiMediaTypeImage,
+                item.reference ?? "",
+                error.toString()),
           ),
-        ),
-        getSubtitle: AppLocalizations.of(context)!.multiMediaViewImageTitle);
+        ));
   }
 
   Widget _buildVideoItem(MultiMediaItem item, int index) {
     return _buildSubtitledItem(
+        mediaType: AppLocalizations.of(context)!.multiMediaTypeVideo,
         item: item,
         index: index,
-        child: VideoPlayer(videoUrl: buildMediaUrl(item.reference!)),
-        getSubtitle: AppLocalizations.of(context)!.multiMediaViewVideoTitle);
+        child: VideoPlayer(videoUrl: buildMediaUrl(item.reference!)));
   }
 
   Widget _buildTextItem(MultiMediaItem item) {
@@ -137,7 +140,7 @@ class _MultiMediaViewState extends State<MultiMediaView> {
         if (item.title != null)
           Text(
             item.title!,
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
         if (item.text != null)
           Text(

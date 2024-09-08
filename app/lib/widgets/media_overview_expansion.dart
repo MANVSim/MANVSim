@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:manvsim/constants/icons.dart' as icons;
+import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/models/multi_media.dart';
 
-import 'muti_media_view.dart';
+import 'multi_media_view.dart';
 
 class MediaOverviewExpansion extends StatefulWidget {
   final List<Widget> children;
@@ -22,25 +21,24 @@ class _MediaOverviewExpansionState extends State<MediaOverviewExpansion> {
   Widget _title() {
     return SizedBox(
         width: double.infinity,
-        child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: widget.children,
-            )));
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: widget.children,
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
     return (widget.media.isEmpty)
-        ? _title()
+        ? Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8), child: _title())
         : ExpansionTile(
             title: _title(),
             controlAffinity: ListTileControlAffinity.trailing,
             shape: const Border(),
             childrenPadding: const EdgeInsets.only(left: 8.0),
             initiallyExpanded: _detailsVisible,
-            trailing: (_detailsVisible) ? null : const Icon(icons.Icons.info),
+            trailing: (_detailsVisible) ? null : const Icon(ManvIcons.info),
             onExpansionChanged: (expanded) {
               setState(() {
                 _detailsVisible = expanded;

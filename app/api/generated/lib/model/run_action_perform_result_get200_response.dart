@@ -17,7 +17,7 @@ class RunActionPerformResultGet200Response {
     required this.patient,
   });
 
-  Map<String, String> conditions;
+  Map<String, List<MediaReferencesDTOInner>> conditions;
 
   PatientDTO patient;
 
@@ -61,7 +61,9 @@ class RunActionPerformResultGet200Response {
       }());
 
       return RunActionPerformResultGet200Response(
-        conditions: mapCastOfType<String, String>(json, r'conditions')!,
+        conditions: json[r'conditions'] == null
+          ? const {}
+            : MediaReferencesDTOInner.mapListFromJson(json[r'conditions']),
         patient: PatientDTO.fromJson(json[r'patient'])!,
       );
     }

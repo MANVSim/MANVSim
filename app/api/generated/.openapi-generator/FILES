@@ -12,6 +12,7 @@ doc/LoginPostRequest.md
 doc/MediaReferencesDTOInner.md
 doc/NotificationsGet200Response.md
 doc/PatientDTO.md
+doc/PerformedActionDTO.md
 doc/PlayerSetNamePost401Response.md
 doc/PlayerSetNamePostRequest.md
 doc/ResourceDTO.md
@@ -49,6 +50,7 @@ lib/model/login_post_request.dart
 lib/model/media_references_dto_inner.dart
 lib/model/notifications_get200_response.dart
 lib/model/patient_dto.dart
+lib/model/performed_action_dto.dart
 lib/model/player_set_name_post401_response.dart
 lib/model/player_set_name_post_request.dart
 lib/model/resource_dto.dart
@@ -77,6 +79,7 @@ test/login_post_request_test.dart
 test/media_references_dto_inner_test.dart
 test/notifications_get200_response_test.dart
 test/patient_dto_test.dart
+test/performed_action_dto_test.dart
 test/player_set_name_post401_response_test.dart
 test/player_set_name_post_request_test.dart
 test/resource_dto_test.dart

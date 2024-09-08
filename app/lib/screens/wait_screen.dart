@@ -209,7 +209,7 @@ class _WaitScreenState extends State<WaitScreen> {
             if (_showError()) ...[
               ErrorBox(
                   errorText: AppLocalizations.of(context)!
-                      .waitErrorOccured(_errorText!)),
+                      .waitErrorOccurred(_errorText!)),
               const SizedBox(height: 32),
             ],
             Text(_waitStateText()),
@@ -219,8 +219,9 @@ class _WaitScreenState extends State<WaitScreen> {
                   duration: Duration(seconds: _waitTimeSeconds),
                   onTimerComplete: _handleTimerComplete)
             else
-              CircularProgressIndicator(),
-            if (true) ...[ // TODO: #228 use kDebugMode instead of true
+              const CircularProgressIndicator(),
+            if (true) ...[
+              // TODO: #228 use kDebugMode instead of true
               const SizedBox(height: 64),
               ElevatedButton.icon(
                 icon: const Icon(Icons.skip_next),

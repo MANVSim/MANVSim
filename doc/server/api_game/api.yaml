@@ -481,9 +481,7 @@ paths:
                 required: [ conditions, patient ]
                 properties:
                   conditions:
-                    type: object
-                    additionalProperties:
-                      type: string
+                    $ref: '#/components/schemas/ConditionDTO'
                   patient:
                     $ref: '#/components/schemas/PatientDTO'
         '204':
@@ -589,6 +587,8 @@ components:
     PatientDTO:
       type: object
       properties:
+        classification:
+          type: string
         id:
           type: integer
         name:
@@ -597,6 +597,10 @@ components:
           $ref: '#/components/schemas/LocationDTO'
         media_references:
           $ref: '#/components/schemas/MediaReferencesDTO'
+        performed_actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerformedActionDTO'
       required: [ id, name, location, media_references ]
 
     LocationDTO:
@@ -649,6 +653,25 @@ components:
           $ref: '#/components/schemas/MediaReferencesDTO'
       required: [ id, name, duration_sec, resources_needed ]
 
+    PerformedActionDTO:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionDTO'
+        execution_id:
+          type: integer
+        id:
+          type: string
+        player_tan:
+          type: string
+        resources_used:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceDTO'
+        time:
+          type: integer
+      required: [ action, execution_id, id, player_tan, resources_used, time ]
+
     MediaReferencesDTO:
           type: array
           items:
@@ -677,6 +700,10 @@ components:
               - media_type
             additionalProperties: false
 
+    ConditionDTO:
+        type: object
+        additionalProperties:
+          $ref: '#/components/schemas/MediaReferencesDTO'
     Error:
       type: object
       properties:

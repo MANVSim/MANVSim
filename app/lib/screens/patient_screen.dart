@@ -52,6 +52,7 @@ class _PatientScreenState extends State<PatientScreen> {
                       ]));
                 })));
   }
+
   Future refresh(Patient? patient) {
     setState(() {
       // TODO necessary to leave before every arrival?

@@ -3,8 +3,6 @@ import 'dart:async';
 
 import 'package:flutter/rendering.dart';
 
-
-
 class TimerWidget extends StatefulWidget {
   final Duration duration;
   final VoidCallback? onTimerComplete;
@@ -16,12 +14,11 @@ class TimerWidget extends StatefulWidget {
 }
 
 class TimerWidgetState extends State<TimerWidget> {
-
   /// Remaining time in seconds.
   late int _remainingTime;
 
-
   Timer? _timer;
+
   /// Timer ticks every second.
 
   @override
@@ -76,7 +73,9 @@ class TimerWidgetState extends State<TimerWidget> {
             value: progressValue,
             strokeWidth: 8.0,
             backgroundColor: Colors.grey[200],
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
         Text(

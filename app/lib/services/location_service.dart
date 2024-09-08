@@ -11,8 +11,9 @@ class LocationService {
   static Future<List<Location>> fetchLocations() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     // TODO method for getting apiService?
-    return apiService.api.runLocationAllGet().then((response) =>
-        response!.locations.map((dto) => Location.fromApi(dto)).toList());
+    return apiService.api
+        .runLocationAllGet()
+        .then((response) => response!.locations.map(Location.fromApi).toList());
   }
 
   static Future<String?> leaveLocation() {
@@ -24,9 +25,9 @@ class LocationService {
 
   static void goToLocationScreen(int locationId, BuildContext context) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => LocationScreen(locationId: locationId)))
+            context,
+            MaterialPageRoute(
+                builder: (context) => LocationScreen(locationId: locationId)))
         .whenComplete(() => {});
   }
 }

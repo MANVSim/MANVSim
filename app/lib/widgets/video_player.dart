@@ -50,8 +50,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
             controller: ChewieController(
           errorBuilder: (context, errorMessage) {
             return ErrorBox(
-                errorText: AppLocalizations.of(context)!
-                    .multiMediaViewVideoError(widget.videoUrl, errorMessage));
+                errorText: AppLocalizations.of(context)!.multiMediaViewError(
+                    AppLocalizations.of(context)!.multiMediaTypeVideo,
+                    widget.videoUrl,
+                    errorMessage));
           },
           videoPlayerController: _controller,
           autoPlay: false,

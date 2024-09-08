@@ -91,7 +91,6 @@ class ApiService {
     }
   }
 
-
   /// Builds a media URL from a media reference.
   String buildMediaUrl(BuildContext context, String mediaReference) {
     final user = Provider.of<TanUser>(context, listen: false);
@@ -102,7 +101,8 @@ class ApiService {
     }
 
     if (baseUrl.endsWith('/api')) {
-      baseUrl = baseUrl.substring(0, baseUrl.length - 4); // Fix substring length for "/api"
+      baseUrl = baseUrl.substring(
+          0, baseUrl.length - 4); // Fix substring length for "/api"
     }
 
     return '$baseUrl/$mediaReference';

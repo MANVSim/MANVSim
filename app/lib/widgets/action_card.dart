@@ -4,7 +4,7 @@ import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/patient_action.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:manvsim/constants/icons.dart' as icons;
+import 'package:manvsim/constants/manv_icons.dart';
 
 import 'media_overview_dialog.dart';
 
@@ -43,7 +43,7 @@ class _ActionCardState extends State<ActionCard> {
                               title: widget.action.name,
                               media: widget.action.media));
                     },
-                    icon: const Icon(icons.Icons.info))
+                    icon: const Icon(ManvIcons.info))
                 : null,
             controlAffinity: ListTileControlAffinity.leading,
             // removes border on top and bottom

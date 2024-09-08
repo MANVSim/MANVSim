@@ -56,8 +56,8 @@
   "waitTextWaitForArrival": "Spieler wurde alarmiert. Warten auf Ankunft am Zielort",
   "waitTextWaitForTravelTime": "Warten auf Alarmierung",
   "waitTextInitial": "Ankunftszeiten werden geladen",
-  "waitErrorOccured": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten: '{error}'",
-    "@waitErrorOccured": {
+  "waitErrorOccurred": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten: '{error}'",
+    "@waitErrorOccurred": {
         "placeholders": {
         "error": {
             "type": "String",
@@ -226,9 +226,17 @@
 
   "dialogueClose": "Schließen",
 
-  "multiMediaViewImageTitle": "Bild {number}: {title}",
-  "@multiMediaViewImageTitle": {
+  "multiMediaTypeImage": "Bild",
+  "multiMediaTypeVideo": "Video",
+  "multiMediaTypeAudio": "Audio",
+
+  "multiMediaViewMediaTitle": "{mediaType} {number}: {title}",
+  "@multiMediaViewMediaTitle": {
     "placeholders": {
+        "mediaType": {
+            "type": "String",
+            "example": "Bild"
+        },
       "number": {
         "type": "int",
         "example": "1"
@@ -239,35 +247,14 @@
         }
     }
   },
-  "multiMediaViewVideoTitle": "Video {number}: {title}",
-  "@multiMediaViewVideoTitle": {
+
+  "multiMediaViewError": "Die {mediaType} Datei '{path}' konnte nicht geladen werden: {errorMsg}",
+  "@multiMediaViewError": {
     "placeholders": {
-      "number": {
-        "type": "int",
-        "example": "1"
-      },
-      "title": {
-        "type": "String",
-        "example": "Bild"
-      }
-    }
-  },
-  "multiMediaViewAudioTitle": "Audio {number}: {title}",
-  "@multiMediaViewAudioTitle": {
-    "placeholders": {
-      "number": {
-        "type": "int",
-        "example": "1"
-      },
-      "title": {
-        "type": "String",
-        "example": "Bild"
-      }
-    }
-  },
-  "multiMediaViewImageError": "Bild '{path}' konnte nicht geladen werden: {errorMsg}",
-  "@multiMediaViewImageError": {
-    "placeholders": {
+        "mediaType": {
+            "type": "String",
+            "example": "Video"
+        },
       "path": {
         "type": "String",
         "example": "/media/image1.png"
@@ -279,18 +266,16 @@
     }
   },
 
+  "actionResultScreenTitle": "Maßnahme Erfolgreich",
+  "actionResultScreenResults": "Ergebnis(se)",
+  "actionResultScreenUsedResources": "Verwendete Resourcen",
+  "actionResultScreenDetails": "Details",
+  "actionResultScreenDetailStart": "Start",
+  "actionResultScreenDetailEnd": "Ende",
+  "actionResultScreenDetailDuration": "Dauer",
+  "actionResultScreenDetailPlayer": "Nutzer",
 
-  "multiMediaViewVideoError": "Video '{path}' konnte nicht geladen werden: {errorMsg}",
-  "@multiMediaVideoImageError": {
-    "placeholders": {
-      "path": {
-        "type": "String",
-        "example": "/media/image1.png"
-      },
-      "errorMsg": {
-        "type": "String",
-        "example": "Fehlermeldung"
-      }
-    }
-  }
+  "defaultError": "Ein Unbekannter Fehler ist aufgetreten.",
+
+  "dateTimeFormat": "dd.MM.yyyy HH:mm:ss"
 }

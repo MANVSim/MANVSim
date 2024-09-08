@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/models/patient.dart';
 
 import 'package:manvsim/models/patient_action.dart';
-import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/action_service.dart';
+import 'package:manvsim/widgets/action_overview.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
-import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'action_result_screen.dart';
 
 class ActionScreen extends StatefulWidget {
   final PatientAction action;
@@ -28,14 +29,34 @@ class ActionScreen extends StatefulWidget {
 
 class _ActionScreenState extends State<ActionScreen> {
   late Future<String?> futureActionId;
-  late Future<ConditionPatient?> futureResult;
+
+  late bool _hasError;
   Patient? patient;
 
   @override
   void initState() {
     futureActionId = ActionService.performAction(
         widget.patient.id, widget.action.id, widget.resourceIds);
+    _hasError = false;
     super.initState();
+  }
+
+  void onTimerComplete(String actionId) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ActionResultScreen(
+            patient: widget.patient, performedActionId: actionId),
+      ),
+    );
+  }
+
+  void onError() {
+    Timer.run(() {
+      setState(() {
+        _hasError = true;
+      });
+    });
   }
 
   @override
@@ -45,65 +66,29 @@ class _ActionScreenState extends State<ActionScreen> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(AppLocalizations.of(context)!
               .actionScreenTitle(widget.patient.name, widget.action.name)),
-          actions: const <Widget>[LogoutButton()],
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: _hasError,
         ),
-        body: Center(
-            child: ApiFutureBuilder<String>(
-                future: futureActionId,
-                builder: (context, actionId) {
-                  return TimerWidget(
-                    duration: Duration(seconds: widget.action.durationInSeconds),
-                    onTimerComplete: () =>
-                        showResultDialog(successContent(actionId)),
-                  );
-                },
-                onError: () =>
-                    Timer.run(() => showResultDialog(failureContent())))));
-  }
-
-  void showResultDialog(Widget content) {
-    Future dialogFuture = showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-          title: Text(AppLocalizations.of(context)!
-              .actionScreenTitle(widget.patient.name, widget.action.name)),
-          actions: [
-            ElevatedButton(
-                onPressed: () => Navigator.pop(context), // close dialog
-                child: Text(AppLocalizations.of(context)!.ok))
+        body: Column(
+          children: [
+            Card(
+              child: ActionOverview(
+                action: widget.action,
+                patient: widget.patient,
+                showMediaInfo: false,
+              ),
+            ),
+            Expanded(
+                child: Center(
+                    child: ApiFutureBuilder<String>(
+                        future: futureActionId,
+                        onErrorNotify: (error) => onError(),
+                        builder: (context, actionId) {
+                          return TimerWidget(
+                            duration: widget.action.duration,
+                            onTimerComplete: () => onTimerComplete(actionId),
+                          );
+                        })))
           ],
-          content: content),
-    );
-    // close action_screen
-    dialogFuture.whenComplete(() {
-      Navigator.pop(context, patient);
-    });
-  }
-
-  Widget successContent(String performedActionId) {
-    futureResult =
-        ActionService.fetchActionResult(widget.patient.id, performedActionId);
-    return ApiFutureBuilder<ConditionPatient>(
-        future: futureResult,
-        builder: (context, conditionPatient) {
-          var (condition, patient) = conditionPatient;
-          this.patient = patient;
-          var conditionList = condition.entries.toList();
-          return ListView.builder(
-              shrinkWrap: true, // nested scrolling
-              physics: const ClampingScrollPhysics(),
-              itemCount: conditionList.length,
-              itemBuilder: (context, index) => Row(children: [
-                    Text("${conditionList[index].key}: ",
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text(conditionList[index].value)
-                  ]));
-        });
-  }
-
-  Widget failureContent() {
-    return Text(AppLocalizations.of(context)!.actionFailure);
+        ));
   }
 }

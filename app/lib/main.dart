@@ -31,7 +31,7 @@ class ManvSimApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home:const StartScreen(),
+          home: const StartScreen(),
         ));
   }
 }

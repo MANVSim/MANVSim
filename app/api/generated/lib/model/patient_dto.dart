@@ -13,11 +13,21 @@ part of manv_api;
 class PatientDTO {
   /// Returns a new [PatientDTO] instance.
   PatientDTO({
+    this.classification,
     required this.id,
     required this.name,
     required this.location,
     this.mediaReferences = const [],
+    this.performedActions = const [],
   });
+
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? classification;
 
   int id;
 
@@ -27,30 +37,42 @@ class PatientDTO {
 
   List<MediaReferencesDTOInner> mediaReferences;
 
+  List<PerformedActionDTO> performedActions;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is PatientDTO &&
+    other.classification == classification &&
     other.id == id &&
     other.name == name &&
     other.location == location &&
-    _deepEquality.equals(other.mediaReferences, mediaReferences);
+    _deepEquality.equals(other.mediaReferences, mediaReferences) &&
+    _deepEquality.equals(other.performedActions, performedActions);
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
+    (classification == null ? 0 : classification!.hashCode) +
     (id.hashCode) +
     (name.hashCode) +
     (location.hashCode) +
-    (mediaReferences.hashCode);
+    (mediaReferences.hashCode) +
+    (performedActions.hashCode);
 
   @override
-  String toString() => 'PatientDTO[id=$id, name=$name, location=$location, mediaReferences=$mediaReferences]';
+  String toString() => 'PatientDTO[classification=$classification, id=$id, name=$name, location=$location, mediaReferences=$mediaReferences, performedActions=$performedActions]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
+    if (this.classification != null) {
+      json[r'classification'] = this.classification;
+    } else {
+      json[r'classification'] = null;
+    }
       json[r'id'] = this.id;
       json[r'name'] = this.name;
       json[r'location'] = this.location;
       json[r'media_references'] = this.mediaReferences;
+      json[r'performed_actions'] = this.performedActions;
     return json;
   }
 
@@ -73,10 +95,12 @@ class PatientDTO {
       }());
 
       return PatientDTO(
+        classification: mapValueOfType<String>(json, r'classification'),
         id: mapValueOfType<int>(json, r'id')!,
         name: mapValueOfType<String>(json, r'name')!,
         location: LocationDTO.fromJson(json[r'location'])!,
         mediaReferences: MediaReferencesDTOInner.listFromJson(json[r'media_references']),
+        performedActions: PerformedActionDTO.listFromJson(json[r'performed_actions']),
       );
     }
     return null;
