@@ -25,7 +25,7 @@ This project is managed on GitHub:
 
 ### Start Application Locally
 
-To start a development version of the application you may run:
+To start the current version of the application you may run:
 
 ```bash
 docker compose up
@@ -36,9 +36,12 @@ This will start the server and admin web frontend on
 and the web version of the app on  
 **<http://localhost:5001>**
 
-To start the server in debug mode and load test data instead use:  
+To start the server in debug mode and load test data instead use:
+
 ```bash
 docker compose -f docker-compose.yaml -f compose-dev.yaml up
 ```
 
-For specifics or alternatives see the `README.md` of the subprojects.
+The docker environment uses the volume `db-manvsim` to persist data.
+
+For specifics or alternatives to run the services see the `README.md` of the subprojects.
