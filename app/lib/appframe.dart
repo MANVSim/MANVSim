@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:manvsim/widgets/map_overlay.dart';
+import 'package:manvsim/screens/map_screen.dart';
 import 'package:manvsim/screens/location_list_screen.dart';
 import 'package:manvsim/screens/notifications_screen.dart';
 import 'package:manvsim/screens/patient_list_screen.dart';

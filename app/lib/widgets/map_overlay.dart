@@ -1,12 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:manvsim/models/offset_ray.dart';
 import 'package:manvsim/models/types.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 
-
 import 'package:manvsim/widgets/patient_map.dart';
-
 
 class PatientMapOverlay extends StatefulWidget {
   const PatientMapOverlay(this.patientLocations, this.buildings, {super.key});
@@ -138,14 +137,14 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Uses vector_math to determine where the path hits the edge.
   Offset getTarget(Offset originalTarget, Offset origin) {
     Offset direction = middle - originalTarget;
-    Ray dirRay = rayFromOffsets(origin, direction);
-    Vector3 intersectionPoint = dirRay.at([mapRect, ...buildings]
+    OffsetRay dirRay = OffsetRay(origin, direction);
+    Offset intersectionPoint = dirRay.at([mapRect, ...buildings]
         .map(dirRay.intersectsWithRect)
         .whereType<double>()
         .where((element) => element < 0)
         .map((distance) => distance * 0.99)
         .reduce(max));
-    return offsetFromVector3(intersectionPoint);
+    return intersectionPoint;
   }
 
   List<Rect> get buildings => widget.buildings;
@@ -154,58 +153,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   Rect get mapRect => Offset.zero & mapSize;
 
+  Vector3 vector3FromOffset(Offset offset) => Vector3(offset.dx, offset.dy, 0);
+
   Offset targetCenterToTranslation(Offset center) => -(center - middle);
-}
-
-Vector3 vector3FromOffset(Offset offset) => Vector3(offset.dx, offset.dy, 0);
-
-Offset offsetFromVector3(Vector3 vector3) => Offset(vector3.x, vector3.y);
-
-Ray rayFromOffsets(Offset origin, Offset direction) => Ray.originDirection(
-    vector3FromOffset(origin), vector3FromOffset(direction));
-
-extension RayIntersectsRect on Ray {
-  /// Computes the intersection of [rect] and [this].
-  /// Returns the nearest distance, the origin lies inside or outside the graph.
-  double? intersectsWithRect(Rect rect) {
-    final otherMin = Vector2(rect.left, rect.top);
-    final otherMax = Vector2(rect.right, rect.bottom);
-
-    var tNear = -double.maxFinite;
-    var tFar = double.maxFinite;
-
-    for (var i = 0; i < 2; ++i) {
-      if (direction[i] == 0.0) {
-        if (origin[i] < otherMin[i] || origin[i] > otherMax[i]) {
-          return null;
-        }
-      } else {
-        var t1 = (otherMin[i] - origin[i]) / direction[i];
-        var t2 = (otherMax[i] - origin[i]) / direction[i];
-
-        if (t1 > t2) {
-          final temp = t1;
-          t1 = t2;
-          t2 = temp;
-        }
-
-        if (t1 > tNear) {
-          tNear = t1;
-        }
-
-        if (t2 < tFar) {
-          tFar = t2;
-        }
-
-        if (tNear > tFar) {
-          return null;
-        }
-      }
-    }
-    if (tFar < 0) {
-      return tFar;
-    }
-
-    return tNear;
-  }
 }

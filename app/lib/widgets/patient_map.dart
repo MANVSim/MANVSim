@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:manvsim/models/offset_ray.dart';
 import 'package:manvsim/models/types.dart';
-import 'package:manvsim/widgets/map_overlay.dart';
 import 'package:manvsim/services/patient_service.dart';
-import 'package:vector_math/vector_math_64.dart' hide Colors;
 
 class PatientMap extends StatelessWidget {
   static const double width = 1000;
@@ -96,13 +95,11 @@ class _MapRaw extends CustomPainter {
   Path shadowEdge(Offset lineStart, Offset lineEnd) {
     Rect boundingRect = Offset.zero & const Size(1000, 1000);
 
-    Ray ray = rayFromOffsets(viewerPosition, viewerPosition - lineStart);
-    Offset end =
-        offsetFromVector3(ray.at(ray.intersectsWithRect(boundingRect)!));
+    OffsetRay ray = OffsetRay(viewerPosition, viewerPosition - lineStart);
+    Offset end = ray.intersectionWithRect(boundingRect)!;
 
-    Ray ray2 = rayFromOffsets(viewerPosition, viewerPosition - lineEnd);
-    Offset end2 =
-        offsetFromVector3(ray2.at(ray2.intersectsWithRect(boundingRect)!));
+    OffsetRay ray2 = OffsetRay(viewerPosition, viewerPosition - lineEnd);
+    Offset end2 = ray2.intersectionWithRect(boundingRect)!;
 
     return Path()..addPolygon([end, lineStart, lineEnd, end2], true);
   }
