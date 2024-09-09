@@ -21,7 +21,7 @@ class Tan:
         self.value = value
 
     @classmethod
-    def of_length(cls, length: int = 5) -> 'Tan':
+    def of_length(cls, length: int = 6) -> 'Tan':
         """
         Creates a new TAN with the given length.
 
