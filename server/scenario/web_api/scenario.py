@@ -52,10 +52,13 @@ def get_scenario(scenario_id: int):
         scenario_id=scenario_id
     )
 
-    vehicle_query = select(distinct(models.PlayersToVehicleInExecution.vehicle_name),
-                           models.PlayersToVehicleInExecution.location_id).where(
-        models.PlayersToVehicleInExecution.scenario_id == scenario_id
-    ).order_by(asc(models.PlayersToVehicleInExecution.vehicle_name))
+    vehicle_query = (
+        select(models.PlayersToVehicleInExecution.vehicle_name,
+               models.PlayersToVehicleInExecution.location_id,
+               models.PlayersToVehicleInExecution.travel_time)
+        .where(models.PlayersToVehicleInExecution.scenario_id == scenario_id)
+        .group_by(models.PlayersToVehicleInExecution.vehicle_name)
+        .order_by(asc(models.PlayersToVehicleInExecution.vehicle_name)))
     vehicle_list = db.session.execute(vehicle_query)
 
     return {
@@ -72,6 +75,7 @@ def get_scenario(scenario_id: int):
             {
                 "id": vehicle[1],
                 "name": vehicle[0],
+                "travel_time": vehicle[2],
             } for vehicle in vehicle_list
         ]
     }
@@ -178,16 +182,6 @@ def __update_vehicle_in_scenario(scenario, vehicles_add=None, vehicles_del=None)
     Edits the vehicles registered on the provided scenario. Depending on the
     quantity and existence an entry is created, removed or edited.
     """
-    if vehicles_add and vehicles_del:
-        # if names are marked for deletion as well as addition, do nothing
-        vehicleNamesAdd = [item["name"] for item in vehicles_add]
-        vehicleNamesDel = [item["name"] for item in vehicles_del]
-
-        common_elements = set(vehicleNamesAdd) & set(vehicleNamesDel)
-
-        vehicles_add = [item for item in vehicles_add if item["name"] not in common_elements]
-        vehicles_del = [item for item in vehicles_del if item["name"] not in common_elements]
-
     try:
         if vehicles_del:
             for vehicle_del in vehicles_del:
@@ -235,6 +229,7 @@ def __add_vehicles_to_execution(scenario, vehicles_add):
                 scenario_id=scenario.id,
                 location_id=vehicle_add["id"],
                 vehicle_name=vehicle_add["name"],
-                player_tan=f"empty-{vehicle_add["name"]}"
+                player_tan=f"empty-{vehicle_add["name"]}",
+                travel_time=vehicle_add["travel_time"]
             )
             db.session.add(vehicle)

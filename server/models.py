@@ -26,7 +26,6 @@ class Player(db.Model):
         ForeignKey("location.id"), nullable=False)
     role_id: Mapped[int] = mapped_column(ForeignKey("role.id"), nullable=False)
     alerted: Mapped[bool] = mapped_column(nullable=False)
-    activation_delay_sec: Mapped[int] = mapped_column(nullable=False)
 
     execution: Mapped["Execution"] = relationship(back_populates="players")
 
@@ -127,6 +126,7 @@ class PlayersToVehicleInExecution(db.Model):
                                             nullable=True, primary_key=True)
     location_id: Mapped[int] = mapped_column(ForeignKey("location.id"), nullable=False)
     vehicle_name: Mapped[str] = mapped_column(nullable=False)
+    travel_time: Mapped[int] = mapped_column(nullable=False, default=0)
 
     __table_args__ = (
         UniqueConstraint("execution_id", "scenario_id", "vehicle_name",
