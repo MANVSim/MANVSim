@@ -171,9 +171,12 @@ def __get_roles() -> list[models.Role]:
     return models.Role.query.all()
 
 
-@cache
+#@cache
 def __get_top_level_locations(execution_id: int) -> List[models.Location]:
-    return models.PlayersToVehicleInExecution.query.filter_by(execution_id=execution_id).all()
+    return (models.PlayersToVehicleInExecution.query
+            .filter_by(execution_id=execution_id)
+            .group_by(models.PlayersToVehicleInExecution.vehicle_name)
+            .all())
 
 
 def __perform_state_change(new_status: Execution.Status, execution: Execution):
