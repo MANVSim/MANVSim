@@ -115,16 +115,21 @@ class Execution:
         # take empty seat of vehicle
         player_to_vehicle = models.PlayersToVehicleInExecution.query.filter_by(
             execution_id=self.id,
-            vehicle_name=vehicle
+            vehicle_name=vehicle,
+            player_tan=f"empty-{vehicle}"
         ).first()
         if player_to_vehicle:
             # assign empty seat in vehicle
             player = (models.Player(tan=tan, execution_id=self.id, location_id=player_to_vehicle.location_id, role_id=role, alerted=False, activation_delay_sec=0))  # pyright: ignore [reportCallIssue]
-            player_to_vehicle.player_tan = tan
-            # create new empty seat in vehicle
-            new_seat_in_vehicle = models.PlayersToVehicleInExecution(execution_id=player_to_vehicle.execution_id, scenario_id=player_to_vehicle.scenario_id, player_tan="empty", location_id=player_to_vehicle.location_id, vehicle_name=player_to_vehicle.vehicle_name)  # pyright: ignore [reportCallIssue]
-            db.session.add(new_seat_in_vehicle)
             db.session.add(player)
+            player_to_vehicle.player_tan = tan
+            db.session.commit()
+
+            # create new empty seat in vehicle
+            # Here it is possible to implement a limitation of seats if required
+            new_seat_in_vehicle = models.PlayersToVehicleInExecution(execution_id=player_to_vehicle.execution_id, scenario_id=player_to_vehicle.scenario_id, player_tan=f"empty-{player_to_vehicle.vehicle_name}", location_id=player_to_vehicle.location_id, vehicle_name=player_to_vehicle.vehicle_name)  # pyright: ignore [reportCallIssue]
+            db.session.add(new_seat_in_vehicle)
+
             db.session.commit()
 
             # load player location -> choose from existing or load new vehicle

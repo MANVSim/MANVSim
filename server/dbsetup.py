@@ -186,18 +186,24 @@ def __create_roles():
 
 
 def __create_players():
-    insert(Player(tan="123ABC", execution_id=1, location_id=0, role_id=1,
+    insert(Player(tan="123ABC", execution_id=4, location_id=0, role_id=1,
                   alerted=True, activation_delay_sec=120))
-    insert(Player(tan="987ZYX", execution_id=2, location_id=0,
+    insert(Player(tan="987ZYX", execution_id=5, location_id=0,
                   role_id=2, alerted=True, activation_delay_sec=10))
-    insert(Player(tan="654WVU", execution_id=2, location_id=0, role_id=3,
+    insert(Player(tan="654WVU", execution_id=5, location_id=0, role_id=3,
                   alerted=False, activation_delay_sec=10))
 
     insert(PlayersToVehicleInExecution(execution_id=4, scenario_id=2, player_tan="123ABC",
                                        location_id=0, vehicle_name="RTW I"))
+    insert(PlayersToVehicleInExecution(execution_id=4, scenario_id=2, player_tan="empty-RTW I",
+                                       location_id=0, vehicle_name="RTW I"))
     insert(PlayersToVehicleInExecution(execution_id=5, scenario_id=2, player_tan="987ZYX",
                                        location_id=0, vehicle_name="RTW I"))
+    insert(PlayersToVehicleInExecution(execution_id=5, scenario_id=2, player_tan="empty-RTW I",
+                                       location_id=0, vehicle_name="RTW I"))
     insert(PlayersToVehicleInExecution(execution_id=5, scenario_id=2, player_tan="654WVU",
+                                       location_id=0, vehicle_name="RTW II"))
+    insert(PlayersToVehicleInExecution(execution_id=5, scenario_id=2, player_tan="empty-RTW II",
                                        location_id=0, vehicle_name="RTW II"))
 
 
