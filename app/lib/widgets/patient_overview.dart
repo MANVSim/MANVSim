@@ -8,10 +8,10 @@ import 'package:manvsim/widgets/media_overview_expansion.dart';
 class PatientOverview extends StatefulWidget {
   final Patient patient;
 
-  final ExpansionTileController? expansionController;
+  final bool initiallyExpanded;
 
   const PatientOverview(
-      {super.key, required this.patient, this.expansionController});
+      {super.key, required this.patient, this.initiallyExpanded = true});
 
   @override
   State<PatientOverview> createState() => _PatientOverviewState();
@@ -21,7 +21,7 @@ class _PatientOverviewState extends State<PatientOverview> {
   @override
   Widget build(BuildContext context) {
     return MediaOverviewExpansion(
-        controller: widget.expansionController,
+        initiallyExpanded: widget.initiallyExpanded,
         media: widget.patient.media,
         children: [
           Text(

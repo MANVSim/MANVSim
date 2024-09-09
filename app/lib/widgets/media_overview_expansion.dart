@@ -7,17 +7,22 @@ import 'multi_media_view.dart';
 class MediaOverviewExpansion extends StatefulWidget {
   final List<Widget> children;
   final MultiMediaCollection media;
-  final ExpansionTileController? controller;
-
+  final bool initiallyExpanded;
   const MediaOverviewExpansion(
-      {super.key, required this.children, required this.media, this.controller});
+      {super.key, required this.children, required this.media, this.initiallyExpanded = true});
 
   @override
   State<MediaOverviewExpansion> createState() => _MediaOverviewExpansionState();
 }
 
 class _MediaOverviewExpansionState extends State<MediaOverviewExpansion> {
-  bool _detailsVisible = true;
+  late bool _detailsVisible;
+
+  @override
+  void initState() {
+    super.initState();
+    _detailsVisible = widget.initiallyExpanded;
+  }
 
   Widget _title() {
     return SizedBox(
@@ -34,7 +39,6 @@ class _MediaOverviewExpansionState extends State<MediaOverviewExpansion> {
         ? Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8), child: _title())
         : ExpansionTile(
-            controller: widget.controller,
             title: _title(),
             controlAffinity: ListTileControlAffinity.trailing,
             shape: const Border(),
