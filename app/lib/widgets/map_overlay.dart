@@ -37,12 +37,14 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   late final AnimationController _animationController;
 
   late PatientMap child;
-  late ValueNotifier<Offset> positionNotifier;
+  ValueNotifier<Offset> positionNotifier =
+      ValueNotifier(const Offset(400, 400));
+
+  Offset lastTapped = const Offset(0, 0);
 
   @override
   void initState() {
     super.initState();
-    positionNotifier = ValueNotifier(const Offset(400, 400));
     child = PatientMap(widget.patientLocations, buildings, positionNotifier);
     _transformationController = TransformationController(
         Matrix4.identity()
@@ -76,10 +78,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
                   onLongPressStart: (details) =>
                       _onNewTargetOffset(details.localPosition),
                   onLongPressUp: _onMoveEnd,
-                  onLongPressMoveUpdate: (details) {
-                    _onMoveEnd();
-                    _onNewTargetOffset(details.localPosition);
-                  },
+                  onLongPressMoveUpdate: (details) =>
+                      _onNewTargetOffset(details.localPosition),
                   child: ClipRect(
                       clipBehavior: Clip.hardEdge, //clipBehavior,
                       child: OverflowBox(
@@ -104,8 +104,17 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   /// Start animation moving the middle to the edge.
   void _onNewTargetOffset(Offset tappedPosition) {
+    if ((lastTapped - tappedPosition).distance < 5) {
+      return;
+    }
+    lastTapped = tappedPosition;
+    _onNewDirection(middle - tappedPosition);
+  }
+
+  void _onNewDirection(Offset direction) {
     Offset self = _transformationController.toScene(middle);
-    Offset target = getTarget(tappedPosition, self);
+    Offset target = getTarget(self, direction);
+    _onMoveEnd();
     _offsetAnimation = Tween<Offset>(
             begin: targetCenterToTranslation(self),
             end: targetCenterToTranslation(target))
@@ -135,8 +144,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   }
 
   /// Uses vector_math to determine where the path hits the edge.
-  Offset getTarget(Offset originalTarget, Offset origin) {
-    Offset direction = middle - originalTarget;
+  Offset getTarget(Offset origin, Offset direction) {
     OffsetRay dirRay = OffsetRay(origin, direction);
     Offset intersectionPoint = dirRay.at([mapRect, ...buildings]
         .map(dirRay.intersectsWithRect)

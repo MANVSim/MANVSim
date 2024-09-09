@@ -35,8 +35,8 @@ class PatientMap extends StatelessWidget {
                 end: Alignment.bottomRight)),
         child: Stack(
           children: [
-            CustomPaint(painter: _MapRaw(buildings, positionNotifier)),
-            ...getPatients(context)
+            ...getPatients(context),
+            CustomPaint(painter: _MapRaw(buildings, positionNotifier))
           ],
         ));
   }

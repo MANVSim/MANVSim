@@ -22,9 +22,12 @@ class MapService {
   }
 
   static Future<List<Rect>> fetchBuildings() async {
-    return [
-      Rect.fromLTRB(100, 100, 200, 200),
-      Rect.fromLTRB(300, 300, 500, 500)
+    return const [
+      Rect.fromLTRB(100, 120, 210, 240),
+      Rect.fromLTRB(100, 730, 300, 980),
+      Rect.fromLTRB(300, 150, 910, 240),
+      Rect.fromLTRB(700, 750, 910, 930),
+      Rect.fromLTRB(340, 330, 520, 530)
     ];
   }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/rendering.dart';
-
 class TimerWidget extends StatefulWidget {
   final Duration duration;
   final VoidCallback? onTimerComplete;
