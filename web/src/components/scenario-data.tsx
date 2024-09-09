@@ -114,11 +114,10 @@ const ScenarioData: React.FC<ScenarioDataProps> = ({
         if (data.includes(editData)) {
             // filter newName and mark oldname for deletion as data type
             setDeleteDataList(prevDeleteDataList => {
-                let updatedDeleteList = prevDeleteDataList
                 if (!prevDeleteDataList.includes(editData)) {
-                    return [...updatedDeleteList, editData];
+                    return [...prevDeleteDataList, editData];
                 }
-                return updatedDeleteList;
+                return prevDeleteDataList;
             });
         }
         setEditTravelTime(-1)

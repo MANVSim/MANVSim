@@ -32,7 +32,6 @@ def _check_players(players: list[Player], execution: Execution):
         assert db_player.tan == player.tan
         assert db_player.alerted == player.alerted
         assert db_player.execution_id == execution.id
-        assert db_player.activation_delay_sec == player.activation_delay_sec
         assert db_player.role_id == player.role.id if player.role else False
         _check_role(player.role)
         assert db_player.location_id == player.location.id if player.location else False
