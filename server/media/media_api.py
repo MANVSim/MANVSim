@@ -10,6 +10,7 @@ from media.media_data import MediaData
 from models import WebUser
 from utils.decorator import role_required
 
+
 api = Blueprint("api-media", __name__)
 
 
@@ -73,23 +74,22 @@ def __handle_file_upload():
     if extension in MediaData.ALLOWED_IMAGE_EXTENSIONS:
         reference_path += "image"
         result = MediaData.new_image(image_reference=f"{reference_path}/{filename}",
-                                     title=request.form.get("title", default=None))
+                                     title=request.form.get("title"))
     elif extension in MediaData.ALLOWED_VIDEO_EXTENSIONS:
         reference_path += "video"
         result = MediaData.new_video(video_reference=f"{reference_path}/{filename}",
-                                     title=request.form.get("title", default=None))
+                                     title=request.form.get("title"))
     elif extension in MediaData.ALLOWED_AUDIO_EXTENSIONS:
         reference_path += "audio"
         result = MediaData.new_audio(audio_reference=f"{reference_path}/{filename}",
-                                     title=request.form.get("title", default=None))
+                                     title=request.form.get("title"))
     elif extension in MediaData.ALLOWED_TEXT_EXTENSIONS:
         reference_path += "text"
         result = MediaData.new_text_file(text_reference=f"{reference_path}/{filename}",
-                                         title=request.form.get("title", default=None))
+                                         title=request.form.get("title"))
     else:
         return "Unsupported file format", 415
 
-    result.title = request.form.get("title")
     result.text = request.form.get("text")
 
     save_path = os.path.join(current_app.root_path, reference_path, filename)
