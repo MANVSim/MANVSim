@@ -69,11 +69,12 @@
   "nameName": "Name",
   "nameSubmit": "Simulation beitreten",
 
-  "patientListScreenName": "Patientenliste",
-  "locationListScreenName": "Locationliste",
+  "patientListScreenName": "Patienten Auswahl",
+  "locationListScreenName": "Location Auswahl",
 
-  "patientScreenName": "Patient: {patientId}",
-  "@patientScreenName": {
+  "patientScreenName": "Patienten Übersicht",
+  "patientNameFromId": "Patient: {patientId}",
+  "@patientNameFromId": {
     "placeholders": {
       "patientId": {
         "type": "int",
@@ -81,6 +82,7 @@
       }
     }
   },
+
   "locationScreenName": "Location Übersicht",
   "locationNameFromId": "Location {locationId}",
   "@locationNameFromId": {
