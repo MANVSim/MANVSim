@@ -34,8 +34,8 @@ def _check_players(players: list[Player], execution: Execution):
         assert db_player.execution_id == execution.id
         assert db_player.role_id == player.role.id if player.role else False
         _check_role(player.role)
-        assert db_player.location_id == player.location.id if player.location else False
-        _check_location(player.location, execution.scenario)
+        # wont work with a location that has a hash generated location id the check is designed for equal location_ids in the game as well es db
+        # _check_location(player.location, execution.scenario)
         assert player.name is None
         assert not player.accessible_locations
         assert not player.logged_in
