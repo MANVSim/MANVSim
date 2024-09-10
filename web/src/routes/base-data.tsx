@@ -190,8 +190,8 @@ BaseDataRoute.action = async function ({ request }: ActionFunctionArgs<Request>)
     } else {
 
         // indicates if the backend should handle a raw txt
-        let type = formData.get("type")
-        let url = `media/${type}`
+        const type = formData.get("type")
+        const url = `media/${type}`
         const media = await tryFetchJson<Media>(url, {
             body: formData,
             method: "POST",
@@ -215,7 +215,7 @@ BaseDataRoute.action = async function ({ request }: ActionFunctionArgs<Request>)
 
     // Instead of redirecting, reload the current page
     if (response.ok) {
-        let url = `/data/${formData.get("dataType")}-${formData.get("id")}`
+        const url = `/data/${formData.get("dataType")}-${formData.get("id")}`
         console.log(url)
         window.location.href = url;
     } else {
