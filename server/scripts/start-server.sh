@@ -6,4 +6,4 @@ if [ "$1" == "--sync" ]; then
   pipenv sync
 fi
 
-flask --app main --debug run
+flask --app main --debug run -p 5002

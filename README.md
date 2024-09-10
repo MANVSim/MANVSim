@@ -32,7 +32,7 @@ docker compose up
 ```
 
 This will start the server and admin web frontend on  
-**<http://localhost:5000>**   
+**<http://localhost:5002>**   
 and the web version of the app (with the android app apk downloadable) on  
 **<http://localhost:5001>**
 
