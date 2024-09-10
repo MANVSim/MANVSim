@@ -40,6 +40,8 @@
         }
     },
 
+  "downloadAndroidApp": "Download Android App",
+
 
   "unauthorizedBearerAlertBody": "Du bist nicht berechtigt, diese Aktion auszuführen. Bitte logge dich erneut ein.",
   "unauthorizedBearerAlertHeader": "Login abgelaufen",

@@ -194,17 +194,17 @@ class LoginScreenState extends State<LoginScreen> {
         onPressed: () {
           launchUrlString("/assets/assets/manvsim-app.apk");
         },
-        child: const Column(children: [
-          Icon(
+        child: Column(children: [
+          const Icon(
             Icons.android,
             color: Colors.white,
             size: 40,
           ),
           Text(
-            "Download Android App",
-            style: TextStyle(color: Colors.white),
+            AppLocalizations.of(context)!.downloadAndroidApp,
+            style: const TextStyle(color: Colors.white),
           ),
-          SizedBox(
+          const SizedBox(
             height: 8,
           )
         ]));
