@@ -66,40 +66,64 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   @override
   Widget build(BuildContext context) {
     var locationIcon = const Icon(Icons.location_on, color: Colors.blue);
-    return Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          border: Border.all(width: 3),
-        ),
-        child: Stack(children: [
-          Listener(
-              child: GestureDetector(
-                  onLongPressStart: (details) =>
-                      _onNewTargetOffset(details.localPosition),
-                  onLongPressUp: _onMoveEnd,
-                  onLongPressMoveUpdate: (details) =>
-                      _onNewTargetOffset(details.localPosition),
-                  child: ClipRect(
-                      clipBehavior: Clip.hardEdge, //clipBehavior,
-                      child: OverflowBox(
-                          alignment: Alignment.topLeft,
-                          minWidth: 0.0,
-                          minHeight: 0.0,
-                          maxWidth: double.infinity,
-                          maxHeight: double.infinity,
-                          child: Transform(
-                            transform: _transformationController.value,
-                            //alignment: alignment,
-                            child: child,
-                          ))))),
-          Center(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              locationIcon,
-              Visibility(visible: false, child: locationIcon)
-            ]),
-          )
-        ]));
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            border: Border.all(width: 3),
+          ),
+          child: Stack(children: [
+            Listener(
+                child: GestureDetector(
+                    onLongPressStart: (details) =>
+                        _onNewTargetOffset(details.localPosition),
+                    onLongPressUp: _onMoveEnd,
+                    onLongPressMoveUpdate: (details) =>
+                        _onNewTargetOffset(details.localPosition),
+                    child: ClipRect(
+                        clipBehavior: Clip.hardEdge, //clipBehavior,
+                        child: OverflowBox(
+                            alignment: Alignment.topLeft,
+                            minWidth: 0.0,
+                            minHeight: 0.0,
+                            maxWidth: double.infinity,
+                            maxHeight: double.infinity,
+                            child: Transform(
+                              transform: _transformationController.value,
+                              //alignment: alignment,
+                              child: child,
+                            ))))),
+            Center(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                locationIcon,
+                Visibility(visible: false, child: locationIcon)
+              ]),
+            )
+          ])),
+      Row(mainAxisSize: MainAxisSize.min, children: [
+        IconButton(
+            onPressed: () {
+              _transformationController.value.rotateX(-pi / 10);
+            },
+            icon: const Icon(Icons.turn_slight_left)),
+        IconButton(
+            onPressed: () {
+              _transformationController.value.rotateX(pi / 10);
+            },
+            icon: const Icon(Icons.turn_slight_right)),
+      ]),
+      IconButton(
+          onPressed: () {
+            _transformationController.value.scale(1.2);
+          },
+          icon: const Icon(Icons.add)),
+      IconButton(
+          onPressed: () {
+            _transformationController.value.scale(0.8);
+          },
+          icon: const Icon(Icons.minimize)),
+    ]);
   }
 
   /// Start animation moving the middle to the edge.

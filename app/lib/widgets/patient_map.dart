@@ -71,12 +71,17 @@ class _MapRaw extends CustomPainter {
       ..style = PaintingStyle.fill
       ..color = Colors.black;
     Paint buildingPaint = Paint()..color = Colors.grey;
+    Paint borderPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..color = Colors.black;
     for (Rect building in buildings) {
       for (Path shadow in _getShadow(building, size)) {
         canvas.drawPath(shadow, shadowPaint);
       }
 
       canvas.drawRect(building, buildingPaint);
+      //canvas.drawRect(building, borderPaint);
     }
   }
 
