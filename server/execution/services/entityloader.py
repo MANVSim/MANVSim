@@ -233,11 +233,13 @@ def __load_players(exec_id: int) -> dict[str, Player] | None:
             continue
         # If the players location is a vehicle, select the associated one ...
         player_loc = None
+        player_travel_time = 0
         if db_player_loc.is_vehicle:
             name_mapping = db.session.query(models.PlayersToVehicleInExecution).filter_by(
                 player_tan=p.tan).first()
             if name_mapping:
                 player_loc = vehicles[name_mapping.vehicle_name]
+                player_travel_time = name_mapping.travel_time
         # ... otherwise load the given location (if it has not been loaded) ...
         elif p.location_id not in locations.keys():
             player_loc = load_location(p.location_id)
@@ -249,7 +251,7 @@ def __load_players(exec_id: int) -> dict[str, Player] | None:
 
         players[p.tan] = Player(tan=p.tan, name=None, location=player_loc,
                                 accessible_locations=set(), alerted=p.alerted,
-                                activation_delay_sec=p.activation_delay_sec,
+                                activation_delay_sec=player_travel_time,
                                 role=player_role)
 
     return players

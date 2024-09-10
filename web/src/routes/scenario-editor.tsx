@@ -72,7 +72,7 @@ export function ScenarioEditor() {
                         data={scenario.vehicles}
                         searchBarData={all_vehicles}
                         className="flex-fill"
-                        name="Fahrzeuge"
+                        name="Einsatzfahrzeuge" // this field is used for string matching in scenario-data.tsx
                         editView={editView}
                         addDataList={addVehicleList}
                         deleteDataList={deleteVehicleList}

@@ -90,7 +90,8 @@ export const isLoginResponse = isTypeFactory<LoginResponse>(loginResponse)
 const baseDataStripped = z.object({
   id: z.number(),
   name: z.string(),
-  quantity: z.number().optional()
+  quantity: z.number().optional(),
+  travel_time: z.number().optional()
 })
 
 export type BaseDataStripped = z.infer<typeof baseDataStripped>
