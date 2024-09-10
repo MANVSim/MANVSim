@@ -45,7 +45,7 @@ export function BaseDataRoute() {
             setUploadView(true)
             setDataType(dataType)
         }
-    }, [windowId])
+    }, [emptyBaseData, actions, locations, resources, windowId])
 
     const handlePageNav = (showId: number) => {
         setShowActions(showId === 1);
