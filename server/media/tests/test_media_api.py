@@ -98,7 +98,7 @@ def test_unauthorized_post(client):
     client.application.config['WTF_CSRF_METHODS'] = []
 
     auth_header = generate_webtoken(client.application, WebUser.Role.GAME_MASTER)
-    response = client.post("/media/txt", headers=auth_header, content_type="multipart/form-data",
+    response = client.post("/web/media/txt", headers=auth_header, content_type="multipart/form-data",
                            data={"text": "Test"})
 
     assert response.status_code == http.HTTPStatus.FORBIDDEN
