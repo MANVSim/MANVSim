@@ -2,7 +2,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs, useLoaderData } from "react-rou
 import { getBaseData } from "../api/base-data"
 import { BaseDataStripped, Media } from "../types"
 import { Button } from "react-bootstrap"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import MediaUpload from "../components/mediaUpload"
 import { tryFetchJson } from "../api"
 
@@ -21,10 +21,12 @@ export function BaseDataRoute() {
     const [showResources, setShowResources] = useState(false)
 
 
-    const emptyBaseData = {
-        id: 0,
-        name: ""
-    }
+    const emptyBaseData = useMemo(() => {
+        return {
+            id: 0,
+            name: ""
+        }
+    }, []); // No dependencies, so it's only created once
     const [editData, setEditData] = useState(emptyBaseData)
     const [uploadView, setUploadView] = useState(false)
 
@@ -45,7 +47,7 @@ export function BaseDataRoute() {
             setUploadView(true)
             setDataType(dataType)
         }
-    }, [actions, locations, resources, windowId])
+    }, [emptyBaseData, actions, locations, resources, windowId])
 
     const handlePageNav = (showId: number) => {
         setShowActions(showId === 1);
