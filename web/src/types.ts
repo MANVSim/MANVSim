@@ -87,11 +87,21 @@ export const isErrorResponse = isTypeFactory<ErrorResponse>(errorResponse)
 export const isLoginResponse = isTypeFactory<LoginResponse>(loginResponse)
 
 // MANVSim Data
+const media = z.object({
+  media_type: z.string(),
+  title: z.string().or(z.null()),
+  text: z.string().or(z.null()),
+  media_reference: z.string().or(z.null())
+})
+
+export type Media = z.infer<typeof media>
+
 const baseDataStripped = z.object({
   id: z.number(),
   name: z.string(),
   quantity: z.number().optional(),
-  travel_time: z.number().optional()
+  travel_time: z.number().optional(),
+  media_refs: z.string().optional(),
 })
 
 export type BaseDataStripped = z.infer<typeof baseDataStripped>
@@ -182,12 +192,6 @@ export type ExecutionData = z.infer<typeof executionData>
 export const isExecutionData = isTypeFactory<ExecutionData>(executionData)
 
 
-const media = z.object({
-  media_type: z.string(),
-  title: z.string().or(z.null()),
-  text: z.string().or(z.null()),
-  media_reference: z.string().or(z.null())
-})
 
 const actionData = z.object({
   id: z.number(),

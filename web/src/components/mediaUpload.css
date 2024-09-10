@@ -1,0 +1,60 @@
+#media-upload-section {
+    z-index: 999;
+    top: 15em;
+    left: 30em
+}
+
+.table-container {
+    max-height: 150px;
+    /* Set the height for scrollable table body */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    margin-top: 10px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sticky-header th {
+    position: sticky;
+    top: 0;
+    /* Stick the header to the top */
+    background-color: white;
+    /* Ensure the header is still visible */
+    z-index: 1;
+    /* Make sure the header is above other content */
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+    /* Optional: add shadow for clarity */
+}
+
+tbody td {
+    max-width: 10em;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+@media screen and (max-width: 1399px) {
+    #media-upload-section {
+        left: 25em
+    }
+}
+
+@media screen and (max-width: 1299px) {
+    #media-upload-section {
+        left: 20em
+    }
+}
+
+@media screen and (max-width: 991px) {
+    #media-upload-section {
+        left: 15em
+    }
+}
+
+@media screen and (max-width: 767px) {
+    #media-upload-section {
+        left: 10em
+    }
+}

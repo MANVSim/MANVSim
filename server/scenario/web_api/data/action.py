@@ -27,6 +27,7 @@ def get_all_actions():
         {
             "id": action.id,
             "name": action.name,
+            "media_refs": action.media_refs
         } for action in action_list
     ]
 

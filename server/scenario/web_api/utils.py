@@ -21,7 +21,7 @@ def update_media(dbo: models.Action | models.Location | models.Resource,
     for add_media in media_refs_add:
         media_refs.append(add_media)
 
-    dbo.media_refs = media_refs
+    dbo.media_refs = json.dumps(media_refs)
 
 
 def __remove_media(media_refs, del_media):

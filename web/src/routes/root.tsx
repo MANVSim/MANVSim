@@ -33,7 +33,7 @@ export function Root(): ReactElement {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <NavLink to="/executions" name="Ausführungen" />
-              <NavLink to="/data" name="Stammdaten" />
+              <NavLink to="/data/all" name="Stammdaten" />
               <NavDropdown title="Benutzer">
                 <NavDropdown.Header>
                   {getStorageItem("user")}
