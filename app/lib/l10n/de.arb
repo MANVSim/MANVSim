@@ -72,6 +72,16 @@
   "patientListScreenName": "Patienten Auswahl",
   "locationListScreenName": "Location Auswahl",
 
+
+  "patientScreenPerformedActionDetails": "Details",
+  "patientScreenPerformedActionTime": "Uhrzeit",
+  "patientScreenPerformedActionPlayer": "Nutzer",
+  "patientScreenPerformedAction": "Ausgeführte Maßnahmen",
+  "patientScreenTabOverview": "Übersicht",
+  "patientScreenTabActions": "Maßnahmen",
+
+
+
   "patientScreenName": "Patienten Übersicht",
   "patientNameFromId": "Patient: {patientId}",
   "@patientNameFromId": {

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/models/performed_actions.dart';
 
 import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/patient_service.dart';
+import 'package:manvsim/services/time_service.dart';
 import 'package:manvsim/widgets/action_selection.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
+import 'package:manvsim/widgets/media_info.dart';
 import 'package:manvsim/widgets/patient_overview.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -45,14 +48,70 @@ class _PatientScreenState extends State<PatientScreen> {
     return SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(children: [
-          Card(child:
-          PatientOverview(initiallyExpanded: expanded, patient: patient)),
+          Card(
+              child: PatientOverview(
+                  initiallyExpanded: expanded, patient: patient)),
           ...children
         ]));
   }
 
+  Widget _buildPerformedAction(PerformedAction performedAction) {
+    return Card(
+        child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(children: [
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(
+                  performedAction.action.name,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                const Spacer(),
+                ElevatedButton(onPressed: () {}, child: Text(AppLocalizations.of(context)!.patientScreenPerformedActionDetails)),
+                MediaInfo(title: performedAction.action.name, media: performedAction.action.media)
+              ]),
+              const SizedBox(height: 8),
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Icon(ManvIcons.time, size: 20),
+                const SizedBox(width: 4),
+                Text(
+                  AppLocalizations.of(context)!.patientScreenPerformedActionTime,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Expanded(
+                    child: Text(
+                  textAlign: TextAlign.right,
+                  TimeService.formatDateTime(performedAction.startTime, context),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ))
+              ]),
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Icon(ManvIcons.user, size: 20),
+                const SizedBox(width: 4),
+                Text(
+                  AppLocalizations.of(context)!.patientScreenPerformedActionPlayer,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Expanded(
+                    child: Text(
+                  textAlign: TextAlign.right,
+                  performedAction.playerTan,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ))
+              ])
+            ])));
+  }
+
+  List<Widget> _buildPerformedActions(Patient patient) {
+    return patient.performedActions
+        .map((performedAction) => _buildPerformedAction(performedAction))
+        .toList();
+  }
+
   Widget _buildOverview(Patient patient) {
-    return _buildTabView(patient, [], true);
+    return _buildTabView(
+        patient,
+        [Text(AppLocalizations.of(context)!.patientScreenPerformedAction), ..._buildPerformedActions(patient)],
+        true);
   }
 
   Widget _buildActions(Patient patient) {
@@ -75,8 +134,8 @@ class _PatientScreenState extends State<PatientScreen> {
             appBar: AppBar(
               bottom: TabBar(
                 tabs: [
-                  _buildTab("Übersicht", ManvIcons.patient),
-                  _buildTab("Maßnahmen", ManvIcons.action),
+                  _buildTab(AppLocalizations.of(context)!.patientScreenTabOverview, ManvIcons.patient),
+                  _buildTab(AppLocalizations.of(context)!.patientScreenTabActions, ManvIcons.action),
                 ],
               ),
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -98,7 +157,6 @@ class _PatientScreenState extends State<PatientScreen> {
 
   Future refresh(Patient? patient) {
     setState(() {
-      // TODO necessary to leave before every arrival?
       futurePatient = patient != null
           ? Future(() => patient)
           : LocationService.leaveLocation()
