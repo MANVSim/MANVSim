@@ -1,29 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
-import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/patient_service.dart';
 
 class PatientMap extends StatelessWidget {
-  static const double width = 1000;
-  static const double height = 1000;
 
-  static const double padding = 50;
+  const PatientMap(this.mapData, this.positionNotifier, {super.key});
 
-  const PatientMap(this.patientLocations, this.buildings, this.positionNotifier,
-      {super.key})
-      : size = const Size(width, height);
-
-  final List<PatientPosition> patientLocations;
-  final List<Rect> buildings;
-  final Size size;
+  final MapData mapData;
 
   final ValueNotifier<Offset> positionNotifier;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: size.height,
-        width: size.width,
+        height: mapData.size.height,
+        width: mapData.size.width,
         decoration: const BoxDecoration(
             image: DecorationImage(
                 opacity: 0.05,
@@ -36,16 +28,16 @@ class PatientMap extends StatelessWidget {
         child: Stack(
           children: [
             ...getPatients(context),
-            CustomPaint(painter: _MapRaw(buildings, positionNotifier))
+            CustomPaint(painter: _MapRaw(mapData.buildings, positionNotifier))
           ],
         ));
   }
 
   List<Positioned> getPatients(BuildContext context) {
-    return patientLocations
+    return mapData.patientsPositions
         .map((patientPosition) => Positioned(
-              top: patientPosition.position.y,
-              left: patientPosition.position.x,
+              top: patientPosition.position.dy,
+              left: patientPosition.position.dx,
               child: IconButton(
                   onPressed: () => PatientService.goToPatientScreen(
                       patientPosition.id, context),

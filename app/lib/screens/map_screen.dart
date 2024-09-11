@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:manvsim/models/types.dart';
+import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,13 +14,11 @@ class PatientMapScreen extends StatefulWidget {
 }
 
 class _PatientMapScreenState extends State<PatientMapScreen> {
-  late Future<List<PatientPosition>?> futurePatientPositions;
-  late Future<List<Rect>> futureBuildings;
+  late Future<MapData?> futureMapData;
 
   @override
   void initState() {
-    futureBuildings = MapService.fetchBuildings();
-    futurePatientPositions = MapService.fetchPatientPositions();
+    futureMapData = MapService.fetchMapData();
     super.initState();
   }
 
@@ -35,18 +33,14 @@ class _PatientMapScreenState extends State<PatientMapScreen> {
       body: RefreshIndicator(
           onRefresh: () {
             setState(() {
-              futurePatientPositions = MapService.fetchPatientPositions();
+              futureMapData = MapService.fetchMapData();
             });
-            return futurePatientPositions;
+            return futureMapData;
           },
-          child: ApiFutureBuilder<List<List<dynamic>?>>(
-              future: Future.wait([futurePatientPositions, futureBuildings]),
-              builder: (context, list) {
-                var patientPositions = list[0] as List<PatientPosition>;
-                var buildings = list[1] as List<Rect>;
-                return Center(
-                    child: PatientMapOverlay(patientPositions, buildings));
-              })),
+          child: ApiFutureBuilder<MapData>(
+              future: futureMapData,
+              builder: (context, mapdata) => Center(
+                  child: PatientMapOverlay(mapdata)))),
     );
   }
 }

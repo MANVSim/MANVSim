@@ -1,9 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:manvsim/models/types.dart';
+import 'package:get_it/get_it.dart';
+import 'package:manvsim/models/map_data.dart';
+import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/services/patient_service.dart';
-import 'package:manvsim/widgets/patient_map.dart';
 
 /// Provides methods to manage map data and positions.
 ///
@@ -14,8 +15,8 @@ class MapService {
     return PatientService.fetchPatientsIDs()
         .then((idList) => [...?idList, ...?idList]
             .map((id) => (
-                  position: Point<double>(rnd.nextDouble() * PatientMap.width,
-                      rnd.nextDouble() * PatientMap.height),
+                  position: Offset(rnd.nextDouble() * MapData.defaultSize.width,
+                      rnd.nextDouble() * MapData.defaultSize.height),
                   id: id
                 ))
             .toList());
@@ -29,5 +30,12 @@ class MapService {
       Rect.fromLTRB(700, 750, 910, 930),
       Rect.fromLTRB(340, 330, 520, 530)
     ];
+  }
+
+  static Future<MapData?> fetchMapData() async {
+    ApiService apiService = GetIt.instance.get<ApiService>();
+    return apiService.api
+        .runMapdataGet()
+        .then((value) => value != null ? MapData.fromApi(value) : null);
   }
 }

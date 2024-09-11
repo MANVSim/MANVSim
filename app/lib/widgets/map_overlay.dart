@@ -1,17 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
-import 'package:manvsim/models/types.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 
 import 'package:manvsim/widgets/patient_map.dart';
 
 class PatientMapOverlay extends StatefulWidget {
-  const PatientMapOverlay(this.patientLocations, this.buildings, {super.key});
+  const PatientMapOverlay(this.mapData, {super.key});
 
-  final List<PatientPosition> patientLocations;
-  final List<Rect> buildings;
+  final MapData mapData;
 
   @override
   State<StatefulWidget> createState() => _PatientMapOverlayState();
@@ -45,7 +44,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   @override
   void initState() {
     super.initState();
-    child = PatientMap(widget.patientLocations, buildings, positionNotifier);
+    child = PatientMap(widget.mapData, positionNotifier);
     _transformationController = TransformationController(
         Matrix4.identity()
           ..setTranslation(-Vector3(mapSize.width, mapSize.height, 0) / 2))
@@ -179,9 +178,9 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     return intersectionPoint;
   }
 
-  List<Rect> get buildings => widget.buildings;
+  List<Rect> get buildings => widget.mapData.buildings;
 
-  Size get mapSize => child.size;
+  Size get mapSize => widget.mapData.size;
 
   Rect get mapRect => Offset.zero & mapSize;
 
