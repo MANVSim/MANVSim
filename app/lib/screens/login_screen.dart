@@ -12,7 +12,6 @@ import 'package:manvsim/widgets/error_box.dart';
 import 'package:manvsim/widgets/tan_input.dart';
 import 'package:provider/provider.dart';
 
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'wait_screen.dart';
@@ -28,8 +27,10 @@ enum _LoginInputType { tan, url }
 
 class LoginScreenState extends State<LoginScreen> {
   final TanInputController _tanInputController = TanInputController();
-  final TextEditingController _serverUrlController =
-      TextEditingController(text: "http://localhost:5000/api");
+  final TextEditingController _serverUrlController = TextEditingController(
+      text: kDebugMode
+          ? "http://localhost:5002/api"
+          : "http://batailley.informatik.uni-kiel.de:5002/api");
 
   String? _errorMessage;
 

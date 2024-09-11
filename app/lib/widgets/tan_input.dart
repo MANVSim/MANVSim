@@ -62,6 +62,10 @@ class TanInputFieldState extends State<TanInputField> {
 
       widget.onChanged?.call(widget.controller.value);
     });
+    for (var (index, focusNode) in _focusNodes.indexed) {
+      focusNode.addListener(() => _controllers[index].selection = TextSelection(
+          baseOffset: 0, extentOffset: _controllers[index].text.length));
+    }
   }
 
   @override
@@ -95,8 +99,6 @@ class TanInputFieldState extends State<TanInputField> {
             focusNode: _focusNodes[index],
             keyboardType: TextInputType.text,
             textAlign: TextAlign.center,
-            onTap: () => _controllers[index].selection = TextSelection(
-                baseOffset: 0, extentOffset: _controllers[index].text.length),
             inputFormatters: [
               LengthLimitingTextInputFormatter(1),
               TextInputFormatter.withFunction((oldValue, newValue) {
