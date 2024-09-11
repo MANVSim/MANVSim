@@ -573,6 +573,19 @@ paths:
       security:
         - bearerAuth: [ ]
 
+  /run/mapdata:
+    get:
+      summary: gets map data
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapDataDTO'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
 
 
 components:
@@ -674,37 +687,75 @@ components:
       required: [ action, execution_id, id, player_tan, resources_used, time ]
 
     MediaReferencesDTO:
+      type: array
+      items:
+        type: object
+        properties:
+          media_reference:
+            type: string
+            description: The path or URL to the media resource.
+          media_type:
+            type: string
+            enum:
+              - IMAGE
+              - VIDEO
+              - TEXT
+              - AUDIO
+            description: The type of media referenced.
+          text:
+            type:
+              string
+            description: Optional text associated with the media reference.
+          title:
+            type:
+              string
+            description: Optional title associated with the media reference.
+        required:
+          - media_type
+        additionalProperties: false
+
+    ConditionDTO:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/MediaReferencesDTO'
+
+    PointDTO:
+      type: object
+      properties:
+        x:
+          type: number
+        y:
+          type: number
+      required: [ x,y ]
+
+    MapDataDTO:
+      type: object
+      properties:
+        patientPositions:
           type: array
           items:
             type: object
             properties:
-              media_reference:
-                type: string
-                description: The path or URL to the media resource.
-              media_type:
-                type: string
-                enum:
-                  - IMAGE
-                  - VIDEO
-                  - TEXT
-                  - AUDIO
-                description: The type of media referenced.
-              text:
-                type:
-                  string
-                description: Optional text associated with the media reference.
-              title:
-                type:
-                  string
-                description: Optional title associated with the media reference.
-            required:
-              - media_type
-            additionalProperties: false
+              position:
+                $ref: '#/components/schemas/PointDTO'
+              patient_id:
+                type: integer
+            required: [ position,patient_id ]
+        buildings:
+          type: array
+          items:
+            type: object
+            properties:
+              top_left:
+                $ref: '#/components/schemas/PointDTO'
+              width:
+                type: number
+              height:
+                type: number
+            required: [ top_left,width,height ]
+        starting_point:
+          $ref: '#/components/schemas/PointDTO'
 
-    ConditionDTO:
-        type: object
-        additionalProperties:
-          $ref: '#/components/schemas/MediaReferencesDTO'
     Error:
       type: object
       properties:

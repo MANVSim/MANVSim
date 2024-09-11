@@ -192,6 +192,12 @@ class ApiClient {
           return LoginPost200Response.fromJson(value);
         case 'LoginPostRequest':
           return LoginPostRequest.fromJson(value);
+        case 'MapDataDTO':
+          return MapDataDTO.fromJson(value);
+        case 'MapDataDTOBuildingsInner':
+          return MapDataDTOBuildingsInner.fromJson(value);
+        case 'MapDataDTOPatientPositionsInner':
+          return MapDataDTOPatientPositionsInner.fromJson(value);
         case 'MediaReferencesDTOInner':
           return MediaReferencesDTOInner.fromJson(value);
         case 'NotificationsGet200Response':
@@ -204,6 +210,8 @@ class ApiClient {
           return PlayerSetNamePost401Response.fromJson(value);
         case 'PlayerSetNamePostRequest':
           return PlayerSetNamePostRequest.fromJson(value);
+        case 'PointDTO':
+          return PointDTO.fromJson(value);
         case 'ResourceDTO':
           return ResourceDTO.fromJson(value);
         case 'RunActionAllGet200Response':
