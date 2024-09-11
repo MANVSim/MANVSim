@@ -14,6 +14,8 @@ class MapData {
   Offset startingPoint;
   Size size;
 
+  // TODO: add locationPositions
+
   MapData(
       this.buildings, this.patientsPositions, this.startingPoint, this.size);
 

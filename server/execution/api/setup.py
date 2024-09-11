@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_jwt_extended import jwt_required
 from werkzeug.exceptions import BadRequestKeyError
 
-from execution.api import lobby, notification, patient, location, action, player
+from execution.api import lobby, notification, patient, location, action, player, manvmap
 from execution.entities.execution import Execution
 from execution.utils import util
 
@@ -39,3 +39,4 @@ def setup(app: Flask):
     app.register_blueprint(patient.api, url_prefix="/api/run")
     app.register_blueprint(location.api, url_prefix="/api/run")
     app.register_blueprint(action.api, url_prefix="/api/run")
+    app.register_blueprint(manvmap.api, url_prefix="/api/run")

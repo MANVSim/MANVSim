@@ -730,6 +730,7 @@ components:
 
     MapDataDTO:
       type: object
+      description: It is assumed that all points have positive values.
       properties:
         patientPositions:
           type: array
