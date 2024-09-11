@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:manvsim/models/conditions.dart';
 import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/services/time_service.dart';

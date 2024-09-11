@@ -79,6 +79,7 @@
   "patientScreenPerformedAction": "Ausgeführte Maßnahmen",
   "patientScreenTabOverview": "Übersicht",
   "patientScreenTabActions": "Maßnahmen",
+  "patientScreenFilterResourceTitle": "Filter nach Resourcen",
 
 
 
@@ -130,9 +131,9 @@
       }
     }
   },
-  "patientResources": "Resourcen: ",
+
   "patientActions": "Maßnahmen: ",
-  "patientNoActions": "Keine Maßnahmen mit den ausgewählten Resourcen",
+  "patientNoActions": "Keine Maßnahmen mit den ausgewählten Resourcen verfügbar",
   "patientMoveSection": "Bewegen: ",
   "patientMoveSelection": "Patienten bewegen nach",
 

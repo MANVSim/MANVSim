@@ -62,6 +62,37 @@ class _ActionSelectionState extends State<ActionSelection> {
         actions.where((action) => !possibleActions.contains(action)).toList();
   }
 
+  void _showFilterDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setStateDialog) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.patientScreenFilterResourceTitle),
+            content: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: ResourceDirectory(
+                  initiallyExpanded: true,
+                  locations: widget.locations,
+                  resourceToggle: (resource) {
+                    toggleResource(resource);
+                    setStateDialog(() {});
+                  },
+                )),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(AppLocalizations.of(context)!.dialogueClose),
+              ),
+            ],
+          );
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -71,9 +102,48 @@ class _ActionSelectionState extends State<ActionSelection> {
           setActions(actions);
           var selectedActions = getSelectedActions();
           return Column(children: [
-            Text(selectedActions.isNotEmpty
-                ? AppLocalizations.of(context)!.patientActions
-                : AppLocalizations.of(context)!.patientNoActions),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    AppLocalizations.of(context)!.patientActions,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    onPressed: () => _showFilterDialog(context),
+                    icon: const Icon(Icons.filter_list),
+                  ),
+                ),
+              ],
+            ),
+            if (getSelectedResources().isNotEmpty) ...[
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.start,
+                alignment: WrapAlignment.start,
+                spacing: 8.0,
+                runSpacing: 4.0,
+                children: getSelectedResources().map((resource) {
+                  return Chip(
+                    label: Text(resource.name),
+                    onDeleted: () => toggleResource(resource),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 8),
+            ],
+            if (selectedActions.isEmpty)
+              Card(
+                  child: SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(AppLocalizations.of(context)!
+                              .patientNoActions)))),
             ListView.builder(
                 shrinkWrap: true, // nested scrolling
                 physics: const ClampingScrollPhysics(),
@@ -103,9 +173,6 @@ class _ActionSelectionState extends State<ActionSelection> {
                             location.id != widget.patient.location.id)
                         .toList(),
                     onPerform: movePatient)),
-            Text(AppLocalizations.of(context)!.patientResources),
-            ResourceDirectory(
-                locations: widget.locations, resourceToggle: toggleResource),
           ]);
         },
       )
