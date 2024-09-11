@@ -39,8 +39,8 @@ class _PatientMapScreenState extends State<PatientMapScreen> {
           },
           child: ApiFutureBuilder<MapData>(
               future: futureMapData,
-              builder: (context, mapdata) => Center(
-                  child: PatientMapOverlay(mapdata)))),
+              builder: (context, mapData) => Center(
+                  child: PatientMapOverlay(mapData)))),
     );
   }
 }

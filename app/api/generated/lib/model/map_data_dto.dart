@@ -48,7 +48,7 @@ class MapDataDTO {
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'patientPositions'] = this.patientPositions;
+      json[r'patient_positions'] = this.patientPositions;
       json[r'buildings'] = this.buildings;
     if (this.startingPoint != null) {
       json[r'starting_point'] = this.startingPoint;
@@ -77,7 +77,7 @@ class MapDataDTO {
       }());
 
       return MapDataDTO(
-        patientPositions: MapDataDTOPatientPositionsInner.listFromJson(json[r'patientPositions']),
+        patientPositions: MapDataDTOPatientPositionsInner.listFromJson(json[r'patient_positions']),
         buildings: MapDataDTOBuildingsInner.listFromJson(json[r'buildings']),
         startingPoint: PointDTO.fromJson(json[r'starting_point']),
       );

@@ -732,7 +732,7 @@ components:
       type: object
       description: It is assumed that all points have positive values.
       properties:
-        patientPositions:
+        patient_positions:
           type: array
           items:
             type: object

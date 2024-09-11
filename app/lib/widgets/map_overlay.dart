@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
-import 'package:vector_math/vector_math_64.dart' hide Colors;
 
 import 'package:manvsim/widgets/patient_map.dart';
 
@@ -36,23 +35,29 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   late final AnimationController _animationController;
 
   late PatientMap child;
-  ValueNotifier<Offset> positionNotifier =
-      ValueNotifier(const Offset(400, 400));
+  late ValueNotifier<Offset> positionNotifier;
 
+  /// Last tapped position on overlay. Used to ignore small changes.
   Offset lastTapped = const Offset(0, 0);
+
+  List<Rect> get buildings => widget.mapData.buildings;
+
+  Rect get mapRect => Offset.zero & widget.mapData.size;
+
+  Offset targetCenterToTranslation(Offset center) => -(center - middle);
 
   @override
   void initState() {
     super.initState();
+    positionNotifier = ValueNotifier(widget.mapData.startingPoint);
     child = PatientMap(widget.mapData, positionNotifier);
-    _transformationController = TransformationController(
-        Matrix4.identity()
-          ..setTranslation(-Vector3(mapSize.width, mapSize.height, 0) / 2))
+    _transformationController = TransformationController(Matrix4.identity()
+      ..setTranslation(
+          targetCenterToTranslation(positionNotifier.value).toVector3()))
       ..addListener(_onTransformationControllerChange);
     _animationController = AnimationController(
       vsync: this,
     );
-    positionNotifier.value = _transformationController.toScene(middle);
   }
 
   @override
@@ -64,42 +69,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   @override
   Widget build(BuildContext context) {
-    var locationIcon = const Icon(Icons.location_on, color: Colors.blue);
     return Column(mainAxisSize: MainAxisSize.min, children: [
-      Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            border: Border.all(width: 3),
-          ),
-          child: Stack(children: [
-            Listener(
-                child: GestureDetector(
-                    onLongPressStart: (details) =>
-                        _onNewTargetOffset(details.localPosition),
-                    onLongPressUp: _onMoveEnd,
-                    onLongPressMoveUpdate: (details) =>
-                        _onNewTargetOffset(details.localPosition),
-                    child: ClipRect(
-                        clipBehavior: Clip.hardEdge, //clipBehavior,
-                        child: OverflowBox(
-                            alignment: Alignment.topLeft,
-                            minWidth: 0.0,
-                            minHeight: 0.0,
-                            maxWidth: double.infinity,
-                            maxHeight: double.infinity,
-                            child: Transform(
-                              transform: _transformationController.value,
-                              //alignment: alignment,
-                              child: child,
-                            ))))),
-            Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                locationIcon,
-                Visibility(visible: false, child: locationIcon)
-              ]),
-            )
-          ])),
+      _buildMapViewPort(),
       Row(mainAxisSize: MainAxisSize.min, children: [
         IconButton(
             onPressed: () {
@@ -123,6 +94,44 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
           },
           icon: const Icon(Icons.minimize)),
     ]);
+  }
+
+  Widget _buildMapViewPort() {
+    var locationIcon = const Icon(Icons.location_on, color: Colors.blue);
+    return Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          border: Border.all(width: 3),
+        ),
+        child: Stack(children: [
+          Listener(
+              child: GestureDetector(
+                  onLongPressStart: (details) =>
+                      _onNewTargetOffset(details.localPosition),
+                  onLongPressUp: _onMoveEnd,
+                  onLongPressMoveUpdate: (details) =>
+                      _onNewTargetOffset(details.localPosition),
+                  child: ClipRect(
+                      clipBehavior: Clip.hardEdge, //clipBehavior,
+                      child: OverflowBox(
+                          alignment: Alignment.topLeft,
+                          minWidth: 0.0,
+                          minHeight: 0.0,
+                          maxWidth: double.infinity,
+                          maxHeight: double.infinity,
+                          child: Transform(
+                            transform: _transformationController.value,
+                            //alignment: alignment,
+                            child: child,
+                          ))))),
+          Center(
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              locationIcon,
+              Visibility(visible: false, child: locationIcon)
+            ]),
+          )
+        ]));
   }
 
   /// Start animation moving the middle to the edge.
@@ -162,29 +171,19 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Translates the Transform Matrix4 during the animation.
   void _onAnimate() {
     _transformationController.value = _transformationController.value.clone()
-      ..setTranslation(vector3FromOffset(_offsetAnimation.value));
+      ..setTranslation(_offsetAnimation.value.toVector3());
     positionNotifier.value = _transformationController.toScene(middle);
   }
 
   /// Uses vector_math to determine where the path hits the edge.
   Offset getTarget(Offset origin, Offset direction) {
     OffsetRay dirRay = OffsetRay(origin, direction);
-    Offset intersectionPoint = dirRay.at([mapRect, ...buildings]
+    double distance = [mapRect, ...buildings]
         .map(dirRay.intersectsWithRect)
         .whereType<double>()
         .where((element) => element < 0)
         .map((distance) => distance * 0.99)
-        .reduce(max));
-    return intersectionPoint;
+        .reduce(max);
+    return dirRay.at(distance);
   }
-
-  List<Rect> get buildings => widget.mapData.buildings;
-
-  Size get mapSize => widget.mapData.size;
-
-  Rect get mapRect => Offset.zero & mapSize;
-
-  Vector3 vector3FromOffset(Offset offset) => Vector3(offset.dx, offset.dy, 0);
-
-  Offset targetCenterToTranslation(Offset center) => -(center - middle);
 }

@@ -21,33 +21,40 @@ class MapData {
 
   factory MapData.fromApi(MapDataDTO mapdataDTO) {
     var buildings = mapdataDTO.buildings
-        .map((e) => Rect.fromLTWH(e.topLeft.x.toDouble(),
-            e.topLeft.y.toDouble(), e.width.toDouble(), e.height.toDouble()))
+        .map((bDTO) => Rect.fromLTWH(
+            bDTO.topLeft.x.toDouble(),
+            bDTO.topLeft.y.toDouble(),
+            bDTO.width.toDouble(),
+            bDTO.height.toDouble()))
         .toList();
     var patientPositions = mapdataDTO.patientPositions
-        .map((e) => (position: Offset.zero, id: 0))
+        .map((ppDTO) =>
+            (position: ppDTO.position.toOffset(), id: ppDTO.patientId))
         .toList();
-    var startingPoint = mapdataDTO.startingPoint != null
-        ? Offset(mapdataDTO.startingPoint!.x.toDouble(),
-            mapdataDTO.startingPoint!.y.toDouble())
-        : Offset.zero;
+    var startingPoint = mapdataDTO.startingPoint?.toOffset();
 
     var allPoints = [
-      ...buildings
-          .map((e) => [e.topLeft, e.bottomRight])
-          .expand((element) => element),
-      ...patientPositions.map((e) => e.position),
-      startingPoint
+      ...buildings.map((b) => [b.topLeft, b.bottomRight]).expand((b) => b),
+      ...patientPositions.map((pp) => pp.position),
+      if (startingPoint != null) startingPoint
     ];
     // TODO: adjust for negative points
-    var size = calcSize(allPoints);
+    var size = _calcSize(allPoints);
+    startingPoint ??= Offset(
+        size.width - defaultPadding / 2, size.height - defaultPadding / 2);
     return MapData(buildings, patientPositions, startingPoint, size);
   }
 
-  static Size calcSize(List<Offset> points) {
+  /// Calculates the needed size based on [points} and [padding].
+  /// Uses [defaultSize] if no points are present.
+  static Size _calcSize(List<Offset> points, [int padding = defaultPadding]) {
     if (points.isEmpty) return defaultSize;
     var maxPoint = points.reduce((value, element) =>
         Offset(max(value.dx, element.dx), max(value.dy, element.dy)));
-    return Size(maxPoint.dx + defaultPadding, maxPoint.dy + defaultPadding);
+    return Size(maxPoint.dx + padding, maxPoint.dy + padding);
   }
+}
+
+extension PointDTOToOffset on PointDTO {
+  Offset toOffset() => Offset(x.toDouble(), y.toDouble());
 }

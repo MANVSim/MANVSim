@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:vector_math/vector_math_64.dart';
 
+/// Custom variation of [Ray] from [vector_math] using [Offset]s from [dart:ui].
 class OffsetRay {
   final Offset origin;
 
@@ -67,4 +68,8 @@ class OffsetRay {
   Offset at(double distance) {
     return direction * distance + origin;
   }
+}
+
+extension OffsetToVector3 on Offset {
+  Vector3 toVector3() => Vector3(dx, dy, 0);
 }

@@ -4,12 +4,12 @@ import 'package:manvsim/models/offset_ray.dart';
 import 'package:manvsim/services/patient_service.dart';
 
 class PatientMap extends StatelessWidget {
-
-  const PatientMap(this.mapData, this.positionNotifier, {super.key});
-
   final MapData mapData;
 
+  /// Provides current position of the player.
   final ValueNotifier<Offset> positionNotifier;
+
+  const PatientMap(this.mapData, this.positionNotifier, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +27,13 @@ class PatientMap extends StatelessWidget {
                 end: Alignment.bottomRight)),
         child: Stack(
           children: [
-            ...getPatients(context),
-            CustomPaint(painter: _MapRaw(mapData.buildings, positionNotifier))
+            CustomPaint(painter: _MapRaw(mapData, positionNotifier)),
+            ...getPatientWidgets(context),
           ],
         ));
   }
 
-  List<Positioned> getPatients(BuildContext context) {
+  List<Positioned> getPatientWidgets(BuildContext context) {
     return mapData.patientsPositions
         .map((patientPosition) => Positioned(
               top: patientPosition.position.dy,
@@ -47,15 +47,17 @@ class PatientMap extends StatelessWidget {
   }
 }
 
+/// Raw map drawn on a canvas.
+/// Draws buildings and their shadows based on [viewerPositionNotifier}.
 class _MapRaw extends CustomPainter {
-  final List<Rect> buildings;
+  MapData mapData;
 
   final ValueNotifier<Offset> viewerPositionNotifier;
 
-  Offset get viewerPosition => viewerPositionNotifier.value;
-
-  _MapRaw(this.buildings, this.viewerPositionNotifier)
+  _MapRaw(this.mapData, this.viewerPositionNotifier)
       : super(repaint: viewerPositionNotifier);
+
+  Offset get viewerPosition => viewerPositionNotifier.value;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -67,7 +69,7 @@ class _MapRaw extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
       ..color = Colors.black;
-    for (Rect building in buildings) {
+    for (Rect building in mapData.buildings) {
       for (Path shadow in _getShadow(building, size)) {
         canvas.drawPath(shadow, shadowPaint);
       }
@@ -82,15 +84,15 @@ class _MapRaw extends CustomPainter {
 
   List<Path> _getShadow(Rect building, Size size) {
     return [
-      shadowEdge(building.bottomRight, building.bottomLeft),
-      shadowEdge(building.bottomLeft, building.topLeft),
-      shadowEdge(building.topLeft, building.topRight),
-      shadowEdge(building.topRight, building.bottomRight)
+      shadowPathForEdge(building.bottomRight, building.bottomLeft),
+      shadowPathForEdge(building.bottomLeft, building.topLeft),
+      shadowPathForEdge(building.topLeft, building.topRight),
+      shadowPathForEdge(building.topRight, building.bottomRight)
     ];
   }
 
-  Path shadowEdge(Offset lineStart, Offset lineEnd) {
-    Rect boundingRect = Offset.zero & const Size(1000, 1000);
+  Path shadowPathForEdge(Offset lineStart, Offset lineEnd) {
+    Rect boundingRect = Offset.zero & mapData.size;
 
     OffsetRay ray = OffsetRay(viewerPosition, viewerPosition - lineStart);
     Offset end = ray.intersectionWithRect(boundingRect)!;
