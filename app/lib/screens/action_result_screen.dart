@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:manvsim/models/conditions.dart';
 import 'package:manvsim/services/action_service.dart';
+import 'package:manvsim/services/time_service.dart';
 import 'package:manvsim/widgets/action_overview.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/media_info.dart';
@@ -48,20 +49,6 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
             MediaOverviewExpansion(media: condition.media, children: [title]));
   }
 
-  String _formatDateTime(DateTime dateTime) {
-    return DateFormat(AppLocalizations.of(context)!.dateTimeFormat)
-        .format(dateTime);
-  }
-
-  String _formatDuration(Duration d) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String hours = twoDigits(d.inHours);
-    String minutes = twoDigits(d.inMinutes.remainder(60));
-    String seconds = twoDigits(d.inSeconds.remainder(60));
-
-    return "$hours:$minutes:$seconds";
-  }
-
   _buildDetailEntry(
       String key, String value, IconData icon, BuildContext context) {
     return Row(children: [
@@ -91,17 +78,19 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
           children: [
             _buildDetailEntry(
                 AppLocalizations.of(context)!.actionResultScreenDetailStart,
-                _formatDateTime(actionResult.performedAction.startTime),
+                TimeService.formatDateTime(
+                    actionResult.performedAction.startTime, context),
                 ManvIcons.time,
                 context),
             _buildDetailEntry(
                 AppLocalizations.of(context)!.actionResultScreenDetailEnd,
-                _formatDateTime(endTime),
+                TimeService.formatDateTime(endTime, context),
                 ManvIcons.time,
                 context),
             _buildDetailEntry(
                 AppLocalizations.of(context)!.actionResultScreenDetailDuration,
-                _formatDuration(actionResult.performedAction.action.duration),
+                TimeService.formatDuration(
+                    actionResult.performedAction.action.duration),
                 ManvIcons.duration,
                 context),
             _buildDetailEntry(
