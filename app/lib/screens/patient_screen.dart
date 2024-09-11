@@ -66,7 +66,7 @@ class _PatientScreenState extends State<PatientScreen> {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const Spacer(),
-                ElevatedButton(onPressed: () {}, child: Text(AppLocalizations.of(context)!.patientScreenPerformedActionDetails)),
+                ElevatedButton(onPressed: null, child: Text(AppLocalizations.of(context)!.patientScreenPerformedActionDetails)),
                 MediaInfo(title: performedAction.action.name, media: performedAction.action.media)
               ]),
               const SizedBox(height: 8),
