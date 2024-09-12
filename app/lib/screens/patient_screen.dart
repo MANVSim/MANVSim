@@ -66,35 +66,44 @@ class _PatientScreenState extends State<PatientScreen> {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const Spacer(),
-                ElevatedButton(onPressed: null, child: Text(AppLocalizations.of(context)!.patientScreenPerformedActionDetails)),
-                MediaInfo(title: performedAction.action.name, media: performedAction.action.media)
+                ElevatedButton(
+                    onPressed: null,
+                    child: Text(AppLocalizations.of(context)!
+                        .patientScreenPerformedActionDetails)),
+                MediaInfo(
+                    title: performedAction.action.name,
+                    media: performedAction.action.media)
               ]),
               const SizedBox(height: 8),
               Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Icon(ManvIcons.time, size: 20),
                 const SizedBox(width: 4),
                 Text(
-                  AppLocalizations.of(context)!.patientScreenPerformedActionTime,
+                  AppLocalizations.of(context)!
+                      .patientScreenPerformedActionTime,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Expanded(
                     child: Text(
                   textAlign: TextAlign.right,
-                  TimeService.formatDateTime(performedAction.startTime, context),
+                  TimeService.formatDateTime(
+                      performedAction.startTime, context),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ))
               ]),
               Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Icon(ManvIcons.user, size: 20),
+                const Icon(ManvIcons.action, size: 20),
                 const SizedBox(width: 4),
                 Text(
-                  AppLocalizations.of(context)!.patientScreenPerformedActionPlayer,
+                  AppLocalizations.of(context)!
+                      .patientScreenPerformedActionResults,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Expanded(
                     child: Text(
                   textAlign: TextAlign.right,
-                  performedAction.playerTan,
+                  overflow: TextOverflow.ellipsis,
+                  performedAction.action.results.join(', '),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ))
               ])
@@ -110,7 +119,10 @@ class _PatientScreenState extends State<PatientScreen> {
   Widget _buildOverview(Patient patient) {
     return _buildTabView(
         patient,
-        [Text(AppLocalizations.of(context)!.patientScreenPerformedAction), ..._buildPerformedActions(patient)],
+        [
+          Text(AppLocalizations.of(context)!.patientScreenPerformedAction),
+          ..._buildPerformedActions(patient)
+        ],
         true);
   }
 
@@ -134,8 +146,12 @@ class _PatientScreenState extends State<PatientScreen> {
             appBar: AppBar(
               bottom: TabBar(
                 tabs: [
-                  _buildTab(AppLocalizations.of(context)!.patientScreenTabOverview, ManvIcons.patient),
-                  _buildTab(AppLocalizations.of(context)!.patientScreenTabActions, ManvIcons.action),
+                  _buildTab(
+                      AppLocalizations.of(context)!.patientScreenTabOverview,
+                      ManvIcons.patient),
+                  _buildTab(
+                      AppLocalizations.of(context)!.patientScreenTabActions,
+                      ManvIcons.action),
                 ],
               ),
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
