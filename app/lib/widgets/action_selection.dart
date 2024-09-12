@@ -95,6 +95,9 @@ class _ActionSelectionState extends State<ActionSelection> {
 
   @override
   Widget build(BuildContext context) {
+
+    resources = Location.flattenResourcesFromList(widget.locations);
+
     return Column(children: [
       ApiFutureBuilder<List<PatientAction>>(
         future: futureActions,
