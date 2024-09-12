@@ -39,7 +39,8 @@ RUN sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" && \
     yes y | sdkmanager --licenses
 
 # Build app and web
-RUN flutter build apk && \
+RUN mkdir -p assets && \
+    flutter build apk && \
     cp build/app/outputs/apk/release/app-release.apk assets/manvsim-app.apk && \
     flutter build web
 
