@@ -24,6 +24,7 @@ class PatientScreen extends StatefulWidget {
 
 class _PatientScreenState extends State<PatientScreen> {
   late Future<Patient?> futurePatient;
+  bool sortOldestFirst = false;
 
   @override
   void initState() {
@@ -110,17 +111,74 @@ class _PatientScreenState extends State<PatientScreen> {
             ])));
   }
 
+  PerformedActions sortedPerformedActions(Patient patient) {
+    final performedActions = patient.performedActions;
+    if (sortOldestFirst) {
+      performedActions.sort((a, b) => a.startTime.compareTo(b.startTime));
+    } else {
+      performedActions.sort((a, b) => b.startTime.compareTo(a.startTime));
+    }
+    return performedActions;
+  }
+
   List<Widget> _buildPerformedActions(Patient patient) {
-    return patient.performedActions
+    return sortedPerformedActions(patient)
         .map((performedAction) => _buildPerformedAction(performedAction))
         .toList();
+  }
+
+  void _toggleSortOrder(bool ascending) {
+    setState(() {
+      sortOldestFirst = ascending;
+    });
   }
 
   Widget _buildOverview(Patient patient) {
     return _buildTabView(
         patient,
         [
-          Text(AppLocalizations.of(context)!.patientScreenPerformedAction),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  AppLocalizations.of(context)!.patientScreenPerformedAction,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: SizedBox(
+                    height: 15,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [DropdownButton<bool>(
+                      underline: Container(),
+                      value: sortOldestFirst,
+                      focusColor: Theme.of(context).dialogBackgroundColor,
+                      icon: const Row(children: [SizedBox(width: 2,), Icon(Icons.sort, size: 15)],),
+                      items: [
+                        DropdownMenuItem(
+                          value: false,
+                          child:
+                              Text(AppLocalizations.of(context)!.sortByNewest, style: Theme.of(context).textTheme.labelSmall),
+                        ),
+                        DropdownMenuItem(
+                          value: true,
+                          child:
+                          Text(AppLocalizations.of(context)!.sortByOldest, style: Theme.of(context).textTheme.labelSmall,),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          _toggleSortOrder(value);
+                        }
+                      },
+                    ), const SizedBox(width: 8,)],),
+                  )),
+            ],
+          ),
           ..._buildPerformedActions(patient)
         ],
         true);

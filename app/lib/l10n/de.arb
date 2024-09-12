@@ -81,6 +81,9 @@
   "patientScreenTabActions": "Maßnahmen",
   "patientScreenFilterResourceTitle": "Filter nach Resourcen",
 
+  "sortByOldest": "Älteste zuerst",
+  "sortByNewest": "Neueste zuerst",
+
 
 
   "patientScreenName": "Patienten Übersicht",
