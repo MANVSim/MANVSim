@@ -9,7 +9,7 @@ services:
       dockerfile: server/Dockerfile
       target: prod
     ports:
-      - "5000:5000"
+      - "5002:5002"
     volumes:
       - manvsim-db:/usr/src/app/server/instance
       - manvsim-db:/usr/src/app/server/media/instance
@@ -19,6 +19,7 @@ services:
     build:
       context: app
       dockerfile: Dockerfile
+      target: serve-prod
     ports:
       - "5001:5001"
     depends_on:

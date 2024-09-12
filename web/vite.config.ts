@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/web": {
-        target: "http://127.0.0.1:5000",
+        target: "http://127.0.0.1:5002",
         changeOrigin: true,
       },
     },

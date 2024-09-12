@@ -32,12 +32,11 @@ docker compose up
 ```
 
 This will start the server and admin web frontend on  
-**<http://localhost:5000>**   
-and the web version of the app on  
+**<http://localhost:5002>**   
+and the web version of the app (with the android app apk downloadable) on  
 **<http://localhost:5001>**
 
-To start the server in debug mode and load test data instead use:
-
+To start the server in debug mode, load test data and skip the android app build instead use:  
 ```bash
 docker compose -f docker-compose.yaml -f compose-dev.yaml up
 ```

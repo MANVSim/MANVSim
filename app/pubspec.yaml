@@ -46,6 +46,7 @@ dependencies:
   provider: ^6.1.2
   shared_preferences: ^2.2.3
   mobile_scanner: ^5.1.0
+  url_launcher: ^6.3.0
   video_player: ^2.9.1
   chewie: ^1.8.3
   audioplayers: ^6.1.0
@@ -79,7 +80,8 @@ flutter:
 
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - assets/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

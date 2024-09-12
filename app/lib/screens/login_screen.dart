@@ -1,15 +1,16 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manvsim/models/tan_user.dart';
+import 'package:manvsim/services/api_service.dart';
+import 'package:manvsim/screens/name_screen.dart';
 import 'package:manvsim/screens/qr_screen.dart';
 import 'package:manvsim/widgets/error_box.dart';
 import 'package:manvsim/widgets/tan_input.dart';
 import 'package:provider/provider.dart';
-
-import '../services/api_service.dart';
-import 'name_screen.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -26,8 +27,10 @@ enum _LoginInputType { tan, url }
 
 class LoginScreenState extends State<LoginScreen> {
   final TanInputController _tanInputController = TanInputController();
-  final TextEditingController _serverUrlController =
-      TextEditingController(text: "http://localhost:5000/api");
+  final TextEditingController _serverUrlController = TextEditingController(
+      text: kDebugMode
+          ? "http://localhost:5002/api"
+          : "http://batailley.informatik.uni-kiel.de:5002/api");
 
   String? _errorMessage;
 
@@ -168,7 +171,7 @@ class LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  _onQRCodeScan() async {
+  void _onQRCodeScan() async {
     final scannedQR = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -183,6 +186,29 @@ class LoginScreenState extends State<LoginScreen> {
         _tanInputController.updateValue(i, tan.toUpperCase()[i]);
       }
     }
+  }
+
+  Widget _androidAppDownloadButton() {
+    return ElevatedButton(
+        style: const ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(Colors.green)),
+        onPressed: () {
+          launchUrlString("/assets/assets/manvsim-app.apk");
+        },
+        child: Column(children: [
+          const Icon(
+            Icons.android,
+            color: Colors.white,
+            size: 40,
+          ),
+          Text(
+            AppLocalizations.of(context)!.downloadAndroidApp,
+            style: const TextStyle(color: Colors.white),
+          ),
+          const SizedBox(
+            height: 8,
+          )
+        ]));
   }
 
   @override
@@ -265,6 +291,10 @@ class LoginScreenState extends State<LoginScreen> {
                     )
                   ],
                 ),
+              const SizedBox(
+                height: 32,
+              ),
+              if (kIsWeb) _androidAppDownloadButton()
             ],
           ),
         ),
