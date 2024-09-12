@@ -649,9 +649,13 @@ components:
           type: array
           items:
             type: string
+        results:
+          type: array
+          items:
+            type: string
         media_references:
           $ref: '#/components/schemas/MediaReferencesDTO'
-      required: [ id, name, duration_sec, resources_needed ]
+      required: [ id, name, duration_sec, resources_needed, results ]
 
     PerformedActionDTO:
       type: object
