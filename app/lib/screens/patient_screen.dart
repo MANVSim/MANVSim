@@ -122,12 +122,28 @@ class _PatientScreenState extends State<PatientScreen> {
   }
 
   List<Widget> _buildPerformedActions(Patient patient) {
-    return sortedPerformedActions(patient)
-        .map((performedAction) => _buildPerformedAction(performedAction))
-        .toList();
+    if (patient.performedActions.isEmpty) {
+      return [
+        Card(
+            child: SizedBox(
+                width: double.infinity,
+                child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child:
+                        Text(AppLocalizations.of(context)!.patientNoActions))))
+      ];
+    } else {
+      return sortedPerformedActions(patient)
+          .map((performedAction) => _buildPerformedAction(performedAction))
+          .toList();
+    }
   }
 
-  void _toggleSortOrder(bool ascending) {
+  void _sortOrtderChanged(bool? ascending) {
+    if (ascending == null) {
+      return;
+    }
+
     setState(() {
       sortOldestFirst = ascending;
     });
@@ -147,36 +163,50 @@ class _PatientScreenState extends State<PatientScreen> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              Align(
-                  alignment: Alignment.centerRight,
-                  child: SizedBox(
-                    height: 15,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [DropdownButton<bool>(
-                      underline: Container(),
-                      value: sortOldestFirst,
-                      focusColor: Theme.of(context).dialogBackgroundColor,
-                      icon: const Row(children: [SizedBox(width: 2,), Icon(Icons.sort, size: 15)],),
-                      items: [
-                        DropdownMenuItem(
-                          value: false,
-                          child:
-                              Text(AppLocalizations.of(context)!.sortByNewest, style: Theme.of(context).textTheme.labelSmall),
-                        ),
-                        DropdownMenuItem(
-                          value: true,
-                          child:
-                          Text(AppLocalizations.of(context)!.sortByOldest, style: Theme.of(context).textTheme.labelSmall,),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          _toggleSortOrder(value);
-                        }
-                      },
-                    ), const SizedBox(width: 8,)],),
-                  )),
+              if (patient.performedActions.length > 1)
+                Align(
+                    alignment: Alignment.centerRight,
+                    child: SizedBox(
+                      height: 15,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          DropdownButton<bool>(
+                            underline: Container(),
+                            value: sortOldestFirst,
+                            focusColor: Theme.of(context).dialogBackgroundColor,
+                            icon: const Row(
+                              children: [
+                                SizedBox(
+                                  width: 2,
+                                ),
+                                Icon(Icons.sort, size: 15)
+                              ],
+                            ),
+                            items: [
+                              DropdownMenuItem(
+                                value: false,
+                                child: Text(
+                                    AppLocalizations.of(context)!.sortByNewest,
+                                    style:
+                                        Theme.of(context).textTheme.labelSmall),
+                              ),
+                              DropdownMenuItem(
+                                value: true,
+                                child: Text(
+                                  AppLocalizations.of(context)!.sortByOldest,
+                                  style: Theme.of(context).textTheme.labelSmall,
+                                ),
+                              ),
+                            ],
+                            onChanged: _sortOrtderChanged,
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          )
+                        ],
+                      ),
+                    )),
             ],
           ),
           ..._buildPerformedActions(patient)
