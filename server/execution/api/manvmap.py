@@ -27,7 +27,7 @@ def get_map_data():
                 {"top_left": {"x": 700, "y": 750}, "width": 210, "height": 180},
                 {"top_left": {"x": 340, "y": 330}, "width": 180, "height": 200},
             ],
-            "starting_point": {"x": 500, "y": 500}
+            "starting_point": {"x": 600, "y": 600}
         }
     except KeyError:
         return "Missing or invalid request parameter detected.", 400

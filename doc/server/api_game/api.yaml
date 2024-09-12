@@ -731,6 +731,8 @@ components:
     MapDataDTO:
       type: object
       description: It is assumed that all points have positive values.
+        Positions of patients and starting_point must not be inside a building.
+        Buildings shall not be aligned in a way which encapsulates an area making it inaccessible.
       properties:
         patient_positions:
           type: array

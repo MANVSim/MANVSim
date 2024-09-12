@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
 import 'package:manvsim/services/patient_service.dart';
+import 'package:vector_math/vector_math_64.dart' hide Colors;
 
 class PatientMap extends StatelessWidget {
   final MapData mapData;
@@ -64,18 +65,14 @@ class _MapRaw extends CustomPainter {
     Paint shadowPaint = Paint()
       ..style = PaintingStyle.fill
       ..color = Colors.black;
-    Paint buildingPaint = Paint()..color = Colors.grey;
-    Paint borderPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..color = Colors.black;
     for (Rect building in mapData.buildings) {
       for (Path shadow in _getShadow(building, size)) {
         canvas.drawPath(shadow, shadowPaint);
       }
-
+    }
+    Paint buildingPaint = Paint()..color = Colors.grey;
+    for (Rect building in mapData.buildings) {
       canvas.drawRect(building, buildingPaint);
-      //canvas.drawRect(building, borderPaint);
     }
   }
 
@@ -100,6 +97,27 @@ class _MapRaw extends CustomPainter {
     OffsetRay ray2 = OffsetRay(viewerPosition, viewerPosition - lineEnd);
     Offset end2 = ray2.intersectionWithRect(boundingRect)!;
 
-    return Path()..addPolygon([end, lineStart, lineEnd, end2], true);
+    var path = [end, lineStart, lineEnd, end2];
+
+    var corners = <Offset>[];
+    for (Offset corner in [
+      boundingRect.bottomLeft,
+      boundingRect.topLeft,
+      boundingRect.topRight,
+      boundingRect.bottomRight,
+    ]) {
+      var wideAngle = ray.direction.signedAngleTo(ray2.direction);
+      var smallAngle = ray.direction.signedAngleTo(viewerPosition - corner);
+      if (wideAngle.sign == smallAngle.sign &&
+          smallAngle.abs() < wideAngle.abs()) corners.add(corner);
+    }
+    corners.sort((a, b) =>
+        ((path.last - a).distance - (path.last - b).distance).toInt());
+    return Path()..addPolygon(path..addAll(corners), true);
   }
+}
+
+extension OffsetAngleTo on Offset {
+  double signedAngleTo(Offset other) =>
+      toVector3().angleToSigned(other.toVector3(), Vector3(0, 0, 1));
 }

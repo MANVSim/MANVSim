@@ -73,3 +73,7 @@ class OffsetRay {
 extension OffsetToVector3 on Offset {
   Vector3 toVector3() => Vector3(dx, dy, 0);
 }
+
+extension Vector3ToOffset on Vector3 {
+  Offset toOffset() => Offset(x, y);
+}
