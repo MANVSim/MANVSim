@@ -29,7 +29,7 @@ def test_post_instance_media_file(client):
         data = {
             "file": (io.BytesIO(image_file.read()), "test.jpg")
         }
-        response = client.post("/media/test.jpg", headers=auth_header,
+        response = client.post("/web/media/test.jpg", headers=auth_header,
                                content_type="multipart/form-data", data=data)
 
     assert response.status_code == http.HTTPStatus.CREATED
@@ -52,7 +52,7 @@ def test_post_instance_media_file_with_attributes(client):
             "text": "Some test text.",
             "title": "The Title"
         }
-        response = client.post("/media/test.jpg", headers=auth_header,
+        response = client.post("/web/media/test.jpg", headers=auth_header,
                                content_type="multipart/form-data", data=data)
 
     assert response.status_code == http.HTTPStatus.CREATED
@@ -70,7 +70,7 @@ def test_post_instance_media_text(client):
     client.application.config['WTF_CSRF_METHODS'] = []
 
     auth_header = generate_webtoken(client.application, WebUser.Role.SCENARIO_ADMIN)
-    response = client.post("/media/txt", headers=auth_header, content_type="multipart/form-data",
+    response = client.post("/web/media/txt", headers=auth_header, content_type="multipart/form-data",
                            data={"text": "Test"})
 
     assert response.status_code == http.HTTPStatus.CREATED
@@ -87,7 +87,7 @@ def test_post_illegal_format(client):
         data = {
             "file": (io.BytesIO(illegal_file.read()), "illegal.py")
         }
-        response = client.post("/media/test.png", headers=auth_header,
+        response = client.post("/web/media/test.png", headers=auth_header,
                                content_type="multipart/form-data", data=data)
 
     assert response.status_code == http.HTTPStatus.BAD_REQUEST
@@ -98,7 +98,7 @@ def test_unauthorized_post(client):
     client.application.config['WTF_CSRF_METHODS'] = []
 
     auth_header = generate_webtoken(client.application, WebUser.Role.GAME_MASTER)
-    response = client.post("/media/txt", headers=auth_header, content_type="multipart/form-data",
+    response = client.post("/web/media/txt", headers=auth_header, content_type="multipart/form-data",
                            data={"text": "Test"})
 
     assert response.status_code == http.HTTPStatus.FORBIDDEN

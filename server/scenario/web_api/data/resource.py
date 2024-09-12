@@ -25,6 +25,7 @@ def get_all_resources():
         {
             "id": resource.id,
             "name": resource.name,
+            "media_refs": resource.media_refs
         } for resource in resource_list
     ]
 

@@ -11,6 +11,7 @@ from models import WebUser
 from utils.decorator import role_required
 
 api = Blueprint("api-media", __name__)
+web_api = Blueprint("web_api-media", __name__)
 
 
 def setup(app: Flask):
@@ -24,6 +25,7 @@ def setup(app: Flask):
     os.makedirs(os.path.join(app.root_path, "media/instance/text"),
                 exist_ok=True)
     app.register_blueprint(api, url_prefix="/media")
+    app.register_blueprint(web_api, url_prefix="/web/media")
 
 
 def is_allowed_format(filename: str):
@@ -43,7 +45,7 @@ def get_instance_media(filename):
     return send_from_directory("media/instance", filename)
 
 
-@api.post("/<path:filename>")
+@web_api.post("/<path:filename>")
 @role_required(WebUser.Role.SCENARIO_ADMIN)
 def post_instance_media(filename):
     """ Allows users to upload media files to the server. Returns a MediaData-JSON. """
@@ -103,7 +105,7 @@ def __handle_raw_text():
     if not text and not title:
         return "Invalid request: Missing 'text' or 'title' attribute", 400
 
-    return MediaData.new_text(title, text).to_json(), 201
+    return MediaData.new_text(text, title).to_json(), 201
 
 
 def __check_file_content(file: FileStorage) -> bool:

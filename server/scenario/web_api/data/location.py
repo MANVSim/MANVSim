@@ -40,6 +40,7 @@ def get_all_locations():
         {
             "id": location.id,
             "name": location.name,
+            "media_refs": location.media_refs
         } for location in location_list
     ]
 

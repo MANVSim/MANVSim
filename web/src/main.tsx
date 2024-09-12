@@ -45,9 +45,10 @@ const router = createBrowserRouter([
         action: ScenarioEditor.action
       },
       {
-        path: "/data",
+        path: "/data/:windowId",
         element: <BaseDataRoute />,
-        loader: BaseDataRoute.loader
+        loader: BaseDataRoute.loader,
+        action: BaseDataRoute.action
       }
     ],
   },
