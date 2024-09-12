@@ -70,44 +70,17 @@
 %  \insertframetitle
 %\end{beamercolorbox}}
 
-% Setup for Gantt-charts
-\usepackage{pgfgantt}
-\usepackage{lscape}
-\usetikzlibrary{backgrounds}
-
-\newcounter{myWeekNum}
-\stepcounter{myWeekNum}
-
-\newcommand{\myWeek}{\themyWeekNum
-    \stepcounter{myWeekNum}
-    \ifnum\themyWeekNum=53
-         \setcounter{myWeekNum}{1}
-    \else\fi
-}
-
-\usepackage{setspace}
-\usepackage{algpseudocodex} 
-
-\usepackage{etoolbox}
-\AtBeginEnvironment{algorithmic}{\small}
-
 \setbeamertemplate{caption}[numbered]
 
+\setbeamercolor{title separator}{fg=tfblue, bg=tfblue}
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{frametitle}{bg=tfblue}
 
-\usepackage{tikz}  
-\usetikzlibrary{positioning, shapes,patterns,shadows.blur, arrows,decorations.text,arrows,automata,shadows,patterns,chains,bending,arrows.meta}
-\usetikzlibrary{positioning, shapes,patterns,shadows.blur, arrows,decorations,arrows,automata,shadows,patterns,chains,graphs,calc,intersections,matrix,fit,shapes,chains,decorations.pathreplacing,chains,fit,shapes}
-\usetikzlibrary{positioning, shapes,patterns,shadows.blur, arrows,decorations.text,arrows,automata,shadows,patterns,chains,bending,arrows.meta}
-\usetikzlibrary{automata, positioning, arrows}
-
-\usepackage{pgfplots}
-\usepgfplotslibrary{fillbetween}
-
-
-%\AtBeginSection{
-%	\addtocounter{framenumber}{-1}
-%	\frame{\small \frametitle{Outline} \tableofcontents[currentsection,hideothersubsections]}
-%}
+% Ggf. auskommentieren, falls kein Inhaltsverzeichnis vor jeder Section
+\AtBeginSection{
+	\addtocounter{framenumber}{-1}
+	\frame{\tableofcontents[currentsection,hideothersubsections]}
+}
 
 \title[]{MANVSim: Simulation eines Massenanfalls von Verletzten}
 \subtitle[]{Bachelor-Abschlussprojekt/Masterprojekt SoSe 2024}
@@ -115,14 +88,10 @@
 \date{27. September 2024}
 
 \begin{document}
-    \setbeamercolor{title separator}{fg=tfblue, bg=tfblue}
-    \setbeamercolor{background canvas}{bg=white}
-    \setbeamercolor{frametitle}{bg=tfblue}
-
 	\frame{\titlepage}
 
 	\begin{frame}{Inhalt}
-		\small{\tableofcontents[hideallsubsections]}
+		\tableofcontents[hideallsubsections]
 	\end{frame}
 
 	\include{content}
