@@ -77,6 +77,7 @@
   "patientScreenPerformedActionTime": "Uhrzeit",
   "patientScreenPerformedActionResults": "Ergebnisse",
   "patientScreenPerformedAction": "Ausgeführte Maßnahmen",
+  "patientScreenNoPerformedAction": "Bisher wurden keine Maßnahmen durchgeführt",
   "patientScreenTabOverview": "Übersicht",
   "patientScreenTabActions": "Maßnahmen",
   "patientScreenFilterResourceTitle": "Filter nach Resourcen",

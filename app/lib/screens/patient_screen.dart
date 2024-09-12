@@ -130,7 +130,7 @@ class _PatientScreenState extends State<PatientScreen> {
                 child: Padding(
                     padding: const EdgeInsets.all(16),
                     child:
-                        Text(AppLocalizations.of(context)!.patientNoActions))))
+                        Text(AppLocalizations.of(context)!.patientScreenNoPerformedAction))))
       ];
     } else {
       return sortedPerformedActions(patient)
@@ -139,7 +139,7 @@ class _PatientScreenState extends State<PatientScreen> {
     }
   }
 
-  void _sortOrtderChanged(bool? ascending) {
+  void _sortOrderChanged(bool? ascending) {
     if (ascending == null) {
       return;
     }
@@ -199,7 +199,7 @@ class _PatientScreenState extends State<PatientScreen> {
                                 ),
                               ),
                             ],
-                            onChanged: _sortOrtderChanged,
+                            onChanged: _sortOrderChanged,
                           ),
                           const SizedBox(
                             width: 8,
