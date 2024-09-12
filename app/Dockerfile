@@ -15,7 +15,7 @@ RUN flutter doctor -v && \
     flutter upgrade
 
 # Build web
-COPY . /app/
+COPY ./app /app/
 WORKDIR /app/
 
 
@@ -24,7 +24,7 @@ FROM setup-env AS build-dev
 RUN flutter build web
 FROM nginx:1.27.1-alpine AS serve-dev
 COPY --from=build-dev /app/build/web /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./app/nginx.conf /etc/nginx/conf.d/default.conf
 
 
 FROM setup-env AS build-prod
@@ -47,4 +47,4 @@ RUN mkdir -p assets && \
 
 FROM nginx:1.27.1-alpine AS serve-prod
 COPY --from=build-prod /app/build/web /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./app/nginx.conf /etc/nginx/conf.d/default.conf
