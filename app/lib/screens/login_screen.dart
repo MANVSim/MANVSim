@@ -29,8 +29,8 @@ class LoginScreenState extends State<LoginScreen> {
   final TanInputController _tanInputController = TanInputController();
   final TextEditingController _serverUrlController = TextEditingController(
       text: kDebugMode
-          ? "http://localhost:5002/api"
-          : "http://batailley.informatik.uni-kiel.de:5002/api");
+          ? "https://localhost:5002/api"
+          : "https://batailley.informatik.uni-kiel.de:5002/api");
 
   String? _errorMessage;
 
