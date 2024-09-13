@@ -92,9 +92,9 @@ export function ScenarioEditor() {
 ScenarioEditor.loader = async function ({
     params: { scenarioId },
 }: LoaderFunctionArgs) {
-    const scenario = await tryFetchJson<Scenario>(`/scenario?scenario_id=${scenarioId}`)
-    const all_vehicles = await tryFetchJson<BaseDataStripped[]>(`/data/location/all-vehicles`)
-    const all_patients = await tryFetchJson<BaseDataStripped[]>(`/data/patient/all`)
+    const scenario = await tryFetchJson<Scenario>(`scenario?scenario_id=${scenarioId}`)
+    const all_vehicles = await tryFetchJson<BaseDataStripped[]>(`data/location/all-vehicles`)
+    const all_patients = await tryFetchJson<BaseDataStripped[]>(`data/patient/all`)
     return { scenario, all_vehicles, all_patients }
 }
 
