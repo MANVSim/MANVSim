@@ -24,19 +24,4 @@ To run the App without locally installing Flutter, you can use Docker. It is onl
 development.
 
 ### Create the image
-
-The Dockerfile is in the root of the app project and can be built from there with:
-
-```console
-docker build -t flutter-web .
- ```
-
-### Run the web app
-
-The image can be run with:
-
-```console 
-docker run -d -p 8080:80 --name flutter-web flutter-web
-```
-
-Now the app is running on http://localhost:8080
+For details how to use the app with docker see the README of the projects source directory

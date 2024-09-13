@@ -27,11 +27,11 @@ FROM setup AS debug
 ENV LOAD_TEST_DATA=true
 
 EXPOSE 5002
-CMD pipenv run flask --app main --debug run --host=0.0.0.0 --port=5002
+CMD pipenv run flask --app main --debug run --host=0.0.0.0 --port=5002 --cert=fullchain.pem --key=privkey.pem
 
 FROM setup AS prod
 
 RUN pipenv install gunicorn
 
 EXPOSE 5002
-CMD pipenv run gunicorn -b 0.0.0.0:5002 'main:app'
+CMD pipenv run gunicorn -b 0.0.0.0:5002 --certfile=fullchain.pem --keyfile=privkey.pem 'main:app'
