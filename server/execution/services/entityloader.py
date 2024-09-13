@@ -1,4 +1,3 @@
-from email.policy import default
 from json import JSONDecodeError
 
 from flask import current_app
