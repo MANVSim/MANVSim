@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import secrets
 
 from flask import Flask, send_from_directory, redirect, make_response, jsonify
 from flask_cors import CORS
