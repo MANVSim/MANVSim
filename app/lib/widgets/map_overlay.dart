@@ -5,6 +5,7 @@ import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
 
 import 'package:manvsim/widgets/patient_map.dart';
+import 'package:vector_math/vector_math_64.dart' hide Colors;
 
 class PatientMapOverlay extends StatefulWidget {
   const PatientMapOverlay(this.mapData, {super.key});
@@ -40,6 +41,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Last tapped position on overlay. Used to ignore small changes.
   Offset lastTapped = const Offset(0, 0);
 
+  double _currentRotation = 0;
+
   List<Rect> get buildings => widget.mapData.buildings;
 
   Rect get mapRect => Offset.zero & widget.mapData.size;
@@ -74,14 +77,14 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       Row(mainAxisSize: MainAxisSize.min, children: [
         IconButton(
             onPressed: () {
-              _transformationController.value.rotateX(-pi / 10);
+              _rotate(-pi / 6);
             },
-            icon: const Icon(Icons.turn_slight_left)),
+            icon: const Icon(Icons.rotate_left)),
         IconButton(
             onPressed: () {
-              _transformationController.value.rotateX(pi / 10);
+              _rotate(pi / 6);
             },
-            icon: const Icon(Icons.turn_slight_right)),
+            icon: const Icon(Icons.rotate_right)),
       ]),
       IconButton(
           onPressed: () {
@@ -140,12 +143,12 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       return;
     }
     lastTapped = tappedPosition;
-    _onNewDirection(middle - tappedPosition);
+    _onNewDirection(_transformationController.toScene(tappedPosition));
   }
 
-  void _onNewDirection(Offset direction) {
+  void _onNewDirection(Offset targetPoint) {
     Offset self = _transformationController.toScene(middle);
-    Offset target = getTarget(self, direction);
+    Offset target = getTarget(self, self - targetPoint);
     _onMoveEnd();
     _offsetAnimation = Tween<Offset>(
             begin: targetCenterToTranslation(self),
@@ -182,8 +185,28 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
         .map(dirRay.intersectsWithRect)
         .whereType<double>()
         .where((element) => element < 0)
-        .map((distance) => distance * 0.99)
+        .map((distance) => distance * 0.95)
         .reduce(max);
     return dirRay.at(distance);
   }
+
+  void _rotate(double rotation) {
+    _currentRotation += pi / 6;
+    _transformationController.value =
+        _matrixRotate(_transformationController.value, rotation, middle);
+  }
+
+  Matrix4 _matrixRotate(Matrix4 matrix, double rotation, Offset focalPoint) {
+    if (rotation == 0) {
+      return matrix.clone();
+    }
+    final Offset focalPointScene = _transformationController.toScene(
+      focalPoint,
+    );
+    return matrix.clone()
+      ..translate(focalPointScene.dx, focalPointScene.dy)
+      ..rotateZ(-rotation)
+      ..translate(-focalPointScene.dx, -focalPointScene.dy);
+  }
+
 }
