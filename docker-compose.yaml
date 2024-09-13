@@ -13,8 +13,8 @@ services:
     ports:
       - "5002:5002"
     volumes:
-      - ./data/database:/usr/src/app/server/instance
-      - ./data/media:/usr/src/app/server/media/instance
+      - manvsim-db:/usr/src/app/server/instance
+      - manvsim-db:/usr/src/app/server/media/instance
       - ./certs/fullchain.pem:/usr/src/app/server/fullchain.pem
       - ./certs/privkey.pem:/usr/src/app/server/privkey.pem
 
@@ -54,3 +54,6 @@ services:
     depends_on:
       - server
       - app
+
+volumes:
+  manvsim-db:
