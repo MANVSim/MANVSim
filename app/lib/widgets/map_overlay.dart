@@ -5,7 +5,6 @@ import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
 
 import 'package:manvsim/widgets/patient_map.dart';
-import 'package:vector_math/vector_math_64.dart' hide Colors;
 
 class PatientMapOverlay extends StatefulWidget {
   const PatientMapOverlay(this.mapData, {super.key});
@@ -16,16 +15,24 @@ class PatientMapOverlay extends StatefulWidget {
   State<StatefulWidget> createState() => _PatientMapOverlayState();
 }
 
+enum MapOverlayPositions { center, bottomCenter }
+
 class _PatientMapOverlayState extends State<PatientMapOverlay>
     with TickerProviderStateMixin {
-  /// width of the viewport
-  static const width = 300.0;
+  /// Size of the viewport.
+  static const Size viewportSize = Size(300, 400);
 
-  /// height of the viewport
-  static const height = 400.0;
+  /// Player position on the viewport.
+  Offset get positionViewport {
+    return switch (positionType) {
+      MapOverlayPositions.bottomCenter => boundingBox.bottomCenter,
+      MapOverlayPositions.center => boundingBox.center
+    };
+  }
 
-  /// middle of the viewport
-  final Offset middle = const Offset(width / 2, height / 2);
+  Rect get boundingBox => Offset.zero & viewportSize;
+
+  final positionType = MapOverlayPositions.bottomCenter;
 
   /// Controller for the Matrix4 transformations.
   late final TransformationController _transformationController;
@@ -42,13 +49,12 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Last tapped position on overlay. Used to ignore small changes.
   Offset lastTapped = const Offset(0, 0);
 
-  double _currentRotation = 0;
-
   List<Rect> get buildings => widget.mapData.buildings;
 
   Rect get mapRect => Offset.zero & widget.mapData.size;
 
-  Offset targetCenterToTranslation(Offset center) => -(center - middle);
+  Offset targetCenterToTranslation(Offset center) =>
+      -(center - positionViewport);
 
   @override
   void initState() {
@@ -105,8 +111,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   Widget _buildMapViewPort() {
     var locationIcon = const Icon(Icons.location_on, color: Colors.blue);
     return Container(
-        width: width,
-        height: height,
+        width: viewportSize.width,
+        height: viewportSize.height,
         decoration: BoxDecoration(
           border: Border.all(width: 3),
         ),
@@ -132,11 +138,18 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
                             child: child,
                           ))))),
           Center(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              locationIcon,
-              Visibility(visible: false, child: locationIcon)
-            ]),
-          )
+              child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: positionType == MapOverlayPositions.center
+                ? MainAxisAlignment.center
+                : MainAxisAlignment.end,
+            children: [
+              Column(mainAxisSize: MainAxisSize.min, children: [
+                locationIcon,
+                Visibility(visible: false, child: locationIcon)
+              ])
+            ],
+          ))
         ]));
   }
 
@@ -150,7 +163,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   }
 
   void _onNewDirection(Offset targetPoint) {
-    Offset self = toScene(middle);
+    Offset self = toScene(positionViewport);
     Offset target = getTarget(self, self - targetPoint);
     _onMoveEnd();
     _matrixAnimation = Matrix4Tween(
@@ -178,7 +191,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Translates the Transform Matrix4 during the animation.
   void _onAnimate() {
     _transformationController.value = _matrixAnimation.value;
-    positionNotifier.value = toScene(middle);
+    positionNotifier.value = toScene(positionViewport);
   }
 
   /// Uses vector_math to determine where the path hits the edge.
@@ -194,9 +207,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   }
 
   void _rotate(double rotation) {
-    _currentRotation += pi / 6;
     _rotationController.value =
-        _matrixRotate(_rotationController.value, rotation, middle);
+        _matrixRotate(_rotationController.value, rotation, positionViewport);
   }
 
   Matrix4 _matrixRotate(Matrix4 matrix, double rotation, Offset focalPoint) {
