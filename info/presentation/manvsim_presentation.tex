@@ -1,0 +1,98 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[babel]{csquotes}
+\usepackage[T1]{fontenc}
+%\usepackage{enumitem}
+
+\usepackage{graphicx}
+\usepackage{verbatim}
+
+\usepackage{ae, aecompl}
+
+\usepackage{todonotes}
+
+\usepackage{array}
+
+\usepackage[backend=biber]{biblatex}
+\bibliography{references.bib}
+
+% used for color define
+\usepackage{color}
+\definecolor{bgsidebar}{rgb}{0,0.1,0.6}
+\definecolor{darkgreen}{rgb}{0,0.6,0}
+\definecolor{Gray}{gray}{0.5}
+\definecolor{highlight}{rgb}{0,0.7,0.5}
+\definecolor{lightgray}{gray}{0.5}
+\definecolor{lightlightgray}{rgb}{0.83, 0.83, 0.83}
+\definecolor{tfblue}{RGB}{0, 61, 134}
+\usepackage{xcolor}
+\newcommand{\highlight}[1]{\colorbox{lightlightgray}{#1}}
+
+\usepackage{subfigure}
+
+\usepackage{ulem}
+
+\usepackage{textcomp,upquote,lmodern,listings}
+
+\usetheme[sectionpage=none,numbering=fraction]{metropolis}
+\setbeamerfont{structure}{shape=\bfseries}
+%\usetheme{CAU} 			%Theme
+%\usecolortheme{dolphin}
+%
+%\useoutertheme[left,hideothersubsections,width=20mm,height=0.7cm]{sidebar} % Sidebar links verwenden
+%\setbeamertemplate{navigation symbols}{} 
+%
+%% Breite der Seitenleiste einstellen
+%%\setbeamersize{sidebar width left=30mm}
+%
+%% Breite des Randes zur Sidebar einstellen
+\setbeamersize{text margin left=5mm}
+%
+%\setbeamercolor{section in sidebar}{fg=black,bg=blue!40}
+%\setbeamercolor{section in sidebar shaded}{fg=white}
+%
+%% autoren klein anzeigen
+%%\setbeamerfont{author in sidebar}{size=\tiny}
+%
+%% Überschriften der Folien groß und weiß
+%\setbeamerfont{frametitle}{size=\LARGE}
+%\setbeamercolor{frametitle}{fg=black}
+%\setbeamercolor{frametitle}{bg=white}
+%
+%\let\oldsection\section
+%\renewcommand{\section}[1]{\oldsection[\thesection . #1]{#1}}
+%\newcommand{\multilinesection}[2]{\oldsection[\thesection . #1 \hbox{\vbox{\hspace{0.17cm}#2}}]{#1 #2}}
+%
+%\setbeamertemplate{frametitle}{%
+%\begin{beamercolorbox}[ht=0cm,wd=0.9\paperwidth,leftskip=15pt,dp=0ex]{frametitle}
+%  \insertframetitle
+%\end{beamercolorbox}}
+
+\setbeamertemplate{caption}[numbered]
+
+\setbeamercolor{title separator}{fg=tfblue, bg=tfblue}
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{frametitle}{bg=tfblue}
+
+% Ggf. auskommentieren, falls kein Inhaltsverzeichnis vor jeder Section
+\AtBeginSection{
+	\addtocounter{framenumber}{-1}
+	\frame{\tableofcontents[currentsection,hideothersubsections]}
+}
+
+\title[]{MANVSim: Simulation eines Massenanfalls von Verletzten}
+\subtitle[]{Bachelor-Abschlussprojekt/Masterprojekt SoSe 2024}
+\author{Jon Stührwoldt, Lukas Voigt, Peter Gausmann, Yannick Illmann, Simon Ohlsen}
+\date{27. September 2024}
+
+\begin{document}
+	\frame{\titlepage}
+
+	\begin{frame}{Inhalt}
+		\tableofcontents[hideallsubsections]
+	\end{frame}
+
+	\include{content}
+\end{document}
