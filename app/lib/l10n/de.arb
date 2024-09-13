@@ -231,6 +231,7 @@
   "multiMediaTypeImage": "Bild",
   "multiMediaTypeVideo": "Video",
   "multiMediaTypeAudio": "Audio",
+  "multiMediaTypeText": "Text",
 
   "multiMediaViewMediaTitle": "{mediaType} {number}: {title}",
   "@multiMediaViewMediaTitle": {

@@ -4,8 +4,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manvsim/models/multi_media.dart';
 import 'package:manvsim/services/api_service.dart';
+import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/error_box.dart';
 import 'package:manvsim/widgets/video_player.dart';
+
+import 'package:http/http.dart' as http;
 
 import 'audio_player.dart';
 
@@ -133,6 +136,18 @@ class _MultiMediaViewState extends State<MultiMediaView> {
         child: VideoPlayer(videoUrl: buildMediaUrl(item.reference!)));
   }
 
+  Future<String?> _readTextFile(String path) async {
+    final response = await http.get(Uri.parse(buildMediaUrl(path)));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception(AppLocalizations.of(context)!.multiMediaViewError(
+          AppLocalizations.of(context)!.multiMediaTypeText,
+          path,
+          response.statusCode.toString()));
+    }
+  }
+
   Widget _buildTextItem(MultiMediaItem item) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,6 +157,12 @@ class _MultiMediaViewState extends State<MultiMediaView> {
             item.title!,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
+        if (item.reference != null)
+          ApiFutureBuilder(future: _readTextFile(item.reference!), builder: (context, text) {
+            return Text(text,
+                style: Theme.of(context).textTheme.bodyMedium);
+
+          },),
         if (item.text != null)
           Text(
             item.text!,
