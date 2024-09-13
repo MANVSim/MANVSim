@@ -33,6 +33,18 @@ services:
       - server
 
 
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      target: serve-prod
+    ports:
+      - "50003:50003"
+    volumes:
+      - ./certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
+      - ./certs/privkey.pem:/etc/nginx/ssl/privkey.pem
+
+
   nginx:
     image: nginx:latest
     ports:
