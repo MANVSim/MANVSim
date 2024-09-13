@@ -40,13 +40,11 @@ def get_all_active_executions():
 @web_api.get("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 def get_execution(id: int):
-    # Add the execution to the active executions in case it stems from the
-    # database
+    # Add the execution to the active executions in case it stems from the database
     if id in run.active_executions.keys():
         execution = run.active_executions[id]
     else:
-        execution: bool | Execution = entityloader.load_execution(id,
-                                                                  save_in_memory=False)
+        execution: bool | Execution = entityloader.load_execution(id, save_in_memory=False)
 
     if isinstance(execution, bool) and not execution:
         raise NotFound(f"Execution with id={id} does not exist")
@@ -187,7 +185,7 @@ def __perform_state_change(new_status: Execution.Status, execution: Execution):
             elif new_status is Execution.Status.UNKNOWN:
                 run.deactivate_execution(execution.id)
             elif new_status is Execution.Status.PENDING:
-                pass
+                return
             else:
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
@@ -198,20 +196,20 @@ def __perform_state_change(new_status: Execution.Status, execution: Execution):
                 execution.archive()
                 run.deactivate_execution(execution.id)
             elif new_status is Execution.Status.RUNNING:
-                pass
+                return
             else:
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
         case Execution.Status.FINISHED:
             if new_status is Execution.Status.FINISHED:
-                pass
+                return
             else:
                 # no repetition allowed at this point.
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
         case Execution.Status.UNKNOWN:
             if new_status is Execution.Status.PENDING:
-                execution.status = Execution.Status.PENDING
+                return
             else:
                 # indicates no registration of execution. Status is set by
                 # activating the execution
