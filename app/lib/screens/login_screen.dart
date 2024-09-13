@@ -220,7 +220,8 @@ class LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 8),
+              const Image(image: AssetImage('assets/MANV_transparent.png')),
+              const SizedBox(height: 40),
               Text(
                 AppLocalizations.of(context)!.loginTANHeader,
                 style: const TextStyle(
