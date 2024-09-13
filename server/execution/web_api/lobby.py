@@ -210,7 +210,10 @@ def __perform_state_change(new_status: Execution.Status, execution: Execution):
                 raise BadRequest("Process manipulation detected. "
                                  "Invalid State change")
         case Execution.Status.UNKNOWN:
-            # indicates no registration of execution. Status is set by
-            # activating the execution
-            raise BadRequest("Process manipulation detected. "
-                             "Invalid State change")
+            if new_status is Execution.Status.PENDING:
+                execution.status = Execution.Status.PENDING
+            else:
+                # indicates no registration of execution. Status is set by
+                # activating the execution
+                raise BadRequest("Process manipulation detected. "
+                                "Invalid State change")
