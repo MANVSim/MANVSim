@@ -30,6 +30,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
     app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', 'default-not-so-secret-secret-key')
     app.config["JWT_SECRET_KEY"] = os.getenv('SECRET_KEY', 'default-not-so-secret-secret-key')
+    app.config['WTF_CSRF_CHECK_DEFAULT'] = False
 
     db.init_app(app)
     csrf.init_app(app)

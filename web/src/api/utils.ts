@@ -1,6 +1,6 @@
 import { getStorageItem } from "../services/storage"
 
-export const api = "/web/"
+export const api = import.meta.env.VITE_API_URL;
 
 export async function tryFetchApi(
   url: string,
