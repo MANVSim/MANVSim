@@ -24,7 +24,7 @@ class ManvSimApp extends StatelessWidget {
     return MultiProvider(
         providers: [ChangeNotifierProvider<TanUser>(create: (_) => TanUser())],
         child: MaterialApp(
-          title: 'ManvSim',
+          title: 'MANVSim',
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           theme: ThemeData(
