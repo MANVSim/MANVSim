@@ -8,20 +8,27 @@ services:
       context: .
       dockerfile: server/Dockerfile
       target: prod
+    env_file:
+      - server/.env
     ports:
       - "5002:5002"
     volumes:
       - manvsim-db:/usr/src/app/server/instance
       - manvsim-db:/usr/src/app/server/media/instance
+      - ./certs/fullchain.pem:/usr/src/app/server/fullchain.pem
+      - ./certs/privkey.pem:/usr/src/app/server/privkey.pem
 
 
   app:
     build:
-      context: app
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: app/Dockerfile
       target: serve-prod
     ports:
       - "5001:5001"
+    volumes:
+      - ./certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
+      - ./certs/privkey.pem:/etc/nginx/ssl/privkey.pem
     depends_on:
       - server
 

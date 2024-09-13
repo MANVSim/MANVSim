@@ -23,9 +23,26 @@ MANVSim         # Project root
 This project is managed on GitHub:  
 **<https://github.com/MANVSim/MANVSim>**
 
+### TLS
+
+To ensure the app functions properly, TLS is required.
+You need to provide a certificate named `fullchain.pem` and a key named `privkey.pem`,
+both located in the `certs` directory.
+
+If you don’t already have a certificate for your local machine,
+you can create a self-signed certificate for development purposes by running the following script:
+
+```bash
+./certs/generate_local_cert.sh
+```
+
+This script will generate a self-signed certificate and place it in the `certs` directory.
+When using this certificate, be sure to add it to your trusted certificates on your local machine.
+Do not use this certificate in production environments and avoid checking the private key into any public repository.
+
 ### Start Application Locally
 
-To start the current version of the application you may run:
+To start the current version of the application after ensuring the required TLS certificate is in place, run:
 
 ```bash
 docker compose up
