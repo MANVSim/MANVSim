@@ -34,4 +34,4 @@ FROM setup AS prod
 RUN pipenv install gunicorn
 
 EXPOSE 5002
-CMD pipenv run gunicorn -w 4-b 0.0.0.0:5002 --certfile=fullchain.pem --keyfile=privkey.pem 'main:app'
+CMD pipenv run gunicorn -w 4 -b 0.0.0.0:5002 --certfile=fullchain.pem --keyfile=privkey.pem 'main:app'
