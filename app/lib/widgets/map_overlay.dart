@@ -29,10 +29,11 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   /// Controller for the Matrix4 transformations.
   late final TransformationController _transformationController;
+  late final TransformationController _rotationController;
 
   /// Animation "moving the center".
-  Animation<Offset> _offsetAnimation =
-      const AlwaysStoppedAnimation(Offset.zero);
+  Animation<Matrix4> _matrixAnimation =
+      AlwaysStoppedAnimation(Matrix4.identity());
   late final AnimationController _animationController;
 
   late PatientMap child;
@@ -57,6 +58,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     _transformationController = TransformationController(Matrix4.identity()
       ..setTranslation(
           targetCenterToTranslation(positionNotifier.value).toVector3()))
+      ..addListener(_onTransformationControllerChange);
+    _rotationController = TransformationController()
       ..addListener(_onTransformationControllerChange);
     _animationController = AnimationController(
       vsync: this,
@@ -124,8 +127,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
                           maxWidth: double.infinity,
                           maxHeight: double.infinity,
                           child: Transform(
-                            transform: _transformationController.value,
-                            //alignment: alignment,
+                            transform: _rotationController.value *
+                                _transformationController.value,
                             child: child,
                           ))))),
           Center(
@@ -139,20 +142,21 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   /// Start animation moving the middle to the edge.
   void _onNewTargetOffset(Offset tappedPosition) {
-    if ((lastTapped - tappedPosition).distance < 5) {
+    if ((lastTapped - tappedPosition).distance < 10) {
       return;
     }
     lastTapped = tappedPosition;
-    _onNewDirection(_transformationController.toScene(tappedPosition));
+    _onNewDirection(toScene(tappedPosition));
   }
 
   void _onNewDirection(Offset targetPoint) {
-    Offset self = _transformationController.toScene(middle);
+    Offset self = toScene(middle);
     Offset target = getTarget(self, self - targetPoint);
     _onMoveEnd();
-    _offsetAnimation = Tween<Offset>(
-            begin: targetCenterToTranslation(self),
-            end: targetCenterToTranslation(target))
+    _matrixAnimation = Matrix4Tween(
+            begin: _transformationController.value,
+            end: _transformationController.value.clone()
+              ..setTranslation(targetCenterToTranslation(target).toVector3()))
         .animate(_animationController)
       ..addListener(_onAnimate);
     double distance = (target - self).distance;
@@ -161,7 +165,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   }
 
   void _onMoveEnd() {
-    _offsetAnimation.removeListener(_onAnimate);
+    _matrixAnimation.removeListener(_onAnimate);
     _animationController.reset();
   }
 
@@ -173,9 +177,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   /// Translates the Transform Matrix4 during the animation.
   void _onAnimate() {
-    _transformationController.value = _transformationController.value.clone()
-      ..setTranslation(_offsetAnimation.value.toVector3());
-    positionNotifier.value = _transformationController.toScene(middle);
+    _transformationController.value = _matrixAnimation.value;
+    positionNotifier.value = toScene(middle);
   }
 
   /// Uses vector_math to determine where the path hits the edge.
@@ -192,15 +195,15 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   void _rotate(double rotation) {
     _currentRotation += pi / 6;
-    _transformationController.value =
-        _matrixRotate(_transformationController.value, rotation, middle);
+    _rotationController.value =
+        _matrixRotate(_rotationController.value, rotation, middle);
   }
 
   Matrix4 _matrixRotate(Matrix4 matrix, double rotation, Offset focalPoint) {
     if (rotation == 0) {
       return matrix.clone();
     }
-    final Offset focalPointScene = _transformationController.toScene(
+    final Offset focalPointScene = _rotationController.toScene(
       focalPoint,
     );
     return matrix.clone()
@@ -209,4 +212,6 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       ..translate(-focalPointScene.dx, -focalPointScene.dy);
   }
 
+  Offset toScene(Offset viewportOffset) => _transformationController
+      .toScene(_rotationController.toScene(viewportOffset));
 }
