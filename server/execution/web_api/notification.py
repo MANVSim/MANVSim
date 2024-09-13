@@ -3,8 +3,6 @@ from datetime import datetime
 from flask import Blueprint, request
 
 from execution import run
-from models import WebUser
-from utils.decorator import role_required
 
 web_api = Blueprint("web_api-notification", __name__)
 

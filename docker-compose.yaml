@@ -8,6 +8,8 @@ services:
       context: .
       dockerfile: server/Dockerfile
       target: prod
+    env_file:
+      - server/.env
     ports:
       - "5002:5002"
     volumes:

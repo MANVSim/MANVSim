@@ -12,8 +12,7 @@ from execution import run
 from execution.entities.execution import Execution
 from execution.services import entityloader
 from execution.utils.util import try_get_execution
-from models import WebUser
-from utils.decorator import required, RequiredValueSource, cache, role_required
+from utils.decorator import required, RequiredValueSource, cache
 
 web_api = Blueprint("web_api-lobby", __name__)
 
