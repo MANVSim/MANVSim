@@ -36,7 +36,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   /// Controller for the Matrix4 transformations.
   late final TransformationController _transformationController;
-  late final TransformationController _rotationController;
+  late final TransformationController _rotationScaleController;
 
   /// Animation "moving the center".
   Animation<Matrix4> _matrixAnimation =
@@ -65,7 +65,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       ..setTranslation(
           targetCenterToTranslation(positionNotifier.value).toVector3()))
       ..addListener(_onTransformationControllerChange);
-    _rotationController = TransformationController()
+    _rotationScaleController = TransformationController()
       ..addListener(_onTransformationControllerChange);
     _animationController = AnimationController(
       vsync: this,
@@ -97,12 +97,14 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       ]),
       IconButton(
           onPressed: () {
-            _transformationController.value.scale(1.2);
+            _rotationScaleController.value = _matrixScale(
+                _rotationScaleController.value, 2, positionViewport);
           },
           icon: const Icon(Icons.add)),
       IconButton(
           onPressed: () {
-            _transformationController.value.scale(0.8);
+            _rotationScaleController.value = _matrixScale(
+                _rotationScaleController.value, 0.5, positionViewport);
           },
           icon: const Icon(Icons.minimize)),
     ]);
@@ -133,7 +135,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
                           maxWidth: double.infinity,
                           maxHeight: double.infinity,
                           child: Transform(
-                            transform: _rotationController.value *
+                            transform: _rotationScaleController.value *
                                 _transformationController.value,
                             child: child,
                           ))))),
@@ -207,15 +209,12 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   }
 
   void _rotate(double rotation) {
-    _rotationController.value =
-        _matrixRotate(_rotationController.value, rotation, positionViewport);
+    _rotationScaleController.value = _matrixRotate(
+        _rotationScaleController.value, rotation, positionViewport);
   }
 
   Matrix4 _matrixRotate(Matrix4 matrix, double rotation, Offset focalPoint) {
-    if (rotation == 0) {
-      return matrix.clone();
-    }
-    final Offset focalPointScene = _rotationController.toScene(
+    final Offset focalPointScene = _rotationScaleController.toScene(
       focalPoint,
     );
     return matrix.clone()
@@ -224,6 +223,16 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       ..translate(-focalPointScene.dx, -focalPointScene.dy);
   }
 
+  Matrix4 _matrixScale(Matrix4 matrix, double scale, Offset focalPoint) {
+    final Offset focalPointScene = _rotationScaleController.toScene(
+      focalPoint,
+    );
+    return matrix.clone()
+      ..translate(focalPointScene.dx, focalPointScene.dy)
+      ..scale(scale)
+      ..translate(-focalPointScene.dx, -focalPointScene.dy);
+  }
+
   Offset toScene(Offset viewportOffset) => _transformationController
-      .toScene(_rotationController.toScene(viewportOffset));
+      .toScene(_rotationScaleController.toScene(viewportOffset));
 }
