@@ -40,13 +40,11 @@ def get_all_active_executions():
 @web_api.get("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 def get_execution(id: int):
-    # Add the execution to the active executions in case it stems from the
-    # database
+    # Add the execution to the active executions in case it stems from the database
     if id in run.active_executions.keys():
         execution = run.active_executions[id]
     else:
-        execution: bool | Execution = entityloader.load_execution(id,
-                                                                  save_in_memory=False)
+        execution: bool | Execution = entityloader.load_execution(id, save_in_memory=False)
 
     if isinstance(execution, bool) and not execution:
         raise NotFound(f"Execution with id={id} does not exist")
