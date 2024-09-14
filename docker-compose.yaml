@@ -3,6 +3,25 @@ version: '3.8'
 name: manvsim
 
 services:
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: t3zgVzcWTd3WV8KTmnNH
+    volumes:
+      - ./config/postgres/sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+
   server:
     build:
       context: .
@@ -13,8 +32,6 @@ services:
     ports:
       - "5002:5002"
     volumes:
-      - manvsim-db:/usr/src/app/server/instance
-      - manvsim-db:/usr/src/app/server/media/instance
       - ./certs/fullchain.pem:/usr/src/app/server/fullchain.pem
       - ./certs/privkey.pem:/usr/src/app/server/privkey.pem
 
