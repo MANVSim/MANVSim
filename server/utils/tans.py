@@ -75,7 +75,7 @@ def _possible_tans(length: int) -> int:
     return len(ALLOWED_CHARS) ** length
 
 
-def unique(length: int = 5) -> Tan:
+def unique(length: int = 6) -> Tan:
     """
     Generates a unique TAN with the given length.
 
@@ -91,7 +91,7 @@ def unique(length: int = 5) -> Tan:
     return uniques(1, length).pop()
 
 
-def uniques(n: int, length: int = 5) -> list[Tan]:
+def uniques(n: int, length: int = 6) -> list[Tan]:
     """
     Generates a list of unique TANs.
 

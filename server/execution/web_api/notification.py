@@ -21,7 +21,7 @@ def add_notification_to_execution():
         notification = form["notification"]
         execution = run.active_executions[exec_id]
         current_time = datetime.now()
-        formatted_time = current_time.strftime("%d.%m.%Y %H.%M")
+        formatted_time = current_time.strftime("%d.%m.%Y %H:%M")
         execution.notifications.append(
             {
                 "timestamp": formatted_time,

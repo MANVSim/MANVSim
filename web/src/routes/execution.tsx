@@ -81,7 +81,7 @@ export function ExecutionRoute() {
       {execution ? (
         <div>
           <h2 id="execution-name-header" className="align-self-center mt-3">
-            {execution.name} - {executionId}
+            {execution.name} (#{executionId})
           </h2>
           <ExecutionStatus execution={execution} />
           <div id="add-new-player" className="d-grid border rounded mt-3">
