@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
-
 import 'package:manvsim/widgets/patient_map.dart';
 
 class PatientMapOverlay extends StatefulWidget {
@@ -25,7 +24,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Player position on the viewport.
   Offset get positionViewport {
     return switch (positionType) {
-      MapOverlayPositions.bottomCenter => boundingBox.bottomCenter,
+      MapOverlayPositions.bottomCenter =>
+        boundingBox.bottomCenter.translate(0, -10),
       MapOverlayPositions.center => boundingBox.center
     };
   }
@@ -84,29 +84,57 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     return Column(mainAxisSize: MainAxisSize.min, children: [
       _buildMapViewPort(),
       Row(mainAxisSize: MainAxisSize.min, children: [
-        IconButton(
-            onPressed: () {
-              _rotate(-pi / 6);
-            },
-            icon: const Icon(Icons.rotate_left)),
-        IconButton(
-            onPressed: () {
-              _rotate(pi / 6);
-            },
-            icon: const Icon(Icons.rotate_right)),
-      ]),
-      IconButton(
-          onPressed: () {
-            _rotationScaleController.value = _matrixScale(
-                _rotationScaleController.value, 2, positionViewport);
-          },
-          icon: const Icon(Icons.add)),
-      IconButton(
-          onPressed: () {
-            _rotationScaleController.value = _matrixScale(
-                _rotationScaleController.value, 0.5, positionViewport);
-          },
-          icon: const Icon(Icons.minimize)),
+        Column(children: [
+          Row(mainAxisSize: MainAxisSize.min, children: [
+            IconButton(
+                onPressed: () => _rotate(-pi / 12),
+                icon: const Icon(Icons.rotate_left)),
+            IconButton(
+                onPressed: () {
+                  _onNewDirection(toScene(positionViewport.translate(0, -10)));
+                },
+                icon: const Icon(Icons.arrow_circle_up)),
+            IconButton(
+                onPressed: () => _rotate(pi / 12),
+                icon: const Icon(Icons.rotate_right)),
+          ]),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    _onNewDirection(toScene(positionViewport.translate(-10, 0)));
+                  },
+                  icon: const Icon(Icons.arrow_circle_left)),
+              IconButton(
+                onPressed: _onMoveEnd,
+                icon: Icon(Icons.stop_circle),
+                visualDensity: VisualDensity.compact,
+                splashRadius: 30,
+              ),
+              IconButton(
+                  onPressed: () {
+                    _onNewDirection(toScene(positionViewport.translate(10, 0)));
+                  },
+                  icon: const Icon(Icons.arrow_circle_right)),
+            ],
+          )
+        ]),
+        Column(children: [
+          IconButton(
+              onPressed: () {
+                _rotationScaleController.value = _matrixScale(
+                    _rotationScaleController.value, 2, positionViewport);
+              },
+              icon: const Icon(Icons.add)),
+          IconButton(
+              onPressed: () {
+                _rotationScaleController.value = _matrixScale(
+                    _rotationScaleController.value, 0.5, positionViewport);
+              },
+              icon: const Icon(Icons.minimize)),
+        ])
+      ])
     ]);
   }
 
