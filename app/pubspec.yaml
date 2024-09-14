@@ -69,11 +69,11 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/MANV_transparent.png"
+  image_path: "assets/manv.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true
-    image_path: "assets/MANV_transparent.png"
+    image_path: "assets/manv.png"
     background_color: "#hexcode"
     theme_color: "#hexcode"
 # For information on the generic Dart part of this file, see the
