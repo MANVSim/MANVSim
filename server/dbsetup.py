@@ -185,7 +185,7 @@ def __create_roles():
     insert(Role(id=3, name="Notarzt", short_name="Arzt", power=300))
 
 
-def __create_players():
+def __create_players(db=db):
     insert(Player(tan="123ABC", execution_id=4, location_id=0, role_id=1,
                   alerted=True))
     insert(Player(tan="987ZYX", execution_id=5, location_id=0,
@@ -193,17 +193,13 @@ def __create_players():
     insert(Player(tan="654WVU", execution_id=5, location_id=0, role_id=3,
                   alerted=False))
 
+    db.session.commit()
+
     insert(PlayersToVehicleInExecution(execution_id=4, scenario_id=2, player_tan="123ABC",
-                                       location_id=0, vehicle_name="RTW I", travel_time=120))
-    insert(PlayersToVehicleInExecution(execution_id=4, scenario_id=2, player_tan="empty-RTW I",
                                        location_id=0, vehicle_name="RTW I", travel_time=120))
     insert(PlayersToVehicleInExecution(execution_id=5, scenario_id=2, player_tan="987ZYX",
                                        location_id=0, vehicle_name="RTW I", travel_time=10))
-    insert(PlayersToVehicleInExecution(execution_id=5, scenario_id=2, player_tan="empty-RTW I",
-                                       location_id=0, vehicle_name="RTW I", travel_time=10))
     insert(PlayersToVehicleInExecution(execution_id=5, scenario_id=2, player_tan="654WVU",
-                                       location_id=0, vehicle_name="RTW II", travel_time=10))
-    insert(PlayersToVehicleInExecution(execution_id=5, scenario_id=2, player_tan="empty-RTW II",
                                        location_id=0, vehicle_name="RTW II", travel_time=10))
 
 
@@ -255,16 +251,36 @@ def insert(data):
 
 
 with create_app(csrf=csrf, db=db).app_context():
-    __create_executions()
+
     __create_scenarios()
-    __create_players()
+    db.session.commit()
+
+    __create_executions()
+    db.session.commit()
+
     __create_roles()
+    db.session.commit()
+
     __create_patients()
+    db.session.commit()
+
     __create_locations()
+    db.session.commit()
+
+    __create_players(db=db)
+    db.session.commit()
+
     __create_resources()
+    db.session.commit()
+
     __create_actions()
+    db.session.commit()
+
     __resource_needed()
+    db.session.commit()
+
     __takes_part_in()
+    db.session.commit()
 
     insert(WebUser(username="wadmin",
                    password=hashpw(b"pw1234", gensalt()).decode(),
