@@ -33,14 +33,31 @@ def get_patient(patient_id: int):
         player.location = patient.location
         player.location.add_locations(player.accessible_locations)
 
-        Event.location_arrive(execution_id=execution.id,
-                             time=time.current_time_s(),
+        Event.location_arrive(execution_id=execution.id, time=time.current_time_s(),
                              player=player.tan, patient_id=patient.id).log()
 
         return {
             "player_location": player.location.to_dict(),
             "patient": patient.to_dict(shallow=False)
         }
+    except KeyError:
+        return "Missing or invalid request parameter detected.", 400
+
+
+@api.get("patient/performed-action")
+@jwt_required()
+@required("patient_id", int, RequiredValueSource.JSON)
+@required("performed_action_id", int, RequiredValueSource.JSON)
+def get_performed_action(patient_id: int, performed_action_id: int):
+    """ Returns the performed action object for a patient and performed action ID. """
+    try:
+        execution, _ = util.get_execution_and_player()
+        scenario = execution.scenario
+        patient = scenario.patients[patient_id]
+        performed_action = patient.performed_actions[performed_action_id]
+
+        return performed_action.to_json()
+
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
 

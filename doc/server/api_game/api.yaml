@@ -236,6 +236,38 @@ paths:
         - bearerAuth: [ ]
 
 
+  /run/patient/performed-action:
+    get:
+      summary: Returns a PerformedActionDTO JSON for a patient ID and performed action ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ patient_id, performed-action-id ]
+              properties:
+                patient_id:
+                  type: integer
+                  example: 4523
+                performed-action-id:
+                  type: integer
+                  example: 3219
+      responses:
+        '200':
+          description: A PerformedActionDTO JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerformedActionDTO'
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: [ ]
+
+
   /run/location/all:
     get:
       summary: Returns a list of  top-level accessible locations.

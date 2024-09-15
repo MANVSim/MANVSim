@@ -33,9 +33,9 @@ class Patient:
     def __init__(self, id: int, name: str, activity_diagram: ActivityDiagram,
                  location: Location, media_references: Optional[list[MediaData]] = None,
                  classification: Classification = Classification.NOT_CLASSIFIED,
-                 performed_actions: list[PerformedAction] | None = None):
+                 performed_actions: dict[int, PerformedAction] | None = None):
         if performed_actions is None:
-            performed_actions = []
+            performed_actions = {}
         if media_references is None:
             media_references = []
 
@@ -85,8 +85,7 @@ class Patient:
             'classification': self.classification.name,
             'performed_actions': [
                 performed_action.id if shallow else performed_action.to_dict()
-                for performed_action in
-                self.performed_actions]
+                for performed_action in self.performed_actions.values()]
         }
 
         if include:
