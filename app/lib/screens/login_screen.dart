@@ -16,7 +16,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'wait_screen.dart';
 import 'package:manvsim/utils/platform_checker_web.dart'
-    if (dart.library.io) 'package:manvsim/services/platform_checker.dart';
+    if (dart.library.io) 'package:manvsim/utils/platform_checker.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
