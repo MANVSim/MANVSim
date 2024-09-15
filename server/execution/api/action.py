@@ -154,7 +154,7 @@ def get_perform_action_result():
         patient = execution.scenario.patients[patient_id]
         performed_action = patient.action_queue.pop(perform_action_id)
         result_keys = patient.apply_action(performed_action.action)
-        patient.performed_actions.append(performed_action)
+        patient.performed_actions[performed_action.id] = performed_action
         # restore non-consumables
         for res in performed_action.resources_used:
             if not res.consumable:

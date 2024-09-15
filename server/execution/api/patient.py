@@ -47,8 +47,8 @@ def get_patient(patient_id: int):
 @api.get("patient/performed-action")
 @jwt_required()
 @required("patient_id", int, RequiredValueSource.JSON)
-@required("performed_action_id", int, RequiredValueSource.JSON)
-def get_performed_action(patient_id: int, performed_action_id: int):
+@required("performed_action_id", str, RequiredValueSource.JSON)
+def get_performed_action(patient_id: int, performed_action_id: str):
     """ Returns the performed action object for a patient and performed action ID. """
     try:
         execution, _ = util.get_execution_and_player()

@@ -251,8 +251,8 @@ paths:
                   type: integer
                   example: 4523
                 performed-action-id:
-                  type: integer
-                  example: 3219
+                  type: string
+                  example: "a4bf-sd84"
       responses:
         '200':
           description: A PerformedActionDTO JSON.

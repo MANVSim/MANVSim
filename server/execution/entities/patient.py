@@ -33,7 +33,7 @@ class Patient:
     def __init__(self, id: int, name: str, activity_diagram: ActivityDiagram,
                  location: Location, media_references: Optional[list[MediaData]] = None,
                  classification: Classification = Classification.NOT_CLASSIFIED,
-                 performed_actions: dict[int, PerformedAction] | None = None):
+                 performed_actions: dict[str, PerformedAction] | None = None):
         if performed_actions is None:
             performed_actions = {}
         if media_references is None:

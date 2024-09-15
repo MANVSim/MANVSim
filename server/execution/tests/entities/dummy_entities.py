@@ -122,7 +122,7 @@ def create_test_execution(pending: bool = True):
 
     # Patients
     patient_1 = Patient(id=1, name="Holger Hooligan", activity_diagram=ads[0],
-                        location=loc_5, performed_actions=[p_act_1])
+                        location=loc_5, performed_actions={"1": p_act_1})
     patient_2 = Patient(id=2, name="Stefan Schiri", activity_diagram=ads[1],
                         location=loc_5)
     patient_3 = Patient(id=3, name="Hoff Nungs Loserfall",
