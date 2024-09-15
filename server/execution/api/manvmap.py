@@ -31,6 +31,11 @@ def get_map_data():
                 {"top_left": {"x": 1340, "y": 150}, "width": 610, "height": 90},
                 {"top_left": {"x": 1450, "y": 750}, "width": 22, "height": 1},
                 {"top_left": {"x": 940, "y": 330}, "width": 60, "height": 20},
+                {"top_left": {"x": 1200, "y": 1920}, "width": 110, "height": 120},
+                {"top_left": {"x": 1030, "y": 1730}, "width": 200, "height": 250},
+                {"top_left": {"x": 1340, "y": 1150}, "width": 610, "height": 90},
+                {"top_left": {"x": 1450, "y": 1750}, "width": 22, "height": 1},
+                {"top_left": {"x": 940, "y": 1330}, "width": 60, "height": 20},
             ],
             "starting_point": {"x": 600, "y": 600}
         }
