@@ -6,6 +6,7 @@ import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
+import 'package:manvsim/widgets/player_overview.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -54,83 +55,88 @@ class HomeScreenState extends State<HomeScreen> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(AppLocalizations.of(context)!.selectScreenName),
-        actions: const <Widget>[LogoutButton()],
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ToggleButtons(
-                onPressed: (int index) {
-                  setState(() {
-                    // The button that is tapped is set to true, and the others to false.
-                    for (int i = 0; i < _selectedSearchType.length; i++) {
-                      _selectedSearchType[i] = i == index;
-                    }
-                  });
-                },
-                borderRadius: BorderRadius.circular(2),
-                isSelected: _selectedSearchType,
-                constraints: BoxConstraints(
-                    minWidth: (MediaQuery.of(context).size.width - 20) / 2),
-                children: [
-                  Row(children: [_selectedIcon[0], Text(searchType[0])]),
-                  Row(children: [_selectedIcon[1], Text(searchType[1])])
-                ],
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _idController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!
-                      .selectScreenTextField(_selectedSearchType[0]
-                          ? searchType[0]
-                          : searchType[1]),
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
-                ],
-              ),
-              const SizedBox(height: 32),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    icon: const Icon(Icons.qr_code_scanner),
-                    label: Text(AppLocalizations.of(context)!.qrCodeScanButton),
-                    onPressed: () async => handleScan(_idController),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                ValueListenableBuilder(
-                  valueListenable: _idController,
-                  builder: (context, patientIdValue, child) => Expanded(
-                    child: ElevatedButton.icon(
-                      icon: _selectedSearchType[0]
-                          ? _selectedIcon[0]
-                          : _selectedIcon[1],
-                      onPressed: patientIdValue.text.isEmpty
-                          ? null
-                          : () => handleSubmit(),
-                      label: Text(
-                        AppLocalizations.of(context)!.selectScreenSubmit(
-                            _selectedSearchType[0]
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(AppLocalizations.of(context)!.selectScreenName),
+        ),
+        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const PlayerOverview(),
+          Expanded(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ToggleButtons(
+                      onPressed: (int index) {
+                        setState(() {
+                          // The button that is tapped is set to true, and the others to false.
+                          for (int i = 0; i < _selectedSearchType.length; i++) {
+                            _selectedSearchType[i] = i == index;
+                          }
+                        });
+                      },
+                      borderRadius: BorderRadius.circular(2),
+                      isSelected: _selectedSearchType,
+                      constraints: BoxConstraints(
+                          minWidth:
+                              (MediaQuery.of(context).size.width - 20) / 2),
+                      children: [
+                        Row(children: [_selectedIcon[0], Text(searchType[0])]),
+                        Row(children: [_selectedIcon[1], Text(searchType[1])])
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _idController,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!
+                            .selectScreenTextField(_selectedSearchType[0]
                                 ? searchType[0]
                                 : searchType[1]),
                       ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                     ),
-                  ),
+                    const SizedBox(height: 32),
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.qr_code_scanner),
+                          label: Text(
+                              AppLocalizations.of(context)!.qrCodeScanButton),
+                          onPressed: () async => handleScan(_idController),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ValueListenableBuilder(
+                        valueListenable: _idController,
+                        builder: (context, patientIdValue, child) => Expanded(
+                          child: ElevatedButton.icon(
+                            icon: _selectedSearchType[0]
+                                ? _selectedIcon[0]
+                                : _selectedIcon[1],
+                            onPressed: patientIdValue.text.isEmpty
+                                ? null
+                                : () => handleSubmit(),
+                            label: Text(
+                              AppLocalizations.of(context)!.selectScreenSubmit(
+                                  _selectedSearchType[0]
+                                      ? searchType[0]
+                                      : searchType[1]),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ])
+                  ],
                 ),
-              ])
-            ],
-          ),
-        ),
-      ),
-    );
+              ),
+            ),
+          )
+        ]));
   }
 }

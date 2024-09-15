@@ -10,6 +10,8 @@ import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../widgets/player_overview.dart';
+
 class WaitScreen extends StatefulWidget {
   const WaitScreen({super.key});
 
@@ -198,11 +200,12 @@ class _WaitScreenState extends State<WaitScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: const <Widget>[LogoutButton()],
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(AppLocalizations.of(context)!.waitText),
       ),
-      body: Center(
+      body: Column(children: [
+        const PlayerOverview(),
+        Expanded(child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -231,7 +234,7 @@ class _WaitScreenState extends State<WaitScreen> {
             ],
           ],
         ),
-      ),
-    );
+      )),
+    ]));
   }
 }
