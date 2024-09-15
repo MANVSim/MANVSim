@@ -19,7 +19,7 @@ paths:
             type: string
       responses:
         '200':
-          description: Image in format `{.png, .jpg, .jpeg, .gif}`, video in format `{.mp4}`, audio in format `{.mp3}`, text in format `{.txt}`
+          description: Image in format `{.png, .jpg, .jpeg, .gif}`, video in format `{.mp4}`, audio in format `{.mp3, .wav}`, text in format `{.txt}`
         '404':
           description: File not found.
 
@@ -36,7 +36,7 @@ paths:
             type: string
       responses:
         '200':
-          description: Image in format `{.png, .jpg, .jpeg, .gif}`, video in format `{.mp4}`, audio in format `{.mp3}`, text in format `{.txt}`
+          description: Image in format `{.png, .jpg, .jpeg, .gif}`, video in format `{.mp4}`, audio in format `{.mp3, .wav}`, text in format `{.txt}`
         '404':
           description: File not found.
   

@@ -14,7 +14,7 @@ class MediaData:
     ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif"}
     ALLOWED_VIDEO_EXTENSIONS = {".mp4"}
     ALLOWED_TEXT_EXTENSIONS = {".txt"}
-    ALLOWED_AUDIO_EXTENSIONS = {".mp3"}
+    ALLOWED_AUDIO_EXTENSIONS = {".mp3", ".wav"}
 
     def __init__(self, media_type: 'MediaData.Type',
                  title: Optional[str] = None,
