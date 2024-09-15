@@ -15,6 +15,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'wait_screen.dart';
+import 'package:manvsim/utils/platform_checker_web.dart'
+    if (dart.library.io) 'package:manvsim/services/platform_checker.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -220,18 +223,11 @@ class LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Image(image: AssetImage('assets/MANV_transparent.png')),
+              Image(
+                  // width 80% of screen width
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  image: const AssetImage('assets/MANV_transparent.png')),
               const SizedBox(height: 40),
-              Text(
-                AppLocalizations.of(context)!.loginTANHeader,
-                style: const TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(AppLocalizations.of(context)!.loginTANText),
-              const SizedBox(height: 16),
               if (_errorMessage != null) // Show error message if it's not null
                 ErrorBox(errorText: _errorMessage!),
               const SizedBox(height: 16),
@@ -292,14 +288,16 @@ class LoginScreenState extends State<LoginScreen> {
                     )
                   ],
                 ),
-              const SizedBox(
-                height: 32,
-              ),
-              if (kIsWeb) _androidAppDownloadButton()
             ],
           ),
         ),
       ),
+      bottomNavigationBar: isPlatformAndroidWeb()
+          ? Column(mainAxisSize: MainAxisSize.min, children: [
+              _androidAppDownloadButton(),
+              const SizedBox(height: 20)
+            ])
+          : null,
     );
   }
 }
