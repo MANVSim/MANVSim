@@ -218,6 +218,7 @@ def __perform_state_change(new_status: Execution.Status, execution: Execution):
                                  "Invalid State change")
         case Execution.Status.UNKNOWN:
             if new_status is Execution.Status.PENDING:
+                run.activate_execution(execution)
                 return
             else:
                 # indicates no registration of execution. Status is set by
