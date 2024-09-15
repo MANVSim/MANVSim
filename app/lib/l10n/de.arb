@@ -177,7 +177,7 @@
       }
     }
   },
-  "moveFailure": "Leider konnte der Patient nicht erfolgreich bewegt werden.Bitte versuche es erneut.",
+  "moveFailure": "Leider konnte der Patient nicht erfolgreich bewegt werden. Bitte versuche es erneut.",
 
 
   "resourceDirectorySelectLocation": "Auswählen",

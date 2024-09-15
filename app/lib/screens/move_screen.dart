@@ -60,7 +60,7 @@ class _MoveScreenState extends State<MoveScreen> {
                   );
                 },
                 onError: (error) => Timer.run(
-                    () => showResultDialog(content: failureContent())))));
+                    () => showResultDialog(content: failureContent(error))))));
   }
 
   void showResultDialog({required Widget content, Patient? movedPatient}) {
@@ -90,7 +90,8 @@ class _MoveScreenState extends State<MoveScreen> {
         widget.patient.name, widget.patient.location.name, widget.moveTo.name));
   }
 
-  Widget failureContent() {
-    return Text(AppLocalizations.of(context)!.moveFailure);
+  Widget failureContent(Object? error) {
+    String errorText = error != null ? error.toString() : "";
+    return Text("${AppLocalizations.of(context)!.moveFailure}\n\n$errorText");
   }
 }
