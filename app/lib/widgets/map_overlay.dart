@@ -35,8 +35,9 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   final positionType = MapOverlayPositions.bottomCenter;
 
   /// Controller for the Matrix4 transformations.
-  late final TransformationController _transformationController;
+  late final TransformationController _translationController;
   late final TransformationController _rotationScaleController;
+  late final TransformationController _tiltController;
 
   /// Animation "moving the center".
   Animation<Matrix4> _matrixAnimation =
@@ -61,11 +62,13 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     super.initState();
     positionNotifier = ValueNotifier(widget.mapData.startingPoint);
     child = PatientMap(widget.mapData, positionNotifier);
-    _transformationController = TransformationController(Matrix4.identity()
+    _translationController = TransformationController(Matrix4.identity()
       ..setTranslation(
           targetCenterToTranslation(positionNotifier.value).toVector3()))
       ..addListener(_onTransformationControllerChange);
     _rotationScaleController = TransformationController()
+      ..addListener(_onTransformationControllerChange);
+    _tiltController = TransformationController()
       ..addListener(_onTransformationControllerChange);
     _animationController = AnimationController(
       vsync: this,
@@ -74,7 +77,9 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   @override
   void dispose() {
-    _transformationController.dispose();
+    _translationController.dispose();
+    _rotationScaleController.dispose();
+    _tiltController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -85,14 +90,21 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       _buildMapViewPort(),
       Row(mainAxisSize: MainAxisSize.min, children: [
         Column(children: [
+          IconButton(
+              onPressed: () => _tilt(-pi / 12),
+              icon: const Icon(Icons.arrow_drop_down)),
+          IconButton(
+              onPressed: () => _tilt(pi / 12),
+              icon: const Icon(Icons.arrow_drop_up)),
+        ]),
+        Column(children: [
           Row(mainAxisSize: MainAxisSize.min, children: [
             IconButton(
                 onPressed: () => _rotate(-pi / 12),
                 icon: const Icon(Icons.rotate_left)),
             IconButton(
-                onPressed: () {
-                  _onNewDirection(toScene(positionViewport.translate(0, -10)));
-                },
+                onPressed: () => _onNewDirection(
+                    toScene(positionViewport.translate(0, -10))),
                 icon: const Icon(Icons.arrow_circle_up)),
             IconButton(
                 onPressed: () => _rotate(pi / 12),
@@ -102,37 +114,23 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                  onPressed: () {
-                    _onNewDirection(toScene(positionViewport.translate(-10, 0)));
-                  },
+                  onPressed: () => _onNewDirection(
+                      toScene(positionViewport.translate(-10, 0))),
                   icon: const Icon(Icons.arrow_circle_left)),
               IconButton(
-                onPressed: _onMoveEnd,
-                icon: Icon(Icons.stop_circle),
-                visualDensity: VisualDensity.compact,
-                splashRadius: 30,
-              ),
+                  onPressed: _onMoveEnd, icon: const Icon(Icons.stop_circle)),
               IconButton(
-                  onPressed: () {
-                    _onNewDirection(toScene(positionViewport.translate(10, 0)));
-                  },
+                  onPressed: () => _onNewDirection(
+                      toScene(positionViewport.translate(10, 0))),
                   icon: const Icon(Icons.arrow_circle_right)),
             ],
           )
         ]),
         Column(children: [
           IconButton(
-              onPressed: () {
-                _rotationScaleController.value = _matrixScale(
-                    _rotationScaleController.value, 2, positionViewport);
-              },
-              icon: const Icon(Icons.add)),
+              onPressed: () => _scale(2), icon: const Icon(Icons.zoom_in)),
           IconButton(
-              onPressed: () {
-                _rotationScaleController.value = _matrixScale(
-                    _rotationScaleController.value, 0.5, positionViewport);
-              },
-              icon: const Icon(Icons.minimize)),
+              onPressed: () => _scale(0.5), icon: const Icon(Icons.zoom_out)),
         ])
       ])
     ]);
@@ -163,8 +161,9 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
                           maxWidth: double.infinity,
                           maxHeight: double.infinity,
                           child: Transform(
-                            transform: _rotationScaleController.value *
-                                _transformationController.value,
+                            transform: _tiltController.value *
+                                (_rotationScaleController.value *
+                                    _translationController.value),
                             child: child,
                           ))))),
           Center(
@@ -197,8 +196,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     Offset target = getTarget(self, self - targetPoint);
     _onMoveEnd();
     _matrixAnimation = Matrix4Tween(
-            begin: _transformationController.value,
-            end: _transformationController.value.clone()
+            begin: _translationController.value,
+            end: _translationController.value.clone()
               ..setTranslation(targetCenterToTranslation(target).toVector3()))
         .animate(_animationController)
       ..addListener(_onAnimate);
@@ -220,7 +219,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
 
   /// Translates the Transform Matrix4 during the animation.
   void _onAnimate() {
-    _transformationController.value = _matrixAnimation.value;
+    _translationController.value = _matrixAnimation.value;
     positionNotifier.value = toScene(positionViewport);
   }
 
@@ -237,30 +236,34 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   }
 
   void _rotate(double rotation) {
-    _rotationScaleController.value = _matrixRotate(
-        _rotationScaleController.value, rotation, positionViewport);
-  }
-
-  Matrix4 _matrixRotate(Matrix4 matrix, double rotation, Offset focalPoint) {
     final Offset focalPointScene = _rotationScaleController.toScene(
-      focalPoint,
+      positionViewport,
     );
-    return matrix.clone()
+    _rotationScaleController.value = _rotationScaleController.value.clone()
       ..translate(focalPointScene.dx, focalPointScene.dy)
       ..rotateZ(-rotation)
       ..translate(-focalPointScene.dx, -focalPointScene.dy);
   }
 
-  Matrix4 _matrixScale(Matrix4 matrix, double scale, Offset focalPoint) {
+  void _tilt(double rotation) {
     final Offset focalPointScene = _rotationScaleController.toScene(
-      focalPoint,
+      positionViewport,
     );
-    return matrix.clone()
+    _tiltController.value = _tiltController.value.clone()
+      ..translate(focalPointScene.dx, focalPointScene.dy)
+      ..rotateX(-rotation)
+      ..translate(-focalPointScene.dx, -focalPointScene.dy);
+  }
+
+  void _scale(double scale) {
+    final Offset focalPointScene =
+        _rotationScaleController.toScene(positionViewport);
+    _rotationScaleController.value = _rotationScaleController.value.clone()
       ..translate(focalPointScene.dx, focalPointScene.dy)
       ..scale(scale)
       ..translate(-focalPointScene.dx, -focalPointScene.dy);
   }
 
-  Offset toScene(Offset viewportOffset) => _transformationController
+  Offset toScene(Offset viewportOffset) => _translationController
       .toScene(_rotationScaleController.toScene(viewportOffset));
 }
