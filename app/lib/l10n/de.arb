@@ -97,6 +97,8 @@
   },
 
   "locationScreenInventory": "Inventar",
+  "locationScreenInventoryEmpty": "Im Inventar sind aktuell keine Resourcen verfügbar",
+  "locationScreenNoResources": "An dieser Location sind aktuell keine Resourcen verfügbar",
   "locationScreenShowInventory": "Inventar \n anzeigen",
   "locationScreenTake": "Nehmen",
   "locationScreenPut": "Ablegen",
