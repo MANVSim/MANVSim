@@ -44,7 +44,7 @@ const ScenarioData: React.FC<ScenarioDataProps> = ({
     const [editRenameData, setRenameData] = useState<BaseDataStripped>(emptyBaseData)
     const [oldDataName, setOldDataName] = useState<string>("")
     const [editRenameDataName, setRenameDataName] = useState<string>("")
-    const [editTravelTime, setEditTravelTime] = useState<number>(-1)
+    const [editTravelTime, setEditTravelTime] = useState<number | undefined>(-1)
 
     const handleAddItemToDatas = (value: BaseDataStripped) => {
         setEditData(value)
@@ -77,8 +77,9 @@ const ScenarioData: React.FC<ScenarioDataProps> = ({
         setDataCounter(dataCounter - 1)
     }
 
-    const handleRenameItemInData = (value: BaseDataStripped) => {
+    const handleUpdateData = (value: BaseDataStripped) => {
         setOldDataName(value.name)
+        setEditTravelTime(value.travel_time)
         setRenameData(value)
         setRenameDataView(true)
     }
@@ -123,8 +124,8 @@ const ScenarioData: React.FC<ScenarioDataProps> = ({
         setEditTravelTime(-1)
     }
 
-    const updateData = (data: BaseDataStripped, newTravelTime: number, newName: string) => {
-        if (data.travel_time !== newTravelTime && newTravelTime >= 0) {
+    const updateData = (data: BaseDataStripped, newTravelTime: number | undefined, newName: string) => {
+        if (newTravelTime !== undefined && data.travel_time !== newTravelTime && newTravelTime >= 0) {
             setTravelTime(data, newTravelTime)
         }
         if (data.name !== newName && newName.length > 0) {
@@ -162,7 +163,7 @@ const ScenarioData: React.FC<ScenarioDataProps> = ({
                     {name === "Einsatzfahrzeuge" ? (
                         <button type="button" className="btn btn-primary ms-2" onClick={() => updateData(editRenameData, editTravelTime, editRenameDataName)}>Speichern</button>
                     ) : (
-                        <button type="button" className="btn btn-primary ms-2" onClick={() => renameData(editRenameData, editRenameDataName)}>Speichern</button>
+                        <button type="button" className="btn btn-primary ms-2" onClick={() => updateData(editRenameData, -1, editRenameDataName)}>Speichern</button>
                     )}
                     <button type="button" className="btn btn-danger ms-2" onClick={() => setRenameDataView(false)}>X</button>
                 </div>
@@ -197,7 +198,7 @@ const ScenarioData: React.FC<ScenarioDataProps> = ({
                                             <div className="ms-2 align-self-center">{item.travel_time}s</div>
                                         </div>
                                         <div className="d-flex">
-                                            <button id="edit-btn" type="button" className={`btn btn-outline-primary me-2 ${editView ? "" : "d-none"}`} onClick={() => handleRenameItemInData(item)}>
+                                            <button id="edit-btn" type="button" className={`btn btn-outline-primary me-2 ${editView ? "" : "d-none"}`} onClick={() => handleUpdateData(item)}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-pen" viewBox="0 0 16 16">
                                                     <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z" />
                                                 </svg>
@@ -228,7 +229,7 @@ const ScenarioData: React.FC<ScenarioDataProps> = ({
                                             <div className="ms-2 align-self-center">{item.travel_time}s</div>
                                         </div>
                                         <div className="d-flex">
-                                            <button id="edit-btn" type="button" disabled={editView ? false : true} className={`btn btn-outline-primary me-2`} onClick={() => handleRenameItemInData(item)}>
+                                            <button id="edit-btn" type="button" disabled={editView ? false : true} className={`btn btn-outline-primary me-2`} onClick={() => handleUpdateData(item)}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-pen" viewBox="0 0 16 16">
                                                     <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z" />
                                                 </svg>
