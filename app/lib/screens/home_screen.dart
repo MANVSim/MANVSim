@@ -7,14 +7,14 @@ import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
 
-class PatientSelectScreen extends StatefulWidget {
-  const PatientSelectScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => PatientSelectScreenState();
+  State<StatefulWidget> createState() => HomeScreenState();
 }
 
-class PatientSelectScreenState extends State<PatientSelectScreen> {
+class HomeScreenState extends State<HomeScreen> {
   final _idController = TextEditingController();
 
   final List<bool> _selectedSearchType = [true, false];
