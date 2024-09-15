@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
 import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/models/patient_list.dart';
 import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/services/location_service.dart';
 
@@ -21,11 +22,11 @@ class PatientService {
             : null));
   }
 
-  static Future<List<int>?> fetchPatientsIDs() async {
+  static Future<PatientList> fetchPatientsIDs() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api
         .runPatientAllIdsGet()
-        .then((response) => response?.patientIds);
+        .then((response) => PatientListExtension.fromApi(response));
   }
 
   /// Navigates to [PatientScreen] and leaves location after.

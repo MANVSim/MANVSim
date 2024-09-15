@@ -32,8 +32,7 @@ class _PatientScreenState extends State<PatientScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(AppLocalizations.of(context)!
-              .patientScreenName(widget.patientId)),
+          title: Text(AppLocalizations.of(context)!.patientScreenName),
           actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(

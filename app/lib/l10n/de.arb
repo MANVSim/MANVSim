@@ -71,11 +71,13 @@
   "nameName": "Name",
   "nameSubmit": "Simulation beitreten",
 
-  "patientListScreenName": "Patientenliste",
-  "locationListScreenName": "Locationliste",
+  "patientListScreenName": "Patienten Auswahl",
+  "locationListScreenName": "Location Auswahl",
 
-  "patientScreenName": "Patient: {patientId}",
-  "@patientScreenName": {
+  "patientScreenName": "Patienten Übersicht",
+
+  "patientNameFromId": "Patient {patientId}",
+  "@patientNameFromId": {
     "placeholders": {
       "patientId": {
         "type": "int",
@@ -175,7 +177,7 @@
       }
     }
   },
-  "moveFailure": "Leider konnte der Patient nicht erfolgreich bewegt werden.\nBitte versuche es erneut.",
+  "moveFailure": "Leider konnte der Patient nicht erfolgreich bewegt werden.Bitte versuche es erneut.",
 
 
   "resourceDirectorySelectLocation": "Auswählen",
