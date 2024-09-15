@@ -18,7 +18,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(AppLocalizations.of(context)!.notificationScreenName),
-          actions: const <Widget>[LogoutButton()],
         ),
         body: RefreshIndicator(
           onRefresh: () => Future(() => null),

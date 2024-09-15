@@ -46,7 +46,6 @@ class _MoveScreenState extends State<MoveScreen> {
               widget.patient.name,
               widget.patient.location.name,
               widget.moveTo.name)),
-          actions: const <Widget>[LogoutButton()],
           automaticallyImplyLeading: false,
         ),
         body: Center(
