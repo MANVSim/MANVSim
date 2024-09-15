@@ -14,5 +14,7 @@ class ManvIcons {
 
   static const IconData time = material.Icons.access_time;
   static const IconData duration = material.Icons.timelapse;
-  static const IconData user = material.Icons.person_pin;
+  static const IconData user = material.Icons.account_circle_outlined;
+
+  static const IconData role = material.Icons.work_outline;
 }

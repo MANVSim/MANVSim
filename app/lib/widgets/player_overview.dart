@@ -10,55 +10,50 @@ class PlayerOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final TanUser tanUser = Provider.of<TanUser>(context, listen: false);
     final String name = tanUser.name!;
     final String role = tanUser.role!;
 
     return Padding(
         padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
-        child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade200, width: 1),
-              borderRadius: BorderRadius.circular(24),
-            ),
+        child: Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  Row(
+                  const Icon(
+                    ManvIcons.user,
+                    size: 50,
+                  ),
+                  const SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        Icons.account_circle_outlined,
-                        size: 50,
+                      Text(
+                        name,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          Text(
-                            name,
-                            style: Theme.of(context).textTheme.headlineSmall,
+                          const Icon(
+                            ManvIcons.role,
+                            size: 15,
                           ),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.work_outline,
-                                size: 15,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(role),
-                            ],
-                          ),
+                          const SizedBox(width: 4),
+                          Text(role),
                         ],
                       ),
-                      const Spacer(),
-                      const LogoutButton(),
                     ],
                   ),
+                  const Spacer(),
+                  const LogoutButton(),
                 ],
               ),
-            )));
+            ],
+          ),
+        )));
   }
 }
