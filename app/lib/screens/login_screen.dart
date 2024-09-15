@@ -18,7 +18,6 @@ import 'wait_screen.dart';
 import 'package:manvsim/utils/platform_checker_web.dart'
     if (dart.library.io) 'package:manvsim/services/platform_checker.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -36,6 +35,7 @@ class LoginScreenState extends State<LoginScreen> {
           : "https://batailley.informatik.uni-kiel.de:5002/api");
 
   String? _errorMessage;
+  bool _forceAndroidDownloadButton = isPlatformAndroidWeb();
 
   bool _tanInputFailure = false;
   bool _urlInputFailure = false;
@@ -214,6 +214,35 @@ class LoginScreenState extends State<LoginScreen> {
         ]));
   }
 
+  Widget _buildAdvancedSettings(BuildContext context) {
+    return Card(
+        child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(children: [
+              Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Checkbox(
+                  value: _forceAndroidDownloadButton,
+                  onChanged: (value) {
+                    if (value == null || value == _forceAndroidDownloadButton) {
+                      return;
+                    }
+                    setState(() {
+                      _forceAndroidDownloadButton = value;
+                    });
+                  },
+                ),
+                Text(AppLocalizations.of(context)!.loginScreenForceAPKDownloadButton)
+              ]),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _serverUrlController,
+                decoration: _textFieldDecoration(_urlInputFailure,
+                    AppLocalizations.of(context)!.loginServerUrl),
+                onChanged: (value) => _resetErrorMessage(_LoginInputType.url),
+              ),
+            ])));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -249,13 +278,7 @@ class LoginScreenState extends State<LoginScreen> {
                     ? AppLocalizations.of(context)!.loginHideAdvancedSettings
                     : AppLocalizations.of(context)!.loginShowAdvancedSettings),
               ),
-              if (_showAdvancedSettings)
-                TextField(
-                  controller: _serverUrlController,
-                  decoration: _textFieldDecoration(_urlInputFailure,
-                      AppLocalizations.of(context)!.loginServerUrl),
-                  onChanged: (value) => _resetErrorMessage(_LoginInputType.url),
-                ),
+              if (_showAdvancedSettings) _buildAdvancedSettings(context),
               const SizedBox(height: 32),
               if (_isLoading)
                 const CircularProgressIndicator()
@@ -292,7 +315,7 @@ class LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: isPlatformAndroidWeb()
+      bottomNavigationBar: isPlatformAndroidWeb() || _forceAndroidDownloadButton
           ? Column(mainAxisSize: MainAxisSize.min, children: [
               _androidAppDownloadButton(),
               const SizedBox(height: 20)

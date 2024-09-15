@@ -9,6 +9,7 @@
   "startScreenAppName": "MANVSim",
 
   "loginScreenName": "Anmeldung",
+  "loginScreenForceAPKDownloadButton": "APK Download Button anzeigen",
   "loginHideAdvancedSettings": "Erweiterte Einstellungen ausblenden",
   "loginShowAdvancedSettings": "Erweiterte Einstellungen anzeigen",
   "loginTANText"     : "Bitte TAN eingeben oder QR Code Scannen",
