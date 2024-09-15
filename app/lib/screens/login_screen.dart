@@ -320,7 +320,7 @@ class LoginScreenState extends State<LoginScreen> {
               _androidAppDownloadButton(),
               const SizedBox(height: 20)
             ])
-          : null,
+          : const SizedBox(height: 40), // better alignment than null
     );
   }
 }
