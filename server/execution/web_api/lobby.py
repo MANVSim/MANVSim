@@ -14,6 +14,8 @@ from execution.services import entityloader
 from execution.utils.util import try_get_execution
 from utils.decorator import required, RequiredValueSource, cache
 
+from sqlalchemy import select
+
 web_api = Blueprint("web_api-lobby", __name__)
 
 
@@ -71,8 +73,8 @@ def get_execution(id: int):
                 "name": x.name
             } for x in __get_roles()],
             "locations": [{
-                "id": x.location_id,
-                "name": x.vehicle_name
+                "id": x[1],
+                "name": x[0]
             } for x in __get_top_level_locations(execution.id)],
             "notifications": execution.notifications
         }
@@ -169,11 +171,18 @@ def __get_roles() -> list[models.Role]:
 
 
 @cache
-def __get_top_level_locations(execution_id: int) -> List[models.Location]:
-    return (models.PlayersToVehicleInExecution.query
-            .filter_by(execution_id=execution_id)
-            .group_by(models.PlayersToVehicleInExecution.vehicle_name)
-            .all())
+def __get_top_level_locations(execution_id: int):
+    top_level_location_query = (
+        select(
+            models.PlayersToVehicleInExecution.vehicle_name,
+            models.PlayersToVehicleInExecution.location_id)
+        .where(
+            models.PlayersToVehicleInExecution.execution_id == execution_id)
+        .group_by(
+            models.PlayersToVehicleInExecution.vehicle_name,
+            models.PlayersToVehicleInExecution.location_id))
+
+    return db.session.execute(top_level_location_query).all()
 
 
 def __perform_state_change(new_status: Execution.Status, execution: Execution):
