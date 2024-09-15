@@ -30,6 +30,17 @@ class Patient:
         BLUE = "blue"
         BLACK = "black"
 
+        @classmethod
+        def from_string(cls, classification_name: str):
+            """
+            Converts a string to the corresponding classification object.
+            """
+            try:
+                return cls[classification_name.upper()]
+            except KeyError:
+                raise ValueError(f"No classification found for name: "
+                                 f"{classification_name}")
+
     def __init__(self, id: int, name: str, activity_diagram: ActivityDiagram,
                  location: Location, media_references: Optional[list[MediaData]] = None,
                  classification: Classification = Classification.NOT_CLASSIFIED,
