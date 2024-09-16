@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:get_it/get_it.dart';
+import 'package:manvsim/services/notification_service.dart';
 import 'package:manvsim/widgets/logout_button.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -12,37 +12,63 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
+  late NotificationService _notificationService;
+
+  @override
+  void initState() {
+    super.initState();
+    _notificationService = GetIt.I<NotificationService>();
+    _notificationService.addListener(_onNotificationsUpdated);
+  }
+
+  void _onNotificationsUpdated() {
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _notificationService.removeListener(_onNotificationsUpdated);
+    super.dispose();
+  }
+
+  Notifications _getNotifications() {
+    _notificationService.removeListener(_onNotificationsUpdated);
+    var notifications = _notificationService.consumeNotifications();
+    _notificationService.addListener(_onNotificationsUpdated);
+    return notifications;
+
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final notifications = _getNotifications();
+
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(AppLocalizations.of(context)!.notificationScreenName),
-          actions: const <Widget>[LogoutButton()],
-        ),
-        body: RefreshIndicator(
-          onRefresh: () => Future(() => null),
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              children: <Widget>[
-                Card(
-                  child: ListTile(
-                    leading: Icon(Icons.notifications_sharp),
-                    title: Text('Notification 1'),
-                    subtitle: Text('This is a notification'),
-                  ),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(AppLocalizations.of(context)!.notificationScreenName),
+        actions: const <Widget>[LogoutButton()],
+      ),
+      body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: notifications.isEmpty
+              ? Center(
+            child: Text("Keine Benachrichtigungen"),
+          )
+              : ListView.builder(
+            itemCount: notifications.length,
+            itemBuilder: (context, index) {
+              final notification = notifications[index];
+              return Card(
+                child: ListTile(
+                  leading: const Icon(Icons.notifications_sharp),
+                  title: Text(notification),
                 ),
-                Card(
-                  child: ListTile(
-                    leading: Icon(Icons.notifications_sharp),
-                    title: Text('Notification 2'),
-                    subtitle: Text('This is a notification'),
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
-        ));
+      ),
+    );
   }
 }
