@@ -90,7 +90,7 @@ def get_execution(id: int):
 def create_execution(scenario_id: int, name: str):
     # TODO implement validator to prevent empty scenarios
     try:
-        new_execution = models.Execution(scenario_id=scenario_id,
+        new_execution = models.Execution(scenario_id=scenario_id,  # type: ignore
                                          name=name)  # type: ignore
         db.session.add(new_execution)
         db.session.commit()
@@ -235,7 +235,7 @@ def __add_new_player_to_execution(execution: Execution, role: int,
     ).first()
     if player_to_vehicle:
         # assign empty seat in vehicle
-        player = (models.Player(tan=tan, execution_id=execution.id,
+        player = (models.Player(tan=tan, execution_id=execution.id, # type: ignore
                                 location_id=player_to_vehicle.location_id, # type: ignore
                                 role_id=role,  # type: ignore
                                 alerted=False))  # type: ignore

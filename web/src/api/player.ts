@@ -18,7 +18,17 @@ export async function createNewPlayer(
   executionId: string,
   formData: FormData,
 ): Promise<Response> {
-  return tryFetchApi(`execution?id=${executionId}`, {
+  return tryFetchApi(`execution/create-player?id=${executionId}`, {
+    method: "POST",
+    body: formData,
+  })
+}
+
+export async function deletePlayer(
+  executionId: string,
+  formData: FormData,
+): Promise<Response> {
+  return tryFetchApi(`execution/delete-player?id=${executionId}`, {
     method: "POST",
     body: formData,
   })
