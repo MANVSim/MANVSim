@@ -22,26 +22,6 @@ from utils.tans import unique
 web_api = Blueprint("web_api-lobby", __name__)
 
 
-@web_api.post("/execution/activate")
-@required("id", int, RequiredValueSource.FORM)
-@csrf.exempt
-def activate_execution(id: int):
-    if id in run.active_executions.keys():
-        return run.active_executions[id].to_dict(), 200
-    if entityloader.load_execution(id):
-        return run.active_executions[id].to_dict(), 201
-
-    # Failure
-    raise NotFound(f"Execution with id={id} does not exist")
-
-
-@web_api.get("/execution/active")
-def get_all_active_executions():
-    """ Endpoint to return all currently active executions. """
-    return [execution.to_dict(shallow=True) for execution
-            in run.active_executions.values()]
-
-
 @web_api.get("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 def get_execution(id: int):
@@ -113,6 +93,30 @@ def create_execution(scenario_id: int, name: str):
         return message, 400
 
 
+@web_api.post("/execution/delete")
+@required("execution_id", int, RequiredValueSource.FORM)
+def delete_execution(execution_id: int):
+    from execution.run import deactivate_execution
+    # delete Player
+    db_players = models.Player.query.filter_by(execution_id=execution_id).all()
+    [db.session.delete(dbo) for dbo in db_players]
+
+    # delete player assignment
+    db_p_assignment = (models.PlayersToVehicleInExecution.query
+                       .filter_by(execution_id=execution_id)).all()
+    [db.session.delete(dbo) for dbo in db_p_assignment]
+
+    # delete execution
+    db_execution = models.Execution.query.filter_by(id=execution_id).first()
+    db.session.delete(db_execution)
+
+    db.session.commit()
+
+    deactivate_execution(execution_id)
+
+    return f"Successfully deleted execution with id={execution_id}", 200
+
+
 @web_api.patch("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 @required("new_status", str.upper, RequiredValueSource.FORM)
@@ -128,6 +132,26 @@ def change_execution_status(id: int, new_status: str):
     except KeyError:
         raise BadRequest(f"Not an option for the execution status: "
                          f"'{new_status}'. ")
+
+
+@web_api.post("/execution/activate")
+@required("id", int, RequiredValueSource.FORM)
+@csrf.exempt
+def activate_execution(id: int):
+    if id in run.active_executions.keys():
+        return run.active_executions[id].to_dict(), 200
+    if entityloader.load_execution(id):
+        return run.active_executions[id].to_dict(), 201
+
+    # Failure
+    raise NotFound(f"Execution with id={id} does not exist")
+
+
+@web_api.get("/execution/active")
+def get_all_active_executions():
+    """ Endpoint to return all currently active executions. """
+    return [execution.to_dict(shallow=True) for execution
+            in run.active_executions.values()]
 
 
 @web_api.patch("/execution/player/status")

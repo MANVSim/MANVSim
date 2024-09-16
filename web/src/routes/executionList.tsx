@@ -4,7 +4,7 @@ import {
   useLoaderData,
   useNavigate,
 } from "react-router"
-import { getActiveExecutions, getTemplates, tryFetchJson } from "../api"
+import { getActiveExecutions, getTemplates, tryFetchApi, tryFetchJson } from "../api"
 import { Accordion } from "react-bootstrap"
 import { ExecutionData, Template } from "../types"
 import { ReactElement } from "react"
@@ -119,15 +119,34 @@ ExecutionListRoute.action = async function ({
   request,
 }: ActionFunctionArgs<Request>) {
   const formData = await request.formData()
-  const id_json = await tryFetchJson<ExecutionData>("execution/create", {
-    body: formData,
-    method: "POST",
-  })
-  if (id_json.id) {
-    return redirect(`/execution/${id_json.id}`)
-  } else {
-    alert(`No execution created due to input/db error.`)
-    return redirect("/executions")
+  const id = formData.get("id")
+  formData.delete("id")
+  switch (id) {
+    case "create-execution": {
+      const id_json = await tryFetchJson<ExecutionData>("execution/create", {
+        body: formData,
+        method: "POST",
+      })
+      if (id_json.id) {
+        return redirect(`/execution/${id_json.id}`)
+      } else {
+        alert(`No execution created due to input/db error.`)
+        return redirect("/executions")
+      }
+    }
+
+    case "delete-execution": {
+      const response = await tryFetchApi("execution/delete", {
+        body: formData,
+        method: "POST",
+      })
+      if (response.ok) {
+        return redirect("/executions")
+      } else {
+        alert(`Unable to delete execution`)
+        return ""
+      }
+    }
   }
 }
 

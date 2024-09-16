@@ -38,14 +38,14 @@ def deactivate_execution(exec_id: int):
         execution = active_executions.pop(exec_id)
         [remove_player(tan) for tan in execution.players.keys()]
     except KeyError:
-        logging.debug(f"{exec_id} already removed")
+        logging.debug(f"{exec_id} is not registered.")
 
 
 def remove_player(tan: str):
     try:
         registered_players.pop(tan)
     except KeyError:
-        logging.debug(f"{tan} is not registered")
+        logging.debug(f"{tan} is not registered.")
 
 
 # TEST DATA
