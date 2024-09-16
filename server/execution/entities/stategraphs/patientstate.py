@@ -15,9 +15,9 @@ class PatientState:
                  conditions: dict[str, list[MediaData]] | None = None,
                  pause_time: int = -1):
         if not treatments:
-            treatments = {}
+            treatments: dict[str, str] = {}
         if not conditions:
-            conditions = {}
+            conditions: dict[str, list[MediaData]] = {}
 
         # the time the state was delayed due to a pause action
         self.pause_time = pause_time
