@@ -270,12 +270,12 @@ def get_activity_diagrams():
         "12-Kanal-EKG": [MediaData.new_text("STEMI"),
                          MediaData.new_image("media/static/image/no_image.png",
                                              "12-Kanal-Bild")],
-        "Haut": [MediaData.new_text("blass, kalt schweißig")],
+        "Haut": [MediaData.new_text("normal, trocken")],
         "Schmerz": [
             MediaData.new_text(
-                "7(NAS) in der Brust, ausstrahlend in linken Arm")],
+                "0 (NAS)")],
         "Bewusstsein": [MediaData.new_text("wach, orientiert")],
-        "Psychischer Zustand": [MediaData.new_text("aengstlich")],
+        "Psychischer Zustand": [MediaData.new_text("normal")],
         "Verletzungen": [MediaData.new_text("keine")],
         "Temperatur": [MediaData.new_text("36,7°C")],
         "BZ": [MediaData.new_text("80 mg / dl")],

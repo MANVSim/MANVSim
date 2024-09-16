@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 150 150" width="150" height="150" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+    <defs>
+        <style bx:fonts="Source Serif 4">@import url(https://fonts.googleapis.com/css2?family=Source+Serif+4%3Aital%2Cwght%400%2C200..900%3B1%2C200..900&amp;display=swap);</style>
+        <style bx:fonts="Alexandria">@import url(https://fonts.googleapis.com/css2?family=Alexandria%3Aital%2Cwght%400%2C100..900&amp;display=swap);</style>
+    </defs>
+    <rect y="50" width="150" height="50" style="fill: rgb(227, 6, 19);" transform="matrix(1, 0, 0, 1, 0, -1.7763568394002505e-15)"/>
+    <rect y="113.626" width="150" height="50" style="fill: rgb(227, 6, 19); transform-origin: 85.135px 138.626px;" x="10.135" transform="matrix(-0.000047000001, 1, -1, -0.000047000001, -10.131450380861, -63.624812998708)"/>
+    <rect y="35" width="50" height="15" style="" transform="matrix(1, 0, 0, 1, 0, -1.7763568394002505e-15)"/>
+    <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 14.1px; white-space: pre;" x="3" y="47.876" transform="matrix(1, 0, 0, 1, 0, -1.7763568394002505e-15)">C  A  U</text>
+    <path style="fill: none; stroke: rgb(255, 205, 0); stroke-width: 3px;" d="M 61.07 59.207 L 63.109 65.026 L 71.257 65.211 L 81.86 50.123 L 87.16 56.69 L 93.802 67.465 C 93.889 67.328 103.63 33.915 103.63 33.915 L 126.324 100.587 C 126.717 98.402 137.278 66.268 137.278 66.268 L 142.835 76.62 C 149.555 76.639 150.693 76.532 150.693 76.532" transform="matrix(1, 0, 0, 1, 0, -1.7763568394002505e-15)"/>
+    <text style="font-family: 'Source Serif 4'; font-size: 43.5px; stroke: rgb(0, 0, 0); white-space: pre;" y="82.949" x="-11.052" transform="matrix(1, 0, 0, 1, 0, -1.7763568394002505e-15)"><tspan x="5.585" y="91.458" style="font-size: 49px; word-spacing: 0px;">MANV
+    </tspan><tspan style="font-size: 43.5px; word-spacing: 0px;">
+    </tspan></text>
+    <rect x="16" y="38" width="1" height="12" style="fill: rgb(255, 255, 255); stroke-miterlimit: 1;" transform="matrix(1, 0, 0, 1, 0, -1.7763568394002505e-15)"/>
+    <rect x="33" y="35" width="1" height="12" style="fill: rgb(255, 255, 255); stroke-miterlimit: 1;" transform="matrix(1, 0, 0, 1, 0, -1.7763568394002505e-15)"/>
+    <text style="font-family: Alexandria; font-size: 27px; font-weight: 100; stroke: rgb(0, 0, 0); white-space: pre;" transform="matrix(1, 0, 0, 1, -8.228644371032715, 9.118227005004883)"><tspan x="58.423" y="124.194">Sim</tspan><tspan x="58.423" dy="1em">​</tspan></text>
+</svg>

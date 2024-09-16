@@ -57,7 +57,9 @@ def get_scenario(scenario_id: int):
                models.PlayersToVehicleInExecution.location_id,
                models.PlayersToVehicleInExecution.travel_time)
         .where(models.PlayersToVehicleInExecution.scenario_id == scenario_id)
-        .group_by(models.PlayersToVehicleInExecution.vehicle_name)
+        .group_by(models.PlayersToVehicleInExecution.vehicle_name,
+                  models.PlayersToVehicleInExecution.location_id,
+                  models.PlayersToVehicleInExecution.travel_time)
         .order_by(asc(models.PlayersToVehicleInExecution.vehicle_name)))
     vehicle_list = db.session.execute(vehicle_query)
 

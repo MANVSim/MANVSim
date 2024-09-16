@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask_jwt_extended import jwt_required
 
 from app_config import csrf
+from execution.entities.patient import Patient
 from execution.utils import util
 from execution.entities.event import Event
 from utils import time
@@ -40,6 +41,33 @@ def get_patient(patient_id: int):
             "player_location": player.location.to_dict(),
             "patient": patient.to_dict(shallow=False)
         }
+    except KeyError:
+        return "Missing or invalid request parameter detected.", 400
+
+
+@api.patch("patient/classify")
+@required("patient_id", int, RequiredValueSource.JSON)
+@required("classification", str, RequiredValueSource.JSON)
+@jwt_required()
+@csrf.exempt
+def classify_patient(patient_id: int, classification: str):
+    try:
+        execution, player = util.get_execution_and_player()
+        patient = execution.scenario.patients[patient_id]
+        classification_enum: Patient.Classification = (Patient.Classification
+                                                  .from_string(classification))
+        patient.classification = classification_enum
+
+        Event.patient_classify(execution_id=execution.id,
+                               time=time.current_time_s(),
+                               player=player.tan,
+                               patient_id=patient.id,
+                               classification=classification_enum.name)
+
+        return "Successfully updated patient.", 200
+
+    except ValueError:
+        return "Missing or invalid request parameter 'classification' detected.", 400
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
 
