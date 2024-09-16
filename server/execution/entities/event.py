@@ -20,7 +20,8 @@ class Event:
         EXECUTION_PAUSED = "execution_paused"
         EXECUTION_FINISHED = "execution_finished"
         LOCATION_TAKE_FROM = "location_take_from"
-        LOCATION_ARRIVE = "location_arrive"
+        PATIENT_ARRIVE = "patient_arrive"
+        PATIENT_CLASSIFY = "patient_classify"
         LOCATION_LEAVE = "location_leave"
         PLAYER_ALERTED = "player_alerted"
 
@@ -102,13 +103,24 @@ class Event:
         })
 
     @staticmethod
-    def location_arrive(execution_id: int, time: int, player: str, patient_id: int):
+    def patient_arrive(execution_id: int, time: int, player: str, patient_id: int):
         """
         Creates an event representing the action of a player arriving at a patient.
         """
-        return Event(execution=execution_id, type=Event.Type.LOCATION_ARRIVE, time=time, data={
+        return Event(execution=execution_id, type=Event.Type.PATIENT_ARRIVE, time=time, data={
             "player": player,
             "patient_id": patient_id
+        })
+
+    @staticmethod
+    def patient_classify(execution_id: int, time: int, player: str, patient_id: int, classification: str):
+        """
+        Creates an event representing the action of a player classifying at a patient.
+        """
+        return Event(execution=execution_id, type=Event.Type.PATIENT_CLASSIFY, time=time, data={
+            "player": player,
+            "patient_id": patient_id,
+            "classification": classification
         })
 
     @staticmethod
