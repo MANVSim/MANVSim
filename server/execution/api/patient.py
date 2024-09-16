@@ -72,24 +72,6 @@ def classify_patient(patient_id: int, classification: str):
         return "Missing or invalid request parameter detected.", 400
 
 
-@api.get("patient/performed-action")
-@jwt_required()
-@required("patient_id", int, RequiredValueSource.JSON)
-@required("performed_action_id", str, RequiredValueSource.JSON)
-def get_performed_action(patient_id: int, performed_action_id: str):
-    """ Returns the performed action object for a patient and performed action ID. """
-    try:
-        execution, _ = util.get_execution_and_player()
-        scenario = execution.scenario
-        patient = scenario.patients[patient_id]
-        performed_action = patient.performed_actions[performed_action_id]
-
-        return performed_action.to_json()
-
-    except KeyError:
-        return "Missing or invalid request parameter detected.", 400
-
-
 @api.get("/patient/all-ids")
 @jwt_required()
 def get_all_patient():
