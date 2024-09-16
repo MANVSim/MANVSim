@@ -79,7 +79,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
         models.PatientInScenario.scenario_id == scenario_id).all()
 
     patients: dict[int, Patient] = dict()
-    patient_locations: dict[int, Location] = dict()
+    patient_locations: dict[int, Location] = dict()  # cache for locations
     for mapping in patient_mapping:
         p = db.session.query(models.Patient).filter(models.Patient.id == mapping.patient_id).first()
         if not p:
@@ -115,7 +115,8 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_ad = ActivityDiagram()  # empty diagram with an empty root state
 
         # Create Patient
-        patients[p.id] = Patient(id=__generate_id(), name=mapping.name, activity_diagram=p_ad, # type: ignore
+        new_patient_id = __generate_id()
+        patients[new_patient_id] = Patient(id=new_patient_id, name=mapping.name, activity_diagram=p_ad,  # type: ignore
                                  location=p_loc, performed_actions=[], media_references=p_media)  # type: ignore
 
     return patients

@@ -24,7 +24,7 @@ import {
   Notifications,
 } from "../types"
 import { CsrfForm } from "../components/CsrfForm"
-import { getExecution, togglePlayerStatus, createNewPlayer, pushNotificationToPlayer } from "../api"
+import { getExecution, togglePlayerStatus, createNewPlayer, pushNotificationToPlayer, deletePlayer } from "../api"
 import { TanCard } from "../components/TanCard"
 import { PlayerStatus } from "../components/PlayerStatus"
 import { ExecutionStatus } from "../components/ExecutionStatus"
@@ -137,10 +137,17 @@ export function ExecutionRoute() {
           </div>
           <section className="mt-3">
             <h3>Verfügbare TANs:</h3>
-            <Container fluid className="d-flex flex-wrap my-3">
+            <Container fluid className="d-flex flex-wrap justify-content-center my-3">
               {tansAvailable.length ? (
                 tansAvailable.map((player) => (
-                  <TanCard key={player.tan} player={player} />
+                  <div className="m-1 w-25 align-self-start">
+                    <TanCard key={player.tan} player={player} />
+                    <CsrfForm method="POST" className="my-2">
+                      <input name="id" value={"delete-player"} hidden />
+                      <input type="text" name="tan" value={player.tan} hidden />
+                      <button className="btn btn-outline-danger w-100">Löschen</button>
+                    </CsrfForm>
+                  </div>
                 ))
               ) : (
                 <span>
@@ -303,6 +310,17 @@ ExecutionRoute.action = async function ({
         window.location.reload();
       } else {
         console.error('Failed to create player:', response.text());
+      }
+      return ""
+    }
+    case "delete-player": {
+
+      const response = await deletePlayer(params.executionId, formData)
+      // Instead of redirecting, reload the current page
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        console.error('Failed to delete player:', response.text());
       }
       return ""
     }
