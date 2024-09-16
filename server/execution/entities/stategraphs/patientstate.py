@@ -1,6 +1,7 @@
 import json
 import logging
 import uuid
+from typing import Optional
 
 from media.media_data import MediaData
 from utils import time
@@ -9,15 +10,15 @@ from utils import time
 class PatientState:
 
     def __init__(self, state_uuid: str = str(uuid.uuid4()),
-                 treatments: dict[str, str] | None = None,
+                 treatments: Optional[dict[str, str]] = None,
                  start_time: int = -1, timelimit: int = -1,
                  after_time_state_uuid: str = "",
-                 conditions: dict[str, list[MediaData]] | None = None,
+                 conditions: Optional[dict[str, list[MediaData]]] = None,
                  pause_time: int = -1):
         if not treatments:
-            treatments: dict[str, str] = {}
+            treatments = {}
         if not conditions:
-            conditions: dict[str, list[MediaData]] = {}
+            conditions = {}
 
         # the time the state was delayed due to a pause action
         self.pause_time = pause_time

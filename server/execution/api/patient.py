@@ -34,7 +34,7 @@ def get_patient(patient_id: int):
         player.location = patient.location
         player.location.add_locations(player.accessible_locations)
 
-        Event.location_arrive(execution_id=execution.id, time=time.current_time_s(),
+        Event.patient_arrive(execution_id=execution.id, time=time.current_time_s(),
                              player=player.tan, patient_id=patient.id).log()
 
         return {
