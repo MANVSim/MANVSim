@@ -12,7 +12,6 @@ from vars import ACQUIRE_TIMEOUT
 
 
 class Patient:
-
     class Classification(Enum):
         """
         Classifies the severity of injuries and need for a treatment according
@@ -44,9 +43,9 @@ class Patient:
     def __init__(self, id: int, name: str, activity_diagram: ActivityDiagram,
                  location: Location, media_references: Optional[list[MediaData]] = None,
                  classification: Classification = Classification.NOT_CLASSIFIED,
-                 performed_actions: dict[str, PerformedAction] | None = None):
+                 performed_actions: Optional[list[PerformedAction]] = None):
         if performed_actions is None:
-            performed_actions = {}
+            performed_actions = []
         if media_references is None:
             media_references = []
 
@@ -94,9 +93,8 @@ class Patient:
             'location': self.location.id if shallow else self.location.to_dict(),
             'media_references': [media_ref.to_dict() for media_ref in self.media_references],
             'classification': self.classification.name,
-            'performed_actions': [
-                performed_action.id if shallow else performed_action.to_dict()
-                for performed_action in self.performed_actions.values()]
+            'performed_actions': [performed_action.id if shallow else performed_action.to_dict() for
+                                  performed_action in self.performed_actions]
         }
 
         if include:
