@@ -195,7 +195,6 @@ def __get_top_level_locations(execution_id: int):
             models.PlayersToVehicleInExecution.vehicle_name,
             models.PlayersToVehicleInExecution.location_id))
     vehicle = db.session.execute(top_level_location_query).all()
-    print(len(vehicle))
     return vehicle
 
 
