@@ -101,7 +101,7 @@ def _check_patients(scenario: Scenario):
 
     for db_patient in db_patients:
         continue
-        # TODO wont work with a location that has a hash generated location id the check is designed for equal location_ids in the game as well es db
+        # FIXME wont work with a patient that has a hash generated patient id. The check is designed for equal patient_ids in the game as well es db
         exec_patient = scenario.patients.get(db_patient.id)
         assert exec_patient
         db_mapping = db.session.query(models.PatientInScenario).filter_by(scenario_id=scenario.id,
