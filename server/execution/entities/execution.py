@@ -105,52 +105,7 @@ class Execution:
         """
         return json.dumps(self.to_dict(shallow, include, exclude))
 
-    def add_new_player(self, role: int, vehicle: str):
-        from utils.tans import unique
-        from execution.run import register_player
-        from execution.services.entityloader import load_location
-        from execution.services.entityloader import load_role
-
-        tan = str(unique())
-        # take empty seat of vehicle
-        player_to_vehicle = models.PlayersToVehicleInExecution.query.filter_by(
-            execution_id=self.id,
-            vehicle_name=vehicle,
-            player_tan=f"empty-{vehicle}"
-        ).first()
-        if player_to_vehicle:
-            # assign empty seat in vehicle
-            player = (models.Player(tan=tan, execution_id=self.id, location_id=player_to_vehicle.location_id, role_id=role, alerted=False))  # pyright: ignore [reportCallIssue]
-            db.session.add(player)
-            player_to_vehicle.player_tan = tan
-            db.session.commit()
-
-            # create new empty seat in vehicle
-            # Here it is possible to implement a limitation of seats if required
-            new_seat_in_vehicle = models.PlayersToVehicleInExecution(execution_id=player_to_vehicle.execution_id, scenario_id=player_to_vehicle.scenario_id, player_tan=f"empty-{player_to_vehicle.vehicle_name}", location_id=player_to_vehicle.location_id, vehicle_name=player_to_vehicle.vehicle_name, travel_time=player_to_vehicle.travel_time)  # pyright: ignore [reportCallIssue]
-            db.session.add(new_seat_in_vehicle)
-
-            db.session.commit()
-
-            # load player location -> choose from existing or load new vehicle
-            location = self.__get_location_for_player(player_to_vehicle.vehicle_name)
-            if not location:
-                location = load_location(player_to_vehicle.location_id)
-            new_player = Player(tan, None, False, 0,
-                                location,
-                                set(), load_role(role))
-
-            # Add player to execution
-            self.players[tan] = new_player
-            # Register player if execution is activated
-            if self.status is self.Status.PENDING or self.Status.RUNNING:
-                register_player(self.id, [new_player])
-        else:
-            msg = f"Unable to assign player to vehicle. No entry found for:{self.id}{vehicle}"
-            logging.error(msg)
-            raise BadRequest(msg)
-
-    def __get_location_for_player(self, vehicle_name):
+    def get_location_for_player(self, vehicle_name):
         if not self.scenario:
             return None
 
