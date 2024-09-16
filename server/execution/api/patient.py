@@ -55,15 +55,15 @@ def classify_patient(patient_id: int, classification: str):
     try:
         execution, player = util.get_execution_and_player()
         patient = execution.scenario.patients[patient_id]
-        classification: Patient.Classification = (Patient.Classification
+        classification_enum: Patient.Classification = (Patient.Classification
                                                   .from_string(classification))
-        patient.classification = classification
+        patient.classification = classification_enum
 
         Event.patient_classify(execution_id=execution.id,
                                time=time.current_time_s(),
                                player=player.tan,
                                patient_id=patient.id,
-                               classification=classification.name)
+                               classification=classification_enum.name)
 
         return "Successfully updated patient.", 200
 
