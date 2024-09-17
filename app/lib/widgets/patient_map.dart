@@ -1,10 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 
-class PatientMap extends StatelessWidget {
+class PatientMap extends StatefulWidget {
   final MapData mapData;
 
   /// Provides current position of the player.
@@ -13,10 +16,17 @@ class PatientMap extends StatelessWidget {
   const PatientMap(this.mapData, this.positionNotifier, {super.key});
 
   @override
+  State<StatefulWidget> createState() => _PatientMapState();
+}
+
+class _PatientMapState extends State<PatientMap> {
+  List<Positioned> messages = [];
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-        height: mapData.size.height,
-        width: mapData.size.width,
+        height: widget.mapData.size.height,
+        width: widget.mapData.size.width,
         decoration: const BoxDecoration(
             image: DecorationImage(
                 opacity: 0.05,
@@ -28,34 +38,73 @@ class PatientMap extends StatelessWidget {
                 end: Alignment.bottomRight)),
         child: Stack(
           children: [
-            CustomPaint(painter: _MapRaw(mapData, positionNotifier)),
+            CustomPaint(
+                painter:
+                    _ShadowPainter(widget.mapData, widget.positionNotifier)),
+            ...widget.mapData.buildings.map(rectToPositioned),
             ...getPatientWidgets(context),
+            ...messages
           ],
         ));
   }
 
   List<Positioned> getPatientWidgets(BuildContext context) {
-    return mapData.patientsPositions
+    return widget.mapData.patientsPositions
         .map((patientPosition) => Positioned(
               top: patientPosition.position.dy,
               left: patientPosition.position.dx,
               child: IconButton(
-                  onPressed: () => PatientService.goToPatientScreen(
-                      patientPosition.id, context),
-                  icon: const Icon(Icons.person)),
+                  onPressed: () => _onPatientPressed(patientPosition, context),
+                  icon: const Icon(Icons.accessibility_new),
+                  iconSize: 50),
             ))
         .toList();
+  }
+
+  void _onPatientPressed(
+      PatientPosition patientPosition, BuildContext context) {
+    if ((patientPosition.position - widget.positionNotifier.value).distance <=
+        300) {
+      PatientService.goToPatientScreen(patientPosition.id, context);
+      return;
+    }
+    var message = Positioned(
+        left: patientPosition.position.dx + 40,
+        top: patientPosition.position.dy,
+        width: 200,
+        child: Card(
+          child: Text(
+            AppLocalizations.of(context)!.mapPatientTooFar,
+            textScaler: const TextScaler.linear(2),
+          ),
+        ));
+    setState(() {
+      messages.add(message);
+    });
+    Timer(
+        const Duration(seconds: 5),
+        () => setState(() {
+              messages.remove(message);
+            }));
+  }
+
+  Positioned rectToPositioned(Rect rect) {
+    return Positioned(
+        left: rect.left,
+        top: rect.top,
+        child: Container(
+            width: rect.width, height: rect.height, color: Colors.grey));
   }
 }
 
 /// Raw map drawn on a canvas.
 /// Draws buildings and their shadows based on [viewerPositionNotifier}.
-class _MapRaw extends CustomPainter {
+class _ShadowPainter extends CustomPainter {
   MapData mapData;
 
   final ValueNotifier<Offset> viewerPositionNotifier;
 
-  _MapRaw(this.mapData, this.viewerPositionNotifier)
+  _ShadowPainter(this.mapData, this.viewerPositionNotifier)
       : super(repaint: viewerPositionNotifier);
 
   Offset get viewerPosition => viewerPositionNotifier.value;
@@ -70,14 +119,10 @@ class _MapRaw extends CustomPainter {
         canvas.drawPath(shadow, shadowPaint);
       }
     }
-    Paint buildingPaint = Paint()..color = Colors.grey;
-    for (Rect building in mapData.buildings) {
-      canvas.drawRect(building, buildingPaint);
-    }
   }
 
   @override
-  bool shouldRepaint(_MapRaw oldDelegate) => true;
+  bool shouldRepaint(_ShadowPainter oldDelegate) => true;
 
   List<Path> _getShadow(Rect building, Size size) {
     return [

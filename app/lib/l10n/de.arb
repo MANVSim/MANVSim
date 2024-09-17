@@ -284,5 +284,6 @@
   "dateTimeFormat": "dd.MM.yyyy HH:mm:ss",
 
 
-  "mapScreenName": "Karte"
+  "mapScreenName": "Karte",
+  "mapPatientTooFar": "Hilfe! Bitte komm näher..."
 }
