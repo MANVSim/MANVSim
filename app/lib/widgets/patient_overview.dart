@@ -8,7 +8,10 @@ import 'package:manvsim/widgets/media_overview_expansion.dart';
 class PatientOverview extends StatefulWidget {
   final Patient patient;
 
-  const PatientOverview({super.key, required this.patient});
+  final bool initiallyExpanded;
+
+  const PatientOverview(
+      {super.key, required this.patient, this.initiallyExpanded = true});
 
   @override
   State<PatientOverview> createState() => _PatientOverviewState();
@@ -17,15 +20,20 @@ class PatientOverview extends StatefulWidget {
 class _PatientOverviewState extends State<PatientOverview> {
   @override
   Widget build(BuildContext context) {
-    return MediaOverviewExpansion(media: widget.patient.media, children: [
-      Text(
-        AppLocalizations.of(context)!.patientName(widget.patient.name),
-        style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
-      ),
-      Text(
-          AppLocalizations.of(context)!
-              .patientLocation(widget.patient.location.name),
-          style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.5))
-    ]);
+    return MediaOverviewExpansion(
+        initiallyExpanded: widget.initiallyExpanded,
+        media: widget.patient.media,
+        children: [
+          Text(
+            AppLocalizations.of(context)!.patientName(widget.patient.name),
+            style:
+                DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
+          ),
+          Text(
+              AppLocalizations.of(context)!
+                  .patientLocation(widget.patient.location.name),
+              style:
+                  DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.5))
+        ]);
   }
 }
