@@ -7,11 +7,11 @@ services:
   postgres:
     image: postgres:latest
     ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: t3zgVzcWTd3WV8KTmnNH
+      - "5432:5432"
+    env_file:
+        - config/postgres/.env
     volumes:
+      - manvsim-db:/var/lib/postgresql/data
       - ./config/postgres/sql:/docker-entrypoint-initdb.d
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U admin" ]
@@ -28,12 +28,14 @@ services:
       dockerfile: server/Dockerfile
       target: prod
     env_file:
-      - server/.env
+      - config/server/.env
+      - config/postgres/.env
     ports:
       - "5002:5002"
     volumes:
-      - ./certs/fullchain.pem:/usr/src/app/server/fullchain.pem
-      - ./certs/privkey.pem:/usr/src/app/server/privkey.pem
+      - manvsim-media:/usr/src/app/server/media/instance
+      - ./config/certs/fullchain.pem:/usr/src/app/server/fullchain.pem
+      - ./config/certs/privkey.pem:/usr/src/app/server/privkey.pem
 
 
   app:
@@ -44,8 +46,8 @@ services:
     ports:
       - "5001:5001"
     volumes:
-      - ./certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
-      - ./certs/privkey.pem:/etc/nginx/ssl/privkey.pem
+      - ./config/certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
+      - ./config/certs/privkey.pem:/etc/nginx/ssl/privkey.pem
     depends_on:
       - server
 
@@ -58,8 +60,8 @@ services:
     ports:
       - "50003:50003"
     volumes:
-      - ./certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
-      - ./certs/privkey.pem:/etc/nginx/ssl/privkey.pem
+      - ./config/certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
+      - ./config/certs/privkey.pem:/etc/nginx/ssl/privkey.pem
 
 
   nginx:
@@ -74,3 +76,4 @@ services:
 
 volumes:
   manvsim-db:
+  manvsim-media:
