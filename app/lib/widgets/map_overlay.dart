@@ -22,17 +22,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Size of the viewport.
   static const Size viewportSize = Size(300, 400);
 
-  /// Player position on the viewport.
-  Offset get positionViewport {
-    return switch (positionType) {
-      MapOverlayPositions.bottomCenter =>
-        boundingBox.bottomCenter.translate(0, -10),
-      MapOverlayPositions.center => boundingBox.center
-    };
-  }
-
-  Rect get boundingBox => Offset.zero & viewportSize;
-
+  /// Where the viewer is positioned on the Viewport.
   final positionType = MapOverlayPositions.bottomCenter;
 
   /// Controller for view transformations (using [Matrix4]).
@@ -49,23 +39,33 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Last tapped position on overlay. Used to ignore small changes.
   Offset lastTapped = Offset.zero;
 
+  /// Player position on the viewport.
+  Offset get positionOnViewport {
+    return switch (positionType) {
+      MapOverlayPositions.bottomCenter =>
+        boundingBox.bottomCenter.translate(0, -20),
+      MapOverlayPositions.center => boundingBox.center
+    };
+  }
+
+  Rect get boundingBox => Offset.zero & viewportSize;
+  Rect get mapRect => Offset.zero & widget.mapData.size;
   List<Rect> get buildings => widget.mapData.buildings;
 
-  Rect get mapRect => Offset.zero & widget.mapData.size;
+  Offset toScene(Offset pointOnViewport) =>
+      _transformationController.toScene(pointOnViewport);
 
-  Offset toScene(Offset viewportPoint) =>
-      _transformationController.toScene(viewportPoint);
-
-  Offset targetCenterToTranslation(Offset center) =>
-      -(center - positionViewport);
+  Offset targetPositionToTranslation(Offset targetPosition) =>
+      -(targetPosition - positionOnViewport);
 
   @override
   void initState() {
     super.initState();
     positionNotifier = ValueNotifier(widget.mapData.startingPoint);
     patientMap = PatientMap(widget.mapData, positionNotifier);
-    _transformationController = CustomTransformationController(positionViewport)
-      ..setTranslation(targetCenterToTranslation(positionNotifier.value));
+    _transformationController =
+        CustomTransformationController(positionOnViewport)
+          ..setTranslation(targetPositionToTranslation(positionNotifier.value));
     _animationController = AnimationController(
       vsync: this,
     );
@@ -78,106 +78,6 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      _buildMapViewPort(),
-      Row(mainAxisSize: MainAxisSize.min, children: [
-        Column(children: [
-          IconButton(
-              onPressed: () => _transformationController.tilt(-pi / 12),
-              icon: const Icon(Icons.arrow_drop_down)),
-          IconButton(
-              onPressed: () => _transformationController.tilt(pi / 12),
-              icon: const Icon(Icons.arrow_drop_up)),
-        ]),
-        Column(children: [
-          Row(mainAxisSize: MainAxisSize.min, children: [
-            IconButton(
-                onPressed: () => _transformationController.rotate(-pi / 12),
-                icon: const Icon(Icons.rotate_left)),
-            IconButton(
-                onPressed: () => _onNewDirection(
-                    toScene(positionViewport.translate(0, -10))),
-                icon: const Icon(Icons.arrow_circle_up)),
-            IconButton(
-                onPressed: () => _transformationController.rotate(pi / 12),
-                icon: const Icon(Icons.rotate_right)),
-          ]),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                  onPressed: () => _onNewDirection(
-                      toScene(positionViewport.translate(-10, 0))),
-                  icon: const Icon(Icons.arrow_circle_left)),
-              IconButton(
-                  onPressed: _onMoveEnd, icon: const Icon(Icons.stop_circle)),
-              IconButton(
-                  onPressed: () => _onNewDirection(
-                      toScene(positionViewport.translate(10, 0))),
-                  icon: const Icon(Icons.arrow_circle_right)),
-            ],
-          )
-        ]),
-        Column(children: [
-          IconButton(
-              onPressed: () => _transformationController.scale(2),
-              icon: const Icon(Icons.zoom_in)),
-          IconButton(
-              onPressed: () => _transformationController.scale(0.5),
-              icon: const Icon(Icons.zoom_out)),
-        ])
-      ])
-    ]);
-  }
-
-  Widget _buildMapViewPort() {
-    var locationIcon = const Icon(Icons.location_on, color: Colors.blue);
-    return Container(
-        width: viewportSize.width,
-        height: viewportSize.height,
-        decoration: BoxDecoration(
-          border: Border.all(width: 3),
-        ),
-        child: Stack(children: [
-          Listener(
-              child: GestureDetector(
-                  onLongPressStart: (details) =>
-                      _onNewTargetOffset(details.localPosition),
-                  onLongPressUp: _onMoveEnd,
-                  onLongPressMoveUpdate: (details) =>
-                      _onNewTargetOffset(details.localPosition),
-                  child: ClipRect(
-                      clipBehavior: Clip.hardEdge, //clipBehavior,
-                      child: OverflowBox(
-                          alignment: Alignment.topLeft,
-                          minWidth: 0.0,
-                          minHeight: 0.0,
-                          maxWidth: double.infinity,
-                          maxHeight: double.infinity,
-                          child: ValueListenableBuilder(
-                              valueListenable: _transformationController,
-                              builder: (context, value, child) => Transform(
-                                    transform: value,
-                                    child: patientMap,
-                                  )))))),
-          Center(
-              child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: positionType == MapOverlayPositions.center
-                ? MainAxisAlignment.center
-                : MainAxisAlignment.end,
-            children: [
-              Column(mainAxisSize: MainAxisSize.min, children: [
-                locationIcon,
-                Visibility(visible: false, child: locationIcon)
-              ])
-            ],
-          ))
-        ]));
-  }
-
   /// Start animation moving the middle to the edge.
   void _onNewTargetOffset(Offset tappedPosition) {
     if ((lastTapped - tappedPosition).distance < 10) {
@@ -188,12 +88,12 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   }
 
   void _onNewDirection(Offset targetPoint) {
-    Offset self = toScene(positionViewport);
+    Offset self = toScene(positionOnViewport);
     Offset target = getTarget(self, self - targetPoint);
     _onMoveEnd();
     _translationAnimation = Tween<Offset>(
             begin: _transformationController.currentTranslation,
-            end: targetCenterToTranslation(target))
+            end: targetPositionToTranslation(target))
         .animate(_animationController)
       ..addListener(_onAnimate);
     double distance = (target - self).distance;
@@ -209,7 +109,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Translates the View during the animation.
   void _onAnimate() {
     _transformationController.setTranslation(_translationAnimation.value);
-    positionNotifier.value = toScene(positionViewport);
+    positionNotifier.value = toScene(positionOnViewport);
   }
 
   /// Uses vector math to determine where the path hits an obstacle or the edge.
@@ -222,6 +122,103 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
         .map((distance) => distance * 0.95)
         .reduce(max);
     return dirRay.at(distance);
+  }
+
+  Widget _buildControls() {
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      Column(children: [
+        IconButton(
+            onPressed: () => _transformationController.tilt(-pi / 12),
+            icon: const Icon(Icons.arrow_drop_down)),
+        IconButton(
+            onPressed: () => _transformationController.tilt(pi / 12),
+            icon: const Icon(Icons.arrow_drop_up)),
+      ]),
+      Column(children: [
+        Row(mainAxisSize: MainAxisSize.min, children: [
+          IconButton(
+              onPressed: () => _transformationController.rotate(-pi / 12),
+              icon: const Icon(Icons.rotate_left)),
+          IconButton(
+              onPressed: () => _onNewDirection(
+                  toScene(positionOnViewport.translate(0, -10))),
+              icon: const Icon(Icons.arrow_circle_up)),
+          IconButton(
+              onPressed: () => _transformationController.rotate(pi / 12),
+              icon: const Icon(Icons.rotate_right)),
+        ]),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+                onPressed: () => _onNewDirection(
+                    toScene(positionOnViewport.translate(-10, 0))),
+                icon: const Icon(Icons.arrow_circle_left)),
+            IconButton(
+                onPressed: _onMoveEnd, icon: const Icon(Icons.stop_circle)),
+            IconButton(
+                onPressed: () => _onNewDirection(
+                    toScene(positionOnViewport.translate(10, 0))),
+                icon: const Icon(Icons.arrow_circle_right)),
+          ],
+        )
+      ]),
+      Column(children: [
+        IconButton(
+            onPressed: () => _transformationController.scale(2),
+            icon: const Icon(Icons.zoom_in)),
+        IconButton(
+            onPressed: () => _transformationController.scale(0.5),
+            icon: const Icon(Icons.zoom_out)),
+      ])
+    ]);
+  }
+
+  Widget _buildMapViewport() {
+    return GestureDetector(
+      onLongPressStart: (details) => _onNewTargetOffset(details.localPosition),
+      onLongPressUp: _onMoveEnd,
+      onLongPressMoveUpdate: (details) =>
+          _onNewTargetOffset(details.localPosition),
+      child: Container(
+          width: viewportSize.width,
+          height: viewportSize.height,
+          decoration:
+              BoxDecoration(border: Border.all(width: 3), color: Colors.grey),
+          child: ClipRect(
+              clipBehavior: Clip.hardEdge, //clipBehavior,
+              child: Stack(children: [
+                OverflowBox(
+                    alignment: Alignment.topLeft,
+                    minWidth: 0.0,
+                    minHeight: 0.0,
+                    maxWidth: double.infinity,
+                    maxHeight: double.infinity,
+                    child: ValueListenableBuilder(
+                        valueListenable: _transformationController,
+                        builder: (context, value, child) => Transform(
+                              transform: value,
+                              child: patientMap,
+                            ))),
+                Align(
+                    alignment: positionType == MapOverlayPositions.center
+                        ? Alignment.center
+                        : Alignment.bottomCenter,
+                    child: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.location_on, color: Colors.blue),
+                          SizedBox(height: 10)
+                        ])),
+              ]))),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [_buildMapViewport(), _buildControls()]);
   }
 }
 
@@ -255,7 +252,7 @@ class CustomTransformationController extends ChangeNotifier
 
   void tilt(double tilt) {
     double newTilt = currentTilt + tilt;
-    if (newTilt.abs() >= 1.5) return;
+    if (newTilt.abs() > 1.5) return;
     final Offset focalPointScene = rotated(focalPoint);
     currentTilt = newTilt;
     tiltMatrix
