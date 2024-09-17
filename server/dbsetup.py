@@ -260,6 +260,7 @@ def __create_executions():
 
 def insert(data):
     db.session.add(data)
+    db.session.commit()
 
 
 def __create_activity_diagrams():
@@ -576,12 +577,12 @@ def __create_activity_diagrams():
 
 
 with create_app(csrf=csrf, db=db).app_context():
-    __create_executions()
     __create_scenarios()
-    __create_players()
+    __create_executions()
     __create_roles()
     __create_patients()
     __create_locations()
+    __create_players()
     __create_resources()
     __create_actions()
     __resource_needed()
@@ -603,4 +604,3 @@ with create_app(csrf=csrf, db=db).app_context():
                    password=hashpw(b"pw1234", gensalt()).decode(),
                    role=WebUser.Role.READ_ONLY.name))
 
-    db.session.commit()
