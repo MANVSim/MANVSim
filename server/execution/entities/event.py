@@ -106,11 +106,10 @@ class Event:
     @staticmethod
     def vehicle_available(execution_id: int, time: int, vehicle_id: int):
         """
-        Creates an event representing the action of leaving a location.
+        Creates an event representing the action of a vehicle being accessible.
         """
         return Event(execution=execution_id, type=Event.Type.LOCATION_AVAILABLE,
-                     time=time,
-                     data={"vehicle": vehicle_id})
+                     time=time, data={"vehicle": vehicle_id})
 
     @staticmethod
     def patient_arrive(execution_id: int, time: int, player: str, patient_id: int):

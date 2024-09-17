@@ -20,20 +20,18 @@ from media.media_data import MediaData
 from vars import RESULT_DELIMITER
 
 
-class IDGenerator:
-    def __init__(self):
-        self.blocked_hash = 0
+blocked_hash = 0
 
-    def generate_id(self) -> int:
+
+def __generate_id() -> int:
+    global blocked_hash
+
+    new_hash = hash(utils.time.current_time_ms())
+    while new_hash == blocked_hash:
         new_hash = hash(utils.time.current_time_ms())
-        while new_hash == self.blocked_hash:
-            new_hash = hash(utils.time.current_time_ms())
 
-        self.blocked_hash = new_hash
-        return new_hash
-
-
-id_generator = IDGenerator()
+    blocked_hash = new_hash
+    return new_hash
 
 
 def __load_resources(location_id: int) -> list[Resource]:
@@ -49,7 +47,7 @@ def __load_resources(location_id: int) -> list[Resource]:
             media_refs = MediaData.list_from_json(
                 r.media_refs) if r.media_refs else []
 
-            new_hash = id_generator.generate_id()
+            new_hash = __generate_id()
             resources.append(
                 Resource(id=new_hash, name=r.name, quantity=res.quantity,
                          media_references=media_refs))
@@ -57,8 +55,7 @@ def __load_resources(location_id: int) -> list[Resource]:
     return resources
 
 
-def load_location(location_id: int) -> (
-        Location | None):
+def load_location(location_id: int) -> (Location | None):
     """
     Loads the location with the given ID from the database along with all
     referenced resources and nested locations.
@@ -85,7 +82,7 @@ def load_location(location_id: int) -> (
         media_refs = MediaData.list_from_json(
             loc.media_refs) if loc.media_refs else []
 
-        new_hash = id_generator.generate_id()
+        new_hash = __generate_id()
         return Location(id=new_hash, name=loc.name,
                         media_references=media_refs,
                         is_vehicle=loc.is_vehicle, resources=resources,
@@ -110,7 +107,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
 
         # Load Locations
         if p.location is None:
-            new_hash = id_generator.generate_id()
+            new_hash = __generate_id()
             p_loc = Location(id=new_hash,
                              name=f"Patient with ID {mapping.name}",
                              media_references=[], resources=[])
@@ -121,7 +118,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             if p_loc:
                 patient_locations[p.location] = p_loc
             else:
-                new_hash = id_generator.generate_id()
+                new_hash = __generate_id()
                 p_loc = Location(id=new_hash,
                                  name=f"Patient with ID {mapping.name}",
                                  media_references=[], resources=[])
@@ -145,7 +142,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_ad = ActivityDiagram()  # empty diagram with an empty root state
 
         # Create Patient
-        new_patient_id = id_generator.generate_id()
+        new_patient_id = __generate_id()
         patients[new_patient_id] = Patient(id=new_patient_id, name=mapping.name,
                                            activity_diagram=p_ad,
                                            # type: ignore
