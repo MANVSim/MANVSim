@@ -103,7 +103,8 @@ class _ActionSelectionState extends State<ActionSelection> {
         future: futureActions,
         builder: (context, actions) {
           setActions(actions);
-          var selectedActions = getSelectedActions();
+          var selectedActions = getSelectedActions(possibleActions.toList());
+          var notPossibleActionsSelected = getSelectedActions(notPossibleActions);
           return Column(children: [
             Stack(
               alignment: Alignment.center,
@@ -161,9 +162,9 @@ class _ActionSelectionState extends State<ActionSelection> {
                 // TODO show which resource you do have
                 shrinkWrap: true, // nested scrolling
                 physics: const ClampingScrollPhysics(),
-                itemCount: notPossibleActions.length,
+                itemCount: notPossibleActionsSelected.length,
                 itemBuilder: (context, index) => ActionCard(
-                      action: notPossibleActions[index],
+                      action: notPossibleActionsSelected[index],
                       patient: widget.patient,
                       canBePerformed: false,
                     )),
@@ -182,12 +183,12 @@ class _ActionSelectionState extends State<ActionSelection> {
     ]);
   }
 
-  List<PatientAction> getSelectedActions() {
+  List<PatientAction> getSelectedActions(List<PatientAction> actions) {
     var selectedResources = getSelectedResources();
     if (selectedResources.isEmpty) {
-      return possibleActions.toList();
+      return actions;
     }
-    return possibleActions
+    return actions
         .where((action) => selectedResources.every(
             (resource) => action.resourceNamesNeeded.contains(resource.name)))
         .toList();
