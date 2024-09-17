@@ -120,6 +120,22 @@ class Execution:
 
         return None
 
+    def get_vehicle_player_map(self) -> dict[int, list[Player]]:
+        vehicle_to_player_map: dict[int, list[Player]] = {}
+        for player in self.players.values():
+            if (player.location and  # player has location
+                    player.location.is_vehicle and  # assigned to vehicle
+                    player.location.id in vehicle_to_player_map.keys()):
+
+                vehicle_to_player_map[player.location.id].append(player)
+            elif (player.location and  # player has location
+                    player.location.is_vehicle):
+                vehicle_to_player_map[player.location.id] = [player]
+            else:
+                logging.debug(f"Unable to map player {player.tan} to vehicle "
+                              f"due to missing vehicle assignment.")
+        return vehicle_to_player_map
+
     def archive(self):
         """
         Archives an execution by storing all associated events in a separate table

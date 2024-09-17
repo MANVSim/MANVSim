@@ -20,9 +20,10 @@ class Event:
         EXECUTION_PAUSED = "execution_paused"
         EXECUTION_FINISHED = "execution_finished"
         LOCATION_TAKE_FROM = "location_take_from"
+        LOCATION_LEAVE = "location_leave"
+        LOCATION_AVAILABLE = "location_available"
         PATIENT_ARRIVE = "patient_arrive"
         PATIENT_CLASSIFY = "patient_classify"
-        LOCATION_LEAVE = "location_leave"
         PLAYER_ALERTED = "player_alerted"
 
     def __init__(self, execution: int, type: Type, time: int, data):
@@ -101,6 +102,15 @@ class Event:
             "player": player,
             "leave_location_id": leave_location_id
         })
+
+    @staticmethod
+    def vehicle_available(execution_id: int, time: int, vehicle_id: int):
+        """
+        Creates an event representing the action of leaving a location.
+        """
+        return Event(execution=execution_id, type=Event.Type.LOCATION_AVAILABLE,
+                     time=time,
+                     data={"vehicle": vehicle_id})
 
     @staticmethod
     def patient_arrive(execution_id: int, time: int, player: str, patient_id: int):
