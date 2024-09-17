@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { changeExecutionStatus } from "../api"
 import { ExecutionData } from "../types"
+import type { ExecutionStatus } from "../types"
 import { StatusIcon } from "./StatusIcon"
 import { Button } from "react-bootstrap"
 
 export type ExecutionStatusProps = {
-  execution: ExecutionData
+  execution: ExecutionData,
+  status: ExecutionStatus,
+  setStatus: React.Dispatch<React.SetStateAction<ExecutionStatus>>,
 }
 
-export function ExecutionStatus({ execution }: ExecutionStatusProps) {
-  const [status, setStatus] = useState(execution.status)
+export function ExecutionStatusDisplay({ execution, status, setStatus }: ExecutionStatusProps) {
 
   useEffect(() => {
-    setStatus(execution.status)
-  }, [execution])
+    setStatus(status)
+  }, [execution, status, setStatus])
 
   return (
     <div className="border-bottom border-dark border-2 pb-3">

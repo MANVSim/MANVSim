@@ -166,10 +166,23 @@ def change_player_status(id: int, tan: str, alerted: bool):
         raise NotFound(
             f"Player with TAN '{tan}' does not exist for execution with id {id}")
     if not alerted:
-        player.alert()
-        Event.player_alerted(execution_id=execution.id,
-                             time=player.alerted_timestamp,
-                             player=player.tan).log()
+        vehicle_player_map = execution.get_vehicle_player_map()
+        if player.location:
+            player_list = vehicle_player_map[player.location.id]
+            player.location.available = True
+            Event.vehicle_available(execution_id=execution.id,
+                                    time=player.alerted_timestamp,
+                                    vehicle_id=player.location.id)
+            for player in player_list:
+                player.alert()
+                Event.player_alerted(execution_id=execution.id,
+                                     time=player.alerted_timestamp,
+                                     player=player.tan).log()
+        else:
+            player.alert()
+            Event.player_alerted(execution_id=execution.id,
+                                 time=player.alerted_timestamp,
+                                 player=player.tan).log()
     else:
         player.remove_alert()
 
