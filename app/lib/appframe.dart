@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/screens/location_list_screen.dart';
 import 'package:manvsim/screens/notifications_screen.dart';
 import 'package:manvsim/screens/patient_list_screen.dart';
-import 'package:manvsim/screens/patient_select_screen.dart';
+import 'package:manvsim/screens/home_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
 
@@ -49,7 +49,7 @@ class _AppFrameState extends State<AppFrame> {
       ),
       body: const <Widget>[
         /// Home page
-        PatientSelectScreen(),
+        HomeScreen(),
         PatientListScreen(),
         LocationListScreen(),
         NotificationsScreen()

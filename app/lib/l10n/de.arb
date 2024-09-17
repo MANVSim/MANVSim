@@ -9,6 +9,7 @@
   "startScreenAppName": "MANVSim",
 
   "loginScreenName": "Anmeldung",
+  "loginScreenForceAPKDownloadButton": "APK Download Button anzeigen",
   "loginHideAdvancedSettings": "Erweiterte Einstellungen ausblenden",
   "loginShowAdvancedSettings": "Erweiterte Einstellungen anzeigen",
   "loginTANText"     : "Bitte TAN eingeben oder QR Code Scannen",
@@ -74,7 +75,6 @@
   "patientListScreenName": "Patienten Auswahl",
   "locationListScreenName": "Location Auswahl",
 
-
   "patientScreenPerformedActionDetails": "Details",
   "patientScreenPerformedActionTime": "Uhrzeit",
   "patientScreenPerformedActionResults": "Ergebnisse",
@@ -112,6 +112,8 @@
   },
 
   "locationScreenInventory": "Inventar",
+  "locationScreenInventoryEmpty": "Im Inventar sind aktuell keine Resourcen verfügbar",
+  "locationScreenNoResources": "An dieser Location sind aktuell keine Resourcen verfügbar",
   "locationScreenShowInventory": "Inventar \n anzeigen",
   "locationScreenTake": "Nehmen",
   "locationScreenPut": "Ablegen",
@@ -192,7 +194,7 @@
       }
     }
   },
-  "moveFailure": "Leider konnte der Patient nicht erfolgreich bewegt werden.\nBitte versuche es erneut.",
+  "moveFailure": "Leider konnte der Patient nicht erfolgreich bewegt werden. Bitte versuche es erneut.",
 
 
   "resourceDirectorySelectLocation": "Auswählen",
@@ -206,11 +208,11 @@
 
 
   "notificationScreenName": "Benachrichtigungen",
-  "selectScreenName": "Home",
-  "selectScreenTypePatient": "Patient",
-  "selectScreenTypeLocation": "Location",
-  "selectScreenTextField": "{type} ID",
-  "@selectScreenTextField": {
+  "homeScreenName": "Home",
+  "homeScreenTypePatient": "Patient",
+  "homeScreenTypeLocation": "Location",
+  "homeScreenTextField": "{type} ID",
+  "@homeScreenTextField": {
     "placeholders": {
       "type": {
         "type": "String",
@@ -218,8 +220,8 @@
       }
     }
   },
-  "selectScreenSubmit": "{type} anzeigen",
-  "@selectScreenSubmit": {
+  "homeScreenSubmit": "{type} anzeigen",
+  "@homeScreenSubmit": {
     "placeholders": {
       "type": {
         "type": "String",
