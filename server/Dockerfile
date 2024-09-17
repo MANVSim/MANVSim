@@ -11,7 +11,6 @@ RUN pip3 install pipenv
 
 # Copy python and react code, avoid dos incompatibility
 COPY ../server server
-COPY ../web web
 
 RUN find . -type f -print0 | xargs -0 dos2unix
 
