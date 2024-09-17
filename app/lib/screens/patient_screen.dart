@@ -112,7 +112,7 @@ class _PatientScreenState extends State<PatientScreen> {
   }
 
   PerformedActions sortedPerformedActions(Patient patient) {
-    final performedActions = patient.performedActions;
+    final performedActions = [...patient.performedActions];
     if (sortOldestFirst) {
       performedActions.sort((a, b) => a.startTime.compareTo(b.startTime));
     } else {
