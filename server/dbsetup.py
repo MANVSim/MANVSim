@@ -1,7 +1,7 @@
 import uuid
 
 from bcrypt import gensalt, hashpw
-
+from sqlalchemy.sql import text
 from app import create_app
 from app_config import db, csrf
 from execution.entities.stategraphs.activity_diagram import ActivityDiagram
@@ -176,7 +176,8 @@ def __create_actions():
 
     insert(Action(id=7, name="Wunderheilung",
                   media_refs=MediaData.list_to_json([
-                      MediaData.new_image("media/static/image/wunderheilung.png")]),
+                      MediaData.new_image(
+                          "media/static/image/wunderheilung.png")]),
                   duration_secs=60, results="", required_power=300))
 
 
@@ -202,14 +203,16 @@ def __create_players():
                                        player_tan="456DEF", location_id=0,
                                        vehicle_name="RTW-Kiel", travel_time=60))
     insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0,
-                                       player_tan="empty-RTW-Kiel", location_id=0,
+                                       player_tan="empty-RTW-Kiel",
+                                       location_id=0,
                                        vehicle_name="RTW-Kiel", travel_time=60))
     insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0,
                                        player_tan="789GHI", location_id=1,
                                        vehicle_name="NEF-Eckernfoerde",
                                        travel_time=120))
     insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0,
-                                       player_tan="empty-NEF-Eckernfoerde", location_id=1,
+                                       player_tan="empty-NEF-Eckernfoerde",
+                                       location_id=1,
                                        vehicle_name="NEF-Eckernfoerde",
                                        travel_time=120))
 
@@ -575,7 +578,8 @@ def __create_activity_diagrams():
     # ActivityDiagram a0-a5
     acd1 = ActivityDiagram(root=s1, states=[s1, s2])  # Patient - 0
     acd2 = ActivityDiagram(root=s3, states=[s3, s4, s11])  # Patient - 1
-    acd3 = ActivityDiagram(root=s5, states=[s5, s6, s7, s10, s11])  # Patient - 2
+    acd3 = ActivityDiagram(root=s5,
+                           states=[s5, s6, s7, s10, s11])  # Patient - 2
     acd4 = ActivityDiagram(root=s8, states=[s8, s9, s10, s11])  # Patient - 3
 
     acd5 = ActivityDiagram(root=s11, states=[s11])  # dead patient
@@ -583,31 +587,52 @@ def __create_activity_diagrams():
     return acd1, acd2, acd3, acd4, acd5
 
 
+def disable_triggers():
+    try:
+        db.session.execute(text("SET session_replication_role = 'replica';"))
+        db.session.commit()
+    finally:
+        pass
+
+
+def enable_triggers():
+    try:
+        db.session.execute(text("SET session_replication_role = 'origin';"))
+        db.session.commit()
+    finally:
+        pass
+
+
 with create_app(csrf=csrf, db=db).app_context():
-    __create_scenarios()
-    __create_executions()
-    __create_roles()
-    __create_patients()
-    __create_locations()
-    __create_players()
-    __create_resources()
-    __create_actions()
-    __resource_needed()
-    __patient_in_scenario()
 
-    insert(WebUser(username="wadmin",
-                   password=hashpw(b"pw1234", gensalt()).decode(),
-                   role=WebUser.Role.WEB_ADMIN.name))
+    disable_triggers()
 
-    insert(WebUser(username="sadmin",
-                   password=hashpw(b"pw1234", gensalt()).decode(),
-                   role=WebUser.Role.SCENARIO_ADMIN.name))
+    try:
+        __create_scenarios()
+        __create_executions()
+        __create_roles()
+        __create_patients()
+        __create_locations()
+        __create_players()
+        __create_resources()
+        __create_actions()
+        __resource_needed()
+        __patient_in_scenario()
 
-    insert(WebUser(username="gmaster",
-                   password=hashpw(b"pw1234", gensalt()).decode(),
-                   role=WebUser.Role.GAME_MASTER.name))
+        insert(WebUser(username="wadmin",
+                       password=hashpw(b"pw1234", gensalt()).decode(),
+                       role=WebUser.Role.WEB_ADMIN.name))
 
-    insert(WebUser(username="read",
-                   password=hashpw(b"pw1234", gensalt()).decode(),
-                   role=WebUser.Role.READ_ONLY.name))
+        insert(WebUser(username="sadmin",
+                       password=hashpw(b"pw1234", gensalt()).decode(),
+                       role=WebUser.Role.SCENARIO_ADMIN.name))
 
+        insert(WebUser(username="gmaster",
+                       password=hashpw(b"pw1234", gensalt()).decode(),
+                       role=WebUser.Role.GAME_MASTER.name))
+
+        insert(WebUser(username="read",
+                       password=hashpw(b"pw1234", gensalt()).decode(),
+                       role=WebUser.Role.READ_ONLY.name))
+    finally:
+        enable_triggers()
