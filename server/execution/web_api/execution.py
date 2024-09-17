@@ -165,7 +165,7 @@ def change_player_status(id: int, tan: str, alerted: bool):
     except KeyError:
         raise NotFound(
             f"Player with TAN '{tan}' does not exist for execution with id {id}")
-    if alerted:
+    if not alerted:
         player.alert()
         Event.player_alerted(execution_id=execution.id,
                              time=player.alerted_timestamp,
