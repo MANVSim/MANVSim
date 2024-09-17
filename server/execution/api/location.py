@@ -15,21 +15,6 @@ from utils.decorator import required, RequiredValueSource
 api = Blueprint("api-location", __name__)
 
 
-@api.get("/player/inventory")
-@jwt_required()
-def get_player_inventory():
-    """ Returns the current inventory of the requesting player. """
-    try:
-        _, player = util.get_execution_and_player()
-        return {
-            "accessible_locations": [
-                location.to_dict() for location in player.accessible_locations
-            ]
-        }
-    except KeyError:
-        return f"Missing or invalid request parameter detected.", 400
-
-
 @api.get("/location/all")
 @jwt_required()
 def get_all_toplevel_location():
@@ -38,7 +23,8 @@ def get_all_toplevel_location():
         execution, _ = util.get_execution_and_player()
         return {
             "locations": [location.to_dict() for location
-                          in list(execution.scenario.locations.values())]
+                          in list(execution.scenario.locations.values())
+                          if location.available]
         }
     except KeyError:
         return f"Missing or invalid request parameter detected.", 400

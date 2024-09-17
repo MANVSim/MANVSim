@@ -75,9 +75,22 @@
   "patientListScreenName": "Patienten Auswahl",
   "locationListScreenName": "Location Auswahl",
 
-  "patientScreenName": "Patienten Übersicht",
+  "patientScreenPerformedActionDetails": "Details",
+  "patientScreenPerformedActionTime": "Uhrzeit",
+  "patientScreenPerformedActionResults": "Ergebnisse",
+  "patientScreenPerformedAction": "Ausgeführte Maßnahmen",
+  "patientScreenNoPerformedAction": "Bisher wurden keine Maßnahmen durchgeführt",
+  "patientScreenTabOverview": "Übersicht",
+  "patientScreenTabActions": "Maßnahmen",
+  "patientScreenFilterResourceTitle": "Filter nach Resourcen",
 
-  "patientNameFromId": "Patient {patientId}",
+  "sortByOldest": "Älteste zuerst",
+  "sortByNewest": "Neueste zuerst",
+
+
+
+  "patientScreenName": "Patienten Übersicht",
+  "patientNameFromId": "Patient: {patientId}",
   "@patientNameFromId": {
     "placeholders": {
       "patientId": {
@@ -86,6 +99,7 @@
       }
     }
   },
+
   "locationScreenName": "Location Übersicht",
   "locationNameFromId": "Location {locationId}",
   "@locationNameFromId": {
@@ -125,9 +139,9 @@
       }
     }
   },
-  "patientResources": "Resourcen: ",
+
   "patientActions": "Maßnahmen: ",
-  "patientNoActions": "Keine Maßnahmen mit den ausgewählten Resourcen",
+  "patientNoActions": "Keine Maßnahmen mit den ausgewählten Resourcen verfügbar",
   "patientMoveSection": "Bewegen: ",
   "patientMoveSelection": "Patienten bewegen nach",
 

@@ -212,31 +212,32 @@ paths:
       security:
         - bearerAuth: [ ]
 
-  /run/patient/leave:
+  /run/patient/classify:
     post:
-      summary: Leaves a patient.
-      description: Closes a patient profile and leaves the patients location.
+      summary: Sets a classification attribute for a specific patient.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ patient_id, classification ]
+              properties:
+                patient_id:
+                  type: integer
+                  example: 1
+                classification:
+                  type: string
+                  example: "GREEN"
       responses:
         '200':
-          description: success.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Patient profile successfully closed."
+          description: Successfully updated patient.
         '204':
           description: No running execution detected.
         '400':
-          description: Invalid JWT detected.
+          description: Missing or invalid request parameter detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '405':
-          description: Player is not assigned to any location.
-        '409':
-          description: Unable to access runtime object. A timeout-error occurred.
       security:
         - bearerAuth: [ ]
 
@@ -654,9 +655,13 @@ components:
           type: array
           items:
             type: string
+        results:
+          type: array
+          items:
+            type: string
         media_references:
           $ref: '#/components/schemas/MediaReferencesDTO'
-      required: [ id, name, duration_sec, resources_needed ]
+      required: [ id, name, duration_sec, resources_needed, results ]
 
     PerformedActionDTO:
       type: object

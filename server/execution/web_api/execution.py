@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 from flask import Blueprint, Response
 from string_utils import booleanize
@@ -10,33 +9,17 @@ from app_config import csrf, db
 from execution.entities.event import Event
 from execution import run
 from execution.entities.execution import Execution
+from execution.entities.player import Player
 from execution.services import entityloader
+from execution.services.entityloader import load_location, load_role
 from execution.utils.util import try_get_execution
 from utils.decorator import required, RequiredValueSource, cache
 
 from sqlalchemy import select
 
+from utils.tans import unique
+
 web_api = Blueprint("web_api-lobby", __name__)
-
-
-@web_api.post("/execution/activate")
-@required("id", int, RequiredValueSource.FORM)
-@csrf.exempt
-def activate_execution(id: int):
-    if id in run.active_executions.keys():
-        return run.active_executions[id].to_dict(), 200
-    if entityloader.load_execution(id):
-        return run.active_executions[id].to_dict(), 201
-
-    # Failure
-    raise NotFound(f"Execution with id={id} does not exist")
-
-
-@web_api.get("/execution/active")
-def get_all_active_executions():
-    """ Endpoint to return all currently active executions. """
-    return [execution.to_dict(shallow=True) for execution
-            in run.active_executions.values()]
 
 
 @web_api.get("/execution")
@@ -46,7 +29,8 @@ def get_execution(id: int):
     if id in run.active_executions.keys():
         execution = run.active_executions[id]
     else:
-        execution: bool | Execution = entityloader.load_execution(id, save_in_memory=False)
+        execution: bool | Execution = entityloader.load_execution(id,
+                                                                  save_in_memory=False)
 
     if isinstance(execution, bool) and not execution:
         raise NotFound(f"Execution with id={id} does not exist")
@@ -84,10 +68,10 @@ def get_execution(id: int):
 @required("scenario_id", int, RequiredValueSource.FORM)
 @required("name", str, RequiredValueSource.FORM)
 def create_execution(scenario_id: int, name: str):
-
     # TODO implement validator to prevent empty scenarios
     try:
-        new_execution = models.Execution(scenario_id=scenario_id, name=name)  # type: ignore
+        new_execution = models.Execution(scenario_id=scenario_id,  # type: ignore
+                                         name=name)  # type: ignore
         db.session.add(new_execution)
         db.session.commit()
 
@@ -109,6 +93,30 @@ def create_execution(scenario_id: int, name: str):
         return message, 400
 
 
+@web_api.post("/execution/delete")
+@required("execution_id", int, RequiredValueSource.FORM)
+def delete_execution(execution_id: int):
+    from execution.run import deactivate_execution
+    # delete Player
+    db_players = models.Player.query.filter_by(execution_id=execution_id).all()
+    [db.session.delete(dbo) for dbo in db_players]
+
+    # delete player assignment
+    db_p_assignment = (models.PlayersToVehicleInExecution.query
+                       .filter_by(execution_id=execution_id)).all()
+    [db.session.delete(dbo) for dbo in db_p_assignment]
+
+    # delete execution
+    db_execution = models.Execution.query.filter_by(id=execution_id).first()
+    db.session.delete(db_execution)
+
+    db.session.commit()
+
+    deactivate_execution(execution_id)
+
+    return f"Successfully deleted execution with id={execution_id}", 200
+
+
 @web_api.patch("/execution")
 @required("id", int, RequiredValueSource.ARGS)
 @required("new_status", str.upper, RequiredValueSource.FORM)
@@ -126,6 +134,26 @@ def change_execution_status(id: int, new_status: str):
                          f"'{new_status}'. ")
 
 
+@web_api.post("/execution/activate")
+@required("id", int, RequiredValueSource.FORM)
+@csrf.exempt
+def activate_execution(id: int):
+    if id in run.active_executions.keys():
+        return run.active_executions[id].to_dict(), 200
+    if entityloader.load_execution(id):
+        return run.active_executions[id].to_dict(), 201
+
+    # Failure
+    raise NotFound(f"Execution with id={id} does not exist")
+
+
+@web_api.get("/execution/active")
+def get_all_active_executions():
+    """ Endpoint to return all currently active executions. """
+    return [execution.to_dict(shallow=True) for execution
+            in run.active_executions.values()]
+
+
 @web_api.patch("/execution/player/status")
 @required("id", int, RequiredValueSource.ARGS)
 @required("tan", str, RequiredValueSource.ARGS)
@@ -137,24 +165,46 @@ def change_player_status(id: int, tan: str, alerted: bool):
     except KeyError:
         raise NotFound(
             f"Player with TAN '{tan}' does not exist for execution with id {id}")
-    if alerted:
-        player.alert()
-        Event.player_alerted(execution_id=execution.id,
-                             time=player.alerted_timestamp,
-                             player=player.tan).log()
+    if not alerted:
+        vehicle_player_map = execution.get_vehicle_player_map()
+        if player.location:
+            player_list = vehicle_player_map[player.location.id]
+            player.location.available = True
+            Event.vehicle_available(execution_id=execution.id,
+                                    time=player.alerted_timestamp,
+                                    vehicle_id=player.location.id)
+            for player in player_list:
+                player.alert()
+                Event.player_alerted(execution_id=execution.id,
+                                     time=player.alerted_timestamp,
+                                     player=player.tan).log()
+        else:
+            player.alert()
+            Event.player_alerted(execution_id=execution.id,
+                                 time=player.alerted_timestamp,
+                                 player=player.tan).log()
     else:
         player.remove_alert()
 
     return Response(status=200)
 
 
-@web_api.post("/execution")
+@web_api.post("/execution/create-player")
 @required("id", int, RequiredValueSource.ARGS)
 @required("role", int, RequiredValueSource.FORM)
 @required("vehicle", str, RequiredValueSource.FORM)
 def add_new_player(id: int, role: int, vehicle: str):
     execution = try_get_execution(id)
-    execution.add_new_player(role, vehicle)
+    __add_new_player_to_execution(execution, role, vehicle)
+    return Response(status=200)
+
+
+@web_api.post("/execution/delete-player")
+@required("id", int, RequiredValueSource.ARGS)
+@required("tan", str, RequiredValueSource.FORM)
+def delete_player(id: int, tan: str):
+    execution = try_get_execution(id)
+    __delete_player(execution, tan)
     return Response(status=200)
 
 
@@ -181,8 +231,85 @@ def __get_top_level_locations(execution_id: int):
         .group_by(
             models.PlayersToVehicleInExecution.vehicle_name,
             models.PlayersToVehicleInExecution.location_id))
+    vehicle = db.session.execute(top_level_location_query).all()
+    return vehicle
 
-    return db.session.execute(top_level_location_query).all()
+
+def __delete_player(execution: Execution, tan: str):
+    from execution.run import remove_player
+    player = models.Player.query.filter_by(tan=tan).first()
+    player_to_vehicle = models.PlayersToVehicleInExecution.query.filter_by(
+        execution_id=execution.id,
+        player_tan=tan
+    ).first()
+
+    if not player:
+        raise BadRequest(f"Player with tan={tan} not found for "
+                         f"execution={execution.id}")
+    db.session.delete(player)
+
+    if player_to_vehicle:
+        db.session.delete(player_to_vehicle)
+
+    db.session.commit()
+
+    if execution.status is execution.Status.PENDING or execution.Status.RUNNING:
+        execution.players.pop(tan)
+        remove_player(tan)
+
+
+def __add_new_player_to_execution(execution: Execution, role: int,
+                                  vehicle: str):
+    from execution.run import register_player  # circular import prevention
+
+    tan = str(unique())
+    # take empty seat of vehicle
+    player_to_vehicle = models.PlayersToVehicleInExecution.query.filter_by(
+        execution_id=execution.id,
+        vehicle_name=vehicle,
+        player_tan=f"empty-{vehicle}"
+    ).first()
+    if player_to_vehicle:
+        # assign empty seat in vehicle
+        player = (models.Player(tan=tan, execution_id=execution.id, # type: ignore
+                                location_id=player_to_vehicle.location_id, # type: ignore
+                                role_id=role,  # type: ignore
+                                alerted=False))  # type: ignore
+        db.session.add(player)
+        player_to_vehicle.player_tan = tan
+        db.session.commit()
+
+        # create new empty seat in vehicle
+        # Here it is possible to implement a limitation of seats if required
+        new_seat_in_vehicle = models.PlayersToVehicleInExecution(
+            execution_id=player_to_vehicle.execution_id,  # type: ignore
+            scenario_id=player_to_vehicle.scenario_id,  # type: ignore
+            player_tan=f"empty-{player_to_vehicle.vehicle_name}", # type: ignore
+            location_id=player_to_vehicle.location_id,  # type: ignore
+            vehicle_name=player_to_vehicle.vehicle_name,  # type: ignore
+            travel_time=player_to_vehicle.travel_time)  # type: ignore
+        db.session.add(new_seat_in_vehicle)
+
+        db.session.commit()
+
+        # load player location -> choose from existing or load new vehicle
+        location = execution.get_location_for_player(
+            player_to_vehicle.vehicle_name)
+        if not location:
+            location = load_location(player_to_vehicle.location_id)
+        new_player = Player(tan, None, False, 0,
+                            location,
+                            set(), load_role(role))
+
+        # Add player to execution
+        execution.players[tan] = new_player
+        # Register player if execution is activated
+        if execution.status is execution.Status.PENDING or execution.Status.RUNNING:
+            register_player(execution.id, [new_player])
+    else:
+        msg = f"Unable to assign player to vehicle. No entry found for:{execution.id}{vehicle}"
+        logging.error(msg)
+        raise BadRequest(msg)
 
 
 def __perform_state_change(new_status: Execution.Status, execution: Execution):
@@ -224,4 +351,4 @@ def __perform_state_change(new_status: Execution.Status, execution: Execution):
                 # indicates no registration of execution. Status is set by
                 # activating the execution
                 raise BadRequest("Process manipulation detected. "
-                                "Invalid State change")
+                                 "Invalid State change")
