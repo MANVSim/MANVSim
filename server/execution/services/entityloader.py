@@ -120,6 +120,11 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             p_loc = load_location(p.location)
             if p_loc:
                 patient_locations[p.location] = p_loc
+            else:
+                new_hash = id_generator.generate_id()
+                p_loc = Location(id=new_hash,
+                                 name=f"Patient with ID {mapping.name}",
+                                 media_references=[], resources=[])
 
         # Load Media
         p_media = p.media_refs

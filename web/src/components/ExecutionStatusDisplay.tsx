@@ -15,7 +15,7 @@ export function ExecutionStatusDisplay({ execution, status, setStatus }: Executi
 
   useEffect(() => {
     setStatus(status)
-  }, [execution])
+  }, [execution, status, setStatus])
 
   return (
     <div className="border-bottom border-dark border-2 pb-3">
