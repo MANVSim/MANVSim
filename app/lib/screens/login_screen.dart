@@ -15,8 +15,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'wait_screen.dart';
-import 'package:manvsim/utils/platform_checker_web.dart'
-    if (dart.library.io) 'package:manvsim/utils/platform_checker.dart';
+import 'package:manvsim/utils/platform_checker.dart'
+    if (dart.library.html) 'package:manvsim/utils/platform_checker_web.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -219,6 +219,13 @@ class LoginScreenState extends State<LoginScreen> {
         child: Padding(
             padding: const EdgeInsets.all(8),
             child: Column(children: [
+              TextField(
+                controller: _serverUrlController,
+                decoration: _textFieldDecoration(_urlInputFailure,
+                    AppLocalizations.of(context)!.loginServerUrl),
+                onChanged: (value) => _resetErrorMessage(_LoginInputType.url),
+              ),
+              const SizedBox(height: 12),
               Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Checkbox(
                   value: _forceAndroidDownloadButton,
@@ -233,13 +240,6 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
                 Text(AppLocalizations.of(context)!.loginScreenForceAPKDownloadButton)
               ]),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _serverUrlController,
-                decoration: _textFieldDecoration(_urlInputFailure,
-                    AppLocalizations.of(context)!.loginServerUrl),
-                onChanged: (value) => _resetErrorMessage(_LoginInputType.url),
-              ),
             ])));
   }
 
@@ -253,10 +253,20 @@ class LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image(
-                  // width 80% of screen width
+                  // width 60% of screen width
                   width: MediaQuery.of(context).size.width * 0.6,
                   image: const AssetImage('assets/MANV_transparent.png')),
               const SizedBox(height: 40),
+              Text(
+                AppLocalizations.of(context)!.loginTANHeader,
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(AppLocalizations.of(context)!.loginTANText),
+              const SizedBox(height: 16),
               if (_errorMessage != null) // Show error message if it's not null
                 ErrorBox(errorText: _errorMessage!),
               const SizedBox(height: 16),

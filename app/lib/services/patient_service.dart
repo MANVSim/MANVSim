@@ -26,7 +26,7 @@ class PatientService {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api
         .runPatientAllIdsGet()
-        .then((response) => PatientListExtension.fromApi(response));
+        .then(PatientListExtension.fromApi);
   }
 
   /// Navigates to [PatientScreen] and leaves location after.

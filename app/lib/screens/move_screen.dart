@@ -5,7 +5,6 @@ import 'package:manvsim/models/patient.dart';
 
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
-import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
