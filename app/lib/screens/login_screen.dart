@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'wait_screen.dart';
+import 'package:manvsim/utils/platform_checker.dart'
+    if (dart.library.html) 'package:manvsim/utils/platform_checker_web.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -33,6 +35,7 @@ class LoginScreenState extends State<LoginScreen> {
           : "https://batailley.informatik.uni-kiel.de:5002/api");
 
   String? _errorMessage;
+  bool _forceAndroidDownloadButton = isPlatformAndroidWeb();
 
   bool _tanInputFailure = false;
   bool _urlInputFailure = false;
@@ -211,6 +214,35 @@ class LoginScreenState extends State<LoginScreen> {
         ]));
   }
 
+  Widget _buildAdvancedSettings(BuildContext context) {
+    return Card(
+        child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(children: [
+              TextField(
+                controller: _serverUrlController,
+                decoration: _textFieldDecoration(_urlInputFailure,
+                    AppLocalizations.of(context)!.loginServerUrl),
+                onChanged: (value) => _resetErrorMessage(_LoginInputType.url),
+              ),
+              const SizedBox(height: 12),
+              Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Checkbox(
+                  value: _forceAndroidDownloadButton,
+                  onChanged: (value) {
+                    if (value == null || value == _forceAndroidDownloadButton) {
+                      return;
+                    }
+                    setState(() {
+                      _forceAndroidDownloadButton = value;
+                    });
+                  },
+                ),
+                Text(AppLocalizations.of(context)!.loginScreenForceAPKDownloadButton)
+              ]),
+            ])));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,7 +252,11 @@ class LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 8),
+              Image(
+                  // width 60% of screen width
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  image: const AssetImage('assets/MANV_transparent.png')),
+              const SizedBox(height: 40),
               Text(
                 AppLocalizations.of(context)!.loginTANHeader,
                 style: const TextStyle(
@@ -252,13 +288,7 @@ class LoginScreenState extends State<LoginScreen> {
                     ? AppLocalizations.of(context)!.loginHideAdvancedSettings
                     : AppLocalizations.of(context)!.loginShowAdvancedSettings),
               ),
-              if (_showAdvancedSettings)
-                TextField(
-                  controller: _serverUrlController,
-                  decoration: _textFieldDecoration(_urlInputFailure,
-                      AppLocalizations.of(context)!.loginServerUrl),
-                  onChanged: (value) => _resetErrorMessage(_LoginInputType.url),
-                ),
+              if (_showAdvancedSettings) _buildAdvancedSettings(context),
               const SizedBox(height: 32),
               if (_isLoading)
                 const CircularProgressIndicator()
@@ -291,14 +321,16 @@ class LoginScreenState extends State<LoginScreen> {
                     )
                   ],
                 ),
-              const SizedBox(
-                height: 32,
-              ),
-              if (kIsWeb) _androidAppDownloadButton()
             ],
           ),
         ),
       ),
+      bottomNavigationBar: isPlatformAndroidWeb() || _forceAndroidDownloadButton
+          ? Column(mainAxisSize: MainAxisSize.min, children: [
+              _androidAppDownloadButton(),
+              const SizedBox(height: 20)
+            ])
+          : const SizedBox(height: 40), // better alignment than null
     );
   }
 }

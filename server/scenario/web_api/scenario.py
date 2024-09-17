@@ -57,7 +57,9 @@ def get_scenario(scenario_id: int):
                models.PlayersToVehicleInExecution.location_id,
                models.PlayersToVehicleInExecution.travel_time)
         .where(models.PlayersToVehicleInExecution.scenario_id == scenario_id)
-        .group_by(models.PlayersToVehicleInExecution.vehicle_name)
+        .group_by(models.PlayersToVehicleInExecution.vehicle_name,
+                  models.PlayersToVehicleInExecution.location_id,
+                  models.PlayersToVehicleInExecution.travel_time)
         .order_by(asc(models.PlayersToVehicleInExecution.vehicle_name)))
     vehicle_list = db.session.execute(vehicle_query)
 
@@ -208,12 +210,10 @@ def __add_vehicles_to_execution(scenario, vehicles_add):
     a corresponding execution.
     """
     # Get all execution ids for scenario from PlayersToVehicle table
-    execution_ids_query = select(
-        distinct(models.PlayersToVehicleInExecution.execution_id)
-    ).where(models.PlayersToVehicleInExecution.scenario_id == scenario.id)
+    db_executions = (models.Execution.query.filter_by(scenario_id=scenario.id)
+                     .all())
 
-    execution_ids = [row[0] for row in
-                     db.session.execute(execution_ids_query)]
+    execution_ids = [db_execution.id for db_execution in db_executions]
 
     if not execution_ids:
         # Unused scenario in DB -> create entries with id execution_id = 0

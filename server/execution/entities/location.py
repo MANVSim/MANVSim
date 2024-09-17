@@ -32,6 +32,7 @@ class Location:
         self.sub_locations = sub_locations
 
         self.is_vehicle = is_vehicle
+        self.available = not self.is_vehicle
 
         self.res_lock = TimeoutLock()
         self.loc_lock = TimeoutLock()

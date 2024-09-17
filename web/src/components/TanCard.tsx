@@ -13,7 +13,7 @@ export function TanCard({ player }: TanCardProps) {
   const [toggle, setToggle] = useState(true)
 
   return (
-    <Card className="d-flex m-1">
+    <Card className="w-100">
       <Button
         className={`btn-light btn-sm ${toggle ? "" : "d-none"}`}
         onClick={() => setToggle(!toggle)}

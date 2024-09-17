@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask_jwt_extended import jwt_required
 
 from app_config import csrf
+from execution.entities.patient import Patient
 from execution.utils import util
 from execution.entities.event import Event
 from utils import time
@@ -33,7 +34,7 @@ def get_patient(patient_id: int):
         player.location = patient.location
         player.location.add_locations(player.accessible_locations)
 
-        Event.location_arrive(execution_id=execution.id,
+        Event.patient_arrive(execution_id=execution.id,
                              time=time.current_time_s(),
                              player=player.tan, patient_id=patient.id).log()
 
@@ -45,14 +46,44 @@ def get_patient(patient_id: int):
         return "Missing or invalid request parameter detected.", 400
 
 
+@api.patch("patient/classify")
+@required("patient_id", int, RequiredValueSource.JSON)
+@required("classification", str, RequiredValueSource.JSON)
+@jwt_required()
+@csrf.exempt
+def classify_patient(patient_id: int, classification: str):
+    try:
+        execution, player = util.get_execution_and_player()
+        patient = execution.scenario.patients[patient_id]
+        classification_enum: Patient.Classification = (Patient.Classification
+                                                  .from_string(classification))
+        patient.classification = classification_enum
+
+        Event.patient_classify(execution_id=execution.id,
+                               time=time.current_time_s(),
+                               player=player.tan,
+                               patient_id=patient.id,
+                               classification=classification_enum.name)
+
+        return "Successfully updated patient.", 200
+
+    except ValueError:
+        return "Missing or invalid request parameter 'classification' detected.", 400
+    except KeyError:
+        return "Missing or invalid request parameter detected.", 400
+
+
 @api.get("/patient/all-ids")
 @jwt_required()
 def get_all_patient():
     """ Returns all patients stored in the scenario. """
     try:
         execution, _ = util.get_execution_and_player()
+        patient_ids = list(execution.scenario.patients.keys())
         return {
-            "patient_ids": list(execution.scenario.patients.keys())
+            "patient_ids": patient_ids,
+            "patient_names": [execution.scenario.patients[patient_id].name for
+                              patient_id in patient_ids]
         }
     except KeyError:
         return "Missing or invalid request parameter detected.", 400

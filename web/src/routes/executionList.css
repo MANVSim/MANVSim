@@ -40,6 +40,14 @@
     display: none !important;
   }
 
+  #execution-trash-icon {
+    display: inline !important;
+  }
+
+  .execution-trash-text {
+    display: none !important;
+  }
+
   #execution-save-icon {
     display: inline !important;
   }

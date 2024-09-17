@@ -5,7 +5,6 @@ import 'package:manvsim/models/patient.dart';
 
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
-import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -46,7 +45,6 @@ class _MoveScreenState extends State<MoveScreen> {
               widget.patient.name,
               widget.patient.location.name,
               widget.moveTo.name)),
-          actions: const <Widget>[LogoutButton()],
           automaticallyImplyLeading: false,
         ),
         body: Center(
@@ -60,7 +58,7 @@ class _MoveScreenState extends State<MoveScreen> {
                   );
                 },
                 onError: (error) => Timer.run(
-                    () => showResultDialog(content: failureContent())))));
+                    () => showResultDialog(content: failureContent(error))))));
   }
 
   void showResultDialog({required Widget content, Patient? movedPatient}) {
@@ -90,7 +88,8 @@ class _MoveScreenState extends State<MoveScreen> {
         widget.patient.name, widget.patient.location.name, widget.moveTo.name));
   }
 
-  Widget failureContent() {
-    return Text(AppLocalizations.of(context)!.moveFailure);
+  Widget failureContent(Object? error) {
+    String errorText = error != null ? error.toString() : "";
+    return Text("${AppLocalizations.of(context)!.moveFailure}\n\n$errorText");
   }
 }
