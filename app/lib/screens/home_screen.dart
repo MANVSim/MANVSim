@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:manvsim/screens/qr_screen.dart';
 import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/patient_service.dart';
-import 'package:manvsim/widgets/logout_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/widgets/player_overview.dart';
@@ -50,14 +49,14 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final List<String> searchType = [
-      AppLocalizations.of(context)!.selectScreenTypePatient,
-      AppLocalizations.of(context)!.selectScreenTypeLocation
+      AppLocalizations.of(context)!.homeScreenTypePatient,
+      AppLocalizations.of(context)!.homeScreenTypeLocation
     ];
 
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(AppLocalizations.of(context)!.selectScreenName),
+          title: Text(AppLocalizations.of(context)!.homeScreenName),
         ),
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const PlayerOverview(),
@@ -92,7 +91,7 @@ class HomeScreenState extends State<HomeScreen> {
                       controller: _idController,
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!
-                            .selectScreenTextField(_selectedSearchType[0]
+                            .homeScreenTextField(_selectedSearchType[0]
                                 ? searchType[0]
                                 : searchType[1]),
                       ),
@@ -123,7 +122,7 @@ class HomeScreenState extends State<HomeScreen> {
                                 ? null
                                 : () => handleSubmit(),
                             label: Text(
-                              AppLocalizations.of(context)!.selectScreenSubmit(
+                              AppLocalizations.of(context)!.homeScreenSubmit(
                                   _selectedSearchType[0]
                                       ? searchType[0]
                                       : searchType[1]),
