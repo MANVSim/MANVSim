@@ -149,6 +149,7 @@ export function ExecutionRoute() {
                     <CsrfForm method="POST" className="my-2">
                       <input name="id" value={"delete-player"} hidden />
                       <input type="text" name="tan" value={player.tan} hidden />
+                      <input type="text" name="vehicle" value={player.location?.name} hidden />
                       <button className="btn btn-outline-danger w-100">Löschen</button>
                     </CsrfForm>
                   </div>
