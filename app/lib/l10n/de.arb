@@ -13,7 +13,6 @@
   "loginHideAdvancedSettings": "Erweiterte Einstellungen ausblenden",
   "loginShowAdvancedSettings": "Erweiterte Einstellungen anzeigen",
   "loginTANText"     : "Bitte TAN eingeben oder QR Code Scannen",
-  "loginTANHeader"     : "TAN Anmeldung",
   "loginAlreadyLoggedInHeader": "TAN bereits angemeldet",
   "loginAlreadyLoggedInText": "Diese TAN wurde bereits verwendet. Der Name des Users lautet: {name}",
     "@loginAlreadyLoggedInText": {
