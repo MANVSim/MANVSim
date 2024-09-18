@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
-import 'package:manvsim/widgets/patient_map.dart';
+import 'package:manvsim/widgets/manv_map.dart';
 
 enum MapOverlayViewerPositions {
   center(alignment: Alignment.center),
@@ -34,7 +34,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Size of the viewport.
   final Size viewportSize = const Size(300, 400);
 
-  late PatientMap patientMap;
+  late MANVMap manvMap;
   late ValueNotifier<Offset> positionNotifier;
 
   /// Last tapped position on overlay. Used to ignore small changes.
@@ -66,7 +66,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   void initState() {
     super.initState();
     positionNotifier = ValueNotifier(widget.mapData.startingPoint);
-    patientMap = PatientMap(widget.mapData, positionNotifier);
+    manvMap = MANVMap(widget.mapData, positionNotifier);
     _transformationController =
         CustomTransformationController(positionOnViewport)
           ..setTranslation(targetPositionToTranslation(positionNotifier.value));
@@ -203,7 +203,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
                         valueListenable: _transformationController,
                         builder: (context, value, child) => Transform(
                               transform: value,
-                              child: patientMap,
+                              child: manvMap,
                             ))),
                 Align(
                     alignment: widget.positionType.alignment * 1.05,

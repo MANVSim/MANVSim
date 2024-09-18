@@ -304,5 +304,6 @@
 
 
   "mapScreenName": "Karte",
-  "mapPatientTooFar": "Hilfe! Bitte komm näher..."
+  "mapPatientTooFar": "Hilfe! Bitte komm näher...",
+  "mapLocationTooFar": "Bitte komm näher..."
 }

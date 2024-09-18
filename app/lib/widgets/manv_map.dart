@@ -4,22 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
+import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 
-class PatientMap extends StatefulWidget {
+class MANVMap extends StatefulWidget {
+  static const tooFarThreshold = 300;
+
   final MapData mapData;
 
   /// Provides current position of the player.
   final ValueNotifier<Offset> positionNotifier;
 
-  const PatientMap(this.mapData, this.positionNotifier, {super.key});
+  const MANVMap(this.mapData, this.positionNotifier, {super.key});
 
   @override
-  State<StatefulWidget> createState() => _PatientMapState();
+  State<StatefulWidget> createState() => _MANVMapState();
 }
 
-class _PatientMapState extends State<PatientMap> {
+class _MANVMapState extends State<MANVMap> {
   List<Positioned> messages = [];
 
   @override
@@ -42,6 +45,7 @@ class _PatientMapState extends State<PatientMap> {
                 painter:
                     _ShadowPainter(widget.mapData, widget.positionNotifier)),
             ...widget.mapData.buildings.map(rectToPositioned),
+            ...getLocationWidgets(context),
             ...getPatientWidgets(context),
             ...messages
           ],
@@ -49,7 +53,7 @@ class _PatientMapState extends State<PatientMap> {
   }
 
   List<Positioned> getPatientWidgets(BuildContext context) {
-    return widget.mapData.patientsPositions
+    return widget.mapData.patientPositions
         .map((patientPosition) => Positioned(
               top: patientPosition.position.dy,
               left: patientPosition.position.dx,
@@ -61,30 +65,64 @@ class _PatientMapState extends State<PatientMap> {
         .toList();
   }
 
+  List<Positioned> getLocationWidgets(BuildContext context) {
+    return widget.mapData.locationPositions
+        .map((locationPosition) => Positioned(
+              top: locationPosition.position.dy,
+              left: locationPosition.position.dx,
+              child: IconButton(
+                  onPressed: () =>
+                      _onLocationPressed(locationPosition, context),
+                  icon: const Icon(Icons.location_on),
+                  iconSize: 50),
+            ))
+        .toList();
+  }
+
+  bool _isTooFar(Offset position) =>
+      (position - widget.positionNotifier.value).distance >
+      MANVMap.tooFarThreshold;
+
   void _onPatientPressed(
       PatientPosition patientPosition, BuildContext context) {
-    if ((patientPosition.position - widget.positionNotifier.value).distance <=
-        300) {
+    if (_isTooFar(patientPosition.position)) {
+      _showTimedMessage(patientPosition.position,
+          AppLocalizations.of(context)!.mapPatientTooFar);
+    } else {
       PatientService.goToPatientScreen(patientPosition.id, context);
-      return;
     }
-    var message = Positioned(
-        left: patientPosition.position.dx + 40,
-        top: patientPosition.position.dy,
+  }
+
+  void _onLocationPressed(
+      PatientPosition locationPosition, BuildContext context) {
+    if (_isTooFar(locationPosition.position)) {
+      _showTimedMessage(locationPosition.position,
+          AppLocalizations.of(context)!.mapLocationTooFar);
+    } else {
+      LocationService.goToLocationScreen(locationPosition.id, context);
+    }
+  }
+
+  void _showTimedMessage(Offset position, String message,
+      [Duration duration = const Duration(seconds: 5)]) {
+    var messageWidget = Positioned(
+        left: position.dx + 40,
+        top: position.dy,
         width: 200,
         child: Card(
+          color: Colors.white70,
           child: Text(
-            AppLocalizations.of(context)!.mapPatientTooFar,
+            message,
             textScaler: const TextScaler.linear(2),
           ),
         ));
     setState(() {
-      messages.add(message);
+      messages.add(messageWidget);
     });
     Timer(
-        const Duration(seconds: 5),
+        duration,
         () => setState(() {
-              messages.remove(message);
+              messages.remove(messageWidget);
             }));
   }
 

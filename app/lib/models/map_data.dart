@@ -4,20 +4,20 @@ import 'dart:ui';
 import 'package:manv_api/api.dart';
 
 typedef PatientPosition = ({Offset position, int id});
+typedef LocationPosition = ({Offset position, int id});
 
 class MapData {
   static const defaultSize = Size(1000, 1000);
   static const defaultPadding = 50;
 
   List<Rect> buildings;
-  List<PatientPosition> patientsPositions;
+  List<PatientPosition> patientPositions;
+  List<LocationPosition> locationPositions;
   Offset startingPoint;
   Size size;
 
-  // TODO: add locationPositions
-
-  MapData(
-      this.buildings, this.patientsPositions, this.startingPoint, this.size);
+  MapData(this.buildings, this.patientPositions, this.locationPositions,
+      this.startingPoint, this.size);
 
   factory MapData.fromApi(MapDataDTO mapdataDTO) {
     var buildings = mapdataDTO.buildings
@@ -31,18 +31,24 @@ class MapData {
         .map((ppDTO) =>
             (position: ppDTO.position.toOffset(), id: ppDTO.patientId))
         .toList();
+    var locationPositions = mapdataDTO.locationPositions
+        .map((lpDTO) =>
+            (position: lpDTO.position.toOffset(), id: lpDTO.locationId))
+        .toList();
     var startingPoint = mapdataDTO.startingPoint?.toOffset();
 
     var allPoints = [
       ...buildings.map((b) => [b.topLeft, b.bottomRight]).expand((b) => b),
       ...patientPositions.map((pp) => pp.position),
+      ...locationPositions.map((lp) => lp.position),
       if (startingPoint != null) startingPoint
     ];
-    // TODO: adjust for negative points
+    // TODO: adjust for negative points (for positions in buildings not)
     var size = _calcSize(allPoints);
     startingPoint ??= Offset(
         size.width - defaultPadding / 2, size.height - defaultPadding / 2);
-    return MapData(buildings, patientPositions, startingPoint, size);
+    return MapData(
+        buildings, patientPositions, locationPositions, startingPoint, size);
   }
 
   /// Calculates the needed size based on [points} and [padding].
