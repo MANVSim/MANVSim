@@ -4,7 +4,7 @@ import { BaseDataStripped, Media } from "../types"
 import { Button } from "react-bootstrap"
 import { useEffect, useMemo, useState } from "react"
 import MediaUpload from "../components/mediaUpload"
-import { tryFetchJson } from "../api"
+import {api, tryFetchJson} from "../api"
 
 type BaseData = {
     actions: Array<BaseDataStripped>
@@ -206,7 +206,7 @@ BaseDataRoute.action = async function ({ request }: ActionFunctionArgs<Request>)
     }
 
     // Perform the PATCH request with the serialized JSON data
-    const response = await fetch(`/web/data/${formData.get("dataType")}`, {
+    const response = await fetch(api + `web/data/${formData.get("dataType")}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
