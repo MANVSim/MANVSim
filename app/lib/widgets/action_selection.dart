@@ -62,18 +62,92 @@ class _ActionSelectionState extends State<ActionSelection> {
         actions.where((action) => !possibleActions.contains(action)).toList();
   }
 
+  void _showFilterDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setStateDialog) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.patientScreenFilterResourceTitle),
+            content: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: ResourceDirectory(
+                  initiallyExpanded: true,
+                  locations: widget.locations,
+                  resourceToggle: (resource) {
+                    toggleResource(resource);
+                    setStateDialog(() {});
+                  },
+                )),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(AppLocalizations.of(context)!.dialogueClose),
+              ),
+            ],
+          );
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    resources = Location.flattenResourcesFromList(widget.locations);
+
     return Column(children: [
       ApiFutureBuilder<List<PatientAction>>(
         future: futureActions,
         builder: (context, actions) {
           setActions(actions);
-          var selectedActions = getSelectedActions();
+          var selectedActions = getSelectedActions(possibleActions.toList());
+          var notPossibleActionsSelected = getSelectedActions(notPossibleActions);
           return Column(children: [
-            Text(selectedActions.isNotEmpty
-                ? AppLocalizations.of(context)!.patientActions
-                : AppLocalizations.of(context)!.patientNoActions),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    AppLocalizations.of(context)!.patientActions,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    onPressed: () => _showFilterDialog(context),
+                    icon: const Icon(Icons.filter_list),
+                  ),
+                ),
+              ],
+            ),
+            if (getSelectedResources().isNotEmpty) ...[
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.start,
+                alignment: WrapAlignment.start,
+                spacing: 8.0,
+                runSpacing: 4.0,
+                children: getSelectedResources().map((resource) {
+                  return Chip(
+                    label: Text(resource.name),
+                    onDeleted: () => toggleResource(resource),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 8),
+            ],
+            if (selectedActions.isEmpty)
+              Card(
+                  child: SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(AppLocalizations.of(context)!
+                              .patientNoActions)))),
             ListView.builder(
                 shrinkWrap: true, // nested scrolling
                 physics: const ClampingScrollPhysics(),
@@ -88,9 +162,9 @@ class _ActionSelectionState extends State<ActionSelection> {
                 // TODO show which resource you do have
                 shrinkWrap: true, // nested scrolling
                 physics: const ClampingScrollPhysics(),
-                itemCount: notPossibleActions.length,
+                itemCount: notPossibleActionsSelected.length,
                 itemBuilder: (context, index) => ActionCard(
-                      action: notPossibleActions[index],
+                      action: notPossibleActionsSelected[index],
                       patient: widget.patient,
                       canBePerformed: false,
                     )),
@@ -103,21 +177,18 @@ class _ActionSelectionState extends State<ActionSelection> {
                             location.id != widget.patient.location.id)
                         .toList(),
                     onPerform: movePatient)),
-            Text(AppLocalizations.of(context)!.patientResources),
-            ResourceDirectory(
-                locations: widget.locations, resourceToggle: toggleResource),
           ]);
         },
       )
     ]);
   }
 
-  List<PatientAction> getSelectedActions() {
+  List<PatientAction> getSelectedActions(List<PatientAction> actions) {
     var selectedResources = getSelectedResources();
     if (selectedResources.isEmpty) {
-      return possibleActions.toList();
+      return actions;
     }
-    return possibleActions
+    return actions
         .where((action) => selectedResources.every(
             (resource) => action.resourceNamesNeeded.contains(resource.name)))
         .toList();

@@ -1,13 +1,15 @@
 import logging
 
 from flask import Blueprint, request
-from sqlalchemy import select, distinct, asc
+from sqlalchemy import select, distinct, asc, desc
 from werkzeug.exceptions import NotFound, BadRequest
 
 import models
 from models import WebUser
 from app_config import db, csrf
+from utils.dbo import add_vehicles_to_execution_to_session
 from utils.decorator import role_required, required, RequiredValueSource
+from utils.tans import unique
 
 web_api = Blueprint("web_api-scenario", __name__)
 
@@ -187,10 +189,14 @@ def __update_vehicle_in_scenario(scenario, vehicles_add=None, vehicles_del=None)
     try:
         if vehicles_del:
             for vehicle_del in vehicles_del:
-                db.session.query(models.PlayersToVehicleInExecution).filter(
-                    models.PlayersToVehicleInExecution.scenario_id == scenario.id,
-                    models.PlayersToVehicleInExecution.vehicle_name == vehicle_del["name"]
-                ).delete()
+                vehicle_list = (models.PlayersToVehicleInExecution.query.
+                                filter_by(scenario_id=scenario.id,
+                                          vehicle_name=vehicle_del["name"])
+                                ).all()
+                player_list = [vehicle.player for vehicle in vehicle_list]
+
+                [db.session.delete(vehicle) for vehicle in vehicle_list]
+                [db.session.delete(player) for player in player_list]
 
         if vehicles_add:
             __add_vehicles_to_execution(scenario, vehicles_add)
@@ -210,12 +216,10 @@ def __add_vehicles_to_execution(scenario, vehicles_add):
     a corresponding execution.
     """
     # Get all execution ids for scenario from PlayersToVehicle table
-    execution_ids_query = select(
-        distinct(models.PlayersToVehicleInExecution.execution_id)
-    ).where(models.PlayersToVehicleInExecution.scenario_id == scenario.id)
+    db_executions = (models.Execution.query.filter_by(scenario_id=scenario.id)
+                     .all())
 
-    execution_ids = [row[0] for row in
-                     db.session.execute(execution_ids_query)]
+    execution_ids = [db_execution.id for db_execution in db_executions]
 
     if not execution_ids:
         # Unused scenario in DB -> create entries with id execution_id = 0
@@ -226,12 +230,8 @@ def __add_vehicles_to_execution(scenario, vehicles_add):
     for vehicle_add in vehicles_add:
         # Add new vehicle to every execution stored for the scenario
         for exec_id in execution_ids:
-            vehicle = models.PlayersToVehicleInExecution(
-                execution_id=exec_id,
-                scenario_id=scenario.id,
-                location_id=vehicle_add["id"],
-                vehicle_name=vehicle_add["name"],
-                player_tan=f"empty-{vehicle_add["name"]}",
-                travel_time=vehicle_add["travel_time"]
+            add_vehicles_to_execution_to_session(
+                exec_id if exec_id != 0 else None,
+                scenario.id, vehicle_add["id"],
+                vehicle_add["name"], vehicle_add["travel_time"]
             )
-            db.session.add(vehicle)

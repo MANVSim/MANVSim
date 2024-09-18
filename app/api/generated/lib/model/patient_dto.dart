@@ -13,7 +13,7 @@ part of manv_api;
 class PatientDTO {
   /// Returns a new [PatientDTO] instance.
   PatientDTO({
-    this.classification,
+    required this.classification,
     required this.id,
     required this.name,
     required this.location,
@@ -21,13 +21,7 @@ class PatientDTO {
     this.performedActions = const [],
   });
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? classification;
+  PatientClassification classification;
 
   int id;
 
@@ -51,7 +45,7 @@ class PatientDTO {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (classification == null ? 0 : classification!.hashCode) +
+    (classification.hashCode) +
     (id.hashCode) +
     (name.hashCode) +
     (location.hashCode) +
@@ -63,11 +57,7 @@ class PatientDTO {
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.classification != null) {
       json[r'classification'] = this.classification;
-    } else {
-      json[r'classification'] = null;
-    }
       json[r'id'] = this.id;
       json[r'name'] = this.name;
       json[r'location'] = this.location;
@@ -95,7 +85,7 @@ class PatientDTO {
       }());
 
       return PatientDTO(
-        classification: mapValueOfType<String>(json, r'classification'),
+        classification: PatientClassification.fromJson(json[r'classification'])!,
         id: mapValueOfType<int>(json, r'id')!,
         name: mapValueOfType<String>(json, r'name')!,
         location: LocationDTO.fromJson(json[r'location'])!,
@@ -148,6 +138,7 @@ class PatientDTO {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'classification',
     'id',
     'name',
     'location',

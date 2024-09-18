@@ -157,7 +157,16 @@ class _LocationScreenState extends State<LocationScreen> {
       ApiFutureBuilder<List<Location>>(
           future: _futureInventory,
           builder: (context, inventory) {
-            return Column(children: [
+            return
+              inventory.isEmpty
+              ?  Card(
+                  child: SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child:
+                          Text(AppLocalizations.of(context)!.locationScreenInventoryEmpty))))
+              : Column(children: [
               ResourceDirectory(
                 locations: inventory,
                 resourceToggle: (resource) => {},
@@ -173,19 +182,27 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   Widget _buildLocationDirectory(Location location) {
-    return Column(children: [
-      ResourceDirectory(
-        rootLocationsSelectable: false,
-        initiallyExpanded: true,
-        locations: [location],
-        resourceToggle: (resource) => {},
-        onLocationSelected: (currentSelectedLocationPath) {
-          setState(() {
-            _selectedLocationPath = currentSelectedLocationPath;
-          });
-        },
-      ),
-    ]);
+    return (location.resources.isEmpty && location.locations.isEmpty)
+        ?  Card(
+        child: SizedBox(
+            width: double.infinity,
+            child: Padding(
+                padding: const EdgeInsets.all(16),
+                child:
+                Text(AppLocalizations.of(context)!.locationScreenNoResources))))
+        : Column(children: [
+            ResourceDirectory(
+              rootLocationsSelectable: false,
+              initiallyExpanded: true,
+              locations: [location],
+              resourceToggle: (resource) => {},
+              onLocationSelected: (currentSelectedLocationPath) {
+                setState(() {
+                  _selectedLocationPath = currentSelectedLocationPath;
+                });
+              },
+            ),
+          ]);
   }
 
   @override
