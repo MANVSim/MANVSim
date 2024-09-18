@@ -66,13 +66,14 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**runActionPerformMovePatientPost**](doc//DefaultApi.md#runactionperformmovepatientpost) | **POST** /run/action/perform/move/patient | Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
 *DefaultApi* | [**runActionPerformPost**](doc//DefaultApi.md#runactionperformpost) | **POST** /run/action/perform | Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
 *DefaultApi* | [**runActionPerformResultGet**](doc//DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action and officially finishes/dequeues the action of the patient.
-*DefaultApi* | [**runLocationAllGet**](doc//DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of  top-level accessible locations.
+*DefaultApi* | [**runLocationAllGet**](doc//DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of top-level accessible locations.
 *DefaultApi* | [**runLocationLeavePost**](doc//DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
 *DefaultApi* | [**runLocationPutToPost**](doc//DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
 *DefaultApi* | [**runLocationTakeToPost**](doc//DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
+*DefaultApi* | [**runMapdataGet**](doc//DefaultApi.md#runmapdataget) | **GET** /run/mapdata | gets map data
 *DefaultApi* | [**runPatientAllIdsGet**](doc//DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 *DefaultApi* | [**runPatientArrivePost**](doc//DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
-*DefaultApi* | [**runPatientLeavePost**](doc//DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
+*DefaultApi* | [**runPatientClassifyPost**](doc//DefaultApi.md#runpatientclassifypost) | **POST** /run/patient/classify | Sets a classification attribute for a specific patient.
 *DefaultApi* | [**runPlayerInventoryGet**](doc//DefaultApi.md#runplayerinventoryget) | **GET** /run/player/inventory | Get Player Inventory
 *DefaultApi* | [**scenarioStartTimeGet**](doc//DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
 
@@ -84,12 +85,18 @@ Class | Method | HTTP request | Description
  - [LocationDTO](doc//LocationDTO.md)
  - [LoginPost200Response](doc//LoginPost200Response.md)
  - [LoginPostRequest](doc//LoginPostRequest.md)
+ - [MapDataDTO](doc//MapDataDTO.md)
+ - [MapDataDTOBuildingsInner](doc//MapDataDTOBuildingsInner.md)
+ - [MapDataDTOLocationPositionsInner](doc//MapDataDTOLocationPositionsInner.md)
+ - [MapDataDTOPatientPositionsInner](doc//MapDataDTOPatientPositionsInner.md)
  - [MediaReferencesDTOInner](doc//MediaReferencesDTOInner.md)
  - [NotificationsGet200Response](doc//NotificationsGet200Response.md)
+ - [PatientClassification](doc//PatientClassification.md)
  - [PatientDTO](doc//PatientDTO.md)
  - [PerformedActionDTO](doc//PerformedActionDTO.md)
  - [PlayerSetNamePost401Response](doc//PlayerSetNamePost401Response.md)
  - [PlayerSetNamePostRequest](doc//PlayerSetNamePostRequest.md)
+ - [PointDTO](doc//PointDTO.md)
  - [ResourceDTO](doc//ResourceDTO.md)
  - [RunActionAllGet200Response](doc//RunActionAllGet200Response.md)
  - [RunActionPerformMovePatientPostRequest](doc//RunActionPerformMovePatientPostRequest.md)
@@ -103,7 +110,7 @@ Class | Method | HTTP request | Description
  - [RunPatientAllIdsGet200Response](doc//RunPatientAllIdsGet200Response.md)
  - [RunPatientArrivePost200Response](doc//RunPatientArrivePost200Response.md)
  - [RunPatientArrivePostRequest](doc//RunPatientArrivePostRequest.md)
- - [RunPatientLeavePost200Response](doc//RunPatientLeavePost200Response.md)
+ - [RunPatientClassifyPostRequest](doc//RunPatientClassifyPostRequest.md)
  - [RunPlayerInventoryGet200Response](doc//RunPlayerInventoryGet200Response.md)
  - [ScenarioStartTimeGet200Response](doc//ScenarioStartTimeGet200Response.md)
 
