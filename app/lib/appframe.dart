@@ -38,10 +38,19 @@ class _AppFrameState extends State<AppFrame> {
 
   }
 
+  bool _isOnNotificationsScreen() {
+    return _currentPageIndex == 3;
+  }
+
   void _onNotificationReceived() {
-    setState(() {
+
+    if(!_isOnNotificationsScreen()) {
+      setState(() {
+        _hasUnreadNotifications = _notificationService.hasUnreadNotifications;
+      });
+    } else {
       _hasUnreadNotifications = _notificationService.hasUnreadNotifications;
-    });
+    }
   }
 
   @override
@@ -70,7 +79,7 @@ class _AppFrameState extends State<AppFrame> {
               icon: const Icon(ManvIcons.location),
               label: AppLocalizations.of(context)!.frameLocations),
           NavigationDestination(
-            icon: _hasUnreadNotifications && _currentPageIndex != 3
+            icon: _hasUnreadNotifications && !_isOnNotificationsScreen()
                 ? const Badge(child: Icon(Icons.notifications_sharp))
                 : const Icon(Icons.notifications_sharp),
             label: AppLocalizations.of(context)!.frameNotifications,
