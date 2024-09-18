@@ -33,8 +33,8 @@ class _AppFrameState extends State<AppFrame> {
 
   @override
   void dispose() {
+    _notificationService.removeListener(_onNotificationReceived);
     super.dispose();
-
 
   }
 
