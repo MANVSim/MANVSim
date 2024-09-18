@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
 import 'package:manvsim/appframe.dart';
 import 'package:manvsim/services/api_service.dart';
+import 'package:manvsim/services/notification_service.dart';
 import 'package:manvsim/widgets/error_box.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
@@ -187,6 +188,10 @@ class _WaitScreenState extends State<WaitScreen> {
   }
 
   void _goToHome() {
+
+    NotificationService notificationService = GetIt.I<NotificationService>();
+    notificationService.startPolling();
+
     _apiService.api
         .runLocationLeavePost()
         .whenComplete(() => Navigator.pushAndRemoveUntil(
