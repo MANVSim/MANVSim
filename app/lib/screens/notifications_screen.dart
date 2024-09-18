@@ -36,12 +36,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     var notifications = _notificationService.consumeNotifications();
     _notificationService.addListener(_onNotificationsUpdated);
     return notifications;
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     final notifications = _getNotifications();
 
     return Scaffold(
@@ -51,23 +49,24 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         actions: const <Widget>[LogoutButton()],
       ),
       body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: notifications.isEmpty
-              ? Center(
-            child: Text("Keine Benachrichtigungen"),
-          )
-              : ListView.builder(
-            itemCount: notifications.length,
-            itemBuilder: (context, index) {
-              final notification = notifications[index];
-              return Card(
-                child: ListTile(
-                  leading: const Icon(Icons.notifications_sharp),
-                  title: Text(notification),
-                ),
-              );
-            },
-          ),
+        padding: const EdgeInsets.all(8.0),
+        child: notifications.isEmpty
+            ? Center(
+                child: Text(AppLocalizations.of(context)!
+                    .notificationScreenNoNotifications),
+              )
+            : ListView.builder(
+                itemCount: notifications.length,
+                itemBuilder: (context, index) {
+                  final notification = notifications[index];
+                  return Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.notifications_sharp),
+                      title: Text(notification),
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }

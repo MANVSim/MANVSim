@@ -189,6 +189,8 @@
 
 
   "notificationScreenName": "Benachrichtigungen",
+  "notificationScreenNoNotifications": "Keine Benachrichtigungen vorhanden",
+
   "selectScreenName": "Home",
   "selectScreenTypePatient": "Patient",
   "selectScreenTypeLocation": "Location",
