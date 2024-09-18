@@ -202,14 +202,7 @@ def __create_players():
                                        player_tan="456DEF", location_id=0,
                                        vehicle_name="RTW-Kiel", travel_time=60))
     insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0,
-                                       player_tan="empty-RTW-Kiel", location_id=0,
-                                       vehicle_name="RTW-Kiel", travel_time=60))
-    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0,
                                        player_tan="789GHI", location_id=1,
-                                       vehicle_name="NEF-Eckernfoerde",
-                                       travel_time=120))
-    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0,
-                                       player_tan="empty-NEF-Eckernfoerde", location_id=1,
                                        vehicle_name="NEF-Eckernfoerde",
                                        travel_time=120))
 
