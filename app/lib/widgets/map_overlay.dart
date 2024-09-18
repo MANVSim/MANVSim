@@ -6,24 +6,39 @@ import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
 import 'package:manvsim/widgets/patient_map.dart';
 
+enum MapOverlayViewerPositions {
+  center(alignment: Alignment.center),
+  bottomCenter(alignment: Alignment(0.0, 0.9));
+
+  const MapOverlayViewerPositions({required this.alignment});
+  final Alignment alignment;
+}
+
 class PatientMapOverlay extends StatefulWidget {
-  const PatientMapOverlay(this.mapData, {super.key});
+  const PatientMapOverlay(
+      {required this.mapData,
+      this.positionType = MapOverlayViewerPositions.bottomCenter,
+      super.key});
 
   final MapData mapData;
+
+  /// Where the viewer is positioned on the Viewport.
+  final MapOverlayViewerPositions positionType;
 
   @override
   State<StatefulWidget> createState() => _PatientMapOverlayState();
 }
 
-enum MapOverlayPositions { center, bottomCenter }
-
 class _PatientMapOverlayState extends State<PatientMapOverlay>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   /// Size of the viewport.
-  static const Size viewportSize = Size(300, 400);
+  final Size viewportSize = const Size(300, 400);
 
-  /// Where the viewer is positioned on the Viewport.
-  final positionType = MapOverlayPositions.bottomCenter;
+  late PatientMap patientMap;
+  late ValueNotifier<Offset> positionNotifier;
+
+  /// Last tapped position on overlay. Used to ignore small changes.
+  Offset lastTapped = Offset.zero;
 
   /// Controller for view transformations (using [Matrix4]).
   late final CustomTransformationController _transformationController;
@@ -33,20 +48,9 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       const AlwaysStoppedAnimation(Offset.zero);
   late final AnimationController _animationController;
 
-  late PatientMap patientMap;
-  late ValueNotifier<Offset> positionNotifier;
-
-  /// Last tapped position on overlay. Used to ignore small changes.
-  Offset lastTapped = Offset.zero;
-
   /// Player position on the viewport.
-  Offset get positionOnViewport {
-    return switch (positionType) {
-      MapOverlayPositions.bottomCenter =>
-        boundingBox.bottomCenter.translate(0, -20),
-      MapOverlayPositions.center => boundingBox.center
-    };
-  }
+  Offset get positionOnViewport =>
+      widget.positionType.alignment.withinRect(boundingBox);
 
   Rect get boundingBox => Offset.zero & viewportSize;
   Rect get mapRect => Offset.zero & widget.mapData.size;
@@ -78,25 +82,26 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     super.dispose();
   }
 
-  /// Start animation moving the middle to the edge.
-  void _onNewTargetOffset(Offset tappedPosition) {
-    if ((lastTapped - tappedPosition).distance < 10) {
+  void _onNewTargetOffset(Offset tappedOnViewport) {
+    if ((lastTapped - tappedOnViewport).distance < 10) {
       return;
     }
-    lastTapped = tappedPosition;
-    _onNewDirection(toScene(tappedPosition));
+    lastTapped = tappedOnViewport;
+    _onNewDirection(toScene(tappedOnViewport));
   }
 
-  void _onNewDirection(Offset targetPoint) {
-    Offset self = toScene(positionOnViewport);
-    Offset target = getTarget(self, self - targetPoint);
+  /// Start animation moving the middle to the edge.
+  void _onNewDirection(Offset tappedOnScene) {
+    Offset viewerOnScene = positionNotifier.value;
+    Offset targetOnScene =
+        getTarget(viewerOnScene, viewerOnScene - tappedOnScene);
     _onMoveEnd();
     _translationAnimation = Tween<Offset>(
             begin: _transformationController.currentTranslation,
-            end: targetPositionToTranslation(target))
+            end: targetPositionToTranslation(targetOnScene))
         .animate(_animationController)
       ..addListener(_onAnimate);
-    double distance = (target - self).distance;
+    double distance = (targetOnScene - viewerOnScene).distance;
     _animationController.duration = Duration(seconds: max(distance ~/ 100, 1));
     _animationController.forward();
   }
@@ -201,15 +206,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
                               child: patientMap,
                             ))),
                 Align(
-                    alignment: positionType == MapOverlayPositions.center
-                        ? Alignment.center
-                        : Alignment.bottomCenter,
-                    child: const Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.location_on, color: Colors.blue),
-                          SizedBox(height: 10)
-                        ])),
+                    alignment: widget.positionType.alignment * 1.05,
+                    child: const Icon(Icons.location_on, color: Colors.blue)),
               ]))),
     );
   }
