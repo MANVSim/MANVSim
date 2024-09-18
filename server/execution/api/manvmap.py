@@ -11,7 +11,13 @@ api = Blueprint("api-manvmap", __name__)
 @api.get("/mapdata")
 @jwt_required()
 def get_map_data():
-    """ Returns mock map data. """
+    """
+    Returns all data required for the map in the app.
+    The position data is generated randomly per request.
+    The buildings and starting_point are static mock data.
+    This is subject to change as the admin frontend might provide functionality
+    to define/configure these in the future.
+    """
     try:
         execution, _ = util.get_execution_and_player()
         return {
