@@ -22,12 +22,13 @@ import {
   Role,
   Location,
   Notifications,
+  ExecutionStatus,
 } from "../types"
 import { CsrfForm } from "../components/CsrfForm"
 import { getExecution, togglePlayerStatus, createNewPlayer, pushNotificationToPlayer, deletePlayer } from "../api"
 import { TanCard } from "../components/TanCard"
 import { PlayerStatus } from "../components/PlayerStatus"
-import { ExecutionStatus } from "../components/ExecutionStatus"
+import { ExecutionStatusDisplay } from "../components/ExecutionStatusDisplay"
 
 import "./executionList"
 import "./execution.css"
@@ -36,6 +37,7 @@ export function ExecutionRoute() {
   const executionData = useLoaderData() as ExecutionData
 
   const [execution, setExecution] = useState<ExecutionData>(executionData)
+  const [status, setStatus] = useState<ExecutionStatus>(execution.status)
 
   const [open, setOpen] = useState(false)
   const [notificationDisplay, setNotificationDisplay] = useState(false)
@@ -63,18 +65,20 @@ export function ExecutionRoute() {
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
-      if (typeof executionId === "undefined") {
+      if (typeof executionId === "undefined" ||
+        (status !== "PENDING" && status !== "RUNNING")
+      ) {
         return
       }
 
-      const status = await getExecution(executionId)
+      const updatedState = await getExecution(executionId)
 
-      if (isExecutionData(status)) {
-        setExecution(status)
+      if (isExecutionData(updatedState)) {
+        setExecution(updatedState)
       }
     }, config.pollingRate)
     return () => clearInterval(intervalId)
-  }, [executionId])
+  }, [executionId, status])
 
   return (
     <div>
@@ -83,7 +87,7 @@ export function ExecutionRoute() {
           <h2 id="execution-name-header" className="align-self-center mt-3">
             {execution.name} (#{executionId})
           </h2>
-          <ExecutionStatus execution={execution} />
+          <ExecutionStatusDisplay execution={execution} status={status} setStatus={setStatus} />
           <div id="add-new-player" className="d-grid border rounded mt-3">
             <Button
               className={`rounded ${open ? "btn-light" : "btn-primary"}`}

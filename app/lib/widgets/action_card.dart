@@ -33,6 +33,7 @@ class _ActionCardState extends State<ActionCard> {
             ? Theme.of(context).cardTheme.color
             : Theme.of(context).disabledColor.withOpacity(0.2),
         child: ExpansionTile(
+          initiallyExpanded: true,
             title: Text(widget.action.name),
             trailing: (widget.action.media.isNotEmpty)
                 ? IconButton(

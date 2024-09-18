@@ -130,13 +130,18 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [ patient_ids ]
+                required: [ patient_ids, patient_names ]
                 properties:
                   patient_ids:
                     type: array
                     items:
                       type: integer
                     example: [ 1, 12, 42 ]
+                  patient_names:
+                    type: array
+                    items:
+                      type: string
+                    example: [ "John Doe", "Jane Doe", "Max Mustermann" ]
 
         '204':
           description: No running execution detected.
@@ -663,9 +668,13 @@ components:
           type: array
           items:
             type: string
+        results:
+          type: array
+          items:
+            type: string
         media_references:
           $ref: '#/components/schemas/MediaReferencesDTO'
-      required: [ id, name, duration_sec, resources_needed ]
+      required: [ id, name, duration_sec, resources_needed, results ]
 
     PerformedActionDTO:
       type: object
