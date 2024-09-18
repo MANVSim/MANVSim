@@ -8,7 +8,7 @@ import 'package:manv_api/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**classification** | **String** |  | [optional] 
+**classification** | [**PatientClassification**](PatientClassification.md) |  | 
 **id** | **int** |  | 
 **name** | **String** |  | 
 **location** | [**LocationDTO**](LocationDTO.md) |  | 

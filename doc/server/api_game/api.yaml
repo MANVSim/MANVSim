@@ -244,7 +244,7 @@ paths:
 
   /run/location/all:
     get:
-      summary: Returns a list of  top-level accessible locations.
+      summary: Returns a list of top-level accessible locations.
       responses:
         '200':
           description: A JSON array of locations
@@ -607,7 +607,7 @@ components:
       type: object
       properties:
         classification:
-          type: string
+          $ref: '#/components/schemas/PatientClassification'
         id:
           type: integer
         name:
@@ -620,7 +620,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PerformedActionDTO'
-      required: [ id, name, location, media_references ]
+      required: [ id, name, location, media_references, classification ]
+
+    PatientClassification:
+      type: string
+      default: NOT_CLASSIFIED
+      enum:
+        - NOT_CLASSIFIED
+        - PRE_RED
+        - RED
+        - PRE_YELLOW
+        - YELLOW
+        - PRE_GREEN
+        - GREEN
+        - PRE_BLUE
+        - BLUE
+        - BLACK
 
     LocationDTO:
       type: object
@@ -729,6 +744,7 @@ components:
         $ref: '#/components/schemas/MediaReferencesDTO'
 
     PointDTO:
+      description: Represents a point in two dimensional cartesian space.
       type: object
       properties:
         x:
@@ -752,7 +768,19 @@ components:
                 $ref: '#/components/schemas/PointDTO'
               patient_id:
                 type: integer
-            required: [ position,patient_id ]
+              classification:
+                $ref: '#/components/schemas/PatientClassification'
+            required: [ position,patient_id,classification ]
+        location_positions:
+          type: array
+          items:
+            type: object
+            properties:
+              position:
+                $ref: '#/components/schemas/PointDTO'
+              location_id:
+                type: integer
+            required: [ position,location_id ]
         buildings:
           type: array
           items:

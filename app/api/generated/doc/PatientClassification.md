@@ -1,4 +1,4 @@
-# manv_api.model.MapDataDTOPatientPositionsInner
+# manv_api.model.PatientClassification
 
 ## Load the model package
 ```dart
@@ -8,9 +8,6 @@ import 'package:manv_api/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**position** | [**PointDTO**](PointDTO.md) |  | 
-**patientId** | **int** |  | 
-**classification** | [**PatientClassification**](PatientClassification.md) |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

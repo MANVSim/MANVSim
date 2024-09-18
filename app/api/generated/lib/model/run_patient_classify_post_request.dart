@@ -10,48 +10,42 @@
 
 part of manv_api;
 
-class MapDataDTOPatientPositionsInner {
-  /// Returns a new [MapDataDTOPatientPositionsInner] instance.
-  MapDataDTOPatientPositionsInner({
-    required this.position,
+class RunPatientClassifyPostRequest {
+  /// Returns a new [RunPatientClassifyPostRequest] instance.
+  RunPatientClassifyPostRequest({
     required this.patientId,
     required this.classification,
   });
 
-  PointDTO position;
-
   int patientId;
 
-  PatientClassification classification;
+  String classification;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is MapDataDTOPatientPositionsInner &&
-    other.position == position &&
+  bool operator ==(Object other) => identical(this, other) || other is RunPatientClassifyPostRequest &&
     other.patientId == patientId &&
     other.classification == classification;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (position.hashCode) +
     (patientId.hashCode) +
     (classification.hashCode);
 
   @override
-  String toString() => 'MapDataDTOPatientPositionsInner[position=$position, patientId=$patientId, classification=$classification]';
+  String toString() => 'RunPatientClassifyPostRequest[patientId=$patientId, classification=$classification]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'position'] = this.position;
       json[r'patient_id'] = this.patientId;
       json[r'classification'] = this.classification;
     return json;
   }
 
-  /// Returns a new [MapDataDTOPatientPositionsInner] instance and imports its values from
+  /// Returns a new [RunPatientClassifyPostRequest] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static MapDataDTOPatientPositionsInner? fromJson(dynamic value) {
+  static RunPatientClassifyPostRequest? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -60,26 +54,25 @@ class MapDataDTOPatientPositionsInner {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "MapDataDTOPatientPositionsInner[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "MapDataDTOPatientPositionsInner[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "RunPatientClassifyPostRequest[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "RunPatientClassifyPostRequest[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return MapDataDTOPatientPositionsInner(
-        position: PointDTO.fromJson(json[r'position'])!,
+      return RunPatientClassifyPostRequest(
         patientId: mapValueOfType<int>(json, r'patient_id')!,
-        classification: PatientClassification.fromJson(json[r'classification'])!,
+        classification: mapValueOfType<String>(json, r'classification')!,
       );
     }
     return null;
   }
 
-  static List<MapDataDTOPatientPositionsInner> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <MapDataDTOPatientPositionsInner>[];
+  static List<RunPatientClassifyPostRequest> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <RunPatientClassifyPostRequest>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = MapDataDTOPatientPositionsInner.fromJson(row);
+        final value = RunPatientClassifyPostRequest.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -88,12 +81,12 @@ class MapDataDTOPatientPositionsInner {
     return result.toList(growable: growable);
   }
 
-  static Map<String, MapDataDTOPatientPositionsInner> mapFromJson(dynamic json) {
-    final map = <String, MapDataDTOPatientPositionsInner>{};
+  static Map<String, RunPatientClassifyPostRequest> mapFromJson(dynamic json) {
+    final map = <String, RunPatientClassifyPostRequest>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = MapDataDTOPatientPositionsInner.fromJson(entry.value);
+        final value = RunPatientClassifyPostRequest.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -102,14 +95,14 @@ class MapDataDTOPatientPositionsInner {
     return map;
   }
 
-  // maps a json object with a list of MapDataDTOPatientPositionsInner-objects as value to a dart map
-  static Map<String, List<MapDataDTOPatientPositionsInner>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<MapDataDTOPatientPositionsInner>>{};
+  // maps a json object with a list of RunPatientClassifyPostRequest-objects as value to a dart map
+  static Map<String, List<RunPatientClassifyPostRequest>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<RunPatientClassifyPostRequest>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = MapDataDTOPatientPositionsInner.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = RunPatientClassifyPostRequest.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;
@@ -117,7 +110,6 @@ class MapDataDTOPatientPositionsInner {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'position',
     'patient_id',
     'classification',
   };
