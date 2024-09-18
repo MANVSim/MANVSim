@@ -14,11 +14,14 @@ class MapDataDTO {
   /// Returns a new [MapDataDTO] instance.
   MapDataDTO({
     this.patientPositions = const [],
+    this.locationPositions = const [],
     this.buildings = const [],
     this.startingPoint,
   });
 
   List<MapDataDTOPatientPositionsInner> patientPositions;
+
+  List<MapDataDTOLocationPositionsInner> locationPositions;
 
   List<MapDataDTOBuildingsInner> buildings;
 
@@ -33,6 +36,7 @@ class MapDataDTO {
   @override
   bool operator ==(Object other) => identical(this, other) || other is MapDataDTO &&
     _deepEquality.equals(other.patientPositions, patientPositions) &&
+    _deepEquality.equals(other.locationPositions, locationPositions) &&
     _deepEquality.equals(other.buildings, buildings) &&
     other.startingPoint == startingPoint;
 
@@ -40,15 +44,17 @@ class MapDataDTO {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (patientPositions.hashCode) +
+    (locationPositions.hashCode) +
     (buildings.hashCode) +
     (startingPoint == null ? 0 : startingPoint!.hashCode);
 
   @override
-  String toString() => 'MapDataDTO[patientPositions=$patientPositions, buildings=$buildings, startingPoint=$startingPoint]';
+  String toString() => 'MapDataDTO[patientPositions=$patientPositions, locationPositions=$locationPositions, buildings=$buildings, startingPoint=$startingPoint]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'patient_positions'] = this.patientPositions;
+      json[r'location_positions'] = this.locationPositions;
       json[r'buildings'] = this.buildings;
     if (this.startingPoint != null) {
       json[r'starting_point'] = this.startingPoint;
@@ -78,6 +84,7 @@ class MapDataDTO {
 
       return MapDataDTO(
         patientPositions: MapDataDTOPatientPositionsInner.listFromJson(json[r'patient_positions']),
+        locationPositions: MapDataDTOLocationPositionsInner.listFromJson(json[r'location_positions']),
         buildings: MapDataDTOBuildingsInner.listFromJson(json[r'buildings']),
         startingPoint: PointDTO.fromJson(json[r'starting_point']),
       );

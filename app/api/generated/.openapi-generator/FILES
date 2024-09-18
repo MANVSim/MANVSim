@@ -11,6 +11,7 @@ doc/LoginPost200Response.md
 doc/LoginPostRequest.md
 doc/MapDataDTO.md
 doc/MapDataDTOBuildingsInner.md
+doc/MapDataDTOLocationPositionsInner.md
 doc/MapDataDTOPatientPositionsInner.md
 doc/MediaReferencesDTOInner.md
 doc/NotificationsGet200Response.md
@@ -54,6 +55,7 @@ lib/model/login_post200_response.dart
 lib/model/login_post_request.dart
 lib/model/map_data_dto.dart
 lib/model/map_data_dto_buildings_inner.dart
+lib/model/map_data_dto_location_positions_inner.dart
 lib/model/map_data_dto_patient_positions_inner.dart
 lib/model/media_references_dto_inner.dart
 lib/model/notifications_get200_response.dart
@@ -87,6 +89,7 @@ test/location_dto_test.dart
 test/login_post200_response_test.dart
 test/login_post_request_test.dart
 test/map_data_dto_buildings_inner_test.dart
+test/map_data_dto_location_positions_inner_test.dart
 test/map_data_dto_patient_positions_inner_test.dart
 test/map_data_dto_test.dart
 test/media_references_dto_inner_test.dart

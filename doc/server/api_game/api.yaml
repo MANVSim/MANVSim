@@ -620,7 +620,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PerformedActionDTO'
-      required: [ id, name, location, media_references ]
+      required: [ id, name, location, media_references, classification ]
 
     PatientClassification:
       type: string
@@ -744,6 +744,7 @@ components:
         $ref: '#/components/schemas/MediaReferencesDTO'
 
     PointDTO:
+      description: Represents a point in two dimensional cartesian space.
       type: object
       properties:
         x:
@@ -769,7 +770,7 @@ components:
                 type: integer
               classification:
                 $ref: '#/components/schemas/PatientClassification'
-            required: [ position,patient_id ]
+            required: [ position,patient_id,classification ]
         location_positions:
           type: array
           items:

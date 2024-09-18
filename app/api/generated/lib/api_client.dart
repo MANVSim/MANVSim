@@ -196,6 +196,8 @@ class ApiClient {
           return MapDataDTO.fromJson(value);
         case 'MapDataDTOBuildingsInner':
           return MapDataDTOBuildingsInner.fromJson(value);
+        case 'MapDataDTOLocationPositionsInner':
+          return MapDataDTOLocationPositionsInner.fromJson(value);
         case 'MapDataDTOPatientPositionsInner':
           return MapDataDTOPatientPositionsInner.fromJson(value);
         case 'MediaReferencesDTOInner':

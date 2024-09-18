@@ -15,20 +15,14 @@ class MapDataDTOPatientPositionsInner {
   MapDataDTOPatientPositionsInner({
     required this.position,
     required this.patientId,
-    this.classification,
+    required this.classification,
   });
 
   PointDTO position;
 
   int patientId;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  PatientClassification? classification;
+  PatientClassification classification;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is MapDataDTOPatientPositionsInner &&
@@ -41,7 +35,7 @@ class MapDataDTOPatientPositionsInner {
     // ignore: unnecessary_parenthesis
     (position.hashCode) +
     (patientId.hashCode) +
-    (classification == null ? 0 : classification!.hashCode);
+    (classification.hashCode);
 
   @override
   String toString() => 'MapDataDTOPatientPositionsInner[position=$position, patientId=$patientId, classification=$classification]';
@@ -50,11 +44,7 @@ class MapDataDTOPatientPositionsInner {
     final json = <String, dynamic>{};
       json[r'position'] = this.position;
       json[r'patient_id'] = this.patientId;
-    if (this.classification != null) {
       json[r'classification'] = this.classification;
-    } else {
-      json[r'classification'] = null;
-    }
     return json;
   }
 
@@ -79,7 +69,7 @@ class MapDataDTOPatientPositionsInner {
       return MapDataDTOPatientPositionsInner(
         position: PointDTO.fromJson(json[r'position'])!,
         patientId: mapValueOfType<int>(json, r'patient_id')!,
-        classification: PatientClassification.fromJson(json[r'classification']),
+        classification: PatientClassification.fromJson(json[r'classification'])!,
       );
     }
     return null;
@@ -129,6 +119,7 @@ class MapDataDTOPatientPositionsInner {
   static const requiredKeys = <String>{
     'position',
     'patient_id',
+    'classification',
   };
 }
 

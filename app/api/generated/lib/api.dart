@@ -37,6 +37,7 @@ part 'model/login_post200_response.dart';
 part 'model/login_post_request.dart';
 part 'model/map_data_dto.dart';
 part 'model/map_data_dto_buildings_inner.dart';
+part 'model/map_data_dto_location_positions_inner.dart';
 part 'model/map_data_dto_patient_positions_inner.dart';
 part 'model/media_references_dto_inner.dart';
 part 'model/notifications_get200_response.dart';

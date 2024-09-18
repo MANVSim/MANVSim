@@ -385,7 +385,7 @@ class DefaultApi {
     return null;
   }
 
-  /// Returns a list of  top-level accessible locations.
+  /// Returns a list of top-level accessible locations.
   ///
   /// Note: This method returns the HTTP [Response].
   Future<Response> runLocationAllGetWithHttpInfo() async {
@@ -413,7 +413,7 @@ class DefaultApi {
     );
   }
 
-  /// Returns a list of  top-level accessible locations.
+  /// Returns a list of top-level accessible locations.
   Future<RunLocationAllGet200Response?> runLocationAllGet() async {
     final response = await runLocationAllGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {

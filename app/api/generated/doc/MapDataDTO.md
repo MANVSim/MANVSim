@@ -9,6 +9,7 @@ import 'package:manv_api/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **patientPositions** | [**List<MapDataDTOPatientPositionsInner>**](MapDataDTOPatientPositionsInner.md) |  | [optional] [default to const []]
+**locationPositions** | [**List<MapDataDTOLocationPositionsInner>**](MapDataDTOLocationPositionsInner.md) |  | [optional] [default to const []]
 **buildings** | [**List<MapDataDTOBuildingsInner>**](MapDataDTOBuildingsInner.md) |  | [optional] [default to const []]
 **startingPoint** | [**PointDTO**](PointDTO.md) |  | [optional] 
 
