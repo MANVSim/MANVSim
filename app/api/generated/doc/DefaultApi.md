@@ -20,9 +20,10 @@ Method | HTTP request | Description
 [**runLocationLeavePost**](DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
 [**runLocationPutToPost**](DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
 [**runLocationTakeToPost**](DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
+[**runMapdataGet**](DefaultApi.md#runmapdataget) | **GET** /run/mapdata | gets map data
 [**runPatientAllIdsGet**](DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 [**runPatientArrivePost**](DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
-[**runPatientLeavePost**](DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
+[**runPatientClassifyPost**](DefaultApi.md#runpatientclassifypost) | **POST** /run/patient/classify | Sets a classification attribute for a specific patient.
 [**runPlayerInventoryGet**](DefaultApi.md#runplayerinventoryget) | **GET** /run/player/inventory | Get Player Inventory
 [**scenarioStartTimeGet**](DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
 
@@ -533,6 +534,43 @@ void (empty response body)
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **runMapdataGet**
+> MapDataDTO runMapdataGet()
+
+gets map data
+
+### Example
+```dart
+import 'package:manv_api/api.dart';
+
+final api_instance = DefaultApi();
+
+try {
+    final result = api_instance.runMapdataGet();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->runMapdataGet: $e\n');
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**MapDataDTO**](MapDataDTO.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **runPatientAllIdsGet**
 > RunPatientAllIdsGet200Response runPatientAllIdsGet()
 
@@ -623,12 +661,10 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **runPatientLeavePost**
-> RunPatientLeavePost200Response runPatientLeavePost()
+# **runPatientClassifyPost**
+> runPatientClassifyPost(runPatientClassifyPostRequest)
 
-Leaves a patient.
-
-Closes a patient profile and leaves the patients location.
+Sets a classification attribute for a specific patient.
 
 ### Example
 ```dart
@@ -641,21 +677,24 @@ import 'package:manv_api/api.dart';
 //defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
 
 final api_instance = DefaultApi();
+final runPatientClassifyPostRequest = RunPatientClassifyPostRequest(); // RunPatientClassifyPostRequest | 
 
 try {
-    final result = api_instance.runPatientLeavePost();
-    print(result);
+    api_instance.runPatientClassifyPost(runPatientClassifyPostRequest);
 } catch (e) {
-    print('Exception when calling DefaultApi->runPatientLeavePost: $e\n');
+    print('Exception when calling DefaultApi->runPatientClassifyPost: $e\n');
 }
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **runPatientClassifyPostRequest** | [**RunPatientClassifyPostRequest**](RunPatientClassifyPostRequest.md)|  | 
 
 ### Return type
 
-[**RunPatientLeavePost200Response**](RunPatientLeavePost200Response.md)
+void (empty response body)
 
 ### Authorization
 
@@ -663,7 +702,7 @@ This endpoint does not need any parameter.
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

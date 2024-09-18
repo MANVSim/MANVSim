@@ -27,7 +27,7 @@ class PatientDTO {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  String? classification;
+  PatientClassification? classification;
 
   int id;
 
@@ -95,7 +95,7 @@ class PatientDTO {
       }());
 
       return PatientDTO(
-        classification: mapValueOfType<String>(json, r'classification'),
+        classification: PatientClassification.fromJson(json[r'classification']),
         id: mapValueOfType<int>(json, r'id')!,
         name: mapValueOfType<String>(json, r'name')!,
         location: LocationDTO.fromJson(json[r'location'])!,

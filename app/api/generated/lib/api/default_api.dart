@@ -565,6 +565,50 @@ class DefaultApi {
     }
   }
 
+  /// gets map data
+  ///
+  /// Note: This method returns the HTTP [Response].
+  Future<Response> runMapdataGetWithHttpInfo() async {
+    // ignore: prefer_const_declarations
+    final path = r'/run/mapdata';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// gets map data
+  Future<MapDataDTO?> runMapdataGet() async {
+    final response = await runMapdataGetWithHttpInfo();
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MapDataDTO',) as MapDataDTO;
+    
+    }
+    return null;
+  }
+
   /// Returns a list of all patient ids.
   ///
   /// Note: This method returns the HTTP [Response].
@@ -661,23 +705,25 @@ class DefaultApi {
     return null;
   }
 
-  /// Leaves a patient.
-  ///
-  /// Closes a patient profile and leaves the patients location.
+  /// Sets a classification attribute for a specific patient.
   ///
   /// Note: This method returns the HTTP [Response].
-  Future<Response> runPatientLeavePostWithHttpInfo() async {
+  ///
+  /// Parameters:
+  ///
+  /// * [RunPatientClassifyPostRequest] runPatientClassifyPostRequest (required):
+  Future<Response> runPatientClassifyPostWithHttpInfo(RunPatientClassifyPostRequest runPatientClassifyPostRequest,) async {
     // ignore: prefer_const_declarations
-    final path = r'/run/patient/leave';
+    final path = r'/run/patient/classify';
 
     // ignore: prefer_final_locals
-    Object? postBody;
+    Object? postBody = runPatientClassifyPostRequest;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-    const contentTypes = <String>[];
+    const contentTypes = <String>['application/json'];
 
 
     return apiClient.invokeAPI(
@@ -691,22 +737,16 @@ class DefaultApi {
     );
   }
 
-  /// Leaves a patient.
+  /// Sets a classification attribute for a specific patient.
   ///
-  /// Closes a patient profile and leaves the patients location.
-  Future<RunPatientLeavePost200Response?> runPatientLeavePost() async {
-    final response = await runPatientLeavePostWithHttpInfo();
+  /// Parameters:
+  ///
+  /// * [RunPatientClassifyPostRequest] runPatientClassifyPostRequest (required):
+  Future<void> runPatientClassifyPost(RunPatientClassifyPostRequest runPatientClassifyPostRequest,) async {
+    final response = await runPatientClassifyPostWithHttpInfo(runPatientClassifyPostRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
-    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientLeavePost200Response',) as RunPatientLeavePost200Response;
-    
-    }
-    return null;
   }
 
   /// Get Player Inventory

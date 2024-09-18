@@ -244,7 +244,7 @@ paths:
 
   /run/location/all:
     get:
-      summary: Returns a list of  top-level accessible locations.
+      summary: Returns a list of top-level accessible locations.
       responses:
         '200':
           description: A JSON array of locations
@@ -578,6 +578,19 @@ paths:
       security:
         - bearerAuth: [ ]
 
+  /run/mapdata:
+    get:
+      summary: gets map data
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapDataDTO'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
 
 
 components:
@@ -594,7 +607,7 @@ components:
       type: object
       properties:
         classification:
-          type: string
+          $ref: '#/components/schemas/PatientClassification'
         id:
           type: integer
         name:
@@ -608,6 +621,21 @@ components:
           items:
             $ref: '#/components/schemas/PerformedActionDTO'
       required: [ id, name, location, media_references ]
+
+    PatientClassification:
+      type: string
+      default: NOT_CLASSIFIED
+      enum:
+        - NOT_CLASSIFIED
+        - PRE_RED
+        - RED
+        - PRE_YELLOW
+        - YELLOW
+        - PRE_GREEN
+        - GREEN
+        - PRE_BLUE
+        - BLUE
+        - BLACK
 
     LocationDTO:
       type: object
@@ -683,37 +711,90 @@ components:
       required: [ action, execution_id, id, player_tan, resources_used, time ]
 
     MediaReferencesDTO:
+      type: array
+      items:
+        type: object
+        properties:
+          media_reference:
+            type: string
+            description: The path or URL to the media resource.
+          media_type:
+            type: string
+            enum:
+              - IMAGE
+              - VIDEO
+              - TEXT
+              - AUDIO
+            description: The type of media referenced.
+          text:
+            type:
+              string
+            description: Optional text associated with the media reference.
+          title:
+            type:
+              string
+            description: Optional title associated with the media reference.
+        required:
+          - media_type
+        additionalProperties: false
+
+    ConditionDTO:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/MediaReferencesDTO'
+
+    PointDTO:
+      type: object
+      properties:
+        x:
+          type: number
+        y:
+          type: number
+      required: [ x,y ]
+
+    MapDataDTO:
+      type: object
+      description: It is assumed that all points have positive values.
+        Positions of patients and starting_point must not be inside a building.
+        Buildings shall not be aligned in a way which encapsulates an area making it inaccessible.
+      properties:
+        patient_positions:
           type: array
           items:
             type: object
             properties:
-              media_reference:
-                type: string
-                description: The path or URL to the media resource.
-              media_type:
-                type: string
-                enum:
-                  - IMAGE
-                  - VIDEO
-                  - TEXT
-                  - AUDIO
-                description: The type of media referenced.
-              text:
-                type:
-                  string
-                description: Optional text associated with the media reference.
-              title:
-                type:
-                  string
-                description: Optional title associated with the media reference.
-            required:
-              - media_type
-            additionalProperties: false
+              position:
+                $ref: '#/components/schemas/PointDTO'
+              patient_id:
+                type: integer
+              classification:
+                $ref: '#/components/schemas/PatientClassification'
+            required: [ position,patient_id ]
+        location_positions:
+          type: array
+          items:
+            type: object
+            properties:
+              position:
+                $ref: '#/components/schemas/PointDTO'
+              location_id:
+                type: integer
+            required: [ position,location_id ]
+        buildings:
+          type: array
+          items:
+            type: object
+            properties:
+              top_left:
+                $ref: '#/components/schemas/PointDTO'
+              width:
+                type: number
+              height:
+                type: number
+            required: [ top_left,width,height ]
+        starting_point:
+          $ref: '#/components/schemas/PointDTO'
 
-    ConditionDTO:
-        type: object
-        additionalProperties:
-          $ref: '#/components/schemas/MediaReferencesDTO'
     Error:
       type: object
       properties:
