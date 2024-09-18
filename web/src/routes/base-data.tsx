@@ -206,7 +206,7 @@ BaseDataRoute.action = async function ({ request }: ActionFunctionArgs<Request>)
     }
 
     // Perform the PATCH request with the serialized JSON data
-    const response = await fetch(api + `web/data/${formData.get("dataType")}`, {
+    const response = await fetch(api + `data/${formData.get("dataType")}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",

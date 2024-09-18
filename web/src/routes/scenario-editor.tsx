@@ -115,7 +115,7 @@ ScenarioEditor.action = async function ({ request }: ActionFunctionArgs<Request>
     const csrf = formData.get("csrf_token") ?? "nischt"
 
     // Perform the PATCH request with the serialized JSON data
-    const response = await fetch(api + `web/scenario`, {
+    const response = await fetch(api + `scenario`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
