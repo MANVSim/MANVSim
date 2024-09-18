@@ -1,22 +1,21 @@
 import 'dart:math';
-import 'package:flutter/foundation.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manvsim/models/tan_user.dart';
-import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/screens/name_screen.dart';
 import 'package:manvsim/screens/qr_screen.dart';
+import 'package:manvsim/services/api_service.dart';
+import 'package:manvsim/utils/platform_checker.dart'
+    if (dart.library.html) 'package:manvsim/utils/platform_checker_web.dart';
 import 'package:manvsim/widgets/error_box.dart';
 import 'package:manvsim/widgets/tan_input.dart';
 import 'package:provider/provider.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'wait_screen.dart';
-import 'package:manvsim/utils/platform_checker.dart'
-    if (dart.library.html) 'package:manvsim/utils/platform_checker_web.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -238,9 +237,39 @@ class LoginScreenState extends State<LoginScreen> {
                     });
                   },
                 ),
-                Text(AppLocalizations.of(context)!.loginScreenForceAPKDownloadButton)
+                Text(AppLocalizations.of(context)!
+                    .loginScreenForceAPKDownloadButton)
               ]),
             ])));
+  }
+
+  Widget _buildButtonRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: ElevatedButton.icon(
+            icon: const Icon(Icons.qr_code_scanner),
+            label: Text(AppLocalizations.of(context)!.qrCodeScanButton),
+            onPressed: _onQRCodeScan,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          // Button only clickable when tan is complete
+          child: ValueListenableBuilder(
+            valueListenable: _tanInputController,
+            builder: (context, tan, child) => ElevatedButton.icon(
+              icon: const Icon(Icons.login),
+              onPressed: _tanInputController.isComplete
+                  ? () => _handleLogin(tan)
+                  : null,
+              label: Text(AppLocalizations.of(context)!.loginSubmit),
+            ),
+          ),
+        )
+      ],
+    );
   }
 
   @override
@@ -249,79 +278,49 @@ class LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image(
-                  // width 60% of screen width
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  image: const AssetImage('assets/MANV_transparent.png')),
-              const SizedBox(height: 40),
-              Text(
-                AppLocalizations.of(context)!.loginTANHeader,
-                style: const TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image(
+                    // width 60% of screen width
+                    width: min(MediaQuery.of(context).size.width * 0.6, 500),
+                    image: const AssetImage('assets/MANV_transparent.png')),
+                const SizedBox(height: 40),
+                Text(AppLocalizations.of(context)!.loginTANText),
+                const SizedBox(height: 16),
+                if (_errorMessage != null) ...[
+                  ErrorBox(errorText: _errorMessage!),
+                  const SizedBox(height: 16)
+                ],
+                TanInputField(
+                  controller: _tanInputController,
+                  decoration: _textFieldDecoration(_tanInputFailure, ""),
+                  onChanged: (value) {
+                    if (value.isNotEmpty)
+                      _resetErrorMessage(_LoginInputType.tan);
+                  },
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(AppLocalizations.of(context)!.loginTANText),
-              const SizedBox(height: 16),
-              if (_errorMessage != null) // Show error message if it's not null
-                ErrorBox(errorText: _errorMessage!),
-              const SizedBox(height: 16),
-              TanInputField(
-                controller: _tanInputController,
-                decoration: _textFieldDecoration(_tanInputFailure, ""),
-                onChanged: (value) {
-                  if (value.isNotEmpty) _resetErrorMessage(_LoginInputType.tan);
-                },
-              ),
-              const SizedBox(height: 32),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _showAdvancedSettings = !_showAdvancedSettings;
-                  });
-                },
-                child: Text(_showAdvancedSettings
-                    ? AppLocalizations.of(context)!.loginHideAdvancedSettings
-                    : AppLocalizations.of(context)!.loginShowAdvancedSettings),
-              ),
-              if (_showAdvancedSettings) _buildAdvancedSettings(context),
-              const SizedBox(height: 32),
-              if (_isLoading)
-                const CircularProgressIndicator()
-              else
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        icon: const Icon(Icons.qr_code_scanner),
-                        label: Text(
-                            AppLocalizations.of(context)!.qrCodeScanButton),
-                        onPressed: _onQRCodeScan,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      // Button only clickable when tan is complete
-                      child: ValueListenableBuilder(
-                        valueListenable: _tanInputController,
-                        builder: (context, tan, child) => ElevatedButton.icon(
-                          icon: const Icon(Icons.login),
-                          onPressed: _tanInputController.isComplete
-                              ? () => _handleLogin(tan)
-                              : null,
-                          label:
-                              Text(AppLocalizations.of(context)!.loginSubmit),
-                        ),
-                      ),
-                    )
-                  ],
+                const SizedBox(height: 32),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _showAdvancedSettings = !_showAdvancedSettings;
+                    });
+                  },
+                  child: Text(_showAdvancedSettings
+                      ? AppLocalizations.of(context)!.loginHideAdvancedSettings
+                      : AppLocalizations.of(context)!
+                          .loginShowAdvancedSettings),
                 ),
-            ],
+                if (_showAdvancedSettings) _buildAdvancedSettings(context),
+                const SizedBox(height: 32),
+                if (_isLoading)
+                  const CircularProgressIndicator()
+                else
+                  _buildButtonRow()
+              ],
+            ),
           ),
         ),
       ),
