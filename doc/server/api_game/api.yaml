@@ -486,8 +486,6 @@ paths:
                 type: object
                 required: [ conditions, patient ]
                 properties:
-                  conditions:
-                    $ref: '#/components/schemas/ConditionDTO'
                   patient:
                     $ref: '#/components/schemas/PatientDTO'
         '204':

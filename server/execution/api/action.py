@@ -161,11 +161,10 @@ def get_perform_action_result():
                 res.increase()
 
         patient_conditions = patient.activity_diagram.current.get_conditions(result_keys)
-        performed_action.result = patient_conditions
+        performed_action.resulting_condition = patient_conditions
 
         return {
             "patient": patient.to_dict(),
-            "conditions": patient_conditions
         }
 
     except KeyError:
