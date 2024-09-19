@@ -79,7 +79,7 @@ def get_patient(patient_id: int):
         return "Missing or invalid request parameter detected.", 400
 
 
-@api.patch("patient/classify")
+@api.post("patient/classify")
 @required("patient_id", int, RequiredValueSource.JSON)
 @required("classification", str, RequiredValueSource.JSON)
 @jwt_required()
