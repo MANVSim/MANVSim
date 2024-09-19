@@ -1,13 +1,18 @@
+import logging
+
 from flask import Blueprint
 from flask_jwt_extended import jwt_required
+from werkzeug.exceptions import BadRequest
 
 from app_config import csrf
 from execution.entities.patient import Patient
+from execution.entities.player import Player
 from execution.utils import util
 from execution.entities.event import Event
 from utils import time
 from utils.decorator import required, RequiredValueSource
 
+import time as ptime
 api = Blueprint("api-patient", __name__)
 
 
@@ -15,7 +20,7 @@ api = Blueprint("api-patient", __name__)
 @jwt_required()
 @required("patient_id", int, RequiredValueSource.JSON)
 @csrf.exempt
-def get_patient(patient_id: int):
+def arrive_patient(patient_id: int):
     """
     Assigns the requesting player to the patients location and makes the players
     inventory accessible, iff the player
@@ -27,9 +32,10 @@ def get_patient(patient_id: int):
         scenario = execution.scenario
         patient = scenario.patients[patient_id]
 
-        if player.location is not None:
-            return (f"Player already set to another location: "
-                    f"{player.location.id}"), 405
+        if not player.location:
+            # a possible location leave my be pending in another thread. Instead
+            # of leaving automatically use a delayed version.
+            __try_leave_patient(execution_id=execution.id, player=player)
 
         player.location = patient.location
         player.location.add_locations(player.accessible_locations)
@@ -41,6 +47,34 @@ def get_patient(patient_id: int):
             "player_location": player.location.to_dict(),
             "patient": patient.to_dict(shallow=False)
         }
+    except KeyError:
+        return "Missing or invalid request parameter detected.", 400
+
+
+@api.get("/patient/refresh")
+@jwt_required()
+@required("patient_id", int, RequiredValueSource.JSON)
+def get_patient(patient_id: int):
+    """
+    Assigns the requesting player to the patients location and makes the players
+    inventory accessible, iff the player
+    has no current location assigned. Further it returns the updated player
+    location and the patients' data.
+    """
+    try:
+        execution, player = util.get_execution_and_player()
+        patient = execution.scenario.patients[patient_id]
+
+        if (player.location and patient.location and
+                player.location.id == patient.location.id):
+            return {
+                "player_location": player.location.to_dict(),
+                "patient": patient.to_dict(shallow=False)
+            }
+
+        else:
+            return f"Player is not configured to patient {patient_id}: ", 405
+
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
 
@@ -86,3 +120,22 @@ def get_all_patient():
         }
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
+
+
+def __try_leave_patient(execution_id: int, player: Player):
+    """ This method delays a location leave for a provided player. """
+    ptime.sleep(0.5)
+    if player.location:
+        logging.debug("player still assigned to location while arriving at new "
+                      "patient")
+        if player.location.leave_location(player.accessible_locations):
+            Event.location_leave(execution_id=execution_id,
+                                 time=time.current_time_s(),
+                                 player=player.tan,
+                                 leave_location_id=player.location.id).log()
+            player.location = None
+        else:
+            logging.error(f"Unable to leave location {player.location.id} "
+                          f"for player {player.tan}")
+            raise BadRequest("Unable to leave location. Please update your "
+                             "data.")
