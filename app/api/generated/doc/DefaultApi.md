@@ -24,6 +24,7 @@ Method | HTTP request | Description
 [**runPatientAllIdsGet**](DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 [**runPatientArrivePost**](DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
 [**runPatientClassifyPost**](DefaultApi.md#runpatientclassifypost) | **POST** /run/patient/classify | Sets a classification attribute for a specific patient.
+[**runPatientRefreshPost**](DefaultApi.md#runpatientrefreshpost) | **POST** /run/patient/refresh | Returns a specified patient.
 [**runPlayerInventoryGet**](DefaultApi.md#runplayerinventoryget) | **GET** /run/player/inventory | Get Player Inventory
 [**scenarioStartTimeGet**](DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
 
@@ -695,6 +696,53 @@ Name | Type | Description  | Notes
 ### Return type
 
 void (empty response body)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **runPatientRefreshPost**
+> RunPatientArrivePost200Response runPatientRefreshPost(runPatientArrivePostRequest)
+
+Returns a specified patient.
+
+### Example
+```dart
+import 'package:manv_api/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final runPatientArrivePostRequest = RunPatientArrivePostRequest(); // RunPatientArrivePostRequest | 
+
+try {
+    final result = api_instance.runPatientRefreshPost(runPatientArrivePostRequest);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->runPatientRefreshPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **runPatientArrivePostRequest** | [**RunPatientArrivePostRequest**](RunPatientArrivePostRequest.md)|  | 
+
+### Return type
+
+[**RunPatientArrivePost200Response**](RunPatientArrivePost200Response.md)
 
 ### Authorization
 

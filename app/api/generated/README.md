@@ -74,6 +74,7 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**runPatientAllIdsGet**](doc//DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 *DefaultApi* | [**runPatientArrivePost**](doc//DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
 *DefaultApi* | [**runPatientClassifyPost**](doc//DefaultApi.md#runpatientclassifypost) | **POST** /run/patient/classify | Sets a classification attribute for a specific patient.
+*DefaultApi* | [**runPatientRefreshPost**](doc//DefaultApi.md#runpatientrefreshpost) | **POST** /run/patient/refresh | Returns a specified patient.
 *DefaultApi* | [**runPlayerInventoryGet**](doc//DefaultApi.md#runplayerinventoryget) | **GET** /run/player/inventory | Get Player Inventory
 *DefaultApi* | [**scenarioStartTimeGet**](doc//DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
 
