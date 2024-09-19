@@ -1,9 +1,13 @@
 import 'dart:math';
-import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:manv_api/api.dart';
 
-typedef PatientPosition = ({Offset position, int id});
+typedef PatientPosition = ({
+  Offset position,
+  int id,
+  PatientClassification classification
+});
 typedef LocationPosition = ({Offset position, int id});
 
 class MapData {
@@ -28,8 +32,11 @@ class MapData {
             bDTO.height.toDouble()))
         .toList();
     var patientPositions = mapdataDTO.patientPositions
-        .map((ppDTO) =>
-            (position: ppDTO.position.toOffset(), id: ppDTO.patientId))
+        .map((ppDTO) => (
+              position: ppDTO.position.toOffset(),
+              id: ppDTO.patientId,
+              classification: ppDTO.classification
+            ))
         .toList();
     var locationPositions = mapdataDTO.locationPositions
         .map((lpDTO) =>
@@ -63,4 +70,24 @@ class MapData {
 
 extension PointDTOToOffset on PointDTO {
   Offset toOffset() => Offset(x.toDouble(), y.toDouble());
+}
+
+extension ClassificationToColor on PatientClassification {
+  /// Doesn't differentiate pre and fully classified.
+  Color? toColor() {
+    return switch (this) {
+      PatientClassification.PRE_RED || PatientClassification.RED => Colors.red,
+      PatientClassification.PRE_YELLOW ||
+      PatientClassification.YELLOW =>
+        Colors.yellow,
+      PatientClassification.PRE_GREEN ||
+      PatientClassification.GREEN =>
+        Colors.green,
+      PatientClassification.PRE_BLUE ||
+      PatientClassification.BLUE =>
+        Colors.blue,
+      PatientClassification.BLACK => Colors.black,
+      _ => null
+    };
+  }
 }

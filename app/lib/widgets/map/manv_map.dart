@@ -59,7 +59,8 @@ class _MANVMapState extends State<MANVMap> {
               left: patientPosition.position.dx,
               child: IconButton(
                   onPressed: () => _onPatientPressed(patientPosition, context),
-                  icon: const Icon(Icons.accessibility_new),
+                  icon: Icon(Icons.accessibility_new,
+                      color: patientPosition.classification.toColor()),
                   iconSize: 50),
             ))
         .toList();
@@ -94,7 +95,7 @@ class _MANVMapState extends State<MANVMap> {
   }
 
   void _onLocationPressed(
-      PatientPosition locationPosition, BuildContext context) {
+      LocationPosition locationPosition, BuildContext context) {
     if (_isTooFar(locationPosition.position)) {
       _showTimedMessage(locationPosition.position,
           AppLocalizations.of(context)!.mapLocationTooFar);
