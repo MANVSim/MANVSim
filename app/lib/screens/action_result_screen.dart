@@ -14,14 +14,19 @@ import '../models/action_result.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../models/patient.dart';
+import '../models/performed_actions.dart';
 import '../models/resource.dart';
 
 class ActionResultScreen extends StatefulWidget {
   final Patient patient;
   final String performedActionId;
+  final bool resultAlreadyAvailable;
 
   const ActionResultScreen(
-      {super.key, required this.patient, required this.performedActionId});
+      {super.key,
+      required this.patient,
+      required this.performedActionId,
+      this.resultAlreadyAvailable = false});
 
   @override
   State<ActionResultScreen> createState() => _ActionResultScreenState();
@@ -33,8 +38,11 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
   @override
   void initState() {
     super.initState();
-    futureActionResult = ActionService.fetchActionResult(
-        widget.patient, widget.performedActionId);
+
+    futureActionResult = widget.resultAlreadyAvailable
+        ? Future.value(ActionResult.fromPatient(widget.patient, widget.performedActionId))
+        : ActionService.fetchActionResult(
+            widget.patient, widget.performedActionId);
   }
 
   _buildConditionOverview(Condition condition) {

@@ -160,9 +160,11 @@ def get_perform_action_result():
             if not res.consumable:
                 res.increase()
 
+        patient_conditions = patient.activity_diagram.current.get_conditions(result_keys)
+        performed_action.resulting_condition = patient_conditions
+
         return {
             "patient": patient.to_dict(),
-            "conditions": patient.activity_diagram.current.get_conditions(result_keys)
         }
 
     except KeyError:

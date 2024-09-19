@@ -12,6 +12,7 @@ import 'package:manvsim/widgets/patient_overview.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../constants/manv_icons.dart';
+import 'action_result_screen.dart';
 
 class PatientScreen extends StatefulWidget {
   final int patientId;
@@ -56,7 +57,22 @@ class _PatientScreenState extends State<PatientScreen> {
         ]));
   }
 
-  Widget _buildPerformedAction(PerformedAction performedAction) {
+  void _showActionResult(
+      BuildContext context, PerformedAction performedAction, Patient patient) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ActionResultScreen(
+          patient: patient,
+          performedActionId: performedAction.id,
+          resultAlreadyAvailable: true,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPerformedAction(
+      PerformedAction performedAction, Patient patient) {
     return Card(
         child: Padding(
             padding: const EdgeInsets.all(16),
@@ -68,7 +84,8 @@ class _PatientScreenState extends State<PatientScreen> {
                 ),
                 const Spacer(),
                 ElevatedButton(
-                    onPressed: null,
+                    onPressed: () =>
+                        _showActionResult(context, performedAction, patient),
                     child: Text(AppLocalizations.of(context)!
                         .patientScreenPerformedActionDetails)),
                 MediaInfo(
@@ -129,12 +146,13 @@ class _PatientScreenState extends State<PatientScreen> {
                 width: double.infinity,
                 child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child:
-                        Text(AppLocalizations.of(context)!.patientScreenNoPerformedAction))))
+                    child: Text(AppLocalizations.of(context)!
+                        .patientScreenNoPerformedAction))))
       ];
     } else {
       return sortedPerformedActions(patient)
-          .map((performedAction) => _buildPerformedAction(performedAction))
+          .map((performedAction) =>
+              _buildPerformedAction(performedAction, patient))
           .toList();
     }
   }

@@ -484,10 +484,8 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [ conditions, patient ]
+                required: [ patient ]
                 properties:
-                  conditions:
-                    $ref: '#/components/schemas/ConditionDTO'
                   patient:
                     $ref: '#/components/schemas/PatientDTO'
         '204':
@@ -708,6 +706,8 @@ components:
             $ref: '#/components/schemas/ResourceDTO'
         time:
           type: integer
+        resulting_conditions:
+          $ref: '#/components/schemas/ConditionDTO'
       required: [ action, execution_id, id, player_tan, resources_used, time ]
 
     MediaReferencesDTO:

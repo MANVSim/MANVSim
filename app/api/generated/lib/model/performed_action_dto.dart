@@ -19,6 +19,7 @@ class PerformedActionDTO {
     required this.playerTan,
     this.resourcesUsed = const [],
     required this.time,
+    this.resultingConditions = const {},
   });
 
   ActionDTO action;
@@ -33,6 +34,8 @@ class PerformedActionDTO {
 
   int time;
 
+  Map<String, List<MediaReferencesDTOInner>> resultingConditions;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is PerformedActionDTO &&
     other.action == action &&
@@ -40,7 +43,8 @@ class PerformedActionDTO {
     other.id == id &&
     other.playerTan == playerTan &&
     _deepEquality.equals(other.resourcesUsed, resourcesUsed) &&
-    other.time == time;
+    other.time == time &&
+    _deepEquality.equals(other.resultingConditions, resultingConditions);
 
   @override
   int get hashCode =>
@@ -50,10 +54,11 @@ class PerformedActionDTO {
     (id.hashCode) +
     (playerTan.hashCode) +
     (resourcesUsed.hashCode) +
-    (time.hashCode);
+    (time.hashCode) +
+    (resultingConditions.hashCode);
 
   @override
-  String toString() => 'PerformedActionDTO[action=$action, executionId=$executionId, id=$id, playerTan=$playerTan, resourcesUsed=$resourcesUsed, time=$time]';
+  String toString() => 'PerformedActionDTO[action=$action, executionId=$executionId, id=$id, playerTan=$playerTan, resourcesUsed=$resourcesUsed, time=$time, resultingConditions=$resultingConditions]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -63,6 +68,7 @@ class PerformedActionDTO {
       json[r'player_tan'] = this.playerTan;
       json[r'resources_used'] = this.resourcesUsed;
       json[r'time'] = this.time;
+      json[r'resulting_conditions'] = this.resultingConditions;
     return json;
   }
 
@@ -91,6 +97,9 @@ class PerformedActionDTO {
         playerTan: mapValueOfType<String>(json, r'player_tan')!,
         resourcesUsed: ResourceDTO.listFromJson(json[r'resources_used']),
         time: mapValueOfType<int>(json, r'time')!,
+        resultingConditions: json[r'resulting_conditions'] == null
+          ? const {}
+            : MediaReferencesDTOInner.mapListFromJson(json[r'resulting_conditions']),
       );
     }
     return null;
