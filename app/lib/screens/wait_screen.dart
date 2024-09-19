@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
 import 'package:manvsim/appframe.dart';
 import 'package:manvsim/services/api_service.dart';
+import 'package:manvsim/services/notification_service.dart';
 import 'package:manvsim/widgets/error_box.dart';
-import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widgets/player_overview.dart';
 
@@ -187,6 +187,9 @@ class _WaitScreenState extends State<WaitScreen> {
   }
 
   void _goToHome() {
+    NotificationService notificationService = GetIt.I<NotificationService>();
+    notificationService.startPolling();
+
     _apiService.api
         .runLocationLeavePost()
         .whenComplete(() => Navigator.pushAndRemoveUntil(
@@ -199,42 +202,43 @@ class _WaitScreenState extends State<WaitScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(AppLocalizations.of(context)!.waitText),
-      ),
-      body: Column(children: [
-        const PlayerOverview(),
-        Expanded(child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (_showError()) ...[
-              ErrorBox(
-                  errorText: AppLocalizations.of(context)!
-                      .waitErrorOccurred(_errorText!)),
-              const SizedBox(height: 32),
-            ],
-            Text(_waitStateText()),
-            const SizedBox(height: 32),
-            if (_showTimer())
-              TimerWidget(
-                  duration: Duration(seconds: _waitTimeSeconds),
-                  onTimerComplete: _handleTimerComplete)
-            else
-              const CircularProgressIndicator(),
-            if (true) ...[
-              // TODO: #228 use kDebugMode instead of true
-              const SizedBox(height: 64),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.skip_next),
-                onPressed: _goToHome,
-                label: Text(AppLocalizations.of(context)!.waitSkip),
-              )
-            ],
-          ],
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(AppLocalizations.of(context)!.waitText),
         ),
-      )),
-    ]));
+        body: Column(children: [
+          const PlayerOverview(),
+          Expanded(
+              child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (_showError()) ...[
+                  ErrorBox(
+                      errorText: AppLocalizations.of(context)!
+                          .waitErrorOccurred(_errorText!)),
+                  const SizedBox(height: 32),
+                ],
+                Text(_waitStateText()),
+                const SizedBox(height: 32),
+                if (_showTimer())
+                  TimerWidget(
+                      duration: Duration(seconds: _waitTimeSeconds),
+                      onTimerComplete: _handleTimerComplete)
+                else
+                  const CircularProgressIndicator(),
+                if (true) ...[
+                  // TODO: #228 use kDebugMode instead of true
+                  const SizedBox(height: 64),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.skip_next),
+                    onPressed: _goToHome,
+                    label: Text(AppLocalizations.of(context)!.waitSkip),
+                  )
+                ],
+              ],
+            ),
+          )),
+        ]));
   }
 }

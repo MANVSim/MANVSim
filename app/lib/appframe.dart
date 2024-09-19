@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get_it/get_it.dart';
 import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/screens/home_screen.dart';
 import 'package:manvsim/screens/location_list_screen.dart';
 import 'package:manvsim/screens/map_screen.dart';
 import 'package:manvsim/screens/notifications_screen.dart';
 import 'package:manvsim/screens/patient_list_screen.dart';
+import 'package:manvsim/services/notification_service.dart';
 
 class AppFrame extends StatefulWidget {
   const AppFrame({super.key});
@@ -15,7 +17,38 @@ class AppFrame extends StatefulWidget {
 }
 
 class _AppFrameState extends State<AppFrame> {
-  int currentPageIndex = 0;
+  int _currentPageIndex = 0;
+  late NotificationService _notificationService;
+  late bool _hasUnreadNotifications;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _notificationService = GetIt.I.get<NotificationService>();
+    _notificationService.addListener(_onNotificationReceived);
+    _hasUnreadNotifications = _notificationService.hasUnreadNotifications;
+  }
+
+  @override
+  void dispose() {
+    _notificationService.removeListener(_onNotificationReceived);
+    super.dispose();
+  }
+
+  bool _isOnNotificationsScreen() {
+    return _currentPageIndex == 3;
+  }
+
+  void _onNotificationReceived() {
+    if (!_isOnNotificationsScreen()) {
+      setState(() {
+        _hasUnreadNotifications = _notificationService.hasUnreadNotifications;
+      });
+    } else {
+      _hasUnreadNotifications = _notificationService.hasUnreadNotifications;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +56,11 @@ class _AppFrameState extends State<AppFrame> {
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
-            currentPageIndex = index;
+            _currentPageIndex = index;
           });
         },
         indicatorColor: Colors.amber,
-        selectedIndex: currentPageIndex,
+        selectedIndex: _currentPageIndex,
         destinations: <Widget>[
           NavigationDestination(
               selectedIcon: const Icon(Icons.home_outlined),
@@ -46,8 +79,11 @@ class _AppFrameState extends State<AppFrame> {
               icon: const Icon(ManvIcons.location),
               label: AppLocalizations.of(context)!.frameLocations),
           NavigationDestination(
-              icon: const Badge(child: Icon(Icons.notifications_sharp)),
-              label: AppLocalizations.of(context)!.frameNotifications),
+            icon: _hasUnreadNotifications && !_isOnNotificationsScreen()
+                ? const Badge(child: Icon(Icons.notifications_sharp))
+                : const Icon(Icons.notifications_sharp),
+            label: AppLocalizations.of(context)!.frameNotifications,
+          ),
         ],
       ),
       body: const <Widget>[
@@ -57,7 +93,7 @@ class _AppFrameState extends State<AppFrame> {
         PatientListScreen(),
         LocationListScreen(),
         NotificationsScreen()
-      ][currentPageIndex],
+      ][_currentPageIndex],
     );
   }
 }

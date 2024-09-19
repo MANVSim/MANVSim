@@ -4,7 +4,7 @@ import {
   useLoaderData,
   useNavigate,
 } from "react-router"
-import { getActiveExecutions, getTemplates, tryFetchApi, tryFetchJson } from "../api"
+import {api, getActiveExecutions, getTemplates, tryFetchApi, tryFetchJson} from "../api"
 import { Accordion } from "react-bootstrap"
 import { ExecutionData, Template } from "../types"
 import { ReactElement } from "react"
@@ -24,7 +24,7 @@ export function ExecutionListRoute(): ReactElement {
 
   const handleNewScenario = async () => {
     try {
-      const response = await fetch("/web/scenario", { method: "POST" })
+      const response = await fetch(api + "scenario", { method: "POST" })
       if (response.ok) {
         const response_json = await response.json()
         navigate(`/scenario/${response_json.id}`)
