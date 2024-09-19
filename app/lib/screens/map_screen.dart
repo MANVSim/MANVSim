@@ -4,7 +4,7 @@ import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/services/map_service.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:manvsim/widgets/logout_button.dart';
-import 'package:manvsim/widgets/map_overlay.dart';
+import 'package:manvsim/widgets/map/map_overlay.dart';
 
 class PatientMapScreen extends StatefulWidget {
   const PatientMapScreen({super.key});

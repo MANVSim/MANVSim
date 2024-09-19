@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/models/offset_ray.dart';
-import 'package:manvsim/widgets/manv_map.dart';
+import 'package:manvsim/widgets/map/manv_map.dart';
 
 enum MapOverlayViewerPositions {
   center(alignment: Alignment.center),
