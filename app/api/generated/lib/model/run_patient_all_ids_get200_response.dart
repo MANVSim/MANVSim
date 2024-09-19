@@ -14,25 +14,31 @@ class RunPatientAllIdsGet200Response {
   /// Returns a new [RunPatientAllIdsGet200Response] instance.
   RunPatientAllIdsGet200Response({
     this.patientIds = const [],
+    this.patientNames = const [],
   });
 
   List<int> patientIds;
 
+  List<String> patientNames;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunPatientAllIdsGet200Response &&
-    _deepEquality.equals(other.patientIds, patientIds);
+    _deepEquality.equals(other.patientIds, patientIds) &&
+    _deepEquality.equals(other.patientNames, patientNames);
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (patientIds.hashCode);
+    (patientIds.hashCode) +
+    (patientNames.hashCode);
 
   @override
-  String toString() => 'RunPatientAllIdsGet200Response[patientIds=$patientIds]';
+  String toString() => 'RunPatientAllIdsGet200Response[patientIds=$patientIds, patientNames=$patientNames]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'patient_ids'] = this.patientIds;
+      json[r'patient_names'] = this.patientNames;
     return json;
   }
 
@@ -57,6 +63,9 @@ class RunPatientAllIdsGet200Response {
       return RunPatientAllIdsGet200Response(
         patientIds: json[r'patient_ids'] is Iterable
             ? (json[r'patient_ids'] as Iterable).cast<int>().toList(growable: false)
+            : const [],
+        patientNames: json[r'patient_names'] is Iterable
+            ? (json[r'patient_names'] as Iterable).cast<String>().toList(growable: false)
             : const [],
       );
     }
@@ -106,6 +115,7 @@ class RunPatientAllIdsGet200Response {
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
     'patient_ids',
+    'patient_names',
   };
 }
 

@@ -16,11 +16,13 @@ export function PlayerStatus({ player }: PlayerStatusProps) {
       <td>
         {player.logged_in ? (
           player.alerted ? (
-            "Alarmiert"
+            <Button className="btn btn-outline-primary w-50" title="Spieler wurde bereits alamiert." disabled>
+              Alarmiert
+            </Button>
           ) : (
             <div className="d-flex align-items-center">
-              <div className="px-2">Bereit</div>
               <CsrfForm
+                className="w-50"
                 onChange={(event) => submit(event.currentTarget)}
                 method="POST"
               >
@@ -28,6 +30,7 @@ export function PlayerStatus({ player }: PlayerStatusProps) {
                 <input type="hidden" name="tan" value={player.tan} />
                 <Button
                   id={"toggle-status-" + player.tan}
+                  className="w-100"
                   name="alerted"
                   type="submit"
                   value={Number(player.alerted)}

@@ -78,8 +78,11 @@ def get_all_patient():
     """ Returns all patients stored in the scenario. """
     try:
         execution, _ = util.get_execution_and_player()
+        patient_ids = list(execution.scenario.patients.keys())
         return {
-            "patient_ids": list(execution.scenario.patients.keys())
+            "patient_ids": patient_ids,
+            "patient_names": [execution.scenario.patients[patient_id].name for
+                              patient_id in patient_ids]
         }
     except KeyError:
         return "Missing or invalid request parameter detected.", 400

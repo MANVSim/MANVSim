@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/location.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manvsim/widgets/media_info.dart';
 
 import '../services/location_service.dart';
 
@@ -33,6 +34,7 @@ class _MoveCardState extends State<MoveCard> {
   Widget build(BuildContext context) {
     return Card(
         child: ExpansionTile(
+      initiallyExpanded: true,
       title: Text(AppLocalizations.of(context)!.patientMoveSelection),
       controlAffinity: ListTileControlAffinity.leading,
       // removes border on top and bottom
@@ -54,7 +56,7 @@ class _MoveCardState extends State<MoveCard> {
                         selectedLocationIndex =
                             selectedLocationIndex == index ? null : index;
                       });
-                    }));
+                    }, trailing: MediaInfo(title: location.name, media: location.media),));
           },
         ),
         if (selectedLocationIndex != null) ...[

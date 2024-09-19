@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, useLoaderData, } from "react-router";
-import { tryFetchJson } from "../api";
+import {api, tryFetchJson} from "../api";
 import { BaseDataStripped, Scenario } from "../types";
 import { CsrfForm } from "../components/CsrfForm";
 import { useState } from "react";
@@ -115,7 +115,7 @@ ScenarioEditor.action = async function ({ request }: ActionFunctionArgs<Request>
     const csrf = formData.get("csrf_token") ?? "nischt"
 
     // Perform the PATCH request with the serialized JSON data
-    const response = await fetch(`/web/scenario`, {
+    const response = await fetch(api + `scenario`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",

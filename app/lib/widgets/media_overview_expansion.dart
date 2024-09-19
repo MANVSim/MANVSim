@@ -7,16 +7,22 @@ import 'multi_media_view.dart';
 class MediaOverviewExpansion extends StatefulWidget {
   final List<Widget> children;
   final MultiMediaCollection media;
-
+  final bool initiallyExpanded;
   const MediaOverviewExpansion(
-      {super.key, required this.children, required this.media});
+      {super.key, required this.children, required this.media, this.initiallyExpanded = true});
 
   @override
   State<MediaOverviewExpansion> createState() => _MediaOverviewExpansionState();
 }
 
 class _MediaOverviewExpansionState extends State<MediaOverviewExpansion> {
-  bool _detailsVisible = true;
+  late bool _detailsVisible;
+
+  @override
+  void initState() {
+    super.initState();
+    _detailsVisible = widget.initiallyExpanded;
+  }
 
   Widget _title() {
     return SizedBox(

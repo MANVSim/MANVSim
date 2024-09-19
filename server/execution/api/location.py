@@ -23,7 +23,8 @@ def get_all_toplevel_location():
         execution, _ = util.get_execution_and_player()
         return {
             "locations": [location.to_dict() for location
-                          in list(execution.scenario.locations.values())]
+                          in list(execution.scenario.locations.values())
+                          if location.available]
         }
     except KeyError:
         return f"Missing or invalid request parameter detected.", 400

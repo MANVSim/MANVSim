@@ -5,10 +5,13 @@ import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
 import 'package:manvsim/appframe.dart';
 import 'package:manvsim/services/api_service.dart';
+import 'package:manvsim/services/notification_service.dart';
 import 'package:manvsim/widgets/error_box.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/timer_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../widgets/player_overview.dart';
 
 class WaitScreen extends StatefulWidget {
   const WaitScreen({super.key});
@@ -185,6 +188,10 @@ class _WaitScreenState extends State<WaitScreen> {
   }
 
   void _goToHome() {
+
+    NotificationService notificationService = GetIt.I<NotificationService>();
+    notificationService.startPolling();
+
     _apiService.api
         .runLocationLeavePost()
         .whenComplete(() => Navigator.pushAndRemoveUntil(
@@ -198,11 +205,12 @@ class _WaitScreenState extends State<WaitScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: const <Widget>[LogoutButton()],
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(AppLocalizations.of(context)!.waitText),
       ),
-      body: Center(
+      body: Column(children: [
+        const PlayerOverview(),
+        Expanded(child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -231,7 +239,7 @@ class _WaitScreenState extends State<WaitScreen> {
             ],
           ],
         ),
-      ),
-    );
+      )),
+    ]));
   }
 }

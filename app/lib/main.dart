@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:manvsim/models/tan_user.dart';
 import 'package:manvsim/screens/start_screen.dart';
 import 'package:manvsim/services/api_service.dart';
+import 'package:manvsim/services/notification_service.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,9 +17,15 @@ class ManvSimApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final GetIt getIt = GetIt.instance;
+
     if (!getIt.isRegistered<ApiService>()) {
       getIt.registerLazySingleton<ApiService>(() => ApiService());
+    }
+
+    if (!getIt.isRegistered<NotificationService>()){
+      getIt.registerLazySingleton<NotificationService>(() => NotificationService());
     }
 
     return MultiProvider(
