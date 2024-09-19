@@ -7,7 +7,7 @@ from werkzeug.exceptions import InternalServerError
 from app_config import csrf
 from execution.entities.event import Event
 from execution.api.location import leave_location
-from execution.api.patient import get_patient
+from execution.api.patient import arrive_patient
 from execution.entities.action import Action
 from execution.entities.performed_action import PerformedAction
 from execution.entities.resource import Resource, try_lock_all, \
@@ -194,7 +194,7 @@ def move_patient(patient_id: int, new_location_id: int):
         patient.location = new_location
 
         # Assign player to new patient location
-        r_value = get_patient()
+        r_value = arrive_patient()
 
         # WARNING errors are just passed, not handled -> clients responsibility
         return r_value
