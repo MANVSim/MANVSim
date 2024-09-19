@@ -212,6 +212,42 @@ paths:
       security:
         - bearerAuth: [ ]
 
+  /run/patient/refresh:
+    post:
+      summary: Returns a specified patient.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ patient_id ]
+              properties:
+                patient_id:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: A patient specified by patientId. Additionally the response contains updated current location of the player.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ patient ]
+                properties:
+                  player_location:
+                    $ref: '#/components/schemas/LocationDTO'
+                  patient:
+                    $ref: '#/components/schemas/PatientDTO'
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: [ ]
+
   /run/patient/classify:
     post:
       summary: Sets a classification attribute for a specific patient.
