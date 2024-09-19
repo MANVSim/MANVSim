@@ -27,7 +27,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     import media.media_api
 
     app = Flask(__name__, static_folder="../web/dist")
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI", "sqlite:///db.sqlite3")
     app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', 'default-not-so-secret-secret-key')
     app.config["JWT_SECRET_KEY"] = os.getenv('SECRET_KEY', 'default-not-so-secret-secret-key')
     app.config['WTF_CSRF_CHECK_DEFAULT'] = False
