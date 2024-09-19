@@ -484,7 +484,7 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [ conditions, patient ]
+                required: [ patient ]
                 properties:
                   patient:
                     $ref: '#/components/schemas/PatientDTO'
