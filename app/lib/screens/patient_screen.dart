@@ -174,12 +174,14 @@ class _PatientScreenState extends State<PatientScreen> {
     });
   }
 
-  void showClassificationSelectionDialog(BuildContext context, Patient patient) {
+  void showClassificationSelectionDialog(
+      BuildContext context, Patient patient) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Sichtungskategorie'),
+          title: Text(
+              AppLocalizations.of(context)!.patientScreenClassificationTitle),
           content: Container(
             width: double.maxFinite,
             child: GridView.count(
@@ -193,7 +195,8 @@ class _PatientScreenState extends State<PatientScreen> {
                       classification: classification,
                       onTap: () {
                         setState(() {
-                          futureClassification = PatientService.classifyPatient(classification, patient);
+                          futureClassification = PatientService.classifyPatient(
+                              classification, patient);
                         });
                         Navigator.of(context).pop();
                       }))
@@ -257,19 +260,20 @@ class _PatientScreenState extends State<PatientScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            "Sichtungskategorie",
+                            AppLocalizations.of(context)!
+                                .patientScreenClassificationTitle,
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           const Spacer(),
                           ElevatedButton(
                               onPressed: () =>
-                                  showClassificationSelectionDialog(context, patient),
-                              child: Text(classification ==
-                                      PatientClass.notClassified
-                                  ? "Auswählen"
-                                  : "Ändern")),
-                          if (classification !=
-                              PatientClass.notClassified)
+                                  showClassificationSelectionDialog(
+                                      context, patient),
+                              child: Text(
+                                  classification == PatientClass.notClassified
+                                      ? AppLocalizations.of(context)!.select
+                                      : AppLocalizations.of(context)!.change)),
+                          if (classification != PatientClass.notClassified)
                             SizedBox(
                                 width: 40,
                                 height: 40,
@@ -286,13 +290,13 @@ class _PatientScreenState extends State<PatientScreen> {
         future: futureClassification,
         builder: (context, classification) {
           if (classification == PatientClass.notClassified) {
-            return const Card(
+            return Card(
                 child: SizedBox(
                     width: double.infinity,
                     child: Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Text(
-                            "Es wurde bisher noch keine Sichtung durchgeführt"))));
+                        child: Text(AppLocalizations.of(context)!
+                            .patientScreenNoClassification))));
           } else {
             return Card(
                 child: Padding(
@@ -302,7 +306,8 @@ class _PatientScreenState extends State<PatientScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Sichtungskategorie",
+                              AppLocalizations.of(context)!
+                                  .patientScreenClassificationTitle,
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             const Spacer(),
@@ -323,7 +328,7 @@ class _PatientScreenState extends State<PatientScreen> {
         patient,
         [
           Text(
-            "Sichtung",
+            AppLocalizations.of(context)!.patientScreenClassification,
             textAlign: TextAlign.center,
           ),
           _buildClassification(),
@@ -393,7 +398,7 @@ class _PatientScreenState extends State<PatientScreen> {
     return _buildTabView(
         patient,
         [
-          Text("Sichtung"),
+          Text(AppLocalizations.of(context)!.patientScreenClassification),
           _buildClassificationAction(patient),
           ActionSelection(
               patient: patient,

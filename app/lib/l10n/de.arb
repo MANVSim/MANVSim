@@ -74,6 +74,11 @@
   "patientListScreenName": "Patienten Auswahl",
   "locationListScreenName": "Location Auswahl",
 
+
+  "select": "Auswählen",
+  "change": "Ändern",
+
+
   "patientScreenPerformedActionDetails": "Details",
   "patientScreenPerformedActionTime": "Uhrzeit",
   "patientScreenPerformedActionResults": "Ergebnisse",
@@ -82,6 +87,12 @@
   "patientScreenTabOverview": "Übersicht",
   "patientScreenTabActions": "Maßnahmen",
   "patientScreenFilterResourceTitle": "Filter nach Resourcen",
+
+  "patientScreenClassification": "Sichtung",
+  "patientScreenNoClassification": "Es wurde bisher noch keine Sichtung durchgeführt",
+  "patientScreenClassificationTitle": "Sichtungskategorie",
+
+
 
   "sortByOldest": "Älteste zuerst",
   "sortByNewest": "Neueste zuerst",
