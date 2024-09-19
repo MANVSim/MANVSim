@@ -22,6 +22,15 @@ class PatientService {
             : null));
   }
 
+  static Future<Patient?> refreshPatient(int patientId) async {
+    ApiService apiService = GetIt.instance.get<ApiService>();
+    return await apiService.api
+        .runPatientRefreshPost(RunPatientArrivePostRequest(patientId: patientId))
+        .then((response) => (response?.patient != null
+        ? Patient.fromApi((response?.patient)!)
+        : null));
+  }
+
   static Future<PatientList> fetchPatientsIDs() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api

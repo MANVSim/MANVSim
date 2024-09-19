@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/performed_actions.dart';
 
-import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/services/time_service.dart';
 import 'package:manvsim/widgets/action_selection.dart';
@@ -445,8 +444,7 @@ class _PatientScreenState extends State<PatientScreen> {
     setState(() {
       futurePatient = patient != null
           ? Future(() => patient)
-          : LocationService.leaveLocation()
-              .then((v) => PatientService.arriveAtPatient(widget.patientId));
+          : PatientService.refreshPatient(widget.patientId);
     });
     return futurePatient;
   }
