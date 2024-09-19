@@ -136,6 +136,8 @@ class _MANVMapState extends State<MANVMap> {
   }
 }
 
+typedef _ShadowEdge = ({Offset start, Offset end, OffsetRay ray});
+
 /// Raw map drawn on a canvas.
 /// Draws buildings and their shadows based on [viewerPositionNotifier}.
 class _ShadowPainter extends CustomPainter {
@@ -164,24 +166,26 @@ class _ShadowPainter extends CustomPainter {
   bool shouldRepaint(_ShadowPainter oldDelegate) => true;
 
   List<Path> _getShadow(Rect building, Size size) {
+    // TODO: instead of drawing shadows for all edges figure out which two corners form the biggest shadow
+    var edges = [
+      building.bottomRight,
+      building.bottomLeft,
+      building.topLeft,
+      building.topRight
+    ].map(_calcShadowEdge).toList();
+
     return [
-      shadowPathForEdge(building.bottomRight, building.bottomLeft),
-      shadowPathForEdge(building.bottomLeft, building.topLeft),
-      shadowPathForEdge(building.topLeft, building.topRight),
-      shadowPathForEdge(building.topRight, building.bottomRight)
+      _shadowPathForEdges(edges[0], edges[1]),
+      _shadowPathForEdges(edges[1], edges[2]),
+      _shadowPathForEdges(edges[2], edges[3]),
+      _shadowPathForEdges(edges[3], edges[0]),
     ];
   }
 
-  Path shadowPathForEdge(Offset lineStart, Offset lineEnd) {
-    Rect boundingRect = Offset.zero & mapData.size;
+  Path _shadowPathForEdges(_ShadowEdge edge, _ShadowEdge edge2) {
+    Rect boundingRect = mapData.rect;
 
-    OffsetRay ray = OffsetRay(viewerPosition, viewerPosition - lineStart);
-    Offset end = ray.intersectionWithRect(boundingRect)!;
-
-    OffsetRay ray2 = OffsetRay(viewerPosition, viewerPosition - lineEnd);
-    Offset end2 = ray2.intersectionWithRect(boundingRect)!;
-
-    var path = [end, lineStart, lineEnd, end2];
+    var path = [edge.end, edge.start, edge2.start, edge2.end];
 
     var corners = <Offset>[];
     for (Offset corner in [
@@ -190,14 +194,21 @@ class _ShadowPainter extends CustomPainter {
       boundingRect.topRight,
       boundingRect.bottomRight,
     ]) {
-      var wideAngle = ray.direction.signedAngleTo(ray2.direction);
-      var smallAngle = ray.direction.signedAngleTo(viewerPosition - corner);
+      var wideAngle = edge.ray.direction.signedAngleTo(edge2.ray.direction);
+      var smallAngle =
+          edge.ray.direction.signedAngleTo(viewerPosition - corner);
       if (wideAngle.sign == smallAngle.sign &&
           smallAngle.abs() < wideAngle.abs()) corners.add(corner);
     }
     corners.sort((a, b) =>
         ((path.last - a).distance - (path.last - b).distance).toInt());
     return Path()..addPolygon(path..addAll(corners), true);
+  }
+
+  _ShadowEdge _calcShadowEdge(Offset start) {
+    OffsetRay ray = OffsetRay(viewerPosition, viewerPosition - start);
+    Offset end = ray.intersectionWithRect(mapData.rect)!;
+    return (start: start, end: end, ray: ray);
   }
 }
 

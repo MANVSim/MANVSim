@@ -23,6 +23,8 @@ class MapData {
   MapData(this.buildings, this.patientPositions, this.locationPositions,
       this.startingPoint, this.size);
 
+  Rect get rect => Offset.zero & size;
+
   factory MapData.fromApi(MapDataDTO mapdataDTO) {
     var buildings = mapdataDTO.buildings
         .map((bDTO) => Rect.fromLTWH(

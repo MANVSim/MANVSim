@@ -158,13 +158,13 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
             IconButton(
                 onPressed: () => _onNewDirection(
                     toScene(positionOnViewport.translate(-10, 0))),
-                icon: const Icon(Icons.arrow_circle_left)),
+                icon: const Icon(Icons.arrow_circle_left_outlined)),
             IconButton(
                 onPressed: _onMoveEnd, icon: const Icon(Icons.stop_circle)),
             IconButton(
                 onPressed: () => _onNewDirection(
                     toScene(positionOnViewport.translate(10, 0))),
-                icon: const Icon(Icons.arrow_circle_right)),
+                icon: const Icon(Icons.arrow_circle_right_outlined)),
           ],
         )
       ]),
