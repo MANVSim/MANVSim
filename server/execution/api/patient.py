@@ -51,7 +51,7 @@ def arrive_patient(patient_id: int):
         return "Missing or invalid request parameter detected.", 400
 
 
-@api.get("/patient/refresh")
+@api.post("/patient/refresh")
 @jwt_required()
 @required("patient_id", int, RequiredValueSource.JSON)
 def get_patient(patient_id: int):
