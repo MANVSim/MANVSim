@@ -25,11 +25,18 @@ class PatientScreen extends StatefulWidget {
 
 class _PatientScreenState extends State<PatientScreen> {
   late Future<Patient?> futurePatient;
+  late Future<PatientClass> futureClassification;
   bool sortOldestFirst = false;
 
   @override
   void initState() {
     futurePatient = PatientService.arriveAtPatient(widget.patientId);
+
+    futurePatient.then((patient) {
+      if (patient != null) {
+        futureClassification = Future.value(patient.classification);
+      }
+    });
 
     super.initState();
   }
@@ -167,10 +174,160 @@ class _PatientScreenState extends State<PatientScreen> {
     });
   }
 
+  void showClassificationSelectionDialog(BuildContext context, Patient patient) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Sichtungskategorie'),
+          content: Container(
+            width: double.maxFinite,
+            child: GridView.count(
+              crossAxisCount: 3,
+              shrinkWrap: true,
+              children: PatientClass.values
+                  .where((classification) =>
+                      classification != PatientClass.notClassified)
+                  .map((classification) => buildColorTile(
+                      context: context,
+                      classification: classification,
+                      onTap: () {
+                        setState(() {
+                          futureClassification = PatientService.classifyPatient(classification, patient);
+                        });
+                        Navigator.of(context).pop();
+                      }))
+                  .toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildColorTile(
+      {required BuildContext context,
+      required PatientClass classification,
+      Function()? onTap}) {
+    Widget tileContent;
+
+    if (classification.isPre) {
+      tileContent = Row(
+        children: [
+          Expanded(
+            child: Container(
+              color: classification.color,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              color: Colors.white,
+            ),
+          ),
+        ],
+      );
+    } else {
+      tileContent = Container(
+        color: classification.color,
+      );
+    }
+
+    Widget colorContainer = Container(
+      margin: const EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+      ),
+      child: tileContent,
+    );
+
+    return onTap != null
+        ? GestureDetector(onTap: onTap, child: colorContainer)
+        : colorContainer;
+  }
+
+  Widget _buildClassificationAction(Patient patient) {
+    return ApiFutureBuilder(
+        future: futureClassification,
+        builder: (context, classification) {
+          return Card(
+              child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(children: [
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Sichtungskategorie",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const Spacer(),
+                          ElevatedButton(
+                              onPressed: () =>
+                                  showClassificationSelectionDialog(context, patient),
+                              child: Text(classification ==
+                                      PatientClass.notClassified
+                                  ? "Auswählen"
+                                  : "Ändern")),
+                          if (classification !=
+                              PatientClass.notClassified)
+                            SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: buildColorTile(
+                                    context: context,
+                                    classification: classification))
+                        ])
+                  ])));
+        });
+  }
+
+  Widget _buildClassification() {
+    return ApiFutureBuilder(
+        future: futureClassification,
+        builder: (context, classification) {
+          if (classification == PatientClass.notClassified) {
+            return const Card(
+                child: SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(
+                            "Es wurde bisher noch keine Sichtung durchgeführt"))));
+          } else {
+            return Card(
+                child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(children: [
+                      Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Sichtungskategorie",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            const Spacer(),
+                            SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: buildColorTile(
+                                    context: context,
+                                    classification: classification))
+                          ])
+                    ])));
+          }
+        });
+  }
+
   Widget _buildOverview(Patient patient) {
     return _buildTabView(
         patient,
         [
+          Text(
+            "Sichtung",
+            textAlign: TextAlign.center,
+          ),
+          _buildClassification(),
+          const SizedBox(height: 4),
           Stack(
             alignment: Alignment.center,
             children: [
@@ -236,6 +393,8 @@ class _PatientScreenState extends State<PatientScreen> {
     return _buildTabView(
         patient,
         [
+          Text("Sichtung"),
+          _buildClassificationAction(patient),
           ActionSelection(
               patient: patient,
               locations: [patient.location],
