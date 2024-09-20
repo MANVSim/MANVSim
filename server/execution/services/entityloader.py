@@ -18,17 +18,18 @@ from execution.entities.stategraphs.activity_diagram import ActivityDiagram
 from media.media_data import MediaData
 from vars import RESULT_DELIMITER
 
-blocked_hash = 0
+
+__blocked_hash = 0
 
 
 def __generate_id() -> int:
-    global blocked_hash
+    global __blocked_hash
 
     new_hash = hash(utils.time.current_time_ms())
-    while new_hash == blocked_hash:
+    while new_hash == __blocked_hash:
         new_hash = hash(utils.time.current_time_ms())
 
-    blocked_hash = new_hash
+    __blocked_hash = new_hash
     return new_hash
 
 
@@ -53,7 +54,7 @@ def __load_resources(location_id: int) -> list[Resource]:
     return resources
 
 
-def load_location(location_id: int) -> (Location | None):
+def load_location(location_id: int) -> Location | None:
     """
     Loads the location with the given ID from the database along with all
     referenced resources and nested locations.
@@ -92,34 +93,34 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
     Loads all patients associated with the given scenario from the database
     and returns them in a dictionary.
     """
+
+    def genrate_location():
+       return Location(id=__generate_id(), name=f"Aufenthaltsort von Patient \"{mapping.name}\"",
+                         media_references=[], resources=[])
+
     patient_mapping = db.session.query(models.PatientInScenario).filter(
         models.PatientInScenario.scenario_id == scenario_id).all()
 
     patients: dict[int, Patient] = dict()
-    patient_locations: dict[int, Location] = dict()  # cache for locations
+    patient_locations: dict[int, Location] = dict()  # Cache for locations
     for mapping in patient_mapping:
+
         p = db.session.query(models.Patient).filter(
             models.Patient.id == mapping.patient_id).first()
         if not p:
             continue
 
         # Load Locations
-        if p.location is None:
-            new_hash = __generate_id()
-            p_loc = Location(id=new_hash,
-                             name=f"Aufenthaltsort von Patient {mapping.name}",
-                             media_references=[], resources=[])
+        if mapping.location_id is None:
+            p_loc = genrate_location()
         elif p.location in patient_locations.keys():
             p_loc = patient_locations[p.location]
         else:
-            p_loc = load_location(p.location)
+            p_loc = load_location(mapping.location_id)
             if p_loc:
                 patient_locations[p.location] = p_loc
             else:
-                new_hash = __generate_id()
-                p_loc = Location(id=new_hash,
-                                 name=f"Aufenthaltsort von Patient {mapping.name}",
-                                 media_references=[], resources=[])
+                p_loc = genrate_location()
 
         # Load Media
         p_media = p.media_refs
@@ -142,10 +143,8 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
         # Create Patient
         new_patient_id = __generate_id()
         patients[new_patient_id] = Patient(id=new_patient_id, name=mapping.name,
-                                           activity_diagram=p_ad,
-                                           # type: ignore
-                                           location=p_loc, performed_actions=[],
-                                           media_references=p_media)  # type: ignore
+                                           activity_diagram=p_ad, location=p_loc, # type: ignore
+                                           performed_actions=[], media_references=p_media)  # type: ignore
 
     return patients
 
