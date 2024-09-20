@@ -177,7 +177,7 @@ const ScenarioData: React.FC<ScenarioDataProps> = ({
                 />
                 <div id="label-header" className="d-flex ms-3 mt-3">
                     <label className="name">Name</label>
-                    <label className={`${name === "Einsatzfahrzeuge" ? "" : "d-none"} travel_time`}>Anfahrtzeit</label>
+                    <label className={`${name === "Einsatzfahrzeuge" ? "" : "d-none"} travel_time`}>Anfahrtszeit</label>
                 </div>
                 <div id="data-items" className="ms-3">
                     {addDataList.length ? (
