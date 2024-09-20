@@ -40,8 +40,7 @@ def __load_resources(location_id: int) -> list[Resource]:
 
     resources = []
     for res in res_in_loc:
-        r = db.session.query(models.Resource).filter(
-            models.Resource.id == res.id).first()
+        r = db.session.query(models.Resource).filter(models.Resource.id == res.resource_id).first()
         if r:
             media_refs = MediaData.list_from_json(
                 r.media_refs) if r.media_refs else []
@@ -95,8 +94,8 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
     """
 
     def generate_location():
-       return Location(id=__generate_id(), name=f"Aufenthaltsort von Patient \"{mapping.name}\"",
-                         media_references=[], resources=[])
+        return Location(id=__generate_id(), name=f"Aufenthaltsort von Patient \"{mapping.name}\"",
+                        media_references=[], resources=[])
 
     patient_mapping = db.session.query(models.PatientInScenario).filter(
         models.PatientInScenario.scenario_id == scenario_id).all()
@@ -143,8 +142,9 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
         # Create Patient
         new_patient_id = __generate_id()
         patients[new_patient_id] = Patient(id=new_patient_id, name=mapping.name,
-                                           activity_diagram=p_ad, location=p_loc, # type: ignore
-                                           performed_actions=[], media_references=p_media)  # type: ignore
+                                           activity_diagram=p_ad, location=p_loc,  # type: ignore
+                                           performed_actions=[],
+                                           media_references=p_media)  # type: ignore
 
     return patients
 
