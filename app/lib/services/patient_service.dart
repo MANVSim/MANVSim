@@ -25,10 +25,11 @@ class PatientService {
   static Future<Patient?> refreshPatient(int patientId) async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api
-        .runPatientRefreshPost(RunPatientArrivePostRequest(patientId: patientId))
+        .runPatientRefreshPost(
+            RunPatientArrivePostRequest(patientId: patientId))
         .then((response) => (response?.patient != null
-        ? Patient.fromApi((response?.patient)!)
-        : null));
+            ? Patient.fromApi((response?.patient)!)
+            : null));
   }
 
   static Future<PatientList> fetchPatientsIDs() async {
@@ -38,12 +39,13 @@ class PatientService {
         .then(PatientListExtension.fromApi);
   }
 
-  static Future<PatientClass> classifyPatient(PatientClass classification, Patient patient) async{
+  static Future<PatientClass> classifyPatient(
+      PatientClass classification, Patient patient) async {
     ApiService apiService = GetIt.instance.get<ApiService>();
-    await apiService.api.runPatientClassifyPost(RunPatientClassifyPostRequest(classification: classification.name, patientId: patient.id));
+    await apiService.api.runPatientClassifyPost(RunPatientClassifyPostRequest(
+        classification: classification.value, patientId: patient.id));
     return Future.value(classification);
   }
-
 
   /// Navigates to [PatientScreen] and leaves location after.
   static void goToPatientScreen(int patientId, BuildContext context) {
