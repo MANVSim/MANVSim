@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
@@ -98,19 +99,23 @@ class _PatientScreenState extends State<PatientScreen> {
         length: 2,
         child: Scaffold(
             appBar: AppBar(
-              bottom: TabBar(
-                tabs: [
-                  _buildTab(
-                      AppLocalizations.of(context)!.patientScreenTabOverview,
-                      ManvIcons.patient),
-                  _buildTab(
-                      AppLocalizations.of(context)!.patientScreenTabActions,
-                      ManvIcons.action),
-                ],
-              ),
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: Text(AppLocalizations.of(context)!.patientScreenName),
-            ),
+                bottom: TabBar(
+                  tabs: [
+                    _buildTab(
+                        AppLocalizations.of(context)!.patientScreenTabOverview,
+                        ManvIcons.patient),
+                    _buildTab(
+                        AppLocalizations.of(context)!.patientScreenTabActions,
+                        ManvIcons.action),
+                  ],
+                ),
+                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                title: Text(AppLocalizations.of(context)!.patientScreenName),
+                actions: [
+                  if (kIsWeb)
+                    IconButton(
+                        onPressed: refresh, icon: const Icon(ManvIcons.refresh))
+                ]),
             body: ApiFutureBuilder<Patient>(
                 future: futurePatient,
                 builder: (context, patient) {

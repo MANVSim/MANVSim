@@ -1,20 +1,21 @@
-import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart' as material;
+import 'package:flutter/material.dart';
 
 class ManvIcons {
-  static const IconData patient = material.Icons.person;
-  static const IconData patientOutlined = material.Icons.person_outlined;
+  static const IconData patient = Icons.person;
+  static const IconData patientOutlined = Icons.person_outlined;
 
-  static const IconData location = material.Icons.location_on;
-  static const IconData locationOutlined = material.Icons.location_on_outlined;
+  static const IconData location = Icons.location_on;
+  static const IconData locationOutlined = Icons.location_on_outlined;
 
-  static const IconData info = material.Icons.info;
+  static const IconData info = Icons.info;
 
-  static const IconData action = material.Icons.medical_information_rounded;
+  static const IconData action = Icons.medical_information_rounded;
 
-  static const IconData time = material.Icons.access_time;
-  static const IconData duration = material.Icons.timelapse;
-  static const IconData user = material.Icons.account_circle_outlined;
+  static const IconData time = Icons.access_time;
+  static const IconData duration = Icons.timelapse;
+  static const IconData user = Icons.account_circle_outlined;
 
-  static const IconData role = material.Icons.work_outline;
+  static const IconData role = Icons.work_outline;
+
+  static const IconData refresh = Icons.refresh;
 }
