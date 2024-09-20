@@ -33,6 +33,7 @@ import { ExecutionStatusDisplay } from "../components/ExecutionStatusDisplay"
 import "./executionList"
 import "./execution.css"
 import QRCode from "react-qr-code"
+import {redirect} from "react-router-dom";
 
 export function ExecutionRoute() {
   const executionData = useLoaderData() as ExecutionData
@@ -313,11 +314,12 @@ ExecutionRoute.action = async function ({
       formData.append("exec_id", params.executionId)
       const response = await pushNotificationToPlayer(formData)
       if (response.ok) {
-        window.location.reload();
+        return redirect(`/execution/${params.executionId}`);
       } else {
         console.error('Failed to send notification:', response.text());
+        return null;
       }
-      return ""
+
     }
     case "player-status": {
       const playerTan = formData.get("tan") as string | null
@@ -330,22 +332,22 @@ ExecutionRoute.action = async function ({
       const response = await createNewPlayer(params.executionId, formData)
       // Instead of redirecting, reload the current page
       if (response.ok) {
-        window.location.reload();
+        return redirect(`/execution/${params.executionId}`);
       } else {
         console.error('Failed to create player:', response.text());
+        return null;
       }
-      return ""
     }
     case "delete-player": {
 
       const response = await deletePlayer(params.executionId, formData)
       // Instead of redirecting, reload the current page
       if (response.ok) {
-        window.location.reload();
+        return redirect(`/execution/${params.executionId}`);
       } else {
         console.error('Failed to delete player:', response.text());
+        return null;
       }
-      return ""
     }
     default:
       throw new Error(`Case '${id}' is not covered in Execution.action`)
