@@ -35,7 +35,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ data, className = '', uploadV
     return (
         <section id="media-upload-section" className={`${uploadView ? "" : "d-none"} ${className}`}>
             <div id="upload-header" className="d-flex mb-3">
-                <h1 className="fs-4 text-white">Medien-Upload: {data.name}-{data.id}</h1>
+                <h1 className="fs-4 text-white">Beschreibungseditor: {data.name}-{data.id}</h1>
                 <button className="btn btn-danger ms-auto" onClick={() => {
                     setUploadView(false)
                     setDeleteMediaList([])
@@ -62,7 +62,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ data, className = '', uploadV
                             setIsText("txt")
                         }
                         } />
-                        <label className="btn btn-outline-primary" htmlFor="btnradio2">Beschreibungstext</label>
+                        <label className="btn btn-outline-primary" htmlFor="btnradio2">Text</label>
                     </div>
                     <div id="upload-row" className="d-flex pb-2">
                         <input type="text" id="media-title" className={`form-control me-2`} name="title" placeholder="Title" />
@@ -74,7 +74,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ data, className = '', uploadV
                             </svg>
                         </button>
                     </div>
-                    <label className={`${fileView ? "d-none" : ""}`}>Text</label>
+                    <label className={`${fileView ? "d-none" : ""}`}>Beschreibungstext</label>
                     <textarea className={`me-2 ${fileView ? "d-none" : ""}`} rows={2} cols={120} name="text" form="media-upload-form" />
                 </div>
             </CsrfForm>
