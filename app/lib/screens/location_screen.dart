@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:manvsim/models/location.dart';
-
-import 'package:manvsim/services/location_service.dart';
-import 'package:manvsim/services/inventory_service.dart';
-import 'package:manvsim/widgets/location_overview.dart';
-import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manvsim/models/location.dart';
+import 'package:manvsim/services/inventory_service.dart';
+import 'package:manvsim/services/location_service.dart';
+import 'package:manvsim/widgets/api_future_builder.dart';
+import 'package:manvsim/widgets/location_overview.dart';
+import 'package:manvsim/widgets/resource_directory.dart';
 import 'package:manvsim/widgets/transfer_dialogue.dart';
-
-import '../widgets/resource_directory.dart';
 
 class LocationScreen extends StatefulWidget {
   final int locationId;
@@ -37,24 +35,25 @@ class _LocationScreenState extends State<LocationScreen> {
     _futureInventory = _getInventory();
   }
 
-  _findLocationById(int locationId) {
+  Future<Location> _findLocationById(int locationId) {
     return LocationService.fetchLocations().then((locations) =>
         locations.firstWhere((location) => location.id == locationId));
   }
 
-  _getInventory() {
+  Future<List<Location>> _getInventory() {
     return InventoryService.getInventory();
   }
 
-  _canTake() {
+  bool _canTake() {
     return _selectedLocationPath != null;
   }
 
-  _canPut() {
+  bool _canPut() {
     return _selectedInventoryPath != null;
   }
 
-  _handleTransfer(BuildContext context, TransferDialogueType transferType) {
+  void _handleTransfer(
+      BuildContext context, TransferDialogueType transferType) {
     showDialog(
       context: context,
       builder: (context) => TransferDialogue(
@@ -66,14 +65,15 @@ class _LocationScreenState extends State<LocationScreen> {
     ).then((value) => _completeTransfer());
   }
 
-  _refreshData() {
+  Future _refreshData() {
     setState(() {
       _futureLocation = _findLocationById(widget.locationId);
       _futureInventory = _getInventory();
     });
+    return _futureInventory;
   }
 
-  _completeTransfer() {
+  void _completeTransfer() {
     setState(() {
       _selectedInventoryPath = null;
       _selectedLocationPath = null;
@@ -157,39 +157,38 @@ class _LocationScreenState extends State<LocationScreen> {
       ApiFutureBuilder<List<Location>>(
           future: _futureInventory,
           builder: (context, inventory) {
-            return
-              inventory.isEmpty
-              ?  Card(
-                  child: SizedBox(
-                      width: double.infinity,
-                      child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child:
-                          Text(AppLocalizations.of(context)!.locationScreenInventoryEmpty))))
-              : Column(children: [
-              ResourceDirectory(
-                locations: inventory,
-                resourceToggle: (resource) => {},
-                onLocationSelected: (currentSelectedLocationPath) {
-                  setState(() {
-                    _selectedInventoryPath = currentSelectedLocationPath;
-                  });
-                },
-              ),
-            ]);
+            return inventory.isEmpty
+                ? Card(
+                    child: SizedBox(
+                        width: double.infinity,
+                        child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Text(AppLocalizations.of(context)!
+                                .locationScreenInventoryEmpty))))
+                : Column(children: [
+                    ResourceDirectory(
+                      locations: inventory,
+                      resourceToggle: (resource) => {},
+                      onLocationSelected: (currentSelectedLocationPath) {
+                        setState(() {
+                          _selectedInventoryPath = currentSelectedLocationPath;
+                        });
+                      },
+                    ),
+                  ]);
           })
     ]);
   }
 
   Widget _buildLocationDirectory(Location location) {
     return (location.resources.isEmpty && location.locations.isEmpty)
-        ?  Card(
-        child: SizedBox(
-            width: double.infinity,
-            child: Padding(
-                padding: const EdgeInsets.all(16),
-                child:
-                Text(AppLocalizations.of(context)!.locationScreenNoResources))))
+        ? Card(
+            child: SizedBox(
+                width: double.infinity,
+                child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(AppLocalizations.of(context)!
+                        .locationScreenNoResources))))
         : Column(children: [
             ResourceDirectory(
               rootLocationsSelectable: false,
@@ -218,7 +217,7 @@ class _LocationScreenState extends State<LocationScreen> {
               _fetchedLocation = location;
 
               return RefreshIndicator(
-                  onRefresh: () => _refreshData(),
+                  onRefresh: _refreshData,
                   child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Column(children: [
