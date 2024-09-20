@@ -140,7 +140,7 @@ export function ExecutionRoute() {
             </Collapse>
           </div>
           <section className="mt-3">
-            <h3>Verfügbare TANs:</h3>
+            <h3>Verfügbare Spieler-TANs:</h3>
             <Container fluid className="d-flex flex-wrap justify-content-center my-3">
               {tansAvailable.length ? (
                 tansAvailable.map((player) => (
@@ -156,7 +156,7 @@ export function ExecutionRoute() {
                 ))
               ) : (
                 <span>
-                  Erstelle neue Spieler um neue Tans verfügbar zu haben.
+                  Erstelle neue Spieler um weitere TANs verfügbar zu haben.
                 </span>
               )}
             </Container>
@@ -165,7 +165,7 @@ export function ExecutionRoute() {
             id="active-tan-player-table"
             className="overflow-scroll w-100"
           >
-            <h3 className="mt-5">Aktive TANs:</h3>
+            <h3 className="mt-5">Aktive Spieler:</h3>
             {execution.players.length > 0 ? (
               <table id="active-tan-player" className="table">
                 <thead>
@@ -184,7 +184,7 @@ export function ExecutionRoute() {
                 </tbody>
               </table>
             ) : (
-              <div>Es sind noch keine Player registriert.</div>
+              <div>Es sind noch keine Spieler registriert.</div>
             )}
           </section>
           <section id="notification-input" className="mt-3">

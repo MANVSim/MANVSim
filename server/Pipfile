@@ -21,6 +21,7 @@ cachetools = "*"
 flask-cors = "*"
 python-magic = "*"
 psycopg2-binary = "*"
+pytz = "*"
 
 [dev-packages]
 

@@ -109,7 +109,7 @@ def __create_resources():
     insert(ResourceInLocation(id=3, quantity=1,
                               location_id=3, resource_id=4))
     # Verbandskasten
-    insert(ResourceInLocation(id=3, quantity=10000,
+    insert(ResourceInLocation(id=4, quantity=10000,
                               location_id=6, resource_id=3))
     # Sichtungstasche
     insert(ResourceInLocation(id=5, quantity=10000,

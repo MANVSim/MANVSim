@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import pytz
 from flask import Blueprint, request
 
 from execution import run
@@ -20,8 +21,10 @@ def add_notification_to_execution():
         exec_id = int(form["exec_id"])
         notification = form["notification"]
         execution = run.active_executions[exec_id]
-        current_time = datetime.now()
-        formatted_time = current_time.strftime("%d.%m.%Y %H:%M")
+        utc_time = datetime.now()
+        berlin_time = utc_time.astimezone(pytz.timezone('Europe/Berlin'))
+        formatted_time = berlin_time.strftime("%d.%m.%Y %H:%M")
+
         execution.notifications.append(
             {
                 "timestamp": formatted_time,
