@@ -4,7 +4,7 @@ import { BaseDataStripped, Media } from "../types"
 import { Button } from "react-bootstrap"
 import { useEffect, useMemo, useState } from "react"
 import MediaUpload from "../components/mediaUpload"
-import {api, tryFetchJson} from "../api"
+import { api, tryFetchJson } from "../api"
 
 type BaseData = {
     actions: Array<BaseDataStripped>
@@ -19,6 +19,7 @@ export function BaseDataRoute() {
     const [showActions, setShowActions] = useState(true)
     const [showLocations, setShowLocations] = useState(false)
     const [showResources, setShowResources] = useState(false)
+    const [showPatients, setShowPatients] = useState(false)
 
 
     const emptyBaseData = useMemo(() => {
@@ -52,7 +53,8 @@ export function BaseDataRoute() {
     const handlePageNav = (showId: number) => {
         setShowActions(showId === 1);
         setShowLocations(showId === 2);
-        setShowResources(showId !== 1 && showId !== 2);
+        setShowResources(showId === 3);
+        setShowPatients(showId === 4);
         setUploadView(false)
     }
 
@@ -69,6 +71,9 @@ export function BaseDataRoute() {
                     </div>
                     <div className={`btn ${showResources ? "active" : ""}`} onClick={() => handlePageNav(3)}>
                         <span>Ressourcen</span>
+                    </div>
+                    <div className={`btn ${showPatients ? "active" : ""}`} onClick={() => handlePageNav(4)}>
+                        <span>Patienten</span>
                     </div>
                 </div>
             </section>
@@ -161,6 +166,9 @@ export function BaseDataRoute() {
                         </p>
                     </section>
                 )}
+            </section>
+            <section id="base-data-list-resource" className={`${showPatients ? "" : "d-none"}`}>
+                <div className="text-center my-3">Hier werden bald Patienten aufgelistet.</div>
             </section>
         </section>
     )

@@ -18,6 +18,7 @@ from execution.entities.stategraphs.activity_diagram import ActivityDiagram
 from media.media_data import MediaData
 from vars import RESULT_DELIMITER
 
+
 blocked_hash = 0
 
 

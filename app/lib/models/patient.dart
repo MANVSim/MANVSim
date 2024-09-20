@@ -4,81 +4,46 @@ import 'package:manvsim/models/location.dart';
 import 'package:manvsim/models/multi_media.dart';
 import 'package:manvsim/models/performed_actions.dart';
 
-
 enum PatientClass {
-  notClassified,
-  preRed,
-  red,
-  preYellow,
-  yellow,
-  preGreen,
-  green,
-  preBlue,
-  blue,
-  black,
+  notClassified('NOT_CLASSIFIED'),
+  preRed('PRE_RED'),
+  red('RED'),
+  preYellow('PRE_YELLOW'),
+  yellow('YELLOW'),
+  preGreen('PRE_GREEN'),
+  green('GREEN'),
+  preBlue('PRE_BLUE'),
+  blue('BLUE'),
+  black('BLACK');
+
+  const PatientClass(String name);
 }
 
 extension PatientClassExtension on PatientClass {
+  bool get isPre => switch (this) {
+        PatientClass.preRed ||
+        PatientClass.preYellow ||
+        PatientClass.preGreen ||
+        PatientClass.preBlue =>
+          true,
+        _ => false
+      };
 
-  bool get isPre {
-    switch (this) {
-      case PatientClass.preRed:
-      case PatientClass.preYellow:
-      case PatientClass.preGreen:
-      case PatientClass.preBlue:
-        return true;
-      default:
-        return false;
-    }
-  }
+  /// Returns the corresponding color to a classification.
+  Color get color => switch (this) {
+        PatientClass.preRed || PatientClass.red => Colors.red,
+        PatientClass.preYellow || PatientClass.yellow => Colors.yellow,
+        PatientClass.preGreen || PatientClass.green => Colors.green,
+        PatientClass.preBlue || PatientClass.blue => Colors.blue,
+        PatientClass.black => Colors.black,
+        _ => Colors.grey,
+      };
 
-  String get name {
-    switch (this) {
-      case PatientClass.notClassified:
-        return 'NOT_CLASSIFIED';
-      case PatientClass.preRed:
-        return 'PRE_RED';
-      case PatientClass.red:
-        return 'RED';
-      case PatientClass.preYellow:
-        return 'PRE_YELLOW';
-      case PatientClass.yellow:
-        return 'YELLOW';
-      case PatientClass.preGreen:
-        return 'PRE_GREEN';
-      case PatientClass.green:
-        return 'GREEN';
-      case PatientClass.preBlue:
-        return 'PRE_BLUE';
-      case PatientClass.blue:
-        return 'BLUE';
-      case PatientClass.black:
-        return 'BLACK';
-      default:
-        return 'UNKNOWN';
-    }
-  }
-
-  /// Gibt die entsprechende Farbe für die Klassifikation zurück.
-  Color get color {
-    switch (this) {
-      case PatientClass.preRed:
-      case PatientClass.red:
-        return Colors.red;
-      case PatientClass.preYellow:
-      case PatientClass.yellow:
-        return Colors.yellow;
-      case PatientClass.preGreen:
-      case PatientClass.green:
-        return Colors.green;
-      case PatientClass.preBlue:
-      case PatientClass.blue:
-        return Colors.blue;
-      case PatientClass.black:
-        return Colors.black;
-      default:
-        return Colors.grey;
-    }
+  static PatientClass fromString(String classification) {
+    return PatientClass.values.firstWhere(
+        (patientClass) => patientClass.name == classification,
+        orElse: () =>
+            throw Exception('Unknown classification: $classification'));
   }
 }
 
@@ -102,42 +67,12 @@ class Patient {
     return performedActions.firstWhere((element) => element.id == id);
   }
 
-
-  static PatientClass _classificationFromString(String classification) {
-    switch (classification) {
-      case 'NOT_CLASSIFIED':
-        return PatientClass.notClassified;
-      case 'PRE_RED':
-        return PatientClass.preRed;
-      case 'RED':
-        return PatientClass.red;
-      case 'PRE_YELLOW':
-        return PatientClass.preYellow;
-      case 'YELLOW':
-        return PatientClass.yellow;
-      case 'PRE_GREEN':
-        return PatientClass.preGreen;
-      case 'GREEN':
-        return PatientClass.green;
-      case 'PRE_BLUE':
-        return PatientClass.preBlue;
-      case 'BLUE':
-        return PatientClass.blue;
-      case 'BLACK':
-        return PatientClass.black;
-      default:
-        throw Exception('Unknown classification: $classification');
-    }
-  }
-
-
-
   factory Patient.fromApi(PatientDTO dto) {
-
     return Patient(
         id: dto.id,
         name: dto.name,
-        classification: _classificationFromString(dto.classification.value),
+        classification:
+            PatientClassExtension.fromString(dto.classification.value),
         location: Location.fromApi(dto.location),
         media: MultiMediaCollectionExtension.fromApi(dto.mediaReferences),
         performedActions:
