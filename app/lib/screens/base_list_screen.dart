@@ -1,8 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'package:manvsim/widgets/api_future_builder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:manvsim/widgets/api_future_builder.dart';
 
 class BaseListScreenItem {
   final String name;
@@ -21,7 +20,12 @@ class BaseListScreen extends StatefulWidget {
   final String Function(int id) nameFromId;
 
   const BaseListScreen(
-      {super.key, required this.title, required this.fetchFutureItemList, required this.onItemTap, required this.icon, required this.nameFromId});
+      {super.key,
+      required this.title,
+      required this.fetchFutureItemList,
+      required this.onItemTap,
+      required this.icon,
+      required this.nameFromId});
 
   @override
   State<BaseListScreen> createState() => _BaseListScreenState();
@@ -37,6 +41,13 @@ class _BaseListScreenState extends State<BaseListScreen> {
     super.initState();
   }
 
+  Future _refresh() {
+    setState(() {
+      futureItemList = widget.fetchFutureItemList();
+    });
+    return futureItemList;
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<String> showAs = [
@@ -48,6 +59,10 @@ class _BaseListScreenState extends State<BaseListScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: [
+          if (kIsWeb)
+            IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh))
+        ],
       ),
       body: Column(children: [
         const SizedBox(height: 4),
@@ -71,12 +86,7 @@ class _BaseListScreenState extends State<BaseListScreen> {
         ),
         Expanded(
             child: RefreshIndicator(
-          onRefresh: () {
-            setState(() {
-              futureItemList = widget.fetchFutureItemList();
-            });
-            return futureItemList;
-          },
+          onRefresh: _refresh,
           child: ApiFutureBuilder<BaseListScreenItems>(
               future: futureItemList,
               builder: (context, listItems) => ListView.builder(
@@ -87,7 +97,8 @@ class _BaseListScreenState extends State<BaseListScreen> {
                           title: Text(_selectedShowAs[0]
                               ? listItems[index].name
                               : widget.nameFromId(listItems[index].id)),
-                          onTap: () => widget.onItemTap(context, listItems[index]))))),
+                          onTap: () =>
+                              widget.onItemTap(context, listItems[index]))))),
         ))
       ]),
     );
