@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/performed_actions.dart';
-
+import 'package:manvsim/screens/action_result_screen.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/services/time_service.dart';
 import 'package:manvsim/widgets/action_selection.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
+import 'package:manvsim/widgets/classification_card.dart';
 import 'package:manvsim/widgets/media_info.dart';
 import 'package:manvsim/widgets/patient_overview.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../constants/manv_icons.dart';
-import 'action_result_screen.dart';
 
 class PatientScreen extends StatefulWidget {
   final int patientId;
@@ -24,19 +23,11 @@ class PatientScreen extends StatefulWidget {
 
 class _PatientScreenState extends State<PatientScreen> {
   late Future<Patient?> futurePatient;
-  late Future<PatientClass> futureClassification;
   bool sortOldestFirst = false;
 
   @override
   void initState() {
     futurePatient = PatientService.arriveAtPatient(widget.patientId);
-
-    futurePatient.then((patient) {
-      if (patient != null) {
-        futureClassification = Future.value(patient.classification);
-      }
-    });
-
     super.initState();
   }
 
@@ -173,155 +164,6 @@ class _PatientScreenState extends State<PatientScreen> {
     });
   }
 
-  void showClassificationSelectionDialog(
-      BuildContext context, Patient patient) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-              AppLocalizations.of(context)!.patientScreenClassificationTitle),
-          content: Container(
-            width: double.maxFinite,
-            child: GridView.count(
-              crossAxisCount: 3,
-              shrinkWrap: true,
-              children: PatientClass.values
-                  .where((classification) =>
-                      classification != PatientClass.notClassified)
-                  .map((classification) => buildColorTile(
-                      context: context,
-                      classification: classification,
-                      onTap: () {
-                        setState(() {
-                          futureClassification = PatientService.classifyPatient(
-                              classification, patient);
-                        });
-                        Navigator.of(context).pop();
-                      }))
-                  .toList(),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget buildColorTile(
-      {required BuildContext context,
-      required PatientClass classification,
-      Function()? onTap}) {
-    Widget tileContent;
-
-    if (classification.isPre) {
-      tileContent = Row(
-        children: [
-          Expanded(
-            child: Container(
-              color: classification.color,
-            ),
-          ),
-          Expanded(
-            child: Container(
-              color: Colors.white,
-            ),
-          ),
-        ],
-      );
-    } else {
-      tileContent = Container(
-        color: classification.color,
-      );
-    }
-
-    Widget colorContainer = Container(
-      margin: const EdgeInsets.all(4.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-      ),
-      child: tileContent,
-    );
-
-    return onTap != null
-        ? GestureDetector(onTap: onTap, child: colorContainer)
-        : colorContainer;
-  }
-
-  Widget _buildClassificationAction(Patient patient) {
-    return ApiFutureBuilder(
-        future: futureClassification,
-        builder: (context, classification) {
-          return Card(
-              child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(children: [
-                    Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!
-                                .patientScreenClassificationTitle,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                          const Spacer(),
-                          ElevatedButton(
-                              onPressed: () =>
-                                  showClassificationSelectionDialog(
-                                      context, patient),
-                              child: Text(
-                                  classification == PatientClass.notClassified
-                                      ? AppLocalizations.of(context)!.select
-                                      : AppLocalizations.of(context)!.change)),
-                          if (classification != PatientClass.notClassified)
-                            SizedBox(
-                                width: 40,
-                                height: 40,
-                                child: buildColorTile(
-                                    context: context,
-                                    classification: classification))
-                        ])
-                  ])));
-        });
-  }
-
-  Widget _buildClassification() {
-    return ApiFutureBuilder(
-        future: futureClassification,
-        builder: (context, classification) {
-          if (classification == PatientClass.notClassified) {
-            return Card(
-                child: SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(AppLocalizations.of(context)!
-                            .patientScreenNoClassification))));
-          } else {
-            return Card(
-                child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(children: [
-                      Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!
-                                  .patientScreenClassificationTitle,
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                            const Spacer(),
-                            SizedBox(
-                                width: 40,
-                                height: 40,
-                                child: buildColorTile(
-                                    context: context,
-                                    classification: classification))
-                          ])
-                    ])));
-          }
-        });
-  }
-
   Widget _buildOverview(Patient patient) {
     return _buildTabView(
         patient,
@@ -330,7 +172,7 @@ class _PatientScreenState extends State<PatientScreen> {
             AppLocalizations.of(context)!.patientScreenClassification,
             textAlign: TextAlign.center,
           ),
-          _buildClassification(),
+          ClassificationCard(patient: patient),
           const SizedBox(height: 4),
           Stack(
             alignment: Alignment.center,
@@ -398,7 +240,7 @@ class _PatientScreenState extends State<PatientScreen> {
         patient,
         [
           Text(AppLocalizations.of(context)!.patientScreenClassification),
-          _buildClassificationAction(patient),
+          ClassificationCard(patient: patient, changeable: true),
           ActionSelection(
               patient: patient,
               locations: [patient.location],
