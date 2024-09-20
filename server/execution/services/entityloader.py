@@ -48,7 +48,7 @@ def __load_resources(location_id: int) -> list[Resource]:
 
             new_hash = __generate_id()
             resources.append(
-                Resource(id=new_hash, name=r.name, quantity=res.quantity,
+                Resource(id=new_hash, name=r.name, quantity=res.quantity, consumable=r.consumable,
                          media_references=media_refs))
 
     return resources
