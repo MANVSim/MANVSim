@@ -1,5 +1,4 @@
 from json import JSONDecodeError
-from typing import Tuple, List, Any
 
 from flask import current_app
 
@@ -18,7 +17,6 @@ from execution.entities.scenario import Scenario
 from execution.entities.stategraphs.activity_diagram import ActivityDiagram
 from media.media_data import MediaData
 from vars import RESULT_DELIMITER
-
 
 blocked_hash = 0
 

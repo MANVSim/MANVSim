@@ -108,15 +108,15 @@ def __create_resources():
                               location_id=3, resource_id=2))
     insert(ResourceInLocation(id=3, quantity=1,
                               location_id=3, resource_id=4))
+    # Verbandskasten
+    insert(ResourceInLocation(id=3, quantity=10000,
+                              location_id=6, resource_id=3))
     # Sichtungstasche
-    insert(ResourceInLocation(id=4, quantity=10000,
+    insert(ResourceInLocation(id=5, quantity=10000,
                               location_id=5, resource_id=5))
     # Heilige Tasche
-    insert(ResourceInLocation(id=5, quantity=1,
+    insert(ResourceInLocation(id=6, quantity=1,
                               location_id=4, resource_id=6))
-    # Verbandskasten
-    insert(ResourceInLocation(id=6, quantity=10000,
-                              location_id=6, resource_id=3))
 
 
 def __resource_needed():
@@ -134,7 +134,7 @@ def __create_actions():
                       MediaData.new_image("media/static/image/no_image.png")]),
                   duration_secs=10,
                   required_power=100,
-                  results=f"Verletzung{RESULT_DELIMITER}Haut{RESULT_DELIMITER}"
+                  results=f"Verletzungen{RESULT_DELIMITER}Haut{RESULT_DELIMITER}"
                           f"Abdomen{RESULT_DELIMITER}Rekapzeit"))
     insert(Action(id=1, name="Patient ansprechen",
                   media_refs=MediaData.list_to_json([
@@ -165,7 +165,7 @@ def __create_actions():
     insert(Action(id=5, name="Verband anlegen", required_power=100,
                   media_refs=MediaData.list_to_json([
                       MediaData.new_image("media/static/image/no_image.png")]),
-                  results=f"Verletzung",
+                  results=f"Verletzungen",
                   duration_secs=30))
     insert(Action(id=6, name="Amputation", required_power=300,
                   media_refs=MediaData.list_to_json([
