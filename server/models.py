@@ -53,9 +53,6 @@ class Execution(db.Model):
 class Patient(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     template_name: Mapped[str] = mapped_column(nullable=False)
-    # If no location is set, one is generated at runtime
-    location: Mapped[int] = mapped_column(
-        ForeignKey("location.id"), nullable=True)
     activity_diagram = db.Column(db.JSON(), nullable=False)
     media_refs = db.Column(db.JSON(), nullable=True)
 
@@ -77,6 +74,9 @@ class PatientInScenario(db.Model):
     patient_id: Mapped[int] = mapped_column(
         ForeignKey("patient.id"), nullable=False)
     name: Mapped[str] = mapped_column(nullable=False, primary_key=True)
+    # If no location is set, one is generated at runtime
+    location_id: Mapped[int] = mapped_column(
+        ForeignKey("location.id"), nullable=True)
 
 
 class Location(db.Model):
