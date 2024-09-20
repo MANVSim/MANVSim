@@ -80,8 +80,7 @@ def test_perform_action(client):
     response = client.get(f"/api/run/action/perform/result?performed_action_id={id}&patient_id=1", headers=headers)
     assert response.status_code == HTTPStatus.OK
     response_json = response.json
-    assert "conditions" in response_json
-    assert "EKG" in response_json["conditions"]
+    assert "EKG" in str(response_json["patient"]["performed_actions"])
 
     patient = response.json["patient"]
     performed_action = list(patient["performed_actions"])

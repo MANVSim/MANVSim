@@ -13,31 +13,25 @@ part of manv_api;
 class RunActionPerformResultGet200Response {
   /// Returns a new [RunActionPerformResultGet200Response] instance.
   RunActionPerformResultGet200Response({
-    this.conditions = const {},
     required this.patient,
   });
-
-  Map<String, List<MediaReferencesDTOInner>> conditions;
 
   PatientDTO patient;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunActionPerformResultGet200Response &&
-    _deepEquality.equals(other.conditions, conditions) &&
     other.patient == patient;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (conditions.hashCode) +
     (patient.hashCode);
 
   @override
-  String toString() => 'RunActionPerformResultGet200Response[conditions=$conditions, patient=$patient]';
+  String toString() => 'RunActionPerformResultGet200Response[patient=$patient]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'conditions'] = this.conditions;
       json[r'patient'] = this.patient;
     return json;
   }
@@ -61,9 +55,6 @@ class RunActionPerformResultGet200Response {
       }());
 
       return RunActionPerformResultGet200Response(
-        conditions: json[r'conditions'] == null
-          ? const {}
-            : MediaReferencesDTOInner.mapListFromJson(json[r'conditions']),
         patient: PatientDTO.fromJson(json[r'patient'])!,
       );
     }
@@ -112,7 +103,6 @@ class RunActionPerformResultGet200Response {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'conditions',
     'patient',
   };
 }

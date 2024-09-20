@@ -1,19 +1,24 @@
 import json
 
+from typing_extensions import Optional
+
 from execution.entities.action import Action
 from execution.entities.resource import Resource
+from media.media_data import MediaData
 
 
 class PerformedAction:
 
     def __init__(self, id: str, time: int, execution_id: int, action: Action,
-                 resources_used: list[Resource], player_tan: str):
+                 resources_used: list[Resource], player_tan: str,
+                 resulting_condition: Optional[dict] = None):
         self.id = id  # UUID
         self.time = time  # Time, when action was finished
         self.execution_id = execution_id
         self.action = action
         self.resources_used = resources_used
         self.player_tan = player_tan
+        self.resulting_condition = resulting_condition
 
     def to_dict(self, shallow: bool = False, include: list | None = None,
                 exclude: list | None = None):
@@ -31,7 +36,8 @@ class PerformedAction:
             'action': self.action.id if shallow else self.action.to_dict(),
             'resources_used': [resource.id if shallow else resource.to_dict()
                                for resource in self.resources_used],
-            'player_tan': self.player_tan
+            'player_tan': self.player_tan,
+            'resulting_conditions': self.resulting_condition
         }
 
         if include:

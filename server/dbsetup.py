@@ -53,8 +53,10 @@ def __create_locations():
                             "media/static/image/tasche_sichtung.jpg")])))
     insert(Location(id=6, name="Verbandskasten",
                     media_refs=MediaData.list_to_json([
-                        MediaData.new_image(
-                            "media/static/image/tasche_rot.jpg")])))
+                        MediaData.new_image("media/static/image/tasche_rot.jpg")])))
+    insert(Location(id=7, name="Eingestürztes Haus",
+                    media_refs=MediaData.list_to_json([
+                        MediaData.new_image("media/static/image/ruine_haus.jpg")])))
 
     # RTW:
     insert(LocationContainsLocation(id=0, parent=0, child=2))  # EKG
@@ -109,15 +111,15 @@ def __create_resources():
                               location_id=3, resource_id=2))
     insert(ResourceInLocation(id=3, quantity=1,
                               location_id=3, resource_id=4))
-    # Sichtungstasche
+    # Verbandskasten
     insert(ResourceInLocation(id=4, quantity=10000,
+                              location_id=6, resource_id=3))
+    # Sichtungstasche
+    insert(ResourceInLocation(id=5, quantity=10000,
                               location_id=5, resource_id=5))
     # Heilige Tasche
-    insert(ResourceInLocation(id=5, quantity=1,
+    insert(ResourceInLocation(id=6, quantity=1,
                               location_id=4, resource_id=6))
-    # Verbandskasten
-    insert(ResourceInLocation(id=6, quantity=10000,
-                              location_id=6, resource_id=3))
 
 
 def __resource_needed():
@@ -135,7 +137,7 @@ def __create_actions():
                       MediaData.new_image("media/static/image/no_image.png")]),
                   duration_secs=10,
                   required_power=100,
-                  results=f"Verletzung{RESULT_DELIMITER}Haut{RESULT_DELIMITER}"
+                  results=f"Verletzungen{RESULT_DELIMITER}Haut{RESULT_DELIMITER}"
                           f"Abdomen{RESULT_DELIMITER}Rekapzeit"))
     insert(Action(id=1, name="Patient ansprechen",
                   media_refs=MediaData.list_to_json([
@@ -166,7 +168,7 @@ def __create_actions():
     insert(Action(id=5, name="Verband anlegen", required_power=100,
                   media_refs=MediaData.list_to_json([
                       MediaData.new_image("media/static/image/no_image.png")]),
-                  results=f"Verletzung",
+                  results=f"Verletzungen",
                   duration_secs=30))
     insert(Action(id=6, name="Amputation", required_power=300,
                   media_refs=MediaData.list_to_json([
@@ -176,7 +178,8 @@ def __create_actions():
 
     insert(Action(id=7, name="Wunderheilung",
                   media_refs=MediaData.list_to_json([
-                      MediaData.new_image("media/static/image/wunderheilung.png")]),
+                      MediaData.new_image(
+                          "media/static/image/wunderheilung.png")]),
                   duration_secs=60, results="", required_power=300))
 
 
@@ -246,8 +249,8 @@ def __patient_in_scenario():
     # Tot
     insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-4"))
     insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-5"))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-6"))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-7"))
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-6", location_id=7))
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-7", location_id=7))
 
 
 def __create_scenarios():
@@ -260,6 +263,7 @@ def __create_executions():
 
 def insert(data):
     db.session.add(data)
+    db.session.commit()
 
 
 def __create_activity_diagrams():
@@ -567,7 +571,8 @@ def __create_activity_diagrams():
     # ActivityDiagram a0-a5
     acd1 = ActivityDiagram(root=s1, states=[s1, s2])  # Patient - 0
     acd2 = ActivityDiagram(root=s3, states=[s3, s4, s11])  # Patient - 1
-    acd3 = ActivityDiagram(root=s5, states=[s5, s6, s7, s10, s11])  # Patient - 2
+    acd3 = ActivityDiagram(root=s5,
+                           states=[s5, s6, s7, s10, s11])  # Patient - 2
     acd4 = ActivityDiagram(root=s8, states=[s8, s9, s10, s11])  # Patient - 3
 
     acd5 = ActivityDiagram(root=s11, states=[s11])  # dead patient
@@ -576,12 +581,12 @@ def __create_activity_diagrams():
 
 
 with create_app(csrf=csrf, db=db).app_context():
-    __create_executions()
     __create_scenarios()
-    __create_players()
+    __create_executions()
     __create_roles()
     __create_patients()
     __create_locations()
+    __create_players()
     __create_resources()
     __create_actions()
     __resource_needed()
@@ -602,5 +607,3 @@ with create_app(csrf=csrf, db=db).app_context():
     insert(WebUser(username="read",
                    password=hashpw(b"pw1234", gensalt()).decode(),
                    role=WebUser.Role.READ_ONLY.name))
-
-    db.session.commit()

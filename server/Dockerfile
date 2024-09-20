@@ -4,7 +4,6 @@ WORKDIR /usr/src/app
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y \
-    make \
     dos2unix \
     libmagic1
 
@@ -12,25 +11,18 @@ RUN pip3 install pipenv
 
 # Copy python and react code, avoid dos incompatibility
 COPY ../server server
-COPY ../web web
 
 RUN find . -type f -print0 | xargs -0 dos2unix
 
 # Run setup
 WORKDIR /usr/src/app/server
 RUN chmod +x scripts/*.sh
-RUN make setup
 
-FROM setup AS debug
+RUN pipenv install --deploy --ignore-pipfile || exit 1
+RUN pipenv install gunicorn
 
-ENV LOAD_TEST_DATA=true
-
-EXPOSE 5002
-CMD pipenv run flask --app main --debug run --host=0.0.0.0 --port=5002 --cert=fullchain.pem --key=privkey.pem
 
 FROM setup AS prod
 
-RUN pipenv install gunicorn
-
 EXPOSE 5002
-CMD pipenv run gunicorn -w 1 -b 0.0.0.0:5002 --certfile=fullchain.pem --keyfile=privkey.pem 'main:app'
+ENTRYPOINT ["scripts/entrypoint.sh"]

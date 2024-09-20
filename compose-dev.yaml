@@ -3,10 +3,6 @@ version: '3.8'
 # This file isn't supposed to be used alone
 # but merged with docker-compose.yaml
 services:
-  server:
-    build:
-      target: debug
-
   app:
     build:
       target: serve-dev

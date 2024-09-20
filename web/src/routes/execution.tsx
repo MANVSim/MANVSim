@@ -32,6 +32,8 @@ import { ExecutionStatusDisplay } from "../components/ExecutionStatusDisplay"
 
 import "./executionList"
 import "./execution.css"
+import QRCode from "react-qr-code"
+import {redirect} from "react-router-dom";
 
 export function ExecutionRoute() {
   const executionData = useLoaderData() as ExecutionData
@@ -140,7 +142,7 @@ export function ExecutionRoute() {
             </Collapse>
           </div>
           <section className="mt-3">
-            <h3>Verfügbare TANs:</h3>
+            <h3>Verfügbare Spieler-TANs:</h3>
             <Container fluid className="d-flex flex-wrap justify-content-center my-3">
               {tansAvailable.length ? (
                 tansAvailable.map((player) => (
@@ -156,7 +158,7 @@ export function ExecutionRoute() {
                 ))
               ) : (
                 <span>
-                  Erstelle neue Spieler um neue Tans verfügbar zu haben.
+                  Erstelle neue Spieler um weitere TANs verfügbar zu haben.
                 </span>
               )}
             </Container>
@@ -165,7 +167,7 @@ export function ExecutionRoute() {
             id="active-tan-player-table"
             className="overflow-scroll w-100"
           >
-            <h3 className="mt-5">Aktive TANs:</h3>
+            <h3 className="mt-5">Aktive Spieler:</h3>
             {execution.players.length > 0 ? (
               <table id="active-tan-player" className="table">
                 <thead>
@@ -179,12 +181,12 @@ export function ExecutionRoute() {
                 </thead>
                 <tbody>
                   {tansUsed.map((player) => (
-                    <PlayerStatus key={player.tan} player={player} />
+                    <PlayerStatus key={player.tan} player={player} exec_status={execution.status} />
                   ))}
                 </tbody>
               </table>
             ) : (
-              <div>Es sind noch keine Player registriert.</div>
+              <div>Es sind noch keine Spieler registriert.</div>
             )}
           </section>
           <section id="notification-input" className="mt-3">
@@ -267,6 +269,23 @@ export function ExecutionRoute() {
               ))}
             </ol>
           </section>
+          <section id="patient-qrcodes" className={`d-flex flex-wrap w-100 mt-3 justify-content-evenly ${execution.status === "RUNNING" || execution.status === "PENDING" ? "" : "d-none"}`}>
+            <div className="w-100">
+              <h3>Patienten</h3>
+            </div>
+            {execution.patients.length ? (execution.patients.map((patient, index) => (
+              <div key={index} className={`d-flex flex-column m-2 p-2`}>
+                <span>#{patient.id}</span>
+                <QRCode value={`patient;${patient.id}`} />
+              </div>
+            ))
+            ) : (
+              <span>
+                Das Scenario hat keine Patienten gespeichert.
+              </span>
+            )}
+
+          </section>
         </div>
       ) : (
         <div>Loading...</div>
@@ -295,11 +314,12 @@ ExecutionRoute.action = async function ({
       formData.append("exec_id", params.executionId)
       const response = await pushNotificationToPlayer(formData)
       if (response.ok) {
-        window.location.reload();
+        return redirect(`/execution/${params.executionId}`);
       } else {
         console.error('Failed to send notification:', response.text());
+        return null;
       }
-      return ""
+
     }
     case "player-status": {
       const playerTan = formData.get("tan") as string | null
@@ -312,22 +332,22 @@ ExecutionRoute.action = async function ({
       const response = await createNewPlayer(params.executionId, formData)
       // Instead of redirecting, reload the current page
       if (response.ok) {
-        window.location.reload();
+        return redirect(`/execution/${params.executionId}`);
       } else {
         console.error('Failed to create player:', response.text());
+        return null;
       }
-      return ""
     }
     case "delete-player": {
 
       const response = await deletePlayer(params.executionId, formData)
       // Instead of redirecting, reload the current page
       if (response.ok) {
-        window.location.reload();
+        return redirect(`/execution/${params.executionId}`);
       } else {
         console.error('Failed to delete player:', response.text());
+        return null;
       }
-      return ""
     }
     default:
       throw new Error(`Case '${id}' is not covered in Execution.action`)

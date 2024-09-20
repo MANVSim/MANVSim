@@ -60,7 +60,7 @@ class _MANVMapState extends State<MANVMap> {
               child: IconButton(
                   onPressed: () => _onPatientPressed(patientPosition, context),
                   icon: Icon(Icons.accessibility_new,
-                      color: patientPosition.classification.toColor()),
+                      color: patientPosition.classification.color),
                   iconSize: 50),
             ))
         .toList();
@@ -132,7 +132,9 @@ class _MANVMapState extends State<MANVMap> {
         left: rect.left,
         top: rect.top,
         child: Container(
-            width: rect.width, height: rect.height, color: Colors.grey));
+            width: rect.width,
+            height: rect.height,
+            color: Colors.grey.shade400));
   }
 }
 

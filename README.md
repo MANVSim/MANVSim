@@ -53,7 +53,7 @@ This will start the server and admin web frontend on
 and the web version of the app (with the android app apk downloadable) on  
 **<http://localhost:5001>**
 
-To start the server in debug mode, load test data and skip the android app build instead use:  
+To skip the android app build use:  
 ```bash
 docker compose -f docker-compose.yaml -f compose-dev.yaml up
 ```

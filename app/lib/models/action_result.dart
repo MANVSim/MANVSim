@@ -14,13 +14,14 @@ class ActionResult {
       required this.conditions,
       required this.performedAction});
 
-  factory ActionResult.fromApi(
-      RunActionPerformResultGet200Response response, String resultId) {
-    Patient patient = Patient.fromApi(response.patient);
+  factory ActionResult.fromPatient(
+      Patient patient, String resultId) {
+
+    PerformedAction performedAction = patient.getPerformedActionById(resultId);
 
     return ActionResult(
-        performedAction: patient.getPerformedActionById(resultId),
+        performedAction: performedAction,
         patient: patient,
-        conditions: ConditionsExtension.fromApi(response.conditions));
+        conditions: performedAction.conditions);
   }
 }

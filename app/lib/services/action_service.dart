@@ -31,7 +31,7 @@ class ActionService {
     return await apiService.api
         .runActionPerformResultGet(performedActionId, patient.id)
         .then((response) => response != null
-            ? ActionResult.fromApi(response, performedActionId)
+            ? ActionResult.fromPatient(Patient.fromApi(response.patient), performedActionId)
             : null);
   }
 }

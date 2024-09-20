@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/services/map_service.dart';
-import 'package:manvsim/widgets/api_future_builder.dart';
-import 'package:manvsim/widgets/logout_button.dart';
 import 'package:manvsim/widgets/map/map_overlay.dart';
+import 'package:manvsim/widgets/player/logout_button.dart';
+import 'package:manvsim/widgets/util/custom_future_builder.dart';
 
 class PatientMapScreen extends StatefulWidget {
   const PatientMapScreen({super.key});
@@ -37,7 +37,7 @@ class _PatientMapScreenState extends State<PatientMapScreen> {
             });
             return futureMapData;
           },
-          child: ApiFutureBuilder<MapData>(
+          child: CustomFutureBuilder<MapData>(
               future: futureMapData,
               builder: (context, mapData) =>
                   Center(child: PatientMapOverlay(mapData: mapData)))),
