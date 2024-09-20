@@ -113,12 +113,12 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
         # Load Locations
         if mapping.location_id is None:
             p_loc = genrate_location()
-        elif p.location in patient_locations.keys():
-            p_loc = patient_locations[p.location]
+        elif mapping.location_id in patient_locations.keys():
+            p_loc = patient_locations[mapping.location_id]
         else:
             p_loc = load_location(mapping.location_id)
             if p_loc:
-                patient_locations[p.location] = p_loc
+                patient_locations[mapping.location_id] = p_loc
             else:
                 p_loc = genrate_location()
 
