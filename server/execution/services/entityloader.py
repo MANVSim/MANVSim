@@ -109,7 +109,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
         if p.location is None:
             new_hash = __generate_id()
             p_loc = Location(id=new_hash,
-                             name=f"Patient with ID {mapping.name}",
+                             name=f"Aufenthaltsort von Patient {mapping.name}",
                              media_references=[], resources=[])
         elif p.location in patient_locations.keys():
             p_loc = patient_locations[p.location]
@@ -120,7 +120,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             else:
                 new_hash = __generate_id()
                 p_loc = Location(id=new_hash,
-                                 name=f"Patient with ID {mapping.name}",
+                                 name=f"Aufenthaltsort von Patient {mapping.name}",
                                  media_references=[], resources=[])
 
         # Load Media
