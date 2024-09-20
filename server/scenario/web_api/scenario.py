@@ -89,7 +89,7 @@ def get_scenario(scenario_id: int):
 @csrf.exempt
 def create_scenario():
     """ Creates an empty scenario dbo. """
-    scenario = models.Scenario(name="Neues Scenario")
+    scenario = models.Scenario(name="Neues Szenario")
     db.session.add(scenario)
     db.session.commit()
 

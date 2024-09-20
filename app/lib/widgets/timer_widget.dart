@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/rendering.dart';
+import 'package:flutter/material.dart';
 
 class TimerWidget extends StatefulWidget {
   final Duration duration;
@@ -29,17 +28,22 @@ class TimerWidgetState extends State<TimerWidget> {
   }
 
   void _startTimer() {
+    if (_remainingTime <= 0) {
+      if (widget.onTimerComplete != null) {
+        widget.onTimerComplete!();
+      }
+      return;
+    }
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_remainingTime > 0) {
+      if (_remainingTime <= 0) {
+        _timer?.cancel();
+        widget.onTimerComplete?.call();
+      } else {
+        setState(() {
           _remainingTime--;
-        } else {
-          _timer?.cancel();
-          if (widget.onTimerComplete != null) {
-            widget.onTimerComplete!();
-          }
-        }
-      });
+        });
+      }
     });
   }
 
@@ -79,7 +83,7 @@ class TimerWidgetState extends State<TimerWidget> {
           ),
         ),
         Text(
-          '$_remainingTime',
+          _remainingTime >= 0 ? '$_remainingTime' : '0',
           style: const TextStyle(fontSize: 48),
         ),
       ],

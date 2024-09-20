@@ -16,10 +16,9 @@ enum PatientClass {
   blue('BLUE'),
   black('BLACK');
 
-  const PatientClass(String name);
-}
+  final String value;
+  const PatientClass(this.value);
 
-extension PatientClassExtension on PatientClass {
   bool get isPre => switch (this) {
         PatientClass.preRed ||
         PatientClass.preYellow ||
@@ -39,9 +38,9 @@ extension PatientClassExtension on PatientClass {
         _ => Colors.grey,
       };
 
-  static PatientClass fromString(String classification) {
+  factory PatientClass.fromString(String classification) {
     return PatientClass.values.firstWhere(
-        (patientClass) => patientClass.name == classification,
+        (patientClass) => patientClass.value == classification,
         orElse: () =>
             throw Exception('Unknown classification: $classification'));
   }
@@ -71,8 +70,7 @@ class Patient {
     return Patient(
         id: dto.id,
         name: dto.name,
-        classification:
-            PatientClassExtension.fromString(dto.classification.value),
+        classification: PatientClass.fromString(dto.classification.value),
         location: Location.fromApi(dto.location),
         media: MultiMediaCollectionExtension.fromApi(dto.mediaReferences),
         performedActions:

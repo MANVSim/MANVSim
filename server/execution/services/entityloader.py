@@ -94,7 +94,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
     and returns them in a dictionary.
     """
 
-    def genrate_location():
+    def generate_location():
        return Location(id=__generate_id(), name=f"Aufenthaltsort von Patient \"{mapping.name}\"",
                          media_references=[], resources=[])
 
@@ -112,7 +112,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
 
         # Load Locations
         if mapping.location_id is None:
-            p_loc = genrate_location()
+            p_loc = generate_location()
         elif mapping.location_id in patient_locations.keys():
             p_loc = patient_locations[mapping.location_id]
         else:
@@ -120,7 +120,7 @@ def __load_patients(scenario_id: int) -> dict[int, Patient]:
             if p_loc:
                 patient_locations[mapping.location_id] = p_loc
             else:
-                p_loc = genrate_location()
+                p_loc = generate_location()
 
         # Load Media
         p_media = p.media_refs
