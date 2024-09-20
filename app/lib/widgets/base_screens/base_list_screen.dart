@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
-import 'package:manvsim/widgets/util/api_future_builder.dart';
+import 'package:manvsim/widgets/util/custom_future_builder.dart';
 
 class BaseListScreenItem {
   final String name;
@@ -88,7 +88,7 @@ class _BaseListScreenState extends State<BaseListScreen> {
         Expanded(
             child: RefreshIndicator(
           onRefresh: _refresh,
-          child: ApiFutureBuilder<BaseListScreenItems>(
+          child: CustomFutureBuilder<BaseListScreenItems>(
               future: futureItemList,
               builder: (context, listItems) => ListView.builder(
                   itemCount: listItems.length,

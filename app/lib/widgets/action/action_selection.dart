@@ -10,7 +10,7 @@ import 'package:manvsim/widgets/action/action_screen.dart';
 import 'package:manvsim/widgets/location/move_card.dart';
 import 'package:manvsim/widgets/location/resource_directory.dart';
 import 'package:manvsim/widgets/patient/move_screen.dart';
-import 'package:manvsim/widgets/util/api_future_builder.dart';
+import 'package:manvsim/widgets/util/custom_future_builder.dart';
 
 import '../../services/location_service.dart';
 
@@ -99,7 +99,7 @@ class _ActionSelectionState extends State<ActionSelection> {
     resources = Location.flattenResourcesFromList(widget.locations);
 
     return Column(children: [
-      ApiFutureBuilder<List<PatientAction>>(
+      CustomFutureBuilder<List<PatientAction>>(
         future: futureActions,
         builder: (context, actions) {
           setActions(actions);
@@ -170,7 +170,7 @@ class _ActionSelectionState extends State<ActionSelection> {
                       canBePerformed: false,
                     )),
             Text(AppLocalizations.of(context)!.patientMoveSection),
-            ApiFutureBuilder(
+            CustomFutureBuilder(
                 future: futureLocationIdList,
                 builder: (context, locations) => MoveCard(
                     locations: locations

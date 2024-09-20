@@ -8,7 +8,7 @@ import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/widgets/location/location_overview.dart';
 import 'package:manvsim/widgets/location/resource_directory.dart';
 import 'package:manvsim/widgets/location/transfer_dialogue.dart';
-import 'package:manvsim/widgets/util/api_future_builder.dart';
+import 'package:manvsim/widgets/util/custom_future_builder.dart';
 
 class LocationScreen extends StatefulWidget {
   final int locationId;
@@ -156,7 +156,7 @@ class _LocationScreenState extends State<LocationScreen> {
   Widget _buildInventory() {
     return Column(children: [
       Text(AppLocalizations.of(context)!.locationScreenInventory),
-      ApiFutureBuilder<List<Location>>(
+      CustomFutureBuilder<List<Location>>(
           future: _futureInventory,
           builder: (context, inventory) {
             return inventory.isEmpty
@@ -218,7 +218,7 @@ class _LocationScreenState extends State<LocationScreen> {
                     onPressed: _refreshData,
                     icon: const Icon(ManvIcons.refresh))
             ]),
-        body: ApiFutureBuilder<Location>(
+        body: CustomFutureBuilder<Location>(
             future: _futureLocation,
             builder: (context, location) {
               _fetchedLocation = location;

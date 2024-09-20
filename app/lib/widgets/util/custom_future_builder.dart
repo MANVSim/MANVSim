@@ -11,7 +11,7 @@ import 'package:manvsim/widgets/util/error_box.dart';
 /// Custom [FutureBuilder] which automatically displays loading spinner, error messages and  handles some API error codes.
 ///
 /// Generic of type [T]. Future may be [T?], but if [T] is non nullable a null return value is seen as an error.
-class ApiFutureBuilder<T> extends StatelessWidget {
+class CustomFutureBuilder<T> extends StatelessWidget {
   /// The future of type [T?] to which this [builder] is connected.
   final Future<T?> future;
 
@@ -28,7 +28,7 @@ class ApiFutureBuilder<T> extends StatelessWidget {
 
   final int errorMessageExceptionLength;
 
-  const ApiFutureBuilder(
+  const CustomFutureBuilder(
       {super.key,
       required this.future,
       required this.builder,

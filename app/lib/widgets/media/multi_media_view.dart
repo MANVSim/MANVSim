@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:manvsim/models/multi_media.dart';
 import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/widgets/media/video_player.dart';
-import 'package:manvsim/widgets/util/api_future_builder.dart';
+import 'package:manvsim/widgets/util/custom_future_builder.dart';
 import 'package:manvsim/widgets/util/error_box.dart';
 
 import 'audio_player.dart';
@@ -157,7 +157,7 @@ class _MultiMediaViewState extends State<MultiMediaView> {
             style: Theme.of(context).textTheme.bodyLarge,
           ),
         if (item.reference != null)
-          ApiFutureBuilder(
+          CustomFutureBuilder(
             future: _readTextFile(item.reference!),
             builder: (context, text) {
               return Text(text, style: Theme.of(context).textTheme.bodyMedium);

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/services/patient_service.dart';
-import 'package:manvsim/widgets/util/api_future_builder.dart';
+import 'package:manvsim/widgets/util/custom_future_builder.dart';
 
 class ClassificationCard extends StatefulWidget {
   final Patient patient;
@@ -158,7 +158,7 @@ class _ClassificationCardState extends State<ClassificationCard> {
 
   @override
   Widget build(BuildContext context) {
-    return ApiFutureBuilder(
+    return CustomFutureBuilder(
         future: futureClassification,
         builder: (context, classification) => widget.changeable
             ? _buildClassificationAction(classification)

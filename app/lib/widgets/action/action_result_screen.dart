@@ -7,7 +7,7 @@ import 'package:manvsim/services/time_service.dart';
 import 'package:manvsim/widgets/action/action_overview.dart';
 import 'package:manvsim/widgets/media/media_info.dart';
 import 'package:manvsim/widgets/media/media_overview_expansion.dart';
-import 'package:manvsim/widgets/util/api_future_builder.dart';
+import 'package:manvsim/widgets/util/custom_future_builder.dart';
 
 import '../../models/action_result.dart';
 import '../../models/patient.dart';
@@ -153,7 +153,7 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
             width: double.infinity,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              child: ApiFutureBuilder(
+              child: CustomFutureBuilder(
                 future: futureActionResult,
                 builder: (context, actionResult) {
                   return Column(children: [

@@ -6,7 +6,7 @@ import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/services/action_service.dart';
 import 'package:manvsim/widgets/action/action_overview.dart';
-import 'package:manvsim/widgets/util/api_future_builder.dart';
+import 'package:manvsim/widgets/util/custom_future_builder.dart';
 import 'package:manvsim/widgets/util/timer_widget.dart';
 
 import 'action_result_screen.dart';
@@ -78,7 +78,7 @@ class _ActionScreenState extends State<ActionScreen> {
             ),
             Expanded(
                 child: Center(
-                    child: ApiFutureBuilder<String>(
+                    child: CustomFutureBuilder<String>(
                         future: futureActionId,
                         onErrorNotify: (error) => onError(),
                         builder: (context, actionId) {

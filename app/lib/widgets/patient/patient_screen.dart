@@ -8,7 +8,7 @@ import 'package:manvsim/widgets/action/action_selection.dart';
 import 'package:manvsim/widgets/action/performed_actions_overview.dart';
 import 'package:manvsim/widgets/patient/classification_card.dart';
 import 'package:manvsim/widgets/patient/patient_overview.dart';
-import 'package:manvsim/widgets/util/api_future_builder.dart';
+import 'package:manvsim/widgets/util/custom_future_builder.dart';
 
 class PatientScreen extends StatefulWidget {
   final int patientId;
@@ -116,7 +116,7 @@ class _PatientScreenState extends State<PatientScreen> {
                     IconButton(
                         onPressed: refresh, icon: const Icon(ManvIcons.refresh))
                 ]),
-            body: ApiFutureBuilder<Patient>(
+            body: CustomFutureBuilder<Patient>(
                 future: futurePatient,
                 builder: (context, patient) {
                   return TabBarView(

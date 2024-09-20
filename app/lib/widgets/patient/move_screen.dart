@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/services/patient_service.dart';
-import 'package:manvsim/widgets/util/api_future_builder.dart';
+import 'package:manvsim/widgets/util/custom_future_builder.dart';
 import 'package:manvsim/widgets/util/timer_widget.dart';
 
 import '../../models/location.dart';
@@ -47,7 +47,7 @@ class _MoveScreenState extends State<MoveScreen> {
           automaticallyImplyLeading: false,
         ),
         body: Center(
-            child: ApiFutureBuilder<Patient>(
+            child: CustomFutureBuilder<Patient>(
                 future: futureMovedPatient,
                 builder: (context, movedPatient) {
                   return TimerWidget(
