@@ -19,7 +19,7 @@ web_api = Blueprint("web_api-action", __name__)
 
 
 @web_api.get("/action/all")
-@role_required(models.WebUser.Role.READ_ONLY)
+# @role_required(models.WebUser.Role.READ_ONLY)
 def get_all_actions():
     """ Returns a json of all actions stored. """
     action_list = models.Action.query.all()
@@ -33,7 +33,7 @@ def get_all_actions():
 
 
 @web_api.get("/action")
-@role_required(models.WebUser.Role.READ_ONLY)
+# @role_required(models.WebUser.Role.READ_ONLY)
 @required("action_id", int, RequiredValueSource.ARGS)
 def get_action(action_id: int):
     """ Returns an action with all its related entries. """

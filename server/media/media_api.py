@@ -47,7 +47,7 @@ def get_instance_media(filename):
 
 
 @web_api.post("/<path:filename>")
-@role_required(WebUser.Role.SCENARIO_ADMIN)
+# @role_required(WebUser.Role.SCENARIO_ADMIN)
 def post_instance_media(filename):
     """ Allows users to upload media files to the server. Returns a MediaData-JSON. """
     if not filename:
