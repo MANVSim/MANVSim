@@ -101,15 +101,16 @@ def create_execution(scenario_id: int, name: str):
                 if player.tan in tan_list:
                     player.execution_id = new_execution.id
         else:
-            template_vehicle = (models.PlayersToVehicleInExecution.query
+            template_vehicles = (models.PlayersToVehicleInExecution.query
                                 .filter_by(scenario_id=scenario_id).where(
                                     models.PlayersToVehicleInExecution.execution_id != None)
-                                .first())
-            assert template_vehicle
-            add_vehicles_to_execution_to_session(new_execution.id, scenario_id,
-                                                 template_vehicle.location_id,
-                                                 template_vehicle.vehicle_name,
-                                                 template_vehicle.travel_time)
+                                .all())
+            assert template_vehicles
+            for template_vehicle in template_vehicles:
+                add_vehicles_to_execution_to_session(new_execution.id, scenario_id,
+                                                     template_vehicle.location_id,
+                                                     template_vehicle.vehicle_name,
+                                                     template_vehicle.travel_time)
 
         db.session.commit()
         logging.info(f"new execution created with id: {new_execution.id}")

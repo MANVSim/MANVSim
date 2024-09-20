@@ -17,7 +17,7 @@ web_api = Blueprint("web_api-location", __name__)
 
 
 @web_api.get("/location/all-vehicles")
-@role_required(models.WebUser.Role.READ_ONLY)
+# @role_required(models.WebUser.Role.READ_ONLY)
 def get_all_vehicle_locations():
     """ Returns a json of all locations stored. """
     location_list = models.Location.query.filter_by(
@@ -32,7 +32,7 @@ def get_all_vehicle_locations():
 
 
 @web_api.get("/location/all")
-@role_required(models.WebUser.Role.READ_ONLY)
+# @role_required(models.WebUser.Role.READ_ONLY)
 def get_all_locations():
     """ Returns a json of all locations stored. """
     location_list = models.Location.query.all()
@@ -44,8 +44,9 @@ def get_all_locations():
         } for location in location_list
     ]
 
+
 @web_api.get("/location")
-@role_required(models.WebUser.Role.READ_ONLY)
+# @role_required(models.WebUser.Role.READ_ONLY)
 @required("location_id", int, RequiredValueSource.ARGS)
 def get_location(location_id: int):
 
