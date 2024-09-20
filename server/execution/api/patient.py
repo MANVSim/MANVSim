@@ -33,7 +33,7 @@ def arrive_patient(patient_id: int):
         patient = scenario.patients[patient_id]
 
         if not player.location:
-            # a possible location leave my be pending in another thread. Instead
+            # a possible location leave may be pending in another thread. Instead
             # of leaving automatically use a delayed version.
             __try_leave_patient(execution_id=execution.id, player=player)
 
