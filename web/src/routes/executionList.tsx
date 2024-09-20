@@ -39,7 +39,7 @@ export function ExecutionListRoute(): ReactElement {
     <div className="mt-3 pb-5">
       <div>
         <h2>Aktive Ausführungen</h2>
-        <p>Die folgenden Ausführungen sind gestartet:</p>
+        <p>Die folgenden Szenario-Ausführungen sind aktiv:</p>
         {activeExecutions.length ? (
           <div className="mb-5">
             {activeExecutions.map((item) => (
@@ -71,7 +71,7 @@ export function ExecutionListRoute(): ReactElement {
           </div>
         ) : (
           <p>
-            <i>Es sind derzeit keine Scenarios aktiv.</i>
+            <i>Es sind derzeit keine Ausführungen aktiv.</i>
           </p>
         )}
       </div>
@@ -79,7 +79,7 @@ export function ExecutionListRoute(): ReactElement {
         <div className="d-flex justify-content-between">
           <div>
             <h2>Vorlagen</h2>
-            <p>Die folgenden Vorlagen sind verfügbar:</p>
+            <p>Die folgenden Ausführungsvorlagen sind verfügbar:</p>
           </div>
           <div className="d-flex">
             <button
