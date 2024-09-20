@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/models/location.dart';
 import 'package:manvsim/services/inventory_service.dart';
 import 'package:manvsim/services/location_service.dart';
@@ -214,7 +215,8 @@ class _LocationScreenState extends State<LocationScreen> {
             actions: [
               if (kIsWeb)
                 IconButton(
-                    onPressed: _refreshData, icon: const Icon(Icons.refresh))
+                    onPressed: _refreshData,
+                    icon: const Icon(ManvIcons.refresh))
             ]),
         body: ApiFutureBuilder<Location>(
             future: _futureLocation,

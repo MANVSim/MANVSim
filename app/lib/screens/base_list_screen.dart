@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/widgets/api_future_builder.dart';
 
 class BaseListScreenItem {
@@ -61,7 +62,7 @@ class _BaseListScreenState extends State<BaseListScreen> {
         title: Text(widget.title),
         actions: [
           if (kIsWeb)
-            IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh))
+            IconButton(onPressed: _refresh, icon: const Icon(ManvIcons.refresh))
         ],
       ),
       body: Column(children: [

@@ -114,7 +114,7 @@ class _PatientScreenState extends State<PatientScreen> {
                 actions: [
                   if (kIsWeb)
                     IconButton(
-                        onPressed: refresh, icon: const Icon(Icons.refresh))
+                        onPressed: refresh, icon: const Icon(ManvIcons.refresh))
                 ]),
             body: ApiFutureBuilder<Patient>(
                 future: futurePatient,
