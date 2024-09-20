@@ -40,7 +40,7 @@ def get_all_persons_at_location(location_id: int):
 
         players_at_location = []
         for player in execution.players.values():
-            if player.location.id == location_id:
+            if player.location and player.location.id == location_id:
                 players_at_location.append(player.to_dict(shallow=True, include=["name", "role"]))
 
         patients_at_location = []
