@@ -17,7 +17,7 @@ web_api = Blueprint("web_api-resource", __name__)
 
 
 @web_api.get("/resource/all")
-@role_required(models.WebUser.Role.READ_ONLY)
+# @role_required(models.WebUser.Role.READ_ONLY)
 def get_all_resources():
     """ Returns a json of all resources stored. """
     resource_list = models.Resource.query.all()
@@ -31,7 +31,7 @@ def get_all_resources():
 
 
 @web_api.get("/resource")
-@role_required(models.WebUser.Role.READ_ONLY)
+# @role_required(models.WebUser.Role.READ_ONLY)
 @required("resource_id", int, RequiredValueSource.ARGS)
 def get_resource(resource_id: int):
 
