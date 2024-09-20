@@ -1,6 +1,7 @@
 import uuid
 
 from bcrypt import gensalt, hashpw
+
 from app import create_app
 from app_config import db, csrf
 from execution.entities.stategraphs.activity_diagram import ActivityDiagram
@@ -52,8 +53,10 @@ def __create_locations():
                             "media/static/image/tasche_sichtung.jpg")])))
     insert(Location(id=6, name="Verbandskasten",
                     media_refs=MediaData.list_to_json([
-                        MediaData.new_image(
-                            "media/static/image/tasche_rot.jpg")])))
+                        MediaData.new_image("media/static/image/tasche_rot.jpg")])))
+    insert(Location(id=7, name="Eingestürztes Haus",
+                    media_refs=MediaData.list_to_json([
+                        MediaData.new_image("media/static/image/ruine_haus.jpg")])))
 
     # RTW:
     insert(LocationContainsLocation(id=0, parent=0, child=2))  # EKG
@@ -246,8 +249,8 @@ def __patient_in_scenario():
     # Tot
     insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-4"))
     insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-5"))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-6"))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-7"))
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-6", location_id=7))
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-7", location_id=7))
 
 
 def __create_scenarios():
@@ -578,7 +581,6 @@ def __create_activity_diagrams():
 
 
 with create_app(csrf=csrf, db=db).app_context():
-
     __create_scenarios()
     __create_executions()
     __create_roles()
