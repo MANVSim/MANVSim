@@ -231,7 +231,7 @@ class _InternalResourceDirectoryState
                               ? Colors.lightGreen
                               : Colors.grey,
                           child: ListTile(
-                              leading: Text(resource.quantity < 10
+                              leading: Text(resource.quantity < 10000
                                   ? '${resource.quantity}'
                                   : '\u221e'),
                               title: Text(resource.name),
