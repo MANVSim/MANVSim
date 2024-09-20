@@ -178,7 +178,8 @@ const executionData = z.object({
   status: ExecutionStatusEnum,
   roles: z.array(baseDataStripped),
   locations: z.array(baseDataStripped),
-  notifications: z.array(notifications)
+  notifications: z.array(notifications),
+  patients: z.array(baseDataStripped)
 })
 
 export type ExecutionData = z.infer<typeof executionData>

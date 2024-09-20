@@ -62,7 +62,12 @@ def get_execution(id: int):
                 "id": x[1],
                 "name": x[0]
             } for x in __get_top_level_locations(execution.id)],
-            "notifications": execution.notifications
+            "notifications": execution.notifications,
+            "patients": [
+                {
+                    "id": patient.id,
+                    "name": patient.name
+                } for patient in execution.scenario.patients.values()]
         }
 
 

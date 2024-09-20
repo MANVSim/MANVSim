@@ -32,6 +32,7 @@ import { ExecutionStatusDisplay } from "../components/ExecutionStatusDisplay"
 
 import "./executionList"
 import "./execution.css"
+import QRCode from "react-qr-code"
 
 export function ExecutionRoute() {
   const executionData = useLoaderData() as ExecutionData
@@ -266,6 +267,23 @@ export function ExecutionRoute() {
                 </li>
               ))}
             </ol>
+          </section>
+          <section id="patient-qrcodes" className={`d-flex flex-wrap w-100 mt-3 justify-content-evenly ${execution.status === "RUNNING" || execution.status === "PENDING" ? "" : "d-none"}`}>
+            <div className="w-100">
+              <h3>Patienten</h3>
+            </div>
+            {execution.patients.length ? (execution.patients.map((patient, index) => (
+              <div key={index} className={`d-flex flex-column m-2 p-2`}>
+                <span>#{patient.id}</span>
+                <QRCode value={`patient;${patient.id}`} />
+              </div>
+            ))
+            ) : (
+              <span>
+                Das Scenario hat keine Patienten gespeichert.
+              </span>
+            )}
+
           </section>
         </div>
       ) : (
