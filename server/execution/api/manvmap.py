@@ -14,7 +14,7 @@ def get_map_data():
     """
     Returns all data required for the map in the app.
     The position data is generated randomly per request.
-    The buildings and starting_point are static mock data.
+    The buildings and last_position are static mock data.
     This is subject to change as the admin frontend might provide functionality
     to define/configure these in the future.
     """
@@ -22,7 +22,7 @@ def get_map_data():
         execution, _ = util.get_execution_and_player()
         return {
             "patient_positions": [
-                {"position": {"x": random() * 1000, "y": random() * 1000},
+                {"position": {"x": random() * 1400, "y": random() * 1700},
                  "patient_id": patient.id,
                  "classification": patient.classification.name}
                 for patient in execution.scenario.patients.values()
@@ -49,7 +49,7 @@ def get_map_data():
                 {"top_left": {"x": 1450, "y": 1750}, "width": 22, "height": 1},
                 {"top_left": {"x": 940, "y": 1330}, "width": 60, "height": 20},
             ],
-            "starting_point": {"x": 600, "y": 600}
+            "last_position": {"x": 600, "y": 600}
         }
     except KeyError:
         return "Missing or invalid request parameter detected.", 400

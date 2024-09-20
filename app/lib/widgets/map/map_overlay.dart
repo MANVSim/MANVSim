@@ -65,7 +65,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   @override
   void initState() {
     super.initState();
-    positionNotifier = ValueNotifier(widget.mapData.startingPoint);
+    positionNotifier = ValueNotifier(widget.mapData.lastPosition);
     manvMap = MANVMap(widget.mapData, positionNotifier);
     _transformationController =
         CustomTransformationController(positionOnViewport)

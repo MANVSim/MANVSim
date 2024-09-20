@@ -30,12 +30,12 @@ enum PatientClass {
 
   /// Returns the corresponding color to a classification.
   Color get color => switch (this) {
-        PatientClass.preRed || PatientClass.red => Colors.red,
-        PatientClass.preYellow || PatientClass.yellow => Colors.yellow,
-        PatientClass.preGreen || PatientClass.green => Colors.green,
-        PatientClass.preBlue || PatientClass.blue => Colors.blue,
+        PatientClass.preRed || PatientClass.red => Colors.red.shade700,
+        PatientClass.preYellow || PatientClass.yellow => Colors.yellow.shade600,
+        PatientClass.preGreen || PatientClass.green => Colors.green.shade700,
+        PatientClass.preBlue || PatientClass.blue => Colors.blue.shade700,
         PatientClass.black => Colors.black,
-        _ => Colors.grey,
+        _ => Colors.grey.shade600,
       };
 
   factory PatientClass.fromString(String classification) {

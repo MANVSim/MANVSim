@@ -18,11 +18,11 @@ class MapData {
   List<Rect> buildings;
   List<PatientPosition> patientPositions;
   List<LocationPosition> locationPositions;
-  Offset startingPoint;
+  Offset lastPosition;
   Size size;
 
   MapData(this.buildings, this.patientPositions, this.locationPositions,
-      this.startingPoint, this.size);
+      this.lastPosition, this.size);
 
   Rect get rect => Offset.zero & size;
 
