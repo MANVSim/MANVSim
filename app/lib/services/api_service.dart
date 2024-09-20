@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/models/tan_user.dart';
 import 'package:manvsim/services/notification_service.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/login_screen.dart';
+import '../widgets/player/login_screen.dart';
 
 class _JwtCsrfAuth implements Authentication {
   _JwtCsrfAuth(this.jwtToken);

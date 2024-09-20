@@ -7,7 +7,7 @@ import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/services/location_service.dart';
 
 import '../models/location.dart';
-import '../screens/patient_screen.dart';
+import '../widgets/patient/patient_screen.dart';
 
 /// Provides methods to manage [Patient].
 ///
