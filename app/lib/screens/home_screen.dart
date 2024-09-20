@@ -5,6 +5,7 @@ import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
+import 'package:manvsim/widgets/error_box.dart';
 import 'package:manvsim/widgets/player_overview.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,6 +20,8 @@ class HomeScreenState extends State<HomeScreen> {
 
   final List<bool> _selectedSearchType = [true, false];
 
+  String? _qrCodeError;
+
   final List<Icon> _selectedIcon = [
     const Icon(ManvIcons.patient),
     const Icon(ManvIcons.location)
@@ -32,8 +35,40 @@ class HomeScreenState extends State<HomeScreen> {
       ),
     );
     if (scannedQR case String scannedText) {
-      // TODO check only digits (maybe also error handling)
-      textController.text = scannedText;
+      final splitScan = scannedText.split(';');
+      if (splitScan.length != 2) {
+        setState(() {
+          _qrCodeError = AppLocalizations.of(context)!.homeScreenQrCodeError;
+        });
+        return;
+      }
+
+
+      setState(() {
+        if (splitScan[0].toLowerCase() == 'patient') {
+          _selectedSearchType[0] = true;
+          _selectedSearchType[1] = false;
+        } else if (splitScan[0].toLowerCase() == 'location') {
+          _selectedSearchType[0] = false;
+          _selectedSearchType[1] = true;
+        } else {
+          _qrCodeError = AppLocalizations.of(context)!.homeScreenQrCodeError;
+          return;
+        }
+
+        try {
+          int id = int.parse(splitScan[1]);
+          textController.text = id.toString();
+          _qrCodeError = null;
+        } catch (e) {
+          _qrCodeError = AppLocalizations.of(context)!.homeScreenQrCodeError;
+          return;
+        }
+      });
+    } else {
+      setState(() {
+        _qrCodeError = AppLocalizations.of(context)!.homeScreenQrCodeError;
+      });
     }
   }
 
@@ -67,6 +102,10 @@ class HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    if (_qrCodeError != null) ...[
+                      ErrorBox(errorText: _qrCodeError!),
+                      const SizedBox(height: 8)
+                    ],
                     ToggleButtons(
                       onPressed: (int index) {
                         setState(() {
@@ -89,6 +128,11 @@ class HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 8),
                     TextField(
                       controller: _idController,
+                      onChanged: (value) {
+                        setState(() {
+                          _qrCodeError = null;
+                        });
+                      },
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!
                             .homeScreenTextField(_selectedSearchType[0]

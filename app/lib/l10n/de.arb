@@ -223,6 +223,7 @@
   "homeScreenTypePatient": "Patient",
   "homeScreenTypeLocation": "Location",
   "homeScreenTextField": "{type} ID",
+  "homeScreenQrCodeError": "QR Code konnte nicht gelesen werden",
   "@homeScreenTextField": {
     "placeholders": {
       "type": {
