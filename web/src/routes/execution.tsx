@@ -181,7 +181,7 @@ export function ExecutionRoute() {
                 </thead>
                 <tbody>
                   {tansUsed.map((player) => (
-                    <PlayerStatus key={player.tan} player={player} />
+                    <PlayerStatus key={player.tan} player={player} exec_status={execution.status} />
                   ))}
                 </tbody>
               </table>
