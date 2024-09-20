@@ -55,8 +55,8 @@ class _ActionSelectionState extends State<ActionSelection> {
   void setActions(List<PatientAction> actions) {
     // filter actions by available resources
     possibleActions = actions.where((action) => action.resourceNamesNeeded
-        .every((resourceName) =>
-            resources.any((resource) => resource.name == resourceName)));
+        .every((resourceName) => resources.any((resource) =>
+            (resource.name == resourceName && resource.quantity > 0))));
     // Could be more efficient, but probably not needed here
     notPossibleActions =
         actions.where((action) => !possibleActions.contains(action)).toList();
@@ -68,7 +68,8 @@ class _ActionSelectionState extends State<ActionSelection> {
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setStateDialog) {
           return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.patientScreenFilterResourceTitle),
+            title: Text(
+                AppLocalizations.of(context)!.patientScreenFilterResourceTitle),
             content: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: ResourceDirectory(
@@ -95,7 +96,6 @@ class _ActionSelectionState extends State<ActionSelection> {
 
   @override
   Widget build(BuildContext context) {
-
     resources = Location.flattenResourcesFromList(widget.locations);
 
     return Column(children: [
@@ -104,7 +104,8 @@ class _ActionSelectionState extends State<ActionSelection> {
         builder: (context, actions) {
           setActions(actions);
           var selectedActions = getSelectedActions(possibleActions.toList());
-          var notPossibleActionsSelected = getSelectedActions(notPossibleActions);
+          var notPossibleActionsSelected =
+              getSelectedActions(notPossibleActions);
           return Column(children: [
             Stack(
               alignment: Alignment.center,
