@@ -303,15 +303,72 @@ paths:
       security:
         - bearerAuth: [ ]
 
+
+  /run/location/persons:
+    get:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ location_id ]
+              properties:
+                location_id:
+                  type: integer
+                  example: 1
+      summary: Returns a list of all patients and all players at the given locations.
+      responses:
+        '200':
+          description: A JSON with a list of players and list of patients (in reduced form).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  players:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: "Frank Huch"
+                        role:
+                          type: string
+                          example: "Notarzt"
+                  patients:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 12342345
+                        name:
+                          type: string
+                          example: "Patient I"
+                required: [ players, patients ]
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Invalid JWT detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: [ ]
+
+
   /run/location/take-to:
     post:
-      summary: A player takes any location which is not a registered top-level location and places it into another selected location. 
-               It is designed to create a valuable state among all locations and player inventories. However an invalid use may 
-               create an invalid game state. 
-               The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory.
-               The list should start with a toplevel location.
-               The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory.
-               If the list is empty, the item is placed as in the root level of the inventory.
+      summary: Take a (sub) location to another location.
+      description: A player takes any location which is not a registered top-level location and places it into another selected location.
+        It is designed to create a valuable state among all locations and player inventories. However an invalid use may
+        create an invalid game state.
+        The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory.
+        The list should start with a toplevel location.
+        The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory.
+        If the list is empty, the item is placed as in the root level of the inventory.
       requestBody:
         required: true
         content:
@@ -344,11 +401,12 @@ paths:
 
   /run/location/put-to:
     post:
-      summary: A player puts any location which is not a registered top-level location and places it into another selected location. 
-               It is designed to create a valuable state among all locations and player inventories. However an invalid use may 
-               create an invalid game state. 
-               The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer.
-               The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
+      summary: Put a (sub) location in another location.
+      description: A player puts any location which is not a registered top-level location and places it into another selected location.
+        It is designed to create a valuable state among all locations and player inventories. However an invalid use may
+        create an invalid game state.
+        The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer.
+        The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
       requestBody:
         required: true
         content:
