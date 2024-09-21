@@ -39,12 +39,11 @@ class PatientService {
         .then(PatientListExtension.fromApi);
   }
 
-  static Future<PatientClass> classifyPatient(
+  static Future<void> classifyPatient(
       PatientClass classification, Patient patient) async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     await apiService.api.runPatientClassifyPost(RunPatientClassifyPostRequest(
         classification: classification.value, patientId: patient.id));
-    return Future.value(classification);
   }
 
   /// Navigates to [PatientScreen] and leaves location after.

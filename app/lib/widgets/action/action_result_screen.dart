@@ -17,11 +17,13 @@ class ActionResultScreen extends StatefulWidget {
   final Patient patient;
   final String performedActionId;
   final bool resultAlreadyAvailable;
+  final Function(Patient? patient)? onActionResultAvailable;
 
   const ActionResultScreen(
       {super.key,
       required this.patient,
       required this.performedActionId,
+      this.onActionResultAvailable,
       this.resultAlreadyAvailable = false});
 
   @override
@@ -39,7 +41,13 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
         ? Future.value(
             ActionResult.fromPatient(widget.patient, widget.performedActionId))
         : ActionService.fetchActionResult(
-            widget.patient, widget.performedActionId);
+                widget.patient, widget.performedActionId)
+            .then((value) {
+            if (widget.onActionResultAvailable != null) {
+              widget.onActionResultAvailable!(value?.patient);
+            }
+            return value;
+          });
   }
 
   _buildConditionOverview(Condition condition) {

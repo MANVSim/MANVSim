@@ -70,7 +70,7 @@ class _PatientScreenState extends State<PatientScreen> {
             AppLocalizations.of(context)!.patientScreenClassification,
             textAlign: TextAlign.center,
           ),
-          ClassificationCard(patient: patient),
+          ClassificationCard(patient: patient, onClassificationChanged: refresh),
           const SizedBox(height: 4),
           PerformedActionsOverview(
               patient: patient,
@@ -84,7 +84,7 @@ class _PatientScreenState extends State<PatientScreen> {
         patient,
         [
           Text(AppLocalizations.of(context)!.patientScreenClassification),
-          ClassificationCard(patient: patient, changeable: true),
+          ClassificationCard(patient: patient, changeable: true, onClassificationChanged: refresh,),
           ActionSelection(
               patient: patient,
               locations: [patient.location],
