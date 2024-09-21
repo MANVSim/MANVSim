@@ -68,8 +68,9 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**runActionPerformResultGet**](doc//DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action and officially finishes/dequeues the action of the patient.
 *DefaultApi* | [**runLocationAllGet**](doc//DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of top-level accessible locations.
 *DefaultApi* | [**runLocationLeavePost**](doc//DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
-*DefaultApi* | [**runLocationPutToPost**](doc//DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
-*DefaultApi* | [**runLocationTakeToPost**](doc//DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
+*DefaultApi* | [**runLocationPersonsGet**](doc//DefaultApi.md#runlocationpersonsget) | **GET** /run/location/persons | Returns a list of all patients and all players at the given locations.
+*DefaultApi* | [**runLocationPutToPost**](doc//DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | Put a (sub) location in another location.
+*DefaultApi* | [**runLocationTakeToPost**](doc//DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | Take a (sub) location to another location.
 *DefaultApi* | [**runMapdataGet**](doc//DefaultApi.md#runmapdataget) | **GET** /run/mapdata | gets map data
 *DefaultApi* | [**runPatientAllIdsGet**](doc//DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 *DefaultApi* | [**runPatientArrivePost**](doc//DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
@@ -106,6 +107,10 @@ Class | Method | HTTP request | Description
  - [RunActionPerformResultGet200Response](doc//RunActionPerformResultGet200Response.md)
  - [RunLocationAllGet200Response](doc//RunLocationAllGet200Response.md)
  - [RunLocationLeavePost200Response](doc//RunLocationLeavePost200Response.md)
+ - [RunLocationPersonsGet200Response](doc//RunLocationPersonsGet200Response.md)
+ - [RunLocationPersonsGet200ResponsePatientsInner](doc//RunLocationPersonsGet200ResponsePatientsInner.md)
+ - [RunLocationPersonsGet200ResponsePlayersInner](doc//RunLocationPersonsGet200ResponsePlayersInner.md)
+ - [RunLocationPersonsGetRequest](doc//RunLocationPersonsGetRequest.md)
  - [RunLocationPutToPostRequest](doc//RunLocationPutToPostRequest.md)
  - [RunLocationTakeToPostRequest](doc//RunLocationTakeToPostRequest.md)
  - [RunPatientAllIdsGet200Response](doc//RunPatientAllIdsGet200Response.md)
