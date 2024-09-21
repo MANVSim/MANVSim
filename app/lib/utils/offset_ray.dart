@@ -77,3 +77,8 @@ extension OffsetToVector3 on Offset {
 extension Vector3ToOffset on Vector3 {
   Offset toOffset() => Offset(x, y);
 }
+
+extension OffsetAngleTo on Offset {
+  double signedAngleTo(Offset other) =>
+      toVector3().angleToSigned(other.toVector3(), Vector3(0, 0, 1));
+}

@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/map_data.dart';
-import 'package:manvsim/models/offset_ray.dart';
+import 'package:manvsim/utils/custom_transformation_controller.dart';
+import 'package:manvsim/utils/offset_ray.dart';
 import 'package:manvsim/widgets/map/manv_map.dart';
 
 enum MapOverlayViewerPositions {
@@ -11,6 +11,7 @@ enum MapOverlayViewerPositions {
   bottomCenter(alignment: Alignment(0.0, 0.9));
 
   const MapOverlayViewerPositions({required this.alignment});
+
   final Alignment alignment;
 }
 
@@ -66,13 +67,16 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   void initState() {
     super.initState();
     positionNotifier = ValueNotifier(widget.mapData.lastPosition);
-    manvMap = MANVMap(widget.mapData, positionNotifier);
     _transformationController =
         CustomTransformationController(positionOnViewport)
           ..setTranslation(targetPositionToTranslation(positionNotifier.value));
     _animationController = AnimationController(
       vsync: this,
     );
+    manvMap = MANVMap(
+        mapData: widget.mapData,
+        positionNotifier: positionNotifier,
+        transformationController: _transformationController);
   }
 
   @override
@@ -94,7 +98,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   void _onNewDirection(Offset tappedOnScene) {
     Offset viewerOnScene = positionNotifier.value;
     Offset targetOnScene =
-        getTarget(viewerOnScene, viewerOnScene - tappedOnScene);
+        _getMovementTarget(viewerOnScene, viewerOnScene - tappedOnScene);
     _onMoveEnd();
     _translationAnimation = Tween<Offset>(
             begin: _transformationController.currentTranslation,
@@ -118,7 +122,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   }
 
   /// Uses vector math to determine where the path hits an obstacle or the edge.
-  Offset getTarget(Offset origin, Offset direction) {
+  Offset _getMovementTarget(Offset origin, Offset direction) {
     OffsetRay dirRay = OffsetRay(origin, direction);
     double distance = [mapRect, ...buildings]
         .map(dirRay.intersectsWithRect)
@@ -188,8 +192,10 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       child: Container(
           width: viewportSize.width,
           height: viewportSize.height,
-          decoration:
-              BoxDecoration(border: Border.all(width: 3), color: Colors.grey),
+          decoration: BoxDecoration(
+              border: Border.all(width: 3),
+              // Background for empty space:
+              color: Colors.grey.shade700),
           child: ClipRect(
               clipBehavior: Clip.hardEdge, //clipBehavior,
               child: Stack(children: [
@@ -217,77 +223,5 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     return Column(
         mainAxisSize: MainAxisSize.min,
         children: [_buildMapViewport(), _buildControls()]);
-  }
-}
-
-class CustomTransformationController extends ChangeNotifier
-    implements ValueListenable<Matrix4> {
-  CustomTransformationController(this.focalPoint);
-
-  double currentTilt = 0;
-  double currentRotation = 0;
-  double currentScale = 1;
-  Offset currentTranslation = Offset.zero;
-
-  Matrix4 tiltMatrix = Matrix4.identity();
-  Matrix4 rotationScaleMatrix = Matrix4.identity();
-  Matrix4 translationMatrix = Matrix4.identity();
-
-  Offset focalPoint;
-
-  @override
-  Matrix4 get value => tiltMatrix * (rotationScaleMatrix * translationMatrix);
-
-  void rotate(double rotation) {
-    currentRotation += rotation;
-    final Offset focalPointScene = rotated(focalPoint);
-    rotationScaleMatrix
-      ..translate(focalPointScene.dx, focalPointScene.dy)
-      ..rotateZ(-rotation)
-      ..translate(-focalPointScene.dx, -focalPointScene.dy);
-    notifyListeners();
-  }
-
-  void tilt(double tilt) {
-    double newTilt = currentTilt + tilt;
-    if (newTilt.abs() > 1.5) return;
-    final Offset focalPointScene = rotated(focalPoint);
-    currentTilt = newTilt;
-    tiltMatrix
-      ..translate(focalPointScene.dx, focalPointScene.dy)
-      ..rotateX(-tilt)
-      ..translate(-focalPointScene.dx, -focalPointScene.dy);
-    notifyListeners();
-  }
-
-  void scale(double scale) {
-    double newScale = currentScale * scale;
-    if (newScale < 0.25 || newScale > 2) return;
-    final Offset focalPointScene = rotated(focalPoint);
-    currentScale = newScale;
-    rotationScaleMatrix
-      ..translate(focalPointScene.dx, focalPointScene.dy)
-      ..scale(scale)
-      ..translate(-focalPointScene.dx, -focalPointScene.dy);
-    notifyListeners();
-  }
-
-  void setTranslation(Offset translation) {
-    currentTranslation = translation;
-    translationMatrix = translationMatrix
-      ..setTranslation(translation.toVector3());
-    notifyListeners();
-  }
-
-  Offset toScene(Offset viewportPoint) {
-    // On viewportPoint, perform the inverse transformation of the scene to get
-    // where the point would be in the scene before the transformation.
-    final Matrix4 inverseMatrix = Matrix4.inverted(value);
-    return inverseMatrix.transform3(viewportPoint.toVector3()).toOffset();
-  }
-
-  Offset rotated(Offset viewportPoint) {
-    Matrix4 inverseMatrix = Matrix4.inverted(tiltMatrix * rotationScaleMatrix);
-    return inverseMatrix.transform3(viewportPoint.toVector3()).toOffset();
   }
 }

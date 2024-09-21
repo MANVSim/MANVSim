@@ -46,20 +46,20 @@ class MapData {
         .map((lpDTO) =>
             (position: lpDTO.position.toOffset(), id: lpDTO.locationId))
         .toList();
-    var startingPoint = mapdataDTO.startingPoint?.toOffset();
+    var lastPosition = mapdataDTO.lastPosition?.toOffset();
 
     var allPoints = [
       ...buildings.map((b) => [b.topLeft, b.bottomRight]).expand((b) => b),
       ...patientPositions.map((pp) => pp.position),
       ...locationPositions.map((lp) => lp.position),
-      if (startingPoint != null) startingPoint
+      if (lastPosition != null) lastPosition
     ];
     // TODO: adjust for negative points (for positions in buildings not)
     var size = _calcSize(allPoints);
-    startingPoint ??= Offset(
+    lastPosition ??= Offset(
         size.width - defaultPadding / 2, size.height - defaultPadding / 2);
     return MapData(
-        buildings, patientPositions, locationPositions, startingPoint, size);
+        buildings, patientPositions, locationPositions, lastPosition, size);
   }
 
   /// Calculates the needed size based on [points} and [padding].

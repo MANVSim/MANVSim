@@ -2,21 +2,32 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/models/map_data.dart';
-import 'package:manvsim/models/offset_ray.dart';
 import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/patient_service.dart';
-import 'package:vector_math/vector_math_64.dart' hide Colors;
+import 'package:manvsim/utils/custom_transformation_controller.dart';
+import 'package:manvsim/utils/offset_ray.dart';
 
 class MANVMap extends StatefulWidget {
   static const tooFarThreshold = 300;
 
+  /// The [MapData] with which this map is drawn.
   final MapData mapData;
 
+  /// The Controller controlling the overlays transformation of the map.
+  /// Used to display text in the correct orientation.
+  final CustomTransformationController? transformationController;
+
   /// Provides current position of the player.
+  /// Used to draw shadows of obstacles.
   final ValueNotifier<Offset> positionNotifier;
 
-  const MANVMap(this.mapData, this.positionNotifier, {super.key});
+  const MANVMap(
+      {required this.mapData,
+      required this.positionNotifier,
+      this.transformationController,
+      super.key});
 
   @override
   State<StatefulWidget> createState() => _MANVMapState();
@@ -25,48 +36,30 @@ class MANVMap extends StatefulWidget {
 class _MANVMapState extends State<MANVMap> {
   List<Positioned> messages = [];
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        height: widget.mapData.size.height,
-        width: widget.mapData.size.width,
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-                opacity: 0.05,
-                repeat: ImageRepeat.repeat,
-                image: AssetImage("assets/map_background.jpg")),
-            gradient: LinearGradient(
-                colors: [Colors.white, Colors.amberAccent],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight)),
-        child: Stack(
-          children: [
-            CustomPaint(
-                painter:
-                    _ShadowPainter(widget.mapData, widget.positionNotifier)),
-            ...widget.mapData.buildings.map(rectToPositioned),
-            ...getLocationWidgets(context),
-            ...getPatientWidgets(context),
-            ...messages
-          ],
-        ));
-  }
-
-  List<Positioned> getPatientWidgets(BuildContext context) {
+  List<Positioned> _getPatientWidgets(BuildContext context) {
     return widget.mapData.patientPositions
         .map((patientPosition) => Positioned(
               top: patientPosition.position.dy,
               left: patientPosition.position.dx,
               child: IconButton(
                   onPressed: () => _onPatientPressed(patientPosition, context),
-                  icon: Icon(Icons.accessibility_new,
-                      color: patientPosition.classification.color),
-                  iconSize: 50),
+                  icon: Icon(
+                    size: 50,
+                    opticalSize: 50,
+                    shadows: const [
+                      Shadow(
+                          color: Colors.black45,
+                          blurRadius: 1,
+                          offset: Offset(-2, -2))
+                    ],
+                    Icons.accessibility_new,
+                    color: patientPosition.classification.color,
+                  )),
             ))
         .toList();
   }
 
-  List<Positioned> getLocationWidgets(BuildContext context) {
+  List<Positioned> _getLocationWidgets(BuildContext context) {
     return widget.mapData.locationPositions
         .map((locationPosition) => Positioned(
               top: locationPosition.position.dy,
@@ -74,8 +67,11 @@ class _MANVMapState extends State<MANVMap> {
               child: IconButton(
                   onPressed: () =>
                       _onLocationPressed(locationPosition, context),
-                  icon: const Icon(Icons.location_on),
-                  iconSize: 50),
+                  icon: const Icon(
+                    ManvIcons.location,
+                    color: Colors.black54,
+                  ),
+                  iconSize: 35),
             ))
         .toList();
   }
@@ -110,13 +106,15 @@ class _MANVMapState extends State<MANVMap> {
         left: position.dx + 40,
         top: position.dy,
         width: 200,
-        child: Card(
-          color: Colors.white70,
-          child: Text(
-            message,
-            textScaler: const TextScaler.linear(2),
-          ),
-        ));
+        child: Transform.rotate(
+            angle: widget.transformationController?.currentRotation ?? 0,
+            child: Card(
+              color: Colors.white70,
+              child: Text(
+                message,
+                textScaler: const TextScaler.linear(2),
+              ),
+            )));
     setState(() {
       messages.add(messageWidget);
     });
@@ -127,7 +125,7 @@ class _MANVMapState extends State<MANVMap> {
             }));
   }
 
-  Positioned rectToPositioned(Rect rect) {
+  Positioned _rectToPositioned(Rect rect) {
     return Positioned(
         left: rect.left,
         top: rect.top,
@@ -135,6 +133,33 @@ class _MANVMapState extends State<MANVMap> {
             width: rect.width,
             height: rect.height,
             color: Colors.grey.shade400));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: widget.mapData.size.height,
+        width: widget.mapData.size.width,
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+                opacity: 0.02,
+                repeat: ImageRepeat.repeat,
+                image: AssetImage("assets/map_background.jpg")),
+            gradient: LinearGradient(
+                colors: [Colors.orangeAccent, Colors.amberAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight)),
+        child: Stack(
+          children: [
+            ..._getLocationWidgets(context),
+            ..._getPatientWidgets(context),
+            CustomPaint(
+                painter:
+                    _ShadowPainter(widget.mapData, widget.positionNotifier)),
+            ...widget.mapData.buildings.map(_rectToPositioned),
+            ...messages
+          ],
+        ));
   }
 }
 
@@ -212,9 +237,4 @@ class _ShadowPainter extends CustomPainter {
     Offset end = ray.intersectionWithRect(mapData.rect)!;
     return (start: start, end: end, ray: ray);
   }
-}
-
-extension OffsetAngleTo on Offset {
-  double signedAngleTo(Offset other) =>
-      toVector3().angleToSigned(other.toVector3(), Vector3(0, 0, 1));
 }

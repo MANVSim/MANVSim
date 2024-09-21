@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manvsim/constants/manv_icons.dart';
-import 'package:manvsim/screens/map_screen.dart';
 import 'package:manvsim/services/notification_service.dart';
 import 'package:manvsim/widgets/base_screens/home_screen.dart';
 import 'package:manvsim/widgets/base_screens/notifications_screen.dart';
 import 'package:manvsim/widgets/location/location_list_screen.dart';
+import 'package:manvsim/widgets/map/map_screen.dart';
 import 'package:manvsim/widgets/patient/patient_list_screen.dart';
 
 class AppFrame extends StatefulWidget {
