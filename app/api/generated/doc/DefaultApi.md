@@ -445,7 +445,7 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **runLocationPersonsGet**
-> RunLocationPersonsGet200Response runLocationPersonsGet(runLocationPersonsGetRequest)
+> RunLocationPersonsGet200Response runLocationPersonsGet(locationId)
 
 Returns a list of all patients and all players at the given locations.
 
@@ -460,10 +460,10 @@ import 'package:manv_api/api.dart';
 //defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
 
 final api_instance = DefaultApi();
-final runLocationPersonsGetRequest = RunLocationPersonsGetRequest(); // RunLocationPersonsGetRequest | 
+final locationId = 56; // int | 
 
 try {
-    final result = api_instance.runLocationPersonsGet(runLocationPersonsGetRequest);
+    final result = api_instance.runLocationPersonsGet(locationId);
     print(result);
 } catch (e) {
     print('Exception when calling DefaultApi->runLocationPersonsGet: $e\n');
@@ -474,7 +474,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **runLocationPersonsGetRequest** | [**RunLocationPersonsGetRequest**](RunLocationPersonsGetRequest.md)|  | 
+ **locationId** | **int**|  | 
 
 ### Return type
 
@@ -486,7 +486,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

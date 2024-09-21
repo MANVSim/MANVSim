@@ -483,19 +483,21 @@ class DefaultApi {
   ///
   /// Parameters:
   ///
-  /// * [RunLocationPersonsGetRequest] runLocationPersonsGetRequest (required):
-  Future<Response> runLocationPersonsGetWithHttpInfo(RunLocationPersonsGetRequest runLocationPersonsGetRequest,) async {
+  /// * [int] locationId (required):
+  Future<Response> runLocationPersonsGetWithHttpInfo(int locationId,) async {
     // ignore: prefer_const_declarations
     final path = r'/run/location/persons';
 
     // ignore: prefer_final_locals
-    Object? postBody = runLocationPersonsGetRequest;
+    Object? postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-    const contentTypes = <String>['application/json'];
+      queryParams.addAll(_queryParams('', 'location_id', locationId));
+
+    const contentTypes = <String>[];
 
 
     return apiClient.invokeAPI(
@@ -513,9 +515,9 @@ class DefaultApi {
   ///
   /// Parameters:
   ///
-  /// * [RunLocationPersonsGetRequest] runLocationPersonsGetRequest (required):
-  Future<RunLocationPersonsGet200Response?> runLocationPersonsGet(RunLocationPersonsGetRequest runLocationPersonsGetRequest,) async {
-    final response = await runLocationPersonsGetWithHttpInfo(runLocationPersonsGetRequest,);
+  /// * [int] locationId (required):
+  Future<RunLocationPersonsGet200Response?> runLocationPersonsGet(int locationId,) async {
+    final response = await runLocationPersonsGetWithHttpInfo(locationId,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }

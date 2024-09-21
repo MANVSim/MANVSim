@@ -58,7 +58,6 @@ part 'model/run_location_leave_post200_response.dart';
 part 'model/run_location_persons_get200_response.dart';
 part 'model/run_location_persons_get200_response_patients_inner.dart';
 part 'model/run_location_persons_get200_response_players_inner.dart';
-part 'model/run_location_persons_get_request.dart';
 part 'model/run_location_put_to_post_request.dart';
 part 'model/run_location_take_to_post_request.dart';
 part 'model/run_patient_all_ids_get200_response.dart';

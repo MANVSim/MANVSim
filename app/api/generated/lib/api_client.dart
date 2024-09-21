@@ -238,8 +238,6 @@ class ApiClient {
           return RunLocationPersonsGet200ResponsePatientsInner.fromJson(value);
         case 'RunLocationPersonsGet200ResponsePlayersInner':
           return RunLocationPersonsGet200ResponsePlayersInner.fromJson(value);
-        case 'RunLocationPersonsGetRequest':
-          return RunLocationPersonsGetRequest.fromJson(value);
         case 'RunLocationPutToPostRequest':
           return RunLocationPutToPostRequest.fromJson(value);
         case 'RunLocationTakeToPostRequest':

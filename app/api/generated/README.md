@@ -110,7 +110,6 @@ Class | Method | HTTP request | Description
  - [RunLocationPersonsGet200Response](doc//RunLocationPersonsGet200Response.md)
  - [RunLocationPersonsGet200ResponsePatientsInner](doc//RunLocationPersonsGet200ResponsePatientsInner.md)
  - [RunLocationPersonsGet200ResponsePlayersInner](doc//RunLocationPersonsGet200ResponsePlayersInner.md)
- - [RunLocationPersonsGetRequest](doc//RunLocationPersonsGetRequest.md)
  - [RunLocationPutToPostRequest](doc//RunLocationPutToPostRequest.md)
  - [RunLocationTakeToPostRequest](doc//RunLocationTakeToPostRequest.md)
  - [RunPatientAllIdsGet200Response](doc//RunPatientAllIdsGet200Response.md)
