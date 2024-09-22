@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/models/location.dart';
+import 'package:manvsim/models/person.dart';
 import 'package:manvsim/services/inventory_service.dart';
 import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/widgets/location/location_overview.dart';
 import 'package:manvsim/widgets/location/resource_directory.dart';
 import 'package:manvsim/widgets/location/transfer_dialogue.dart';
+import 'package:manvsim/widgets/player/player_list.dart';
 import 'package:manvsim/widgets/util/custom_future_builder.dart';
 
 class LocationScreen extends StatefulWidget {
@@ -22,6 +24,7 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> with SingleTickerProviderStateMixin{
   late Future<Location?> _futureLocation;
   late Future<List<Location>?> _futureInventory;
+  late Future<Persons> _futurePersons;
 
   late Location _fetchedLocation;
 
@@ -43,6 +46,7 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
 
     _futureLocation = _findLocationById(widget.locationId);
     _futureInventory = _getInventory();
+    _futurePersons = _getPersonsAtLocation(widget.locationId);
   }
 
 
@@ -55,6 +59,10 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
   Future<Location> _findLocationById(int locationId) {
     return LocationService.fetchLocations().then((locations) =>
         locations.firstWhere((location) => location.id == locationId));
+  }
+
+  Future<Persons> _getPersonsAtLocation(int locationId) {
+    return LocationService.fetchPersonsAt(locationId);
   }
 
   Future<List<Location>> _getInventory() {
@@ -82,12 +90,12 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
     ).then((value) => _completeTransfer());
   }
 
-  Future _refreshData() {
+  void _refreshData() {
     setState(() {
       _futureLocation = _findLocationById(widget.locationId);
       _futureInventory = _getInventory();
+      _futurePersons = _getPersonsAtLocation(widget.locationId);
     });
-    return _futureInventory;
   }
 
   void _completeTransfer() {
@@ -112,7 +120,7 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
 
   Widget _buildTabView(Location location, List<Widget> children, bool expanded) {
     return RefreshIndicator(
-        onRefresh: _refreshData,
+        onRefresh: () => Future(() => _refreshData()),
         child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: Column(children: [
@@ -131,6 +139,9 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
             AppLocalizations.of(context)!.patientScreenClassification,
             textAlign: TextAlign.center,
           ),
+          CustomFutureBuilder(future: _futurePersons, builder: (context, persons) {
+            return PlayerList(persons: persons);
+          }),
         ],
         true);
   }
@@ -290,7 +301,7 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
                   ManvIcons.patient),
               _buildTab(
                   AppLocalizations.of(context)!.patientScreenTabActions,
-                  ManvIcons.action),
+                  Icons.shopping_bag),
             ],
           ),),
         body: CustomFutureBuilder<Location>(

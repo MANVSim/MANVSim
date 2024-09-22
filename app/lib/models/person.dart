@@ -3,13 +3,15 @@ import 'package:manv_api/api.dart';
 class PlayerPerson {
   String name;
   String role;
+  String tan;
 
-  PlayerPerson({required this.name, required this.role});
+  PlayerPerson({required this.name, required this.role, required this.tan});
 
   factory PlayerPerson.fromApi(RunLocationPersonsGet200ResponsePlayersInner dto) {
     return PlayerPerson(
       name: dto.name!,
       role: dto.role!,
+      tan: dto.tan!,
     );
   }
 }

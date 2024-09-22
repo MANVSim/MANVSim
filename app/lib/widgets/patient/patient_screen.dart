@@ -1,14 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/action/action_selection.dart';
 import 'package:manvsim/widgets/action/performed_actions_overview.dart';
 import 'package:manvsim/widgets/patient/classification_card.dart';
 import 'package:manvsim/widgets/patient/patient_overview.dart';
 import 'package:manvsim/widgets/util/custom_future_builder.dart';
+
+import '../../models/person.dart';
+import '../player/player_list.dart';
 
 class PatientScreen extends StatefulWidget {
   final int patientId;
@@ -21,6 +27,7 @@ class PatientScreen extends StatefulWidget {
 
 class _PatientScreenState extends State<PatientScreen> {
   late Future<Patient?> futurePatient;
+  late Future<Persons> _futurePersons;
 
   @override
   void initState() {
@@ -70,11 +77,22 @@ class _PatientScreenState extends State<PatientScreen> {
             AppLocalizations.of(context)!.patientScreenClassification,
             textAlign: TextAlign.center,
           ),
-          ClassificationCard(patient: patient, onClassificationChanged: refresh),
+          ClassificationCard(
+              patient: patient, onClassificationChanged: refresh),
+          const SizedBox(height: 4),
+          CustomFutureBuilder(
+              future: _futurePersons,
+              builder: (context, persons) {
+                return Column(children: [
+                  Text("Spieler beim Patienten"),
+                  PlayerList(persons: persons)
+                ]);
+              }),
           const SizedBox(height: 4),
           PerformedActionsOverview(
               patient: patient,
-              title: AppLocalizations.of(context)!.patientScreenPerformedAction)
+              title:
+                  AppLocalizations.of(context)!.patientScreenPerformedAction),
         ],
         true);
   }
@@ -84,7 +102,11 @@ class _PatientScreenState extends State<PatientScreen> {
         patient,
         [
           Text(AppLocalizations.of(context)!.patientScreenClassification),
-          ClassificationCard(patient: patient, changeable: true, onClassificationChanged: refresh,),
+          ClassificationCard(
+            patient: patient,
+            changeable: true,
+            onClassificationChanged: refresh,
+          ),
           ActionSelection(
               patient: patient,
               locations: [patient.location],
@@ -119,6 +141,9 @@ class _PatientScreenState extends State<PatientScreen> {
             body: CustomFutureBuilder<Patient>(
                 future: futurePatient,
                 builder: (context, patient) {
+                  _futurePersons =
+                      LocationService.fetchPersonsAt(patient.location.id);
+
                   return TabBarView(
                     children: [
                       _buildOverview(patient),
