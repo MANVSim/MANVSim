@@ -5,16 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/models/patient.dart';
-import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/action/action_selection.dart';
 import 'package:manvsim/widgets/action/performed_actions_overview.dart';
 import 'package:manvsim/widgets/patient/classification_card.dart';
 import 'package:manvsim/widgets/patient/patient_overview.dart';
 import 'package:manvsim/widgets/util/custom_future_builder.dart';
-
-import '../../models/person.dart';
-import '../player/player_list.dart';
 
 class PatientScreen extends StatefulWidget {
   final int patientId;

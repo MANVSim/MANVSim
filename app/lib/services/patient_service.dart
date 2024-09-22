@@ -7,6 +7,7 @@ import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/services/location_service.dart';
 
 import '../models/location.dart';
+import '../widgets/location/location_screen.dart';
 import '../widgets/patient/patient_screen.dart';
 
 /// Provides methods to manage [Patient].
@@ -53,6 +54,16 @@ class PatientService {
             MaterialPageRoute(
                 builder: (context) => PatientScreen(patientId: patientId)))
         .whenComplete(() => LocationService.leaveLocation());
+  }
+
+  static void showLocation(Patient patient, BuildContext context) {
+    LocationService.leaveLocation();
+    Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    LocationScreen(locationId: patient.location.id)))
+        .whenComplete(() => PatientService.arriveAtPatient(patient.id));
   }
 
   static Future<Patient?> movePatient(Patient patient, Location moveTo) async {
