@@ -15,6 +15,7 @@ class RunLocationPersonsGet200ResponsePlayersInner {
   RunLocationPersonsGet200ResponsePlayersInner({
     this.name,
     this.role,
+    this.tan,
   });
 
   ///
@@ -33,19 +34,29 @@ class RunLocationPersonsGet200ResponsePlayersInner {
   ///
   String? role;
 
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? tan;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunLocationPersonsGet200ResponsePlayersInner &&
     other.name == name &&
-    other.role == role;
+    other.role == role &&
+    other.tan == tan;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (name == null ? 0 : name!.hashCode) +
-    (role == null ? 0 : role!.hashCode);
+    (role == null ? 0 : role!.hashCode) +
+    (tan == null ? 0 : tan!.hashCode);
 
   @override
-  String toString() => 'RunLocationPersonsGet200ResponsePlayersInner[name=$name, role=$role]';
+  String toString() => 'RunLocationPersonsGet200ResponsePlayersInner[name=$name, role=$role, tan=$tan]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -58,6 +69,11 @@ class RunLocationPersonsGet200ResponsePlayersInner {
       json[r'role'] = this.role;
     } else {
       json[r'role'] = null;
+    }
+    if (this.tan != null) {
+      json[r'tan'] = this.tan;
+    } else {
+      json[r'tan'] = null;
     }
     return json;
   }
@@ -83,6 +99,7 @@ class RunLocationPersonsGet200ResponsePlayersInner {
       return RunLocationPersonsGet200ResponsePlayersInner(
         name: mapValueOfType<String>(json, r'name'),
         role: mapValueOfType<String>(json, r'role'),
+        tan: mapValueOfType<String>(json, r'tan'),
       );
     }
     return null;

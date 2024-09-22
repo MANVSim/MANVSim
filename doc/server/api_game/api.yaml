@@ -332,6 +332,9 @@ paths:
                         role:
                           type: string
                           example: "Notarzt"
+                        tan:
+                          type: string
+                          example: "123456"
                   patients:
                     type: array
                     items:
