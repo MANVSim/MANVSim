@@ -27,7 +27,6 @@ class PatientScreen extends StatefulWidget {
 
 class _PatientScreenState extends State<PatientScreen> {
   late Future<Patient?> futurePatient;
-  late Future<Persons> _futurePersons;
 
   @override
   void initState() {
@@ -79,15 +78,6 @@ class _PatientScreenState extends State<PatientScreen> {
           ),
           ClassificationCard(
               patient: patient, onClassificationChanged: refresh),
-          const SizedBox(height: 4),
-          CustomFutureBuilder(
-              future: _futurePersons,
-              builder: (context, persons) {
-                return Column(children: [
-                  Text("Spieler beim Patienten"),
-                  PlayerList(persons: persons)
-                ]);
-              }),
           const SizedBox(height: 4),
           PerformedActionsOverview(
               patient: patient,
@@ -141,8 +131,6 @@ class _PatientScreenState extends State<PatientScreen> {
             body: CustomFutureBuilder<Patient>(
                 future: futurePatient,
                 builder: (context, patient) {
-                  _futurePersons =
-                      LocationService.fetchPersonsAt(patient.location.id);
 
                   return TabBarView(
                     children: [
