@@ -318,9 +318,9 @@ class _LocationScreenState extends State<LocationScreen>
           bottom: TabBar(
             controller: _tabController,
             tabs: [
-              _buildTab(AppLocalizations.of(context)!.patientScreenTabOverview,
+              _buildTab(AppLocalizations.of(context)!.locationScreenOverview,
                   ManvIcons.patient),
-              _buildTab(AppLocalizations.of(context)!.patientScreenTabActions,
+              _buildTab(AppLocalizations.of(context)!.locationScreenResources,
                   Icons.shopping_bag),
             ],
           ),

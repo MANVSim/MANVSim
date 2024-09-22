@@ -125,6 +125,8 @@
   "locationScreenNoPatients": "Es befinden sich keine Patienten an dieser Location",
   "locationScreenPlayers": "Behandelnde Spieler",
   "locationScreenPatients": "Patienten",
+  "locationScreenResources": "Resourcen",
+  "locationScreenOverview": "Übersicht",
 
   "locationScreenInventory": "Inventar",
   "locationScreenInventoryEmpty": "Im Inventar sind aktuell keine Resourcen verfügbar",
