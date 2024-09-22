@@ -8,6 +8,8 @@ import 'package:manvsim/widgets/player/player_overview.dart';
 import 'package:manvsim/widgets/util/error_box.dart';
 import 'package:manvsim/widgets/util/qr_screen.dart';
 
+import '../../services/size_service.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -89,7 +91,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           title: Text(AppLocalizations.of(context)!.homeScreenName),
         ),
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -118,7 +120,7 @@ class HomeScreenState extends State<HomeScreen> {
                       isSelected: _selectedSearchType,
                       constraints: BoxConstraints(
                           minWidth:
-                              (MediaQuery.of(context).size.width - 20) / 2),
+                              (SizeService.getScreenWidth(context) - 20) / 2),
                       children: [
                         Row(children: [_selectedIcon[0], Text(searchType[0])]),
                         Row(children: [_selectedIcon[1], Text(searchType[1])])

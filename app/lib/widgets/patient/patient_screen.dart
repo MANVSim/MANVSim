@@ -109,7 +109,7 @@ class _PatientScreenState extends State<PatientScreen> {
                         ManvIcons.action),
                   ],
                 ),
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                backgroundColor: Theme.of(context).colorScheme.surface,
                 title: Text(AppLocalizations.of(context)!.patientScreenName),
                 actions: [
                   if (kIsWeb)

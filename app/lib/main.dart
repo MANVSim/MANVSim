@@ -1,14 +1,50 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manvsim/models/tan_user.dart';
 import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/services/notification_service.dart';
+import 'package:manvsim/services/size_service.dart';
 import 'package:manvsim/start_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const ManvSimApp());
+  final runnableApp = _buildRunnableApp(
+    isWeb: kIsWeb,
+    webAppWidth: SizeService.maxWebAppWidth,
+    app: const ManvSimApp(),
+  );
+
+  runApp(runnableApp);
+}
+
+Widget _buildRunnableApp({
+  required bool isWeb,
+  required double webAppWidth,
+  required Widget app,
+}) {
+  if (!isWeb) {
+    return app;
+  }
+
+  return Container(
+    color: _buildThemeData().colorScheme.secondary,
+      child: Center(
+    child: ClipRect(
+      child: SizedBox(
+        width: webAppWidth,
+        child: app,
+      ),
+    ),
+  ));
+}
+
+ThemeData _buildThemeData() {
+  return ThemeData(
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent, brightness: Brightness.light),
+    useMaterial3: true,
+  );
 }
 
 class ManvSimApp extends StatelessWidget {
@@ -33,10 +69,7 @@ class ManvSimApp extends StatelessWidget {
           title: 'MANVSim',
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
+          theme: _buildThemeData(),
           home: const StartScreen(),
         ));
   }

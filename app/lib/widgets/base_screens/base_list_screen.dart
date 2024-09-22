@@ -4,6 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/widgets/util/custom_future_builder.dart';
 
+import '../../services/size_service.dart';
+
 class BaseListScreenItem {
   final String name;
   final int id;
@@ -58,7 +60,7 @@ class _BaseListScreenState extends State<BaseListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(widget.title),
         actions: [
           if (kIsWeb)
@@ -79,7 +81,7 @@ class _BaseListScreenState extends State<BaseListScreen> {
           borderRadius: BorderRadius.circular(2),
           isSelected: _selectedShowAs,
           constraints: BoxConstraints(
-              minWidth: (MediaQuery.of(context).size.width - 8) / 2),
+              minWidth: (SizeService.getScreenWidth(context) - 8) / 2),
           children: [
             Text(showAs[0]),
             Text(showAs[1]),

@@ -5,6 +5,7 @@ import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/models/patient_action.dart';
 import 'package:manvsim/models/resource.dart';
 import 'package:manvsim/services/action_service.dart';
+import 'package:manvsim/services/size_service.dart';
 import 'package:manvsim/widgets/action/action_card.dart';
 import 'package:manvsim/widgets/action/action_screen.dart';
 import 'package:manvsim/widgets/location/move_card.dart';
@@ -71,7 +72,7 @@ class _ActionSelectionState extends State<ActionSelection> {
             title: Text(
                 AppLocalizations.of(context)!.patientScreenFilterResourceTitle),
             content: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
+                width: SizeService.getScreenWidth(context) * 0.8,
                 child: ResourceDirectory(
                   initiallyExpanded: true,
                   locations: widget.locations,
