@@ -9,7 +9,7 @@ class PlayerPerson {
 
   factory PlayerPerson.fromApi(RunLocationPersonsGet200ResponsePlayersInner dto) {
     return PlayerPerson(
-      name: dto.name!,
+      name: dto.name??'',
       role: dto.role!,
       tan: dto.tan!,
     );

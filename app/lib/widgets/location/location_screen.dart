@@ -12,6 +12,8 @@ import 'package:manvsim/widgets/location/transfer_dialogue.dart';
 import 'package:manvsim/widgets/player/player_list.dart';
 import 'package:manvsim/widgets/util/custom_future_builder.dart';
 
+import 'location_patient_list.dart';
+
 class LocationScreen extends StatefulWidget {
   final int locationId;
 
@@ -21,7 +23,8 @@ class LocationScreen extends StatefulWidget {
   State<LocationScreen> createState() => _LocationScreenState();
 }
 
-class _LocationScreenState extends State<LocationScreen> with SingleTickerProviderStateMixin{
+class _LocationScreenState extends State<LocationScreen>
+    with SingleTickerProviderStateMixin {
   late Future<Location?> _futureLocation;
   late Future<List<Location>?> _futureInventory;
   late Future<Persons> _futurePersons;
@@ -48,7 +51,6 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
     _futureInventory = _getInventory();
     _futurePersons = _getPersonsAtLocation(widget.locationId);
   }
-
 
   @override
   void dispose() {
@@ -118,7 +120,8 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
     );
   }
 
-  Widget _buildTabView(Location location, List<Widget> children, bool expanded) {
+  Widget _buildTabView(
+      Location location, List<Widget> children, bool expanded) {
     return RefreshIndicator(
         onRefresh: () => Future(() => _refreshData()),
         child: SingleChildScrollView(
@@ -126,7 +129,9 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
             child: Column(children: [
               Card(
                   child: LocationOverview(
-                      initiallyExpanded: expanded, location: location,)),
+                initiallyExpanded: expanded,
+                location: location,
+              )),
               ...children
             ])));
   }
@@ -135,13 +140,31 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
     return _buildTabView(
         location,
         [
-          Text(
-            AppLocalizations.of(context)!.patientScreenClassification,
-            textAlign: TextAlign.center,
-          ),
-          CustomFutureBuilder(future: _futurePersons, builder: (context, persons) {
-            return PlayerList(persons: persons);
-          }),
+          CustomFutureBuilder(
+              future: _futurePersons,
+              builder: (context, persons) {
+                return Column(children: [
+                  const SizedBox(height: 4),
+                  Text(
+                    AppLocalizations.of(context)!.locationScreenPlayers,
+                    textAlign: TextAlign.center,
+                  ),
+                  PlayerList(
+                      persons: persons,
+                      emptyText: AppLocalizations.of(context)!
+                          .locationScreenNoPlayers),
+                  const SizedBox(height: 4),
+                  Text(
+                    AppLocalizations.of(context)!.locationScreenPatients,
+                    textAlign: TextAlign.center,
+                  ),
+                  LocationPatientList(
+                    persons: persons,
+                    emptyText:
+                        AppLocalizations.of(context)!.locationScreenNoPatients,
+                  ),
+                ]);
+              }),
         ],
         true);
   }
@@ -285,25 +308,23 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: Text(AppLocalizations.of(context)!.locationScreenName),
-            actions: [
-              if (kIsWeb)
-                IconButton(
-                    onPressed: _refreshData,
-                    icon: const Icon(ManvIcons.refresh))
-            ],
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(AppLocalizations.of(context)!.locationScreenName),
+          actions: [
+            if (kIsWeb)
+              IconButton(
+                  onPressed: _refreshData, icon: const Icon(ManvIcons.refresh))
+          ],
           bottom: TabBar(
             controller: _tabController,
             tabs: [
-              _buildTab(
-                  AppLocalizations.of(context)!.patientScreenTabOverview,
+              _buildTab(AppLocalizations.of(context)!.patientScreenTabOverview,
                   ManvIcons.patient),
-              _buildTab(
-                  AppLocalizations.of(context)!.patientScreenTabActions,
+              _buildTab(AppLocalizations.of(context)!.patientScreenTabActions,
                   Icons.shopping_bag),
             ],
-          ),),
+          ),
+        ),
         body: CustomFutureBuilder<Location>(
             future: _futureLocation,
             builder: (context, location) {
@@ -317,6 +338,7 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
                 ],
               );
             }),
-        bottomNavigationBar: _tabController.index == 1 ?_buildButtonBar() : null);
+        bottomNavigationBar:
+            _tabController.index == 1 ? _buildButtonBar() : null);
   }
 }

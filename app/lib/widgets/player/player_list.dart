@@ -8,11 +8,11 @@ import '../../models/tan_user.dart';
 
 class PlayerList extends StatelessWidget {
   final Persons persons;
+  final String emptyText;
 
-  const PlayerList({required this.persons, super.key});
+  const PlayerList({required this.persons, required this.emptyText, super.key});
 
   Widget _buildPlayer(PlayerPerson player, BuildContext context) {
-
     TanUser user = Provider.of<TanUser>(context, listen: false);
     bool isPlayerMe = player.tan == user.tan;
     return Card(
@@ -52,13 +52,29 @@ class PlayerList extends StatelessWidget {
             ])));
   }
 
+  Widget _buildEmpty(BuildContext context) {
+    return Card(
+        child: SizedBox(
+            width: double.infinity,
+            child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(emptyText))));
+  }
+
   @override
   Widget build(BuildContext context) {
-    // build all persons
-    return Column(
-      children: [
-        for (var player in persons.players) _buildPlayer(player, context),
-      ],
-    );
+    PlayerPersons players =
+        persons.players.where((player) => player.name.isNotEmpty).toList();
+
+    if (players.isEmpty) {
+      return _buildEmpty(context);
+    } else {
+      return Column(
+        children: [
+          for (var player in players) _buildPlayer(player, context),
+        ],
+      );
+    }
+
   }
 }
