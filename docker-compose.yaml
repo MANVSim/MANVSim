@@ -28,8 +28,6 @@ services:
     env_file:
       - config/server/.env
       - config/postgres/.env
-    expose:
-      - "5002"
     volumes:
       - manvsim-media:/usr/src/app/server/media/instance
     depends_on:
@@ -43,8 +41,6 @@ services:
       context: .
       dockerfile: app/Dockerfile
       target: serve-prod
-    expose:
-      - "5001"
     depends_on:
       - server
 
@@ -54,8 +50,6 @@ services:
       context: .
       dockerfile: web/Dockerfile
       target: serve-prod
-    expose:
-        - "5003"
     depends_on:
       - server
 
