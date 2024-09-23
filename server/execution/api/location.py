@@ -36,7 +36,7 @@ def get_all_persons_at_location():
     """ Returns all players and patients at the given location. """
     try:
 
-        location_id = int(request.args.get("location_id"))
+        location_id = int(request.args["location_id"])
         execution, _ = util.get_execution_and_player()
 
         players_at_location = []
