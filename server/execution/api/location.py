@@ -1,6 +1,6 @@
 import ast
 
-from flask import Blueprint
+from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 
 from app_config import csrf
@@ -31,17 +31,19 @@ def get_all_toplevel_location():
 
 
 @api.get("/location/persons")
-@required("location_id", int, RequiredValueSource.JSON)
 @jwt_required()
-def get_all_persons_at_location(location_id: int):
+def get_all_persons_at_location():
     """ Returns all players and patients at the given location. """
     try:
+
+        location_id = int(request.args.get("location_id"))
         execution, _ = util.get_execution_and_player()
 
         players_at_location = []
         for player in execution.players.values():
             if player.location and player.location.id == location_id:
-                players_at_location.append(player.to_dict(shallow=True, include=["name", "role"]))
+                players_at_location.append(
+                    player.to_dict(shallow=True, include=["name", "role", "tan"]))
 
         patients_at_location = []
         for patient in execution.scenario.patients.values():

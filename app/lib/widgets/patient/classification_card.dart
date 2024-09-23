@@ -2,25 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/services/patient_service.dart';
-import 'package:manvsim/widgets/util/custom_future_builder.dart';
 
 class ClassificationCard extends StatefulWidget {
   final Patient patient;
   final bool changeable;
+  final Function() onClassificationChanged;
   const ClassificationCard(
-      {required this.patient, this.changeable = false, super.key});
+      {required this.patient, this.changeable = false, required this.onClassificationChanged, super.key});
 
   @override
   State<ClassificationCard> createState() => _ClassificationCardState();
 }
 
 class _ClassificationCardState extends State<ClassificationCard> {
-  late Future<PatientClass> futureClassification;
 
   @override
   void initState() {
     super.initState();
-    futureClassification = Future(() => widget.patient.classification);
   }
 
   void showClassificationSelectionDialog(
@@ -43,10 +41,10 @@ class _ClassificationCardState extends State<ClassificationCard> {
                       context: context,
                       classification: classification,
                       onTap: () {
-                        setState(() {
-                          futureClassification = PatientService.classifyPatient(
-                              classification, patient);
-                        });
+                        PatientService.classifyPatient(
+                            classification, patient).then((value) {
+                          widget.onClassificationChanged();
+                            },);
                         Navigator.of(context).pop();
                       }))
                   .toList(),
@@ -158,10 +156,8 @@ class _ClassificationCardState extends State<ClassificationCard> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomFutureBuilder(
-        future: futureClassification,
-        builder: (context, classification) => widget.changeable
-            ? _buildClassificationAction(classification)
-            : _buildClassification(classification));
+    return  widget.changeable
+            ? _buildClassificationAction(widget.patient.classification)
+            : _buildClassification(widget.patient.classification);
   }
 }

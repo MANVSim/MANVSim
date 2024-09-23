@@ -18,8 +18,9 @@ Method | HTTP request | Description
 [**runActionPerformResultGet**](DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action and officially finishes/dequeues the action of the patient.
 [**runLocationAllGet**](DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of top-level accessible locations.
 [**runLocationLeavePost**](DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
-[**runLocationPutToPost**](DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
-[**runLocationTakeToPost**](DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
+[**runLocationPersonsGet**](DefaultApi.md#runlocationpersonsget) | **GET** /run/location/persons | Returns a list of all patients and all players at the given locations.
+[**runLocationPutToPost**](DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | Put a (sub) location in another location.
+[**runLocationTakeToPost**](DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | Take a (sub) location to another location.
 [**runMapdataGet**](DefaultApi.md#runmapdataget) | **GET** /run/mapdata | gets map data
 [**runPatientAllIdsGet**](DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 [**runPatientArrivePost**](DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
@@ -443,8 +444,57 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **runLocationPersonsGet**
+> RunLocationPersonsGet200Response runLocationPersonsGet(locationId)
+
+Returns a list of all patients and all players at the given locations.
+
+### Example
+```dart
+import 'package:manv_api/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final locationId = 56; // int | 
+
+try {
+    final result = api_instance.runLocationPersonsGet(locationId);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->runLocationPersonsGet: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **locationId** | **int**|  | 
+
+### Return type
+
+[**RunLocationPersonsGet200Response**](RunLocationPersonsGet200Response.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **runLocationPutToPost**
 > runLocationPutToPost(runLocationPutToPostRequest)
+
+Put a (sub) location in another location.
 
 A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
 
@@ -491,6 +541,8 @@ void (empty response body)
 
 # **runLocationTakeToPost**
 > runLocationTakeToPost(runLocationTakeToPostRequest)
+
+Take a (sub) location to another location.
 
 A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
 
