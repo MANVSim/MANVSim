@@ -278,7 +278,6 @@ class LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.loginScreenName),
-        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: Center(
         child: Padding(

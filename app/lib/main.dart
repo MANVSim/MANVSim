@@ -29,23 +29,20 @@ Widget _buildRunnableApp({
   }
 
   return Container(
-    color: _buildThemeData().colorScheme.secondary,
+      color: colorScheme.secondary,
       child: Center(
-    child: ClipRect(
-      child: SizedBox(
-        width: webAppWidth,
-        child: app,
-      ),
-    ),
-  ));
+        child: ClipRect(
+          child: SizedBox(
+            width: webAppWidth,
+            child: app,
+          ),
+        ),
+      ));
 }
 
-ThemeData _buildThemeData() {
-  return ThemeData(
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent, brightness: Brightness.light),
-    useMaterial3: true,
-  );
-}
+ColorScheme colorScheme = ColorScheme.fromSeed(
+  seedColor: Colors.indigo,
+);
 
 class ManvSimApp extends StatelessWidget {
   const ManvSimApp({super.key});
@@ -69,7 +66,18 @@ class ManvSimApp extends StatelessWidget {
           title: 'MANVSim',
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: _buildThemeData(),
+          theme: ThemeData(
+            colorScheme: colorScheme,
+            useMaterial3: true,
+            appBarTheme: AppBarTheme(
+              backgroundColor: colorScheme.primary,
+              foregroundColor: colorScheme.onPrimary,
+            ),
+            tabBarTheme: TabBarTheme(
+              labelColor: colorScheme.surface,
+              unselectedLabelColor: colorScheme.surface,
+            ),
+          ),
           home: const StartScreen(),
         ));
   }

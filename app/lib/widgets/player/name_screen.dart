@@ -75,7 +75,6 @@ class NameScreenState extends State<NameScreen> {
       appBar: AppBar(
         actions: const <Widget>[LogoutButton()],
         title: Text(AppLocalizations.of(context)!.nameScreenName),
-        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: Center(
         child: Padding(

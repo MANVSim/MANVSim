@@ -146,7 +146,6 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.surface,
           title: Text(AppLocalizations.of(context)!.actionResultScreenTitle),
         ),
         body: SizedBox(

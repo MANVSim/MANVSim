@@ -39,7 +39,6 @@ class _MoveScreenState extends State<MoveScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.surface,
           title: Text(AppLocalizations.of(context)!.moveScreenTitle(
               widget.patient.name,
               widget.patient.location.name,

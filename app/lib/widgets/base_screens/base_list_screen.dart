@@ -60,7 +60,6 @@ class _BaseListScreenState extends State<BaseListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(widget.title),
         actions: [
           if (kIsWeb)

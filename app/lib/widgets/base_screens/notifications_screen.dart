@@ -43,7 +43,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(AppLocalizations.of(context)!.notificationScreenName),
       ),
       body: Padding(
