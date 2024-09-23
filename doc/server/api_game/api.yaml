@@ -306,17 +306,12 @@ paths:
 
   /run/location/persons:
     get:
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [ location_id ]
-              properties:
-                location_id:
-                  type: integer
-                  example: 1
+      parameters:
+        - name: location_id
+          in: query
+          required: true
+          schema:
+            type: integer
       summary: Returns a list of all patients and all players at the given locations.
       responses:
         '200':
@@ -337,6 +332,9 @@ paths:
                         role:
                           type: string
                           example: "Notarzt"
+                        tan:
+                          type: string
+                          example: "123456"
                   patients:
                     type: array
                     items:

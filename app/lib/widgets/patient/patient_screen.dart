@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -70,11 +72,13 @@ class _PatientScreenState extends State<PatientScreen> {
             AppLocalizations.of(context)!.patientScreenClassification,
             textAlign: TextAlign.center,
           ),
-          ClassificationCard(patient: patient),
+          ClassificationCard(
+              patient: patient, onClassificationChanged: refresh),
           const SizedBox(height: 4),
           PerformedActionsOverview(
               patient: patient,
-              title: AppLocalizations.of(context)!.patientScreenPerformedAction)
+              title:
+                  AppLocalizations.of(context)!.patientScreenPerformedAction),
         ],
         true);
   }
@@ -84,7 +88,11 @@ class _PatientScreenState extends State<PatientScreen> {
         patient,
         [
           Text(AppLocalizations.of(context)!.patientScreenClassification),
-          ClassificationCard(patient: patient, changeable: true),
+          ClassificationCard(
+            patient: patient,
+            changeable: true,
+            onClassificationChanged: refresh,
+          ),
           ActionSelection(
               patient: patient,
               locations: [patient.location],
@@ -119,6 +127,7 @@ class _PatientScreenState extends State<PatientScreen> {
             body: CustomFutureBuilder<Patient>(
                 future: futurePatient,
                 builder: (context, patient) {
+
                   return TabBarView(
                     children: [
                       _buildOverview(patient),
