@@ -121,12 +121,13 @@
     }
   },
 
-  "locationScreenNoPlayers": "Es behandeln gerade keine Spieler Patienten an dieser Location",
+  "locationScreenNoPlayers": "An dieser Location werden gerade keine Patienten behandelt",
   "locationScreenNoPatients": "Es befinden sich keine Patienten an dieser Location",
   "locationScreenPlayers": "Behandelnde Spieler",
   "locationScreenPatients": "Patienten",
   "locationScreenResources": "Resourcen",
   "locationScreenOverview": "Übersicht",
+  "locationScreenPatientListVisit":"Behandeln",
 
   "locationScreenInventory": "Inventar",
   "locationScreenInventoryEmpty": "Im Inventar sind aktuell keine Resourcen verfügbar",

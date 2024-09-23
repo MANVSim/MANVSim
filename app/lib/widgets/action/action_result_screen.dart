@@ -43,9 +43,7 @@ class _ActionResultScreenState extends State<ActionResultScreen> {
         : ActionService.fetchActionResult(
                 widget.patient, widget.performedActionId)
             .then((value) {
-            if (widget.onActionResultAvailable != null) {
-              widget.onActionResultAvailable!(value?.patient);
-            }
+            widget.onActionResultAvailable?.call(value?.patient);
             return value;
           });
   }

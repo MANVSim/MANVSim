@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/person.dart';
 import 'package:manvsim/services/patient_service.dart';
-import 'package:provider/provider.dart';
 
 import '../../constants/manv_icons.dart';
-import '../../models/tan_user.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LocationPatientList extends StatelessWidget {
   final Persons persons;
@@ -34,7 +33,8 @@ class LocationPatientList extends StatelessWidget {
                   ElevatedButton(
                       onPressed: () =>
                           PatientService.goToPatientScreen(patient.id, context),
-                      child: const Text('Behandeln')),
+                      child: Text(AppLocalizations.of(context)!
+                          .locationScreenPatientListVisit)),
                 ],
               ),
             ])));
@@ -45,13 +45,11 @@ class LocationPatientList extends StatelessWidget {
         child: SizedBox(
             width: double.infinity,
             child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(emptyText))));
+                padding: const EdgeInsets.all(16), child: Text(emptyText))));
   }
 
   @override
   Widget build(BuildContext context) {
-
     if (persons.patients.isEmpty) {
       return _buildEmpty(context);
     } else {
@@ -61,7 +59,5 @@ class LocationPatientList extends StatelessWidget {
         ],
       );
     }
-
-
   }
 }
