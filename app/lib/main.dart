@@ -41,7 +41,7 @@ Widget _buildRunnableApp({
 }
 
 ColorScheme colorScheme = ColorScheme.fromSeed(
-  seedColor: Colors.indigo,
+  seedColor: Colors.blueAccent,
 );
 
 class ManvSimApp extends StatelessWidget {
