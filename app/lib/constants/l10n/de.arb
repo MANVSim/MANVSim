@@ -3,6 +3,7 @@
 
   "frameHome": "Home",
   "framePatients": "Patienten",
+  "frameMap": "Karte",
   "frameLocations": "Locations",
   "frameNotifications": "Benachrichtigungen",
 
@@ -120,6 +121,14 @@
       }
     }
   },
+
+  "locationScreenNoPlayers": "An dieser Location werden gerade keine Patienten behandelt",
+  "locationScreenNoPatients": "Es befinden sich keine Patienten an dieser Location",
+  "locationScreenPlayers": "Behandelnde Spieler",
+  "locationScreenPatients": "Patienten",
+  "locationScreenResources": "Resourcen",
+  "locationScreenOverview": "Übersicht",
+  "locationScreenPatientListVisit":"Behandeln",
 
   "locationScreenInventory": "Inventar",
   "locationScreenInventoryEmpty": "Im Inventar sind aktuell keine Resourcen verfügbar",
@@ -311,5 +320,10 @@
 
   "defaultError": "Ein Unbekannter Fehler ist aufgetreten.",
 
-  "dateTimeFormat": "dd.MM.yyyy HH:mm:ss"
+  "dateTimeFormat": "dd.MM.yyyy HH:mm:ss",
+
+
+  "mapScreenName": "Karte",
+  "mapPatientTooFar": "Hilfe! Bitte komm näher...",
+  "mapLocationTooFar": "Bitte komm näher..."
 }

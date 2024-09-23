@@ -15,12 +15,14 @@ class ActionScreen extends StatefulWidget {
   final PatientAction action;
   final Patient patient;
   final List<int> resourceIds;
+  final Function(Patient? patient) onActionPerformed;
 
   const ActionScreen(
       {super.key,
       required this.action,
       required this.patient,
-      required this.resourceIds});
+      required this.resourceIds,
+      required this.onActionPerformed});
 
   @override
   State<ActionScreen> createState() => _ActionScreenState();
@@ -45,7 +47,9 @@ class _ActionScreenState extends State<ActionScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => ActionResultScreen(
-            patient: widget.patient, performedActionId: actionId),
+            patient: widget.patient,
+            performedActionId: actionId,
+            onActionResultAvailable: widget.onActionPerformed),
       ),
     );
   }

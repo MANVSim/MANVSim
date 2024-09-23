@@ -306,17 +306,12 @@ paths:
 
   /run/location/persons:
     get:
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [ location_id ]
-              properties:
-                location_id:
-                  type: integer
-                  example: 1
+      parameters:
+        - name: location_id
+          in: query
+          required: true
+          schema:
+            type: integer
       summary: Returns a list of all patients and all players at the given locations.
       responses:
         '200':
@@ -337,6 +332,9 @@ paths:
                         role:
                           type: string
                           example: "Notarzt"
+                        tan:
+                          type: string
+                          example: "123456"
                   patients:
                     type: array
                     items:
@@ -850,8 +848,10 @@ components:
     MapDataDTO:
       type: object
       description: It is assumed that all points have positive values.
-        Positions of patients and starting_point must not be inside a building.
+        Positions of patients and last_position must not be inside a building.
         Buildings shall not be aligned in a way which encapsulates an area making it inaccessible.
+        Patients should be close by to the location they are at. 
+        last_position should be close to the last location/patient the player visited.
       properties:
         patient_positions:
           type: array
@@ -887,7 +887,7 @@ components:
               height:
                 type: number
             required: [ top_left,width,height ]
-        starting_point:
+        last_position:
           $ref: '#/components/schemas/PointDTO'
 
     Error:

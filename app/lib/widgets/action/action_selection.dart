@@ -217,14 +217,14 @@ class _ActionSelectionState extends State<ActionSelection> {
   void performAction(PatientAction action) async {
     List<int> resourceIds =
         getNeededResources(action).map((resource) => resource.id).toList();
-    Patient? patient = await Navigator.push(
+    await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => ActionScreen(
+              onActionPerformed: widget.refreshPatient,
                 action: action,
                 patient: widget.patient,
                 resourceIds: resourceIds)));
-    widget.refreshPatient(patient);
   }
 
   void movePatient(Location moveTo) async {

@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/constants/manv_icons.dart';
 import 'package:manvsim/models/location.dart';
+import 'package:manvsim/models/person.dart';
 import 'package:manvsim/services/inventory_service.dart';
 import 'package:manvsim/services/location_service.dart';
 import 'package:manvsim/widgets/location/location_overview.dart';
 import 'package:manvsim/widgets/location/resource_directory.dart';
 import 'package:manvsim/widgets/location/transfer_dialogue.dart';
+import 'package:manvsim/widgets/player/player_list.dart';
 import 'package:manvsim/widgets/util/custom_future_builder.dart';
+
+import 'location_patient_list.dart';
 
 class LocationScreen extends StatefulWidget {
   final int locationId;
@@ -19,11 +23,15 @@ class LocationScreen extends StatefulWidget {
   State<LocationScreen> createState() => _LocationScreenState();
 }
 
-class _LocationScreenState extends State<LocationScreen> {
+class _LocationScreenState extends State<LocationScreen>
+    with SingleTickerProviderStateMixin {
   late Future<Location?> _futureLocation;
   late Future<List<Location>?> _futureInventory;
+  late Future<Persons> _futurePersons;
 
   late Location _fetchedLocation;
+
+  late TabController _tabController;
 
   List<Location>? _selectedInventoryPath;
   List<Location>? _selectedLocationPath;
@@ -33,13 +41,30 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   void initState() {
     super.initState();
+
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      setState(() {});
+    });
+
     _futureLocation = _findLocationById(widget.locationId);
     _futureInventory = _getInventory();
+    _futurePersons = _getPersonsAtLocation(widget.locationId);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<Location> _findLocationById(int locationId) {
     return LocationService.fetchLocations().then((locations) =>
         locations.firstWhere((location) => location.id == locationId));
+  }
+
+  Future<Persons> _getPersonsAtLocation(int locationId) {
+    return LocationService.fetchPersonsAt(locationId);
   }
 
   Future<List<Location>> _getInventory() {
@@ -67,12 +92,12 @@ class _LocationScreenState extends State<LocationScreen> {
     ).then((value) => _completeTransfer());
   }
 
-  Future _refreshData() {
+  void _refreshData() {
     setState(() {
       _futureLocation = _findLocationById(widget.locationId);
       _futureInventory = _getInventory();
+      _futurePersons = _getPersonsAtLocation(widget.locationId);
     });
-    return _futureInventory;
   }
 
   void _completeTransfer() {
@@ -81,6 +106,79 @@ class _LocationScreenState extends State<LocationScreen> {
       _selectedLocationPath = null;
     });
     _refreshData();
+  }
+
+  Tab _buildTab(String title, IconData icon) {
+    return Tab(
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Icon(icon),
+        const SizedBox(
+          width: 8,
+        ),
+        Text(title),
+      ]),
+    );
+  }
+
+  Widget _buildTabView(
+      Location location, List<Widget> children, bool expanded) {
+    return RefreshIndicator(
+        onRefresh: () => Future(() => _refreshData()),
+        child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(children: [
+              Card(
+                  child: LocationOverview(
+                initiallyExpanded: expanded,
+                location: location,
+              )),
+              ...children
+            ])));
+  }
+
+  Widget _buildOverview(Location location) {
+    return _buildTabView(
+        location,
+        [
+          CustomFutureBuilder(
+              future: _futurePersons,
+              builder: (context, persons) {
+                return Column(children: [
+                  const SizedBox(height: 4),
+                  Text(
+                    AppLocalizations.of(context)!.locationScreenPlayers,
+                    textAlign: TextAlign.center,
+                  ),
+                  PlayerList(
+                      persons: persons,
+                      emptyText: AppLocalizations.of(context)!
+                          .locationScreenNoPlayers),
+                  const SizedBox(height: 4),
+                  Text(
+                    AppLocalizations.of(context)!.locationScreenPatients,
+                    textAlign: TextAlign.center,
+                  ),
+                  LocationPatientList(
+                    persons: persons,
+                    emptyText:
+                        AppLocalizations.of(context)!.locationScreenNoPatients,
+                  ),
+                ]);
+              }),
+        ],
+        true);
+  }
+
+  Widget _buildTransfer(Location location) {
+    return _buildTabView(
+        location,
+        [
+          Text(AppLocalizations.of(context)!
+              .locationScreenAvailableSubLocations),
+          _buildLocationDirectory(location),
+          if (_showInventory) _buildInventory(),
+        ],
+        false);
   }
 
   Widget _buildButtonBar() {
@@ -210,30 +308,36 @@ class _LocationScreenState extends State<LocationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.locationScreenName),
-            actions: [
-              if (kIsWeb)
-                IconButton(
-                    onPressed: _refreshData,
-                    icon: const Icon(ManvIcons.refresh))
-            ]),
+          title: Text(AppLocalizations.of(context)!.locationScreenName),
+          actions: [
+            if (kIsWeb)
+              IconButton(
+                  onPressed: _refreshData, icon: const Icon(ManvIcons.refresh))
+          ],
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: [
+              _buildTab(AppLocalizations.of(context)!.locationScreenOverview,
+                  ManvIcons.patient),
+              _buildTab(AppLocalizations.of(context)!.locationScreenResources,
+                  Icons.shopping_bag),
+            ],
+          ),
+        ),
         body: CustomFutureBuilder<Location>(
             future: _futureLocation,
             builder: (context, location) {
               _fetchedLocation = location;
 
-              return RefreshIndicator(
-                  onRefresh: _refreshData,
-                  child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      child: Column(children: [
-                        Card(child: LocationOverview(location: location)),
-                        Text(AppLocalizations.of(context)!
-                            .locationScreenAvailableSubLocations),
-                        _buildLocationDirectory(location),
-                        if (_showInventory) _buildInventory(),
-                      ])));
+              return TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildOverview(location),
+                  _buildTransfer(location),
+                ],
+              );
             }),
-        bottomNavigationBar: _buildButtonBar());
+        bottomNavigationBar:
+            _tabController.index == 1 ? _buildButtonBar() : null);
   }
 }
