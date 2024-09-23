@@ -16,7 +16,7 @@ class MapDataDTO {
     this.patientPositions = const [],
     this.locationPositions = const [],
     this.buildings = const [],
-    this.startingPoint,
+    this.lastPosition,
   });
 
   List<MapDataDTOPatientPositionsInner> patientPositions;
@@ -31,14 +31,14 @@ class MapDataDTO {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  PointDTO? startingPoint;
+  PointDTO? lastPosition;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is MapDataDTO &&
     _deepEquality.equals(other.patientPositions, patientPositions) &&
     _deepEquality.equals(other.locationPositions, locationPositions) &&
     _deepEquality.equals(other.buildings, buildings) &&
-    other.startingPoint == startingPoint;
+    other.lastPosition == lastPosition;
 
   @override
   int get hashCode =>
@@ -46,20 +46,20 @@ class MapDataDTO {
     (patientPositions.hashCode) +
     (locationPositions.hashCode) +
     (buildings.hashCode) +
-    (startingPoint == null ? 0 : startingPoint!.hashCode);
+    (lastPosition == null ? 0 : lastPosition!.hashCode);
 
   @override
-  String toString() => 'MapDataDTO[patientPositions=$patientPositions, locationPositions=$locationPositions, buildings=$buildings, startingPoint=$startingPoint]';
+  String toString() => 'MapDataDTO[patientPositions=$patientPositions, locationPositions=$locationPositions, buildings=$buildings, lastPosition=$lastPosition]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'patient_positions'] = this.patientPositions;
       json[r'location_positions'] = this.locationPositions;
       json[r'buildings'] = this.buildings;
-    if (this.startingPoint != null) {
-      json[r'starting_point'] = this.startingPoint;
+    if (this.lastPosition != null) {
+      json[r'last_position'] = this.lastPosition;
     } else {
-      json[r'starting_point'] = null;
+      json[r'last_position'] = null;
     }
     return json;
   }
@@ -86,7 +86,7 @@ class MapDataDTO {
         patientPositions: MapDataDTOPatientPositionsInner.listFromJson(json[r'patient_positions']),
         locationPositions: MapDataDTOLocationPositionsInner.listFromJson(json[r'location_positions']),
         buildings: MapDataDTOBuildingsInner.listFromJson(json[r'buildings']),
-        startingPoint: PointDTO.fromJson(json[r'starting_point']),
+        lastPosition: PointDTO.fromJson(json[r'last_position']),
       );
     }
     return null;

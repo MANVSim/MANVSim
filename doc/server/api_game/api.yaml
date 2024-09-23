@@ -848,8 +848,10 @@ components:
     MapDataDTO:
       type: object
       description: It is assumed that all points have positive values.
-        Positions of patients and starting_point must not be inside a building.
+        Positions of patients and last_position must not be inside a building.
         Buildings shall not be aligned in a way which encapsulates an area making it inaccessible.
+        Patients should be close by to the location they are at. 
+        last_position should be close to the last location/patient the player visited.
       properties:
         patient_positions:
           type: array
@@ -885,7 +887,7 @@ components:
               height:
                 type: number
             required: [ top_left,width,height ]
-        starting_point:
+        last_position:
           $ref: '#/components/schemas/PointDTO'
 
     Error:

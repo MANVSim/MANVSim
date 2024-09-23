@@ -6,6 +6,7 @@ import 'package:manvsim/services/notification_service.dart';
 import 'package:manvsim/widgets/base_screens/home_screen.dart';
 import 'package:manvsim/widgets/base_screens/notifications_screen.dart';
 import 'package:manvsim/widgets/location/location_list_screen.dart';
+import 'package:manvsim/widgets/map/map_screen.dart';
 import 'package:manvsim/widgets/patient/patient_list_screen.dart';
 
 class AppFrame extends StatefulWidget {
@@ -39,10 +40,13 @@ class _AppFrameState extends State<AppFrame> {
         selectedIndex: _currentPageIndex,
         destinations: <Widget>[
           NavigationDestination(
-            selectedIcon: const Icon(Icons.home_outlined),
-            icon: const Icon(Icons.home),
-            label: AppLocalizations.of(context)!.frameHome,
-          ),
+              selectedIcon: const Icon(Icons.home_outlined),
+              icon: const Icon(Icons.home),
+              label: AppLocalizations.of(context)!.frameHome),
+          NavigationDestination(
+              selectedIcon: const Icon(Icons.map_outlined),
+              icon: const Icon(Icons.map),
+              label: AppLocalizations.of(context)!.frameMap),
           NavigationDestination(
               selectedIcon: const Icon(ManvIcons.patientOutlined),
               icon: const Icon(ManvIcons.patient),
@@ -65,6 +69,7 @@ class _AppFrameState extends State<AppFrame> {
       body: const <Widget>[
         /// Home page
         HomeScreen(),
+        PatientMapScreen(),
         PatientListScreen(),
         LocationListScreen(),
         NotificationsScreen()
