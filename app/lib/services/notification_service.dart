@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:manvsim/services/api_service.dart';
@@ -6,7 +7,7 @@ import 'package:manvsim/services/api_service.dart';
 typedef Notification = String;
 typedef Notifications = List<Notification>;
 
-class NotificationService extends ChangeNotifier{
+class NotificationService extends ChangeNotifier {
   int _nextId = 0;
   int _consumedId = 0;
   final Notifications _notifications = [];
@@ -14,8 +15,7 @@ class NotificationService extends ChangeNotifier{
   Timer? _timer;
 
   void startPolling({Duration interval = const Duration(seconds: 5)}) {
-
-    if(_timer != null) {
+    if (_timer != null) {
       return;
     }
 
@@ -27,7 +27,6 @@ class NotificationService extends ChangeNotifier{
         // ignore
       }
     });
-
   }
 
   void stopPolling() {
@@ -41,8 +40,10 @@ class NotificationService extends ChangeNotifier{
   bool get hasUnreadNotifications => _nextId > _consumedId;
 
   Notifications consumeNotifications() {
-    _consumedId = _nextId;
-    notifyListeners();
+    if (_consumedId != _nextId) {
+      _consumedId = _nextId;
+      notifyListeners();
+    }
     return _notifications;
   }
 
