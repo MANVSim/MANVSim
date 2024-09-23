@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/models/patient.dart';
 import 'package:manvsim/services/patient_service.dart';
+import 'package:manvsim/widgets/patient/move_overview.dart';
 import 'package:manvsim/widgets/util/custom_future_builder.dart';
 import 'package:manvsim/widgets/util/timer_widget.dart';
 
@@ -40,35 +41,39 @@ class _MoveScreenState extends State<MoveScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(AppLocalizations.of(context)!.moveScreenTitle(
-              widget.patient.name,
-              widget.patient.location.name,
-              widget.moveTo.name)),
+          title: Text(AppLocalizations.of(context)!.moveScreenTitle),
           automaticallyImplyLeading: false,
         ),
-        body: Center(
-            child: CustomFutureBuilder<Patient>(
-                future: futureMovedPatient,
-                builder: (context, movedPatient) {
-                  return TimerWidget(
-                    duration: const Duration(seconds: waitTimeSeconds),
-                    onTimerComplete: () => showResultDialog(
-                        content: successContent(), movedPatient: movedPatient),
-                  );
-                },
-                onError: (error) => Timer.run(
-                    () => showResultDialog(content: failureContent(error))))));
+        body: Column(children: [
+          Card(child: MoveOverview(to: widget.moveTo, patient: widget.patient)),
+          Expanded(
+              child: Center(
+                  child: CustomFutureBuilder<Patient>(
+                      future: futureMovedPatient,
+                      builder: (context, movedPatient) {
+                        return TimerWidget(
+                          duration: const Duration(seconds: waitTimeSeconds),
+                          onTimerComplete: () => showResultDialog(
+                              title: AppLocalizations.of(context)!
+                                  .moveScreenDialogTitle,
+                              content: successContent(),
+                              movedPatient: movedPatient),
+                        );
+                      },
+                      onError: (error) => Timer.run(() => showResultDialog(
+                          title: AppLocalizations.of(context)!
+                              .moveScreenDialogTitleError,
+                          content: failureContent(error))))))
+        ]));
   }
 
-  void showResultDialog({required Widget content, Patient? movedPatient}) {
+  void showResultDialog(
+      {required Widget content, required String title, Patient? movedPatient}) {
     Future dialogFuture = showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-          title: Text(AppLocalizations.of(context)!.moveScreenTitle(
-              widget.patient.name,
-              widget.patient.location.name,
-              widget.moveTo.name)),
+          title: Text(title),
           actions: [
             ElevatedButton(
                 onPressed: () => Navigator.pop(context), // close dialog
