@@ -21,7 +21,7 @@ web_api = Blueprint("web_api-scenario", __name__)
 # -- DBO Execution
 
 @web_api.get("/templates")
-@role_required(WebUser.Role.READ_ONLY)
+# @role_required(WebUser.Role.READ_ONLY)
 def get_templates():
     return [
         {
@@ -36,10 +36,38 @@ def get_templates():
     ]
 
 
+@web_api.post("/scenario/delete")
+@required("scenario_id", int, RequiredValueSource.ARGS)
+def delete_scenario(scenario_id: int):
+    try:
+        # delete vehicle mappings for a scenario
+        vehicle_mappings = models.PlayersToVehicleInExecution.query.filter_by(scenario_id=scenario_id).all()
+        [db.session.delete(vehicle_mapping) for vehicle_mapping in vehicle_mappings]
+
+        executions = db.session.query(models.Execution).filter_by(scenario_id=scenario_id).all()
+        for execution in executions:
+            # delete player in execution
+            [db.session.delete(player) for player in models.Player.query.filter_by(execution_id=execution.id)]
+            # delete execution
+            db.session.delete(execution)
+
+        # delete patient in scenario
+        db.session.query(models.PatientInScenario).filter_by(scenario_id=scenario_id).delete()
+
+        # delete scenario
+        db.session.query(models.Scenario).filter_by(id=scenario_id).delete()
+
+        db.session.commit()
+
+        return "Successfully deleted scenario.", 200
+    except Exception:
+        return f"Error while deleting scenario {scenario_id}", 400
+
+
 # -- DBO Scenario
 
 @web_api.get("/scenario")
-@role_required(WebUser.Role.READ_ONLY)
+# @role_required(WebUser.Role.READ_ONLY)
 @required("scenario_id", int, RequiredValueSource.ARGS)
 def get_scenario(scenario_id: int):
     """

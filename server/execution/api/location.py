@@ -1,14 +1,14 @@
 import ast
 
-from flask import Blueprint
+from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 
 from app_config import csrf
+from execution.entities.event import Event
 from execution.entities.execution import Execution
 from execution.entities.location import Location
 from execution.entities.player import Player
 from execution.utils import util
-from execution.entities.event import Event
 from utils import time
 from utils.decorator import required, RequiredValueSource
 
@@ -25,6 +25,34 @@ def get_all_toplevel_location():
             "locations": [location.to_dict() for location
                           in list(execution.scenario.locations.values())
                           if location.available]
+        }
+    except KeyError:
+        return f"Missing or invalid request parameter detected.", 400
+
+
+@api.get("/location/persons")
+@jwt_required()
+def get_all_persons_at_location():
+    """ Returns all players and patients at the given location. """
+    try:
+
+        location_id = int(request.args["location_id"])
+        execution, _ = util.get_execution_and_player()
+
+        players_at_location = []
+        for player in execution.players.values():
+            if player.location and player.location.id == location_id:
+                players_at_location.append(
+                    player.to_dict(shallow=True, include=["name", "role", "tan"]))
+
+        patients_at_location = []
+        for patient in execution.scenario.patients.values():
+            if patient.location.id == location_id:
+                patients_at_location.append(patient.to_dict(shallow=True, include=["id", "name"]))
+
+        return {
+            "players": players_at_location,
+            "patients": patients_at_location
         }
     except KeyError:
         return f"Missing or invalid request parameter detected.", 400
@@ -61,13 +89,13 @@ def get_location_out_of_location(take_location_ids, to_location_ids):
             return "Empty id-list provided. Unable to identify location.", 400
 
         take_location_parent: Location | None = get_location_from_index_list(
-                                take_location_id_list[:-1], execution)
+            take_location_id_list[:-1], execution)
         if not take_location_parent:
             return ("Take-Location not found. Update your current "
                     "location-access."), 404
 
         take_location = take_location_parent.get_location_by_id(
-            take_location_id_list[len(take_location_id_list)-1])
+            take_location_id_list[len(take_location_id_list) - 1])
 
         if not take_location:
             return ("Take-Location not found. Update your current "
@@ -169,7 +197,7 @@ def put_location_to_location(put_location_ids, to_location_ids):
         else:
             # player has patient access -> inventory is located at patients location
             put_location_parent: Location | None = get_location_from_index_list(
-                                    put_location_id_list[:-1], execution)
+                put_location_id_list[:-1], execution)
             if len(put_location_id_list) > 1 and not put_location_parent:
                 return ("Put-Location not found. Update your current "
                         "location-access."), 404
@@ -182,7 +210,7 @@ def put_location_to_location(put_location_ids, to_location_ids):
             return "Illegal state detected. Please evaluate the case with the developers."
 
         put_location = put_location_parent.get_location_by_id(
-            put_location_id_list[len(put_location_id_list)-1])
+            put_location_id_list[len(put_location_id_list) - 1])
 
         if not put_location:
             return ("Put-Location not found. Update your current "

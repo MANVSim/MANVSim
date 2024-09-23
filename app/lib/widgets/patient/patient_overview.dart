@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/services/patient_service.dart';
 import 'package:manvsim/widgets/media/media_overview_expansion.dart';
 
 import '../../constants/manv_icons.dart';
@@ -38,7 +38,10 @@ class _PatientOverviewState extends State<PatientOverview> {
           ]),
           Row(children: [
             const Icon(ManvIcons.location),
-            const SizedBox(width: 8),
+            IconButton(
+                icon: const Icon(ManvIcons.info),
+                onPressed: () =>
+                    PatientService.showLocation(widget.patient, context)),
             Expanded(
                 child: Text(
               widget.patient.location.name,

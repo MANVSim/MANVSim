@@ -57,7 +57,9 @@ const router = createBrowserRouter([
     element: <LoginRoute />,
     action: LoginRoute.action,
   },
-])
+],{
+  basename: "/admin",
+})
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
