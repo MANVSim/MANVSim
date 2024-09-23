@@ -23,6 +23,4 @@ RUN pipenv install gunicorn
 
 
 FROM setup AS prod
-
-EXPOSE 5002
 ENTRYPOINT ["scripts/entrypoint.sh"]

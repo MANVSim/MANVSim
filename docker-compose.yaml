@@ -6,8 +6,6 @@ services:
 
   postgres:
     image: postgres:latest
-    ports:
-      - "5432:5432"
     env_file:
         - config/postgres/.env
     volumes:
@@ -30,12 +28,14 @@ services:
     env_file:
       - config/server/.env
       - config/postgres/.env
-    ports:
-      - "5002:5002"
+    expose:
+      - "5002"
     volumes:
       - manvsim-media:/usr/src/app/server/media/instance
-      - ./config/certs/fullchain.pem:/usr/src/app/server/fullchain.pem
-      - ./config/certs/privkey.pem:/usr/src/app/server/privkey.pem
+    depends_on:
+        postgres:
+          condition: service_healthy
+
 
 
   app:
@@ -43,11 +43,8 @@ services:
       context: .
       dockerfile: app/Dockerfile
       target: serve-prod
-    ports:
-      - "5001:5001"
-    volumes:
-      - ./config/certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
-      - ./config/certs/privkey.pem:/etc/nginx/ssl/privkey.pem
+    expose:
+      - "5001"
     depends_on:
       - server
 
@@ -57,22 +54,28 @@ services:
       context: .
       dockerfile: web/Dockerfile
       target: serve-prod
-    ports:
-      - "50003:50003"
-    volumes:
-      - ./config/certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
-      - ./config/certs/privkey.pem:/etc/nginx/ssl/privkey.pem
+    expose:
+        - "5003"
+    depends_on:
+      - server
 
 
   nginx:
     image: nginx:latest
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./config/nginx/component_mapping.conf:/etc/nginx/nginx.conf
+      - ./app/assets:/usr/share/nginx/html/assets
+      - ./index.html:/usr/share/nginx/html/index.html
+      - ./config/nginx/component_mapping.conf:/etc/nginx/conf.d/default.conf
+      - ./config/certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
+      - ./config/certs/privkey.pem:/etc/nginx/ssl/privkey.pem
     depends_on:
       - server
+      - web
       - app
+
 
 volumes:
   manvsim-db:

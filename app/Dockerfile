@@ -21,7 +21,7 @@ WORKDIR /app/
 
 # Build and serve dev without android app
 FROM setup-env AS build-dev
-RUN flutter build web
+RUN flutter build web --base-href /webapp/
 FROM nginx:1.27.1-alpine AS serve-dev
 COPY --from=build-dev /app/build/web /usr/share/nginx/html
 COPY ./app/nginx.conf /etc/nginx/conf.d/default.conf
@@ -42,7 +42,7 @@ RUN sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" && \
 RUN mkdir -p assets && \
     flutter build apk && \
     cp build/app/outputs/apk/release/app-release.apk assets/manvsim-app.apk && \
-    flutter build web
+    flutter build web --base-href /webapp/
 
 
 FROM nginx:1.27.1-alpine AS serve-prod

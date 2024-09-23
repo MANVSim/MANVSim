@@ -30,8 +30,8 @@ class LoginScreenState extends State<LoginScreen> {
   final TanInputController _tanInputController = TanInputController();
   final TextEditingController _serverUrlController = TextEditingController(
       text: kDebugMode
-          ? "https://localhost:5002/api"
-          : "https://batailley.informatik.uni-kiel.de:5002/api");
+          ? "https://localhost/api"
+          : "https://batailley.informatik.uni-kiel.de/api");
 
   String? _errorMessage;
   bool _forceAndroidDownloadButton = isPlatformAndroidWeb();
