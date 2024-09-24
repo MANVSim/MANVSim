@@ -285,10 +285,10 @@ def __patient_in_scenario():
     insert(PatientInScenario(scenario_id=0, patient_id=3, name="Stefan Becker", location_id=9))
 
     # Dead (Zombies)
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Unbekannt I", location_id=9))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Unbekannt II", location_id=9))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Unbekannt III", location_id=9))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Unbekannt IV", location_id=10))
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Waltraud Wiedergänger", location_id=9))
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Gertrud Gierig", location_id=9))
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Herbert Fleischmann", location_id=9))
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Heinz Hirntot", location_id=10))
 
 
 def __create_scenarios():
