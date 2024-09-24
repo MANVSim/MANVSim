@@ -44,8 +44,8 @@ class _AppFrameState extends State<AppFrame> {
               icon: const Icon(Icons.home),
               label: AppLocalizations.of(context)!.frameHome),
           NavigationDestination(
-              selectedIcon: const Icon(Icons.map_outlined),
-              icon: const Icon(Icons.map),
+              selectedIcon: const Icon(ManvIcons.mapOutlined),
+              icon: const Icon(ManvIcons.map),
               label: AppLocalizations.of(context)!.frameMap),
           NavigationDestination(
               selectedIcon: const Icon(ManvIcons.patientOutlined),

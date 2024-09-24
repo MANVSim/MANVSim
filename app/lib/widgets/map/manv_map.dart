@@ -10,6 +10,7 @@ import 'package:manvsim/utils/custom_transformation_controller.dart';
 import 'package:manvsim/utils/offset_ray.dart';
 
 class MANVMap extends StatefulWidget {
+  static final buildingColor = Colors.grey.shade400;
   static const tooFarThreshold = 300;
 
   /// The [MapData] with which this map is drawn.
@@ -23,10 +24,14 @@ class MANVMap extends StatefulWidget {
   /// Used to draw shadows of obstacles.
   final ValueNotifier<Offset> positionNotifier;
 
+  /// To be called when navigating to a new Page.
+  final Function onPageLeave;
+
   const MANVMap(
       {required this.mapData,
       required this.positionNotifier,
       this.transformationController,
+      required this.onPageLeave,
       super.key});
 
   @override
@@ -86,6 +91,7 @@ class _MANVMapState extends State<MANVMap> {
       _showTimedMessage(patientPosition.position,
           AppLocalizations.of(context)!.mapPatientTooFar);
     } else {
+      widget.onPageLeave();
       PatientService.goToPatientScreen(patientPosition.id, context);
     }
   }
@@ -96,6 +102,7 @@ class _MANVMapState extends State<MANVMap> {
       _showTimedMessage(locationPosition.position,
           AppLocalizations.of(context)!.mapLocationTooFar);
     } else {
+      widget.onPageLeave();
       LocationService.goToLocationScreen(locationPosition.id, context);
     }
   }
@@ -106,8 +113,11 @@ class _MANVMapState extends State<MANVMap> {
         left: position.dx + 40,
         top: position.dy,
         width: 200,
-        child: Transform.rotate(
-            angle: widget.transformationController?.currentRotation ?? 0,
+        child: Transform(
+            transform: Matrix4.rotationZ(
+                widget.transformationController?.currentRotation ?? 0)
+              ..scale(
+                  0.5 / (widget.transformationController?.currentScale ?? 1)),
             child: Card(
               color: Colors.white70,
               child: Text(
@@ -125,6 +135,7 @@ class _MANVMapState extends State<MANVMap> {
             }));
   }
 
+  /// Converts a building from a model to a UI widget.
   Positioned _rectToPositioned(Rect rect) {
     return Positioned(
         left: rect.left,
@@ -132,7 +143,7 @@ class _MANVMapState extends State<MANVMap> {
         child: Container(
             width: rect.width,
             height: rect.height,
-            color: Colors.grey.shade400));
+            color: MANVMap.buildingColor));
   }
 
   @override
@@ -145,10 +156,7 @@ class _MANVMapState extends State<MANVMap> {
                 opacity: 0.02,
                 repeat: ImageRepeat.repeat,
                 image: AssetImage("assets/map_background.jpg")),
-            gradient: LinearGradient(
-                colors: [Colors.orangeAccent, Colors.amberAccent],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight)),
+            color: Color(0xffffeb9f)),
         child: Stack(
           children: [
             ..._getLocationWidgets(context),
