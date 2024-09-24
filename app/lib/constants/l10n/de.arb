@@ -164,37 +164,11 @@
   "patientMoveSection": "Bewegen: ",
   "patientMoveSelection": "Patienten bewegen nach",
 
-  "actionScreenTitle": "{action} bei {patientName}",
-  "@actionScreenTitle": {
-    "placeholders": {
-      "patientName": {
-        "type": "String",
-        "example": "Bob"
-      },
-      "action": {
-        "type": "String",
-        "example": "Pflaster anbringen"
-      }
-    }
-  },
+  "actionScreenTitle": "Maßnahme durchführen",
 
-  "moveScreenTitle": "Bewege {patientName} von {source} nach {destination}",
-  "@moveScreenTitle": {
-    "placeholders": {
-      "patientName": {
-        "type": "String",
-        "example": "Bob"
-      },
-      "source": {
-        "type": "String",
-        "example": "Location"
-      }  ,
-      "destination": {
-        "type": "String",
-        "example": "Location"
-      }
-    }
-  },
+  "moveScreenTitle": "Bewege Patienten",
+  "moveScreenDialogTitle": "Bewegen Erfolgreich",
+  "moveScreenDialogTitleError": "Bewegen Fehlgeschlagen",
 
   "moveScreenSuccess": "Der Patient {patientName} wurde erfolgreich von {source} nach {destination} bewegt",
   "@moveScreenSuccess": {
