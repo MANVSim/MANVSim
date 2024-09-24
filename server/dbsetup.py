@@ -36,10 +36,10 @@ def __create_locations():
     insert(Location(id=1, name="NEF", is_vehicle=True,
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image("media/static/image/nef_sh.png")])))
-    # Non Vehicle
+    # Resource-Holding
     insert(Location(id=2, name="EKG", media_refs=MediaData.list_to_json([
         MediaData.new_image("media/static/image/tasche_ekg.jpg")])))
-    insert(Location(id=3, name="Roter Rucksack",
+    insert(Location(id=3, name="Roter Notfallrucksack",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
                             "media/static/image/rucksack_rot.jpg")])))
@@ -54,9 +54,19 @@ def __create_locations():
     insert(Location(id=6, name="Verbandskasten",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image("media/static/image/tasche_rot.jpg")])))
+    # Patient-Locations
     insert(Location(id=7, name="Eingestürztes Haus",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image("media/static/image/ruine_haus.jpg")])))
+    insert(Location(id=8, name="Autowrack",
+                    media_refs=MediaData.list_to_json([
+                        MediaData.new_image("media/static/image/auto_wrack.jpg")])))
+    insert(Location(id=9, name="Uni-Hochhaus",
+                    media_refs=MediaData.list_to_json([
+                        MediaData.new_image("media/static/image/unihochhaus.jpg")])))
+    insert(Location(id=10, name="Quarantäne-Zone",
+                    media_refs=MediaData.list_to_json([
+                        MediaData.new_image("media/static/image/quarantaene_zone.jpg")])))
 
     # RTW:
     insert(LocationContainsLocation(id=0, parent=0, child=2))  # EKG
@@ -104,7 +114,7 @@ def __create_resources():
     # EKG in EKG Tasche
     insert(ResourceInLocation(id=0, quantity=1,
                               location_id=2, resource_id=0))
-    # roter Rucksack:
+    # Roter Rucksack
     insert(ResourceInLocation(id=1, quantity=20,
                               location_id=3, resource_id=1))
     insert(ResourceInLocation(id=2, quantity=2,
@@ -150,64 +160,86 @@ def __create_actions():
                   media_refs=MediaData.list_to_json([
                       MediaData.new_video("media/static/video/test.mp4"),
                       MediaData.new_audio("media/static/audio/test.wav")]),
-                  duration_secs=30,
+                  duration_secs=20,
                   required_power=100,
                   results=f"EKG"))
     insert(Action(id=3, name="Adrenalin spritzen",
                   media_refs=MediaData.list_to_json([MediaData.new_image(
                       "media/static/image/adrenalin-spritzen.png")]),
-                  duration_secs=2,
+                  duration_secs=5,
                   required_power=200,
                   results=f"EKG{RESULT_DELIMITER}Psychischer Zustand"))
     insert(Action(id=4, name="Schmerzmittel verabreichen",
                   media_refs=MediaData.list_to_json([
                       MediaData.new_image("media/static/image/no_image.png")]),
-                  duration_secs=2,
+                  duration_secs=5,
                   required_power=200,
                   results=f"Schmerz"))
     insert(Action(id=5, name="Verband anlegen", required_power=100,
                   media_refs=MediaData.list_to_json([
                       MediaData.new_image("media/static/image/no_image.png")]),
                   results=f"Verletzungen",
-                  duration_secs=30))
+                  duration_secs=20))
     insert(Action(id=6, name="Amputation", required_power=300,
                   media_refs=MediaData.list_to_json([
                       MediaData.new_image("media/static/image/no_image.png")]),
                   results="Verletzungen",
-                  duration_secs=120))
+                  duration_secs=30))
 
     insert(Action(id=7, name="Wunderheilung",
                   media_refs=MediaData.list_to_json([
                       MediaData.new_image(
                           "media/static/image/wunderheilung.png")]),
-                  duration_secs=60, results="", required_power=300))
+                  duration_secs=30, results="", required_power=300))
 
 
 def __create_roles():
-    insert(Role(id=0, name="Rettungssanitäter", short_name="Sani", power=100))
-    insert(Role(id=1, name="Rettungsassistent", short_name="Assistent",
-                power=200))
-    insert(Role(id=2, name="Notarzt", short_name="Arzt", power=300))
+    insert(Role(id=0, name="Rettungssanitäter:in", short_name="RettSan", power=100))
+    insert(Role(id=1, name="Rettungsassistent:in", short_name="RettAss", power=200))
+    insert(Role(id=3, name="Notfallsanitäter:in", short_name="NotSan", power=250))
+    insert(Role(id=2, name="Notarzt:in", short_name="NotAss", power=300))
 
 
 def __create_players():
-    insert(Player(tan="123ABC", execution_id=1, location_id=0, role_id=1,
+    # RTW KI 1
+    insert(Player(tan="97ZN9H", execution_id=1, location_id=0, role_id=1,
                   alerted=False))
-    insert(Player(tan="456DEF", execution_id=1, location_id=0, role_id=0,
+    insert(Player(tan="549Q4Z", execution_id=1, location_id=0, role_id=0,
                   alerted=False))
-    insert(Player(tan="789GHI", execution_id=1, location_id=0, role_id=2,
+    # NEF ECK 1
+    insert(Player(tan="4WT35Q", execution_id=1, location_id=1, role_id=2,
+                  alerted=False))
+    insert(Player(tan="J6V8A6", execution_id=1, location_id=1, role_id=3,
+                  alerted=False))
+    # RTW PLÖ 1
+    insert(Player(tan="RFO549", execution_id=1, location_id=0, role_id=1,
+                  alerted=False))
+    # RTW KI 2
+    insert(Player(tan="62ZH68", execution_id=1, location_id=0, role_id=1,
+                  alerted=False))
+    # RTW ECK 1
+    insert(Player(tan="E5Q619", execution_id=1, location_id=0, role_id=1,
+                  alerted=False))
+    # NEF KI 1
+    insert(Player(tan="Y15KG3", execution_id=1, location_id=1, role_id=2,
                   alerted=False))
 
-    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0,
-                                       player_tan="123ABC", location_id=0,
-                                       vehicle_name="RTW-Kiel", travel_time=60))
-    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0,
-                                       player_tan="456DEF", location_id=0,
-                                       vehicle_name="RTW-Kiel", travel_time=60))
-    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0,
-                                       player_tan="789GHI", location_id=1,
-                                       vehicle_name="NEF-Eckernfoerde",
-                                       travel_time=120))
+    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0, player_tan="97ZN9H",
+                                       location_id=0, vehicle_name="RTW-KI-1", travel_time=30))
+    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0, player_tan="549Q4Z",
+                                       location_id=0, vehicle_name="RTW-KI-1", travel_time=30))
+    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0, player_tan="4WT35Q",
+                                       location_id=1, vehicle_name="NEF-ECK-1", travel_time=50))
+    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0, player_tan="J6V8A6",
+                                       location_id=1, vehicle_name="NEF-ECK-1", travel_time=50))
+    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0, player_tan="RFO549",
+                                       location_id=0, vehicle_name="RTW-PLÖ-1", travel_time=60))
+    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0, player_tan="62ZH68",
+                                       location_id=0, vehicle_name="RTW-KI-2", travel_time=30))
+    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0, player_tan="E5Q619",
+                                       location_id=0, vehicle_name="RTW-ECK-1", travel_time=50))
+    insert(PlayersToVehicleInExecution(execution_id=1, scenario_id=0, player_tan="Y15KG3",
+                                       location_id=1, vehicle_name="NEF-KI-1", travel_time=30))
 
 
 def __create_patients():
@@ -241,24 +273,30 @@ def __create_patients():
 
 
 def __patient_in_scenario():
-    insert(PatientInScenario(scenario_id=0, patient_id=0, name="Patient-0"))
-    insert(PatientInScenario(scenario_id=0, patient_id=1, name="Patient-1"))
-    insert(PatientInScenario(scenario_id=0, patient_id=2, name="Patient-2"))
-    insert(PatientInScenario(scenario_id=0, patient_id=3, name="Patient-3"))
+    # Schock
+    insert(PatientInScenario(scenario_id=0, patient_id=0, name="Maria Müller", location_id=7))
+    insert(PatientInScenario(scenario_id=0, patient_id=0, name="Hans Schmidt", location_id=8))
+    # Allergie
+    insert(PatientInScenario(scenario_id=0, patient_id=1, name="Anna Fischer", location_id=7))
+    # Schnittwunde
+    insert(PatientInScenario(scenario_id=0, patient_id=2, name="Thomas Meier", location_id=7))
+    insert(PatientInScenario(scenario_id=0, patient_id=2, name="Lisa Wagner", location_id=8))
+    # Infiziert
+    insert(PatientInScenario(scenario_id=0, patient_id=3, name="Stefan Becker", location_id=9))
 
-    # Tot
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-4"))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-5"))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-6", location_id=7))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Patient-7", location_id=7))
+    # Dead (Zombies)
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Unbekannt I", location_id=9))
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Unbekannt II", location_id=9))
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Unbekannt III", location_id=9))
+    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Unbekannt IV", location_id=10))
 
 
 def __create_scenarios():
-    insert(Scenario(id=0, name="MANVSim-Alpha"))
+    insert(Scenario(id=0, name="MANVSim-Demo-Szenario"))
 
 
 def __create_executions():
-    insert(Execution(id=1, name="MANVSim-Alpha-v1", scenario_id=0))
+    insert(Execution(id=1, name="Präsentationssimulation 27.09.2024", scenario_id=0))
 
 
 def insert(data):
