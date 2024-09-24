@@ -3,6 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/models/multi_media.dart';
 import 'package:manvsim/widgets/media/multi_media_view.dart';
 
+import '../../services/size_service.dart';
+
 class MediaOverViewDialog extends StatelessWidget {
   final String title;
   final MultiMediaCollection media;
@@ -18,7 +20,7 @@ class MediaOverViewDialog extends StatelessWidget {
         style: Theme.of(context).textTheme.headlineMedium,
       ),
       content: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.8,
+          width: SizeService.getScreenWidth(context) * 0.8,
           child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: MultiMediaView(multiMediaCollection: media))),

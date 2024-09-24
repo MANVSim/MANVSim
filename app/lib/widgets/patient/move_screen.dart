@@ -40,7 +40,6 @@ class _MoveScreenState extends State<MoveScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(AppLocalizations.of(context)!.moveScreenTitle),
           automaticallyImplyLeading: false,
         ),
