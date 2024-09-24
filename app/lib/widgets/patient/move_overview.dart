@@ -31,7 +31,7 @@ class MoveOverview extends StatelessWidget {
                       style: Theme.of(context).textTheme.headlineMedium)),
             ]),
             Row(children: [
-              const Icon(Icons.arrow_back),
+              const Icon(ManvIcons.location),
               const SizedBox(width: 8),
               Expanded(
                   child: Text(patient.location.name,
