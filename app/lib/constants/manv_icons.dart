@@ -18,4 +18,8 @@ class ManvIcons {
   static const IconData role = Icons.work_outline;
 
   static const IconData refresh = Icons.refresh;
+
+  static const IconData map = Icons.map;
+  static const IconData mapOutlined = Icons.map_outlined;
+  static const IconData patientOnMap = Icons.accessibility_new;
 }

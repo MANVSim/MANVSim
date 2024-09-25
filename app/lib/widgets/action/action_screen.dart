@@ -66,9 +66,7 @@ class _ActionScreenState extends State<ActionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(AppLocalizations.of(context)!
-              .actionScreenTitle(widget.patient.name, widget.action.name)),
+          title: Text(AppLocalizations.of(context)!.actionScreenTitle),
           automaticallyImplyLeading: _hasError,
         ),
         body: Column(

@@ -15,6 +15,7 @@ import 'package:manvsim/widgets/util/qr_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../services/size_service.dart';
 import 'wait_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -275,6 +276,9 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.loginScreenName),
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -284,7 +288,7 @@ class LoginScreenState extends State<LoginScreen> {
               children: [
                 Image(
                     // width 60% of screen width
-                    width: min(MediaQuery.of(context).size.width * 0.6, 500),
+                    width: min(SizeService.getScreenWidth(context) * 0.6, 500),
                     image: const AssetImage('assets/MANV_transparent.png')),
                 const SizedBox(height: 40),
                 Text(AppLocalizations.of(context)!.loginTANText),

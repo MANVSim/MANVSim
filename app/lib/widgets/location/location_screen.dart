@@ -308,7 +308,6 @@ class _LocationScreenState extends State<LocationScreen>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(AppLocalizations.of(context)!.locationScreenName),
           actions: [
             if (kIsWeb)
