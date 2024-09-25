@@ -52,7 +52,8 @@ class _MANVMapState extends State<MANVMap> {
                   onPressed: () => _onButtonPressed(
                       patientPosition.position,
                       () => PatientService.goToPatientScreen(
-                          patientPosition.id, context)),
+                          patientPosition.id, context),
+                      AppLocalizations.of(context)!.mapPatientTooFar),
                   icon: Icon(
                     size: 50,
                     opticalSize: 50,
@@ -78,7 +79,8 @@ class _MANVMapState extends State<MANVMap> {
                   onPressed: () => _onButtonPressed(
                       locationPosition.position,
                       () => LocationService.goToLocationScreen(
-                          locationPosition.id, context)),
+                          locationPosition.id, context),
+                      AppLocalizations.of(context)!.mapLocationTooFar),
                   icon: const Icon(
                     ManvIcons.location,
                     color: Colors.black54,
@@ -92,10 +94,10 @@ class _MANVMapState extends State<MANVMap> {
       (position - widget.positionNotifier.value).distance >
       MANVMap.tooFarThreshold;
 
-  void _onButtonPressed(Offset position, Future Function() navigationCallback) {
+  void _onButtonPressed(Offset position, Future Function() navigationCallback,
+      String tooFarMessage) {
     if (_isTooFar(position)) {
-      _showTimedMessage(
-          position, AppLocalizations.of(context)!.mapLocationTooFar);
+      _showTimedMessage(position, tooFarMessage);
     } else {
       widget.onPageLeave();
       navigationCallback().whenComplete(() => widget.onPageBack());
