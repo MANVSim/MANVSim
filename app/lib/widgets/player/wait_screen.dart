@@ -9,7 +9,9 @@ import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/services/notification_service.dart';
 import 'package:manvsim/widgets/util/error_box.dart';
 import 'package:manvsim/widgets/util/timer_widget.dart';
+import 'package:provider/provider.dart';
 
+import '../../models/config.dart';
 import 'player_overview.dart';
 
 class WaitScreen extends StatefulWidget {
@@ -201,6 +203,7 @@ class _WaitScreenState extends State<WaitScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Config config = Provider.of<Config>(context, listen: false);
     return Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.waitText),
@@ -226,8 +229,7 @@ class _WaitScreenState extends State<WaitScreen> {
                       onTimerComplete: _handleTimerComplete)
                 else
                   const CircularProgressIndicator(),
-                if (true) ...[
-                  // TODO: #228 use kDebugMode instead of true
+                if (config.waitScreenIsSkippable) ...[
                   const SizedBox(height: 64),
                   ElevatedButton.icon(
                     icon: const Icon(Icons.skip_next),
