@@ -45,6 +45,8 @@ services:
       target: serve-prod
     expose:
       - "5001"
+    volumes:
+      - ./config/app/config.json:/usr/share/nginx/html/assets/assets/config/config.json
     depends_on:
       - server
 

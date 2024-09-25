@@ -1,7 +1,7 @@
 {
-  "apiUrl": "https://batailley.informatik.uni-kiel.de/api",
+  "apiUrl": "https://localhost/api",
   "showMap": true,
   "showPatientList": true,
   "showLocationList": true,
-  "waitScreenIsSkippable": false
+  "waitScreenIsSkippable": true
 }
