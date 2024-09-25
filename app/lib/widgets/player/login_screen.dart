@@ -15,6 +15,7 @@ import 'package:manvsim/widgets/util/qr_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../models/config.dart';
 import '../../services/size_service.dart';
 import 'wait_screen.dart';
 
@@ -29,10 +30,7 @@ enum _LoginInputType { tan, url }
 
 class LoginScreenState extends State<LoginScreen> {
   final TanInputController _tanInputController = TanInputController();
-  final TextEditingController _serverUrlController = TextEditingController(
-      text: kDebugMode
-          ? "https://localhost/api"
-          : "https://batailley.informatik.uni-kiel.de/api");
+  late TextEditingController _serverUrlController;
 
   String? _errorMessage;
   bool _forceAndroidDownloadButton = isPlatformAndroidWeb();
@@ -43,6 +41,14 @@ class LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
 
   bool _showAdvancedSettings = false;
+
+
+  @override
+  void initState() {
+    super.initState();
+    final Config config = Provider.of<Config>(context, listen: false);
+    _serverUrlController= TextEditingController(text: config.apiUrl);
+  }
 
   InputDecoration _textFieldDecoration(bool hasInputFailure, String text) {
     return InputDecoration(
