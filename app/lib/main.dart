@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
+import 'package:manvsim/models/config.dart';
 import 'package:manvsim/models/tan_user.dart';
 import 'package:manvsim/services/api_service.dart';
 import 'package:manvsim/services/notification_service.dart';
@@ -61,7 +62,10 @@ class ManvSimApp extends StatelessWidget {
     }
 
     return MultiProvider(
-        providers: [ChangeNotifierProvider<TanUser>(create: (_) => TanUser())],
+        providers: [ChangeNotifierProvider<Config>(create: (_) => Config()),
+          ChangeNotifierProvider<TanUser>(create: (_) => TanUser()),
+
+        ],
         child: MaterialApp(
           title: 'MANVSim',
           localizationsDelegates: AppLocalizations.localizationsDelegates,
