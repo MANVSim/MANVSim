@@ -47,10 +47,6 @@ def __create_locations():
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
                             "media/static/image/rucksack_blau.jpg")])))
-    insert(Location(id=5, name="Sichtungstasche",
-                    media_refs=MediaData.list_to_json([
-                        MediaData.new_image(
-                            "media/static/image/tasche_sichtung.jpg")])))
     insert(Location(id=6, name="Verbandskasten",
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image("media/static/image/tasche_rot.jpg")])))
@@ -72,13 +68,11 @@ def __create_locations():
     insert(LocationContainsLocation(id=0, parent=0, child=2))  # EKG
     insert(LocationContainsLocation(id=1, parent=0, child=3))  # Roter Rucksack
     insert(LocationContainsLocation(id=2, parent=0, child=3))  # Roter Rucksack
-    insert(LocationContainsLocation(id=3, parent=0, child=5))  # Sichtungstasche
-    insert(LocationContainsLocation(id=4, parent=0, child=5))  # Sichtungstasche
-    insert(LocationContainsLocation(id=5, parent=0, child=6))  # Verbandskasten
+    insert(LocationContainsLocation(id=3, parent=0, child=6))  # Verbandskasten
 
     # NEF:
-    insert(LocationContainsLocation(id=6, parent=1, child=4))  # Heilige Tasche
-    insert(LocationContainsLocation(id=7, parent=1, child=6))  # Verbandskasten
+    insert(LocationContainsLocation(id=4, parent=1, child=4))  # Heilige Tasche
+    insert(LocationContainsLocation(id=5, parent=1, child=6))  # Verbandskasten
 
 
 def __create_resources():
@@ -102,10 +96,6 @@ def __create_resources():
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
                             "media/static/image/saege.png")])))
-    insert(Resource(id=5, name="Sichtungskarte", consumable=True,
-                    media_refs=MediaData.list_to_json([
-                        MediaData.new_image(
-                            "media/static/image/no_image.png")])))
     insert(Resource(id=6, name="Bibel", consumable=False,
                     media_refs=MediaData.list_to_json([
                         MediaData.new_image(
@@ -124,11 +114,8 @@ def __create_resources():
     # Verbandskasten
     insert(ResourceInLocation(id=4, quantity=10000,
                               location_id=6, resource_id=3))
-    # Sichtungstasche
-    insert(ResourceInLocation(id=5, quantity=10000,
-                              location_id=5, resource_id=5))
     # Heilige Tasche
-    insert(ResourceInLocation(id=6, quantity=1,
+    insert(ResourceInLocation(id=5, quantity=1,
                               location_id=4, resource_id=6))
 
 
