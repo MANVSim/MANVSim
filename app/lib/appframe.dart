@@ -8,6 +8,9 @@ import 'package:manvsim/widgets/base_screens/notifications_screen.dart';
 import 'package:manvsim/widgets/location/location_list_screen.dart';
 import 'package:manvsim/widgets/map/map_screen.dart';
 import 'package:manvsim/widgets/patient/patient_list_screen.dart';
+import 'package:provider/provider.dart';
+
+import 'models/config.dart';
 
 class AppFrame extends StatefulWidget {
   const AppFrame({super.key});
@@ -29,6 +32,9 @@ class _AppFrameState extends State<AppFrame> {
 
   @override
   Widget build(BuildContext context) {
+
+    final Config config = Provider.of<Config>(context, listen: false);
+
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -43,15 +49,15 @@ class _AppFrameState extends State<AppFrame> {
               selectedIcon: const Icon(Icons.home_outlined),
               icon: const Icon(Icons.home),
               label: AppLocalizations.of(context)!.frameHome),
-          NavigationDestination(
+          if (config.showMap)NavigationDestination(
               selectedIcon: const Icon(ManvIcons.mapOutlined),
               icon: const Icon(ManvIcons.map),
               label: AppLocalizations.of(context)!.frameMap),
-          NavigationDestination(
+          if (config.showPatientList)NavigationDestination(
               selectedIcon: const Icon(ManvIcons.patientOutlined),
               icon: const Icon(ManvIcons.patient),
               label: AppLocalizations.of(context)!.framePatients),
-          NavigationDestination(
+          if (config.showLocationList)NavigationDestination(
               selectedIcon: const Icon(ManvIcons.locationOutlined),
               icon: const Icon(ManvIcons.location),
               label: AppLocalizations.of(context)!.frameLocations),
@@ -66,13 +72,13 @@ class _AppFrameState extends State<AppFrame> {
           )
         ],
       ),
-      body: const <Widget>[
+      body: <Widget>[
         /// Home page
-        HomeScreen(),
-        PatientMapScreen(),
-        PatientListScreen(),
-        LocationListScreen(),
-        NotificationsScreen()
+        const HomeScreen(),
+        if(config.showMap) const PatientMapScreen(),
+        if(config.showPatientList) const PatientListScreen(),
+        if(config.showLocationList)const LocationListScreen(),
+        const NotificationsScreen()
       ][_currentPageIndex],
     );
   }

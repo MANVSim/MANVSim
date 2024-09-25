@@ -6,6 +6,7 @@ import 'package:manvsim/widgets/player/name_screen.dart';
 import 'package:manvsim/widgets/player/wait_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'models/config.dart';
 import 'models/tan_user.dart';
 import 'widgets/player/login_screen.dart';
 
@@ -15,6 +16,7 @@ class StartScreen extends StatelessWidget {
   _selectNext(BuildContext context) async {
     final TanUser tanUser = Provider.of<TanUser>(context, listen: false);
     await tanUser.load();
+
     if (tanUser.isComplete()) {
       ApiService apiService = GetIt.instance.get<ApiService>();
       if (context.mounted) await apiService.recover(context);
@@ -24,9 +26,18 @@ class StartScreen extends StatelessWidget {
     }
   }
 
+  _loadConfig(BuildContext context) async {
+    final Config config = Provider.of<Config>(context, listen: false);
+    await config.load();
+  }
+
   _navigateNext(BuildContext context) async {
+
     if (!context.mounted) return;
     final next = await _selectNext(context);
+
+    if (!context.mounted) return;
+    await _loadConfig(context);
 
     if (!context.mounted) return;
     Navigator.pushAndRemoveUntil(

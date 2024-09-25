@@ -1,0 +1,7 @@
+{
+  "apiUrl": "https://localhost/api",
+  "showMap": true,
+  "showPatientList": true,
+  "showLocationList": true,
+  "waitScreenIsSkippable": true
+}
