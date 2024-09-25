@@ -90,9 +90,14 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
     super.dispose();
   }
 
-  void _onNewTargetOffset(Offset tappedOnViewport) {
-    if ((lastTapped - tappedOnViewport).distance < 10) {
-      return;
+  /// When [direction] is true, goes max distance in that direction.
+  void _onNewTargetOffset(Offset tappedOnViewport, [bool direction = false]) {
+    if (direction) {
+      if ((lastTapped - tappedOnViewport).distance < 20) {
+        return;
+      }
+      Offset direction = positionOnViewport - tappedOnViewport;
+      tappedOnViewport = positionOnViewport - (direction * 50);
     }
     lastTapped = tappedOnViewport;
     _onNewDirection(toScene(tappedOnViewport));
@@ -205,7 +210,12 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       onPageBack: widget.refreshData,
     );
     return GestureDetector(
-      onTapDown: (details) => _onNewTargetOffset(details.localPosition),
+      onLongPressStart: (details) =>
+          _onNewTargetOffset(details.localPosition, true),
+      onLongPressUp: _onMoveEnd,
+      onLongPressMoveUpdate: (details) =>
+          _onNewTargetOffset(details.localPosition, true),
+      onTapUp: (details) => _onNewTargetOffset(details.localPosition),
       child: Container(
           width: viewportSize.width,
           height: viewportSize.height,
