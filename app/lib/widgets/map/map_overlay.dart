@@ -7,6 +7,7 @@ import 'package:manvsim/models/map_data.dart';
 import 'package:manvsim/utils/custom_transformation_controller.dart';
 import 'package:manvsim/utils/offset_ray.dart';
 import 'package:manvsim/widgets/map/manv_map.dart';
+import 'package:manvsim/widgets/map/map_controls.dart';
 
 /// The possible Positions of the player on the Viewport.
 enum MapOverlayViewerPositions {
@@ -145,68 +146,12 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
         : target;
   }
 
-  Widget _buildControls() {
-    return Card(
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Column(children: [
-        IconButton(
-            onPressed: () => _transformationController.tilt(-pi / 12),
-            icon: const Icon(Icons.arrow_drop_down)),
-        IconButton(
-            onPressed: () => _transformationController.tilt(pi / 12),
-            icon: const Icon(Icons.arrow_drop_up)),
-      ]),
-      Column(children: [
-        Row(mainAxisSize: MainAxisSize.min, children: [
-          IconButton(
-              onPressed: () => _transformationController.rotate(-pi / 12),
-              icon: const Icon(Icons.rotate_left)),
-          IconButton(
-              onPressed: () => _onNewDirection(toScene(
-                  positionOnViewport.translate(0, -viewportSize.height))),
-              icon: const Icon(Icons.arrow_circle_up)),
-          IconButton(
-              onPressed: () => _transformationController.rotate(pi / 12),
-              icon: const Icon(Icons.rotate_right)),
-        ]),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-                onPressed: () => _onNewDirection(toScene(
-                    positionOnViewport.translate(-viewportSize.width, 0))),
-                icon: const Icon(Icons.arrow_circle_left_outlined)),
-            IconButton(
-                onPressed: _onMoveEnd, icon: const Icon(Icons.stop_circle)),
-            IconButton(
-                onPressed: () => _onNewDirection(toScene(
-                    positionOnViewport.translate(viewportSize.width, 0))),
-                icon: const Icon(Icons.arrow_circle_right_outlined)),
-          ],
-        )
-      ]),
-      Column(children: [
-        IconButton(
-            onPressed: () => _transformationController.scale(2),
-            icon: const Icon(Icons.zoom_in)),
-        IconButton(
-            onPressed: () => _transformationController.scale(0.5),
-            icon: const Icon(Icons.zoom_out)),
-      ])
-    ]));
-  }
-
-  void _onPageLeave() {
-    _animationController.stop();
-  }
-
   Widget _buildMapViewport() {
     MANVMap manvMap = MANVMap(
       mapData: widget.mapData,
       positionNotifier: positionNotifier,
       transformationController: _transformationController,
-      onPageLeave: _onPageLeave,
+      onPageLeave: _onMoveEnd,
       onPageBack: widget.refreshData,
     );
     return GestureDetector(
@@ -297,7 +242,17 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           _buildLegend(context),
           _buildMapViewport(),
-          _buildControls()
+          Card(
+              child: MapControls(
+            transformationController: _transformationController,
+            onUp: () => _onNewDirection(
+                toScene(positionOnViewport.translate(0, -viewportSize.height))),
+            onLeft: () => _onNewDirection(
+                toScene(positionOnViewport.translate(-viewportSize.width, 0))),
+            onRight: () => _onNewDirection(
+                toScene(positionOnViewport.translate(viewportSize.width, 0))),
+            onStop: _onMoveEnd,
+          ))
         ]));
   }
 }
