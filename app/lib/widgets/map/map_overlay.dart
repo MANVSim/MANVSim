@@ -22,12 +22,15 @@ class PatientMapOverlay extends StatefulWidget {
   const PatientMapOverlay(
       {required this.mapData,
       this.positionType = MapOverlayViewerPositions.bottomCenter,
+      required this.refreshData,
       super.key});
 
   final MapData mapData;
 
   /// Where the viewer is positioned on the Viewport.
   final MapOverlayViewerPositions positionType;
+
+  final Function refreshData;
 
   @override
   State<StatefulWidget> createState() => _PatientMapOverlayState();
@@ -199,6 +202,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       positionNotifier: positionNotifier,
       transformationController: _transformationController,
       onPageLeave: _onPageLeave,
+      onPageBack: widget.refreshData,
     );
     return GestureDetector(
       onTapDown: (details) => _onNewTargetOffset(details.localPosition),

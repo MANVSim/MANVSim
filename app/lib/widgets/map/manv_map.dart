@@ -26,12 +26,14 @@ class MANVMap extends StatefulWidget {
 
   /// To be called when navigating to a new Page.
   final Function onPageLeave;
+  final Function onPageBack;
 
   const MANVMap(
       {required this.mapData,
       required this.positionNotifier,
       this.transformationController,
       required this.onPageLeave,
+      required this.onPageBack,
       super.key});
 
   @override
@@ -41,13 +43,16 @@ class MANVMap extends StatefulWidget {
 class _MANVMapState extends State<MANVMap> {
   List<Positioned> messages = [];
 
-  List<Positioned> _getPatientWidgets(BuildContext context) {
+  List<Positioned> _getPatientWidgets() {
     return widget.mapData.patientPositions
         .map((patientPosition) => Positioned(
               top: patientPosition.position.dy,
               left: patientPosition.position.dx,
               child: IconButton(
-                  onPressed: () => _onPatientPressed(patientPosition, context),
+                  onPressed: () => _onButtonPressed(
+                      patientPosition.position,
+                      () => PatientService.goToPatientScreen(
+                          patientPosition.id, context)),
                   icon: Icon(
                     size: 50,
                     opticalSize: 50,
@@ -64,14 +69,16 @@ class _MANVMapState extends State<MANVMap> {
         .toList();
   }
 
-  List<Positioned> _getLocationWidgets(BuildContext context) {
+  List<Positioned> _getLocationWidgets() {
     return widget.mapData.locationPositions
         .map((locationPosition) => Positioned(
               top: locationPosition.position.dy,
               left: locationPosition.position.dx,
               child: IconButton(
-                  onPressed: () =>
-                      _onLocationPressed(locationPosition, context),
+                  onPressed: () => _onButtonPressed(
+                      locationPosition.position,
+                      () => LocationService.goToLocationScreen(
+                          locationPosition.id, context)),
                   icon: const Icon(
                     ManvIcons.location,
                     color: Colors.black54,
@@ -85,25 +92,13 @@ class _MANVMapState extends State<MANVMap> {
       (position - widget.positionNotifier.value).distance >
       MANVMap.tooFarThreshold;
 
-  void _onPatientPressed(
-      PatientPosition patientPosition, BuildContext context) {
-    if (_isTooFar(patientPosition.position)) {
-      _showTimedMessage(patientPosition.position,
-          AppLocalizations.of(context)!.mapPatientTooFar);
+  void _onButtonPressed(Offset position, Future Function() navigationCallback) {
+    if (_isTooFar(position)) {
+      _showTimedMessage(
+          position, AppLocalizations.of(context)!.mapLocationTooFar);
     } else {
       widget.onPageLeave();
-      PatientService.goToPatientScreen(patientPosition.id, context);
-    }
-  }
-
-  void _onLocationPressed(
-      LocationPosition locationPosition, BuildContext context) {
-    if (_isTooFar(locationPosition.position)) {
-      _showTimedMessage(locationPosition.position,
-          AppLocalizations.of(context)!.mapLocationTooFar);
-    } else {
-      widget.onPageLeave();
-      LocationService.goToLocationScreen(locationPosition.id, context);
+      navigationCallback().whenComplete(() => widget.onPageBack());
     }
   }
 
@@ -159,8 +154,8 @@ class _MANVMapState extends State<MANVMap> {
             color: Color(0xffffeb9f)),
         child: Stack(
           children: [
-            ..._getLocationWidgets(context),
-            ..._getPatientWidgets(context),
+            ..._getLocationWidgets(),
+            ..._getPatientWidgets(),
             CustomPaint(
                 painter:
                     _ShadowPainter(widget.mapData, widget.positionNotifier)),
