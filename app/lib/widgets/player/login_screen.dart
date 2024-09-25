@@ -202,7 +202,7 @@ class LoginScreenState extends State<LoginScreen> {
         style: const ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(Colors.green)),
         onPressed: () {
-          launchUrlString("/assets/assets/manvsim-app.apk");
+          launchUrlString("/webapp/assets/assets/manvsim-app.apk");
         },
         child: Column(children: [
           const Icon(
