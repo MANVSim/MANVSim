@@ -30,8 +30,8 @@ class LocationService {
         .then((response) => Persons.fromApi(response!));
   }
 
-  static void goToLocationScreen(int locationId, BuildContext context) {
-    Navigator.push(
+  static Future goToLocationScreen(int locationId, BuildContext context) {
+    return Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => LocationScreen(locationId: locationId)))

@@ -48,8 +48,9 @@ class _PatientMapScreenState extends State<PatientMapScreen> {
               builder: (context, mapData) => Center(
                   child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      child:
-                          Center(child: PatientMapOverlay(mapData: mapData))))),
+                      child: Center(
+                          child: PatientMapOverlay(
+                              mapData: mapData, refreshData: _refresh))))),
         ));
   }
 }

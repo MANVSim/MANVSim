@@ -48,8 +48,8 @@ class PatientService {
   }
 
   /// Navigates to [PatientScreen] and leaves location after.
-  static void goToPatientScreen(int patientId, BuildContext context) {
-    Navigator.push(
+  static Future goToPatientScreen(int patientId, BuildContext context) {
+    return Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => PatientScreen(patientId: patientId)))

@@ -1,8 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:manvsim/utils/offset_ray.dart';
-import 'package:vector_math/vector_math_64.dart';
 
 class CustomTransformationController extends ChangeNotifier
     implements ValueListenable<Matrix4> {
@@ -73,11 +71,16 @@ class CustomTransformationController extends ChangeNotifier
     // On viewportPoint, perform the inverse transformation of the scene to get
     // where the point would be in the scene before the transformation.
     final Matrix4 inverseMatrix = Matrix4.inverted(value);
-    return inverseMatrix.transform3(viewportPoint.toVector3()).toOffset();
+    return MatrixUtils.transformPoint(inverseMatrix, viewportPoint);
   }
 
   Offset rotated(Offset viewportPoint) {
     Matrix4 inverseMatrix = Matrix4.inverted(tiltMatrix * rotationScaleMatrix);
-    return inverseMatrix.transform3(viewportPoint.toVector3()).toOffset();
+    return MatrixUtils.transformPoint(inverseMatrix, viewportPoint);
+  }
+
+  Offset tilted(Offset viewportPoint) {
+    Matrix4 inverseMatrix = Matrix4.inverted(tiltMatrix);
+    return MatrixUtils.transformPoint(inverseMatrix, viewportPoint);
   }
 }

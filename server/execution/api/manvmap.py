@@ -13,54 +13,52 @@ api = Blueprint("api-manvmap", __name__)
 def get_map_data():
     """
     Returns all data required for the map in the app.
-    The position data is generated randomly per request (thus might be unreachable).
+    A few patient/location positions are static, the rest is generated randomly per request (thus might be unreachable).
     The buildings and last_position are static mock data.
     This is subject to change as the admin frontend might provide functionality
     to define/configure these in the future.
     For more semantic information see the specification in api.yaml.
     """
+
+    def random_position():
+        return {"x": random() * 1900, "y": random() * 1900}
+
+    def tuple_to_position_dict(x: float, y: float, variate: bool = False):
+        return {"x": x + (random() + 0.3) * 50, "y": y + (random() - 0.5) * 60} \
+            if variate else {"x": x, "y": y}
+
+    static_positions = [(60, 1012), (985, 585), (117, 67), (1825, 1825), (226, 1920), (1337, 1190),
+                        (1064, 1442)]
+    static_buildings = [
+        (197, 738, 41, 406), (1426, 167, 170, 94), (798, 1737, 160, 233), (1514, 636, 211, 114),
+        (1633, 1633, 114, 111), (161, 1724, 190, 88), (1450, 1185, 111, 267), (808, 1022, 281, 171),
+        (1143, 575, 122, 134), (1045, 229, 56, 54), (466, 672, 124, 42), (249, 1687, 31, 45),
+        (1800, 243, 293, 256), (1500, 836, 228, 175), (821, 621, 185, 269), (1053, 793, 61, 53),
+        (274, 298, 264, 124), (231, 1236, 287, 173), (1343, 361, 180, 117), (1924, 575, 86, 132),
+        (838, 465, 199, 44), (942, 194, 194, 257), (953, 1104, 300, 118), (743, 439, 299, 128),
+        (733, 1260, 158, 41), (1195, 1673, 285, 287), (1969, 637, 40, 18), (1197, 1702, 162, 25)
+    ]
     try:
         execution, _ = util.get_execution_and_player()
         return {
             "patient_positions": [
-                {"position": {"x": random() * 1900, "y": random() * 1900},
+                {"position": tuple_to_position_dict(*static_positions[index], True)
+                if (index < len(static_positions))
+                else random_position(),
                  "patient_id": patient.id,
                  "classification": patient.classification.name}
-                for patient in execution.scenario.patients.values()
+                for index, patient in enumerate(execution.scenario.patients.values())
             ],
             "location_positions": [
-                {"position": {"x": random() * 1900, "y": random() * 1900},
+                {"position": tuple_to_position_dict(*static_positions[index])
+                if (index < len(static_positions))
+                else random_position(),
                  "location_id": location.id}
-                for location in execution.scenario.locations.values()
+                for index, location in enumerate(execution.scenario.locations.values())
                 if location.available],
             "buildings": [
-                {"top_left": {"x": 202, "y": 868}, "width": 41, "height": 286},
-                {"top_left": {"x": 1426, "y": 167}, "width": 170, "height": 94},
-                {"top_left": {"x": 798, "y": 1937}, "width": 160, "height": 233},
-                {"top_left": {"x": 1514, "y": 636}, "width": 211, "height": 114},
-                {"top_left": {"x": 1533, "y": 1633}, "width": 114, "height": 111},
-                {"top_left": {"x": 161, "y": 1924}, "width": 190, "height": 88},
-                {"top_left": {"x": 1450, "y": 1185}, "width": 111, "height": 267},
-                {"top_left": {"x": 808, "y": 1022}, "width": 281, "height": 171},
-                {"top_left": {"x": 1173, "y": 609}, "width": 122, "height": 134},
-                {"top_left": {"x": 1045, "y": 229}, "width": 56, "height": 54},
-                {"top_left": {"x": 466, "y": 672}, "width": 124, "height": 42},
-                {"top_left": {"x": 249, "y": 1687}, "width": 31, "height": 35},
-                {"top_left": {"x": 1800, "y": 243}, "width": 293, "height": 256},
-                {"top_left": {"x": 1500, "y": 836}, "width": 228, "height": 175},
-                {"top_left": {"x": 821, "y": 621}, "width": 185, "height": 269},
-                {"top_left": {"x": 1053, "y": 793}, "width": 61, "height": 53},
-                {"top_left": {"x": 274, "y": 298}, "width": 264, "height": 124},
-                {"top_left": {"x": 231, "y": 1236}, "width": 287, "height": 173},
-                {"top_left": {"x": 1343, "y": 361}, "width": 180, "height": 117},
-                {"top_left": {"x": 1924, "y": 575}, "width": 86, "height": 132},
-                {"top_left": {"x": 838, "y": 465}, "width": 199, "height": 44},
-                {"top_left": {"x": 942, "y": 194}, "width": 194, "height": 257},
-                {"top_left": {"x": 953, "y": 1104}, "width": 300, "height": 118},
-                {"top_left": {"x": 743, "y": 439}, "width": 299, "height": 128},
-                {"top_left": {"x": 733, "y": 1260}, "width": 158, "height": 41},
-                {"top_left": {"x": 1195, "y": 1873}, "width": 285, "height": 287},
-                {"top_left": {"x": 1969, "y": 637}, "width": 40, "height": 18},
+                {"top_left": {"x": x, "y": y}, "width": w, "height": h}
+                for (x, y, w, h) in static_buildings
             ],
             "last_position": {"x": 600, "y": 1000}
         }
