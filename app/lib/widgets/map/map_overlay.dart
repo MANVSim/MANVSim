@@ -98,8 +98,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   /// Start animation moving the middle to the edge.
   void _onNewDirection(Offset tappedOnScene) {
     Offset viewerOnScene = positionNotifier.value;
-    Offset targetOnScene =
-        _getMovementTarget(viewerOnScene, viewerOnScene - tappedOnScene);
+    Offset targetOnScene = _getMovementTarget(viewerOnScene, tappedOnScene);
     _onMoveEnd();
     _translationAnimation = Tween<Offset>(
             begin: _transformationController.currentTranslation,
@@ -107,7 +106,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
         .animate(_animationController)
       ..addListener(_onAnimate);
     double distance = (targetOnScene - viewerOnScene).distance;
-    _animationController.duration = Duration(seconds: max(distance ~/ 100, 1));
+    _animationController.duration =
+        Duration(milliseconds: max(distance.toInt() * 10, 1000));
     _animationController.forward();
   }
 
@@ -123,15 +123,18 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
   }
 
   /// Uses vector math to determine where the path hits an obstacle or the edge.
-  Offset _getMovementTarget(Offset origin, Offset direction) {
-    OffsetRay dirRay = OffsetRay(origin, direction);
-    double distance = [mapRect, ...buildings]
+  Offset _getMovementTarget(Offset origin, Offset target) {
+    OffsetRay dirRay = OffsetRay(origin, origin - target);
+    double alternativeTargetDistance = [...buildings, mapRect]
         .map(dirRay.intersectsWithRect)
-        .whereType<double>()
-        .where((element) => element < 0)
-        .map((distance) => distance * 0.95)
+        .whereType<double>() // Filter not intersecting
+        .where((element) => element < 0) // Filter going opposite direction
+        .map((distance) => distance * 0.95) // Don't go all the way into an edge
         .reduce(max);
-    return dirRay.at(distance);
+    Offset alternativeTarget = dirRay.at(alternativeTargetDistance);
+    return (origin - alternativeTarget).distance < (origin - target).distance
+        ? alternativeTarget
+        : target;
   }
 
   Widget _buildControls() {
@@ -152,8 +155,8 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
               onPressed: () => _transformationController.rotate(-pi / 12),
               icon: const Icon(Icons.rotate_left)),
           IconButton(
-              onPressed: () => _onNewDirection(
-                  toScene(positionOnViewport.translate(0, -10))),
+              onPressed: () => _onNewDirection(toScene(
+                  positionOnViewport.translate(0, -viewportSize.height))),
               icon: const Icon(Icons.arrow_circle_up)),
           IconButton(
               onPressed: () => _transformationController.rotate(pi / 12),
@@ -163,14 +166,14 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-                onPressed: () => _onNewDirection(
-                    toScene(positionOnViewport.translate(-10, 0))),
+                onPressed: () => _onNewDirection(toScene(
+                    positionOnViewport.translate(-viewportSize.width, 0))),
                 icon: const Icon(Icons.arrow_circle_left_outlined)),
             IconButton(
                 onPressed: _onMoveEnd, icon: const Icon(Icons.stop_circle)),
             IconButton(
-                onPressed: () => _onNewDirection(
-                    toScene(positionOnViewport.translate(10, 0))),
+                onPressed: () => _onNewDirection(toScene(
+                    positionOnViewport.translate(viewportSize.width, 0))),
                 icon: const Icon(Icons.arrow_circle_right_outlined)),
           ],
         )
@@ -198,10 +201,7 @@ class _PatientMapOverlayState extends State<PatientMapOverlay>
       onPageLeave: _onPageLeave,
     );
     return GestureDetector(
-      onLongPressStart: (details) => _onNewTargetOffset(details.localPosition),
-      onLongPressUp: _onMoveEnd,
-      onLongPressMoveUpdate: (details) =>
-          _onNewTargetOffset(details.localPosition),
+      onTapDown: (details) => _onNewTargetOffset(details.localPosition),
       child: Container(
           width: viewportSize.width,
           height: viewportSize.height,

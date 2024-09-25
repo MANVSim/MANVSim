@@ -13,7 +13,7 @@ typedef LocationPosition = ({Offset position, int id});
 
 class MapData {
   static const defaultSize = Size(1000, 1000);
-  static const defaultPadding = 50;
+  static const defaultPadding = 100;
 
   List<Rect> buildings;
   List<PatientPosition> patientPositions;
