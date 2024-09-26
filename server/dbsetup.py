@@ -32,6 +32,11 @@ def __create_locations():
     # Vehicle
     insert(Location(id=0, name="RTW", is_vehicle=True,
                     media_refs=MediaData.list_to_json([
+                        MediaData.new_text(
+                            text="Der Rettungswagen transportiert Spieler zum Einsatzort. Im "
+                                 "Rettungswagen werden Resourcen gelagert. Diese können ins "
+                                 "Inventar genommen werden oder Patienten können zur Behandlung "
+                                 "dorthin gebracht werden."),
                         MediaData.new_image("media/static/image/rtw_sh.png")])))
     insert(Location(id=1, name="NEF", is_vehicle=True,
                     media_refs=MediaData.list_to_json([

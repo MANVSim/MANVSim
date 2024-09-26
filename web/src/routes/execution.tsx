@@ -278,6 +278,7 @@ export function ExecutionRoute() {
             </div>
             {execution.patients.length ? (execution.patients.map((patient, index) => (
               <div key={index} className={`d-flex flex-column m-2 p-2`}>
+                <span>Name: {patient.name}</span>
                 <span>#{patient.id}</span>
                 <QRCode value={`patient;${patient.id}`} />
               </div>
