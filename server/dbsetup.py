@@ -256,7 +256,7 @@ def __create_patients():
                    activity_diagram=acds[3].to_json(),
                    media_refs=MediaData.list_to_json(
                        [MediaData.new_image(
-                           "media/static/image/bitepatient.png")])))
+                           "media/static/image/hide_the_pain.png")])))
     insert(Patient(id=4, template_name="Toter Patient/Walker",
                    activity_diagram=acds[4].to_json(),
                    media_refs=MediaData.list_to_json(
@@ -266,12 +266,12 @@ def __create_patients():
 
 def __patient_in_scenario():
     # Schock
-    insert(PatientInScenario(scenario_id=0, patient_id=0, name="Maria Müller", location_id=7))
+    insert(PatientInScenario(scenario_id=0, patient_id=0, name="Thomas Meier", location_id=7))
     insert(PatientInScenario(scenario_id=0, patient_id=0, name="Hans Schmidt", location_id=8))
     # Allergie
-    insert(PatientInScenario(scenario_id=0, patient_id=1, name="Anna Fischer", location_id=7))
+    insert(PatientInScenario(scenario_id=0, patient_id=1, name="Andreas Fischer", location_id=7))
     # Schnittwunde
-    insert(PatientInScenario(scenario_id=0, patient_id=2, name="Thomas Meier", location_id=7))
+    insert(PatientInScenario(scenario_id=0, patient_id=2, name="Maria Müller", location_id=7))
     insert(PatientInScenario(scenario_id=0, patient_id=2, name="Lisa Wagner", location_id=8))
     # Infiziert
     insert(PatientInScenario(scenario_id=0, patient_id=3, name="Stefan Becker", location_id=9))
@@ -513,7 +513,7 @@ def __create_activity_diagrams():
         "AF": [MediaData.new_text("7/min")],
         "SpO2": [MediaData.new_text("98%")],
         "Radialispuls": [MediaData.new_text("tastbar, schwach")],
-        "Rekapzeit": [MediaData.new_text("1.5s")],
+        "Rekapzeit": [MediaData.new_text("2.5s")],
         "EKG": [MediaData.new_text("Sinusrhythmus")],
         "Haut": [MediaData.new_text("bleich, schweißig")],
         "Schmerz": [MediaData.new_text("n.a.")],
@@ -551,7 +551,7 @@ def __create_activity_diagrams():
         "AF": [MediaData.new_text("0/min")],
         "SpO2": [MediaData.new_text("0%")],
         "Radialispuls": [MediaData.new_text("nicht tastbar")],
-        "Rekapzeit": [MediaData.new_text("1.5s")],
+        "Rekapzeit": [MediaData.new_text("10s")],
         "EKG": [MediaData.new_text("Linie")],
         "Haut": [MediaData.new_text("kalt schweißig")],
         "Schmerz": [MediaData.new_text("keine")],
