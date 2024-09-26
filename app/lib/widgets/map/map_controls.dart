@@ -47,7 +47,7 @@ class MapControls extends StatelessWidget {
                 icon: const Icon(Icons.arrow_circle_left_outlined)),
             IconButton(onPressed: onStop, icon: const Icon(Icons.stop_circle)),
             IconButton(
-                onPressed: onUp,
+                onPressed: onRight,
                 icon: const Icon(Icons.arrow_circle_right_outlined)),
           ],
         )
