@@ -7,8 +7,8 @@ this directory includes only python related code. Additional information about t
 In order to run this server on your local system, you need to have Python3 and Pip3 installed and available in your path.
 
 ## Getting Started
-You can start the server locally using the initial docker setup. However, if you want to start the server locally
-make sure you have Flask available in your directory environment. Further, the server uses SQLAlchemy to integrate a
+You can start the server locally using the initial docker setup. However, if you want to start the server without starting the web and app
+make sure you have Flask available in your directory environment, either using your python installation or Pipenv. Further, the server uses SQLAlchemy to integrate a
 database. The docker setup has an integrated volume for a PostgreSQL DB. Local development allows an SQLite database
 which can be migrated using the default project config. You need to perform the following commands:
 
@@ -24,9 +24,9 @@ flask --app main --debug run -p 5002
 ```
 
 ### Migrations
-To keep your database up to date after updates to the [database model](models.py), you need to recreate a migration.
+To keep your database up to date after applying changes to the [database model](models.py), you need to create a new migration.
 Migrations alter the currently applied database scheme to reflect a desired state. Performing the commands above should
-integrate your update. Make sure to modify the [dbsetup](dbsetup.py) to ensure a successful setup.
+integrate your perfomred changes. Make sure to modify the [dbsetup](dbsetup.py) to ensure a successful setup.
 
 
 ## Working with test-data
@@ -40,7 +40,7 @@ CAUTION: Any test working with database entries are currently working on the loc
 test may change your db setup for the local running server. We advise you to create a separate database for test-runs
 to ensure test isolation.
 
-Initially no test data are loaded into the memory. If you want to use sample data required for endpoint testing you can set a
+Initially no test-data are loaded into the memory. If you want to use sample data required for endpoint testing you can set a
 flag to your environment `LOAD_TEST_DATA` or change the boolean flag [here](vars.py).
 Additionally, the specific test-data can be modified. That means a patient containing a time-limited state-graph.
 The timelimit of the state can also be configured [here](vars.py).
