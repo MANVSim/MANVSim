@@ -1,12 +1,13 @@
+from datetime import datetime
+
+import pytz
 from flask import Blueprint, request
 
 from execution import run
-from utils.decorator import admin_only
 
 web_api = Blueprint("web_api-notification", __name__)
 
 
-@admin_only
 @web_api.post("/notifications/post")
 def add_notification_to_execution():
     """
@@ -20,8 +21,17 @@ def add_notification_to_execution():
         exec_id = int(form["exec_id"])
         notification = form["notification"]
         execution = run.active_executions[exec_id]
+        utc_time = datetime.now()
+        berlin_time = utc_time.astimezone(pytz.timezone('Europe/Berlin'))
+        formatted_time = berlin_time.strftime("%d.%m.%Y %H:%M")
 
-        execution.notifications.append(notification)
+        execution.notifications.append(
+            {
+                "timestamp": formatted_time,
+                "text": notification
+            }
+        )
         return "Post successful", 200
     except KeyError:
-        return {"error": "Unable to post notification. Invalid parameter detected."}, 400
+        return {
+            "error": "Unable to post notification. Invalid parameter detected."}, 400

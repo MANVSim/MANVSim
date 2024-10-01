@@ -222,6 +222,58 @@ class DefaultApi {
     return null;
   }
 
+  /// Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [RunActionPerformMovePatientPostRequest] runActionPerformMovePatientPostRequest (required):
+  Future<Response> runActionPerformMovePatientPostWithHttpInfo(RunActionPerformMovePatientPostRequest runActionPerformMovePatientPostRequest,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/run/action/perform/move/patient';
+
+    // ignore: prefer_final_locals
+    Object? postBody = runActionPerformMovePatientPostRequest;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>['application/json'];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
+  ///
+  /// Parameters:
+  ///
+  /// * [RunActionPerformMovePatientPostRequest] runActionPerformMovePatientPostRequest (required):
+  Future<RunPatientArrivePost200Response?> runActionPerformMovePatientPost(RunActionPerformMovePatientPostRequest runActionPerformMovePatientPostRequest,) async {
+    final response = await runActionPerformMovePatientPostWithHttpInfo(runActionPerformMovePatientPostRequest,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientArrivePost200Response',) as RunPatientArrivePost200Response;
+    
+    }
+    return null;
+  }
+
   /// Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
   ///
   /// Note: This method returns the HTTP [Response].
@@ -333,7 +385,7 @@ class DefaultApi {
     return null;
   }
 
-  /// Returns a list of  top-level accessible locations.
+  /// Returns a list of top-level accessible locations.
   ///
   /// Note: This method returns the HTTP [Response].
   Future<Response> runLocationAllGetWithHttpInfo() async {
@@ -361,7 +413,7 @@ class DefaultApi {
     );
   }
 
-  /// Returns a list of  top-level accessible locations.
+  /// Returns a list of top-level accessible locations.
   Future<RunLocationAllGet200Response?> runLocationAllGet() async {
     final response = await runLocationAllGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
@@ -425,19 +477,75 @@ class DefaultApi {
     return null;
   }
 
-  /// A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+  /// Returns a list of all patients and all players at the given locations.
   ///
   /// Note: This method returns the HTTP [Response].
   ///
   /// Parameters:
   ///
-  /// * [RunLocationTakeFromPostRequest] runLocationTakeFromPostRequest (required):
-  Future<Response> runLocationTakeFromPostWithHttpInfo(RunLocationTakeFromPostRequest runLocationTakeFromPostRequest,) async {
+  /// * [int] locationId (required):
+  Future<Response> runLocationPersonsGetWithHttpInfo(int locationId,) async {
     // ignore: prefer_const_declarations
-    final path = r'/run/location/take-from';
+    final path = r'/run/location/persons';
 
     // ignore: prefer_final_locals
-    Object? postBody = runLocationTakeFromPostRequest;
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+      queryParams.addAll(_queryParams('', 'location_id', locationId));
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Returns a list of all patients and all players at the given locations.
+  ///
+  /// Parameters:
+  ///
+  /// * [int] locationId (required):
+  Future<RunLocationPersonsGet200Response?> runLocationPersonsGet(int locationId,) async {
+    final response = await runLocationPersonsGetWithHttpInfo(locationId,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunLocationPersonsGet200Response',) as RunLocationPersonsGet200Response;
+    
+    }
+    return null;
+  }
+
+  /// Put a (sub) location in another location.
+  ///
+  /// A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [RunLocationPutToPostRequest] runLocationPutToPostRequest (required):
+  Future<Response> runLocationPutToPostWithHttpInfo(RunLocationPutToPostRequest runLocationPutToPostRequest,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/run/location/put-to';
+
+    // ignore: prefer_final_locals
+    Object? postBody = runLocationPutToPostRequest;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -457,13 +565,99 @@ class DefaultApi {
     );
   }
 
-  /// A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+  /// Put a (sub) location in another location.
+  ///
+  /// A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
   ///
   /// Parameters:
   ///
-  /// * [RunLocationTakeFromPostRequest] runLocationTakeFromPostRequest (required):
-  Future<RunLocationTakeFromPost200Response?> runLocationTakeFromPost(RunLocationTakeFromPostRequest runLocationTakeFromPostRequest,) async {
-    final response = await runLocationTakeFromPostWithHttpInfo(runLocationTakeFromPostRequest,);
+  /// * [RunLocationPutToPostRequest] runLocationPutToPostRequest (required):
+  Future<void> runLocationPutToPost(RunLocationPutToPostRequest runLocationPutToPostRequest,) async {
+    final response = await runLocationPutToPostWithHttpInfo(runLocationPutToPostRequest,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+  }
+
+  /// Take a (sub) location to another location.
+  ///
+  /// A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [RunLocationTakeToPostRequest] runLocationTakeToPostRequest (required):
+  Future<Response> runLocationTakeToPostWithHttpInfo(RunLocationTakeToPostRequest runLocationTakeToPostRequest,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/run/location/take-to';
+
+    // ignore: prefer_final_locals
+    Object? postBody = runLocationTakeToPostRequest;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>['application/json'];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Take a (sub) location to another location.
+  ///
+  /// A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
+  ///
+  /// Parameters:
+  ///
+  /// * [RunLocationTakeToPostRequest] runLocationTakeToPostRequest (required):
+  Future<void> runLocationTakeToPost(RunLocationTakeToPostRequest runLocationTakeToPostRequest,) async {
+    final response = await runLocationTakeToPostWithHttpInfo(runLocationTakeToPostRequest,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+  }
+
+  /// gets map data
+  ///
+  /// Note: This method returns the HTTP [Response].
+  Future<Response> runMapdataGetWithHttpInfo() async {
+    // ignore: prefer_const_declarations
+    final path = r'/run/mapdata';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// gets map data
+  Future<MapDataDTO?> runMapdataGet() async {
+    final response = await runMapdataGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -471,7 +665,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunLocationTakeFromPost200Response',) as RunLocationTakeFromPost200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MapDataDTO',) as MapDataDTO;
     
     }
     return null;
@@ -573,23 +767,25 @@ class DefaultApi {
     return null;
   }
 
-  /// Leaves a patient.
-  ///
-  /// Closes a patient profile and leaves the patients location.
+  /// Sets a classification attribute for a specific patient.
   ///
   /// Note: This method returns the HTTP [Response].
-  Future<Response> runPatientLeavePostWithHttpInfo() async {
+  ///
+  /// Parameters:
+  ///
+  /// * [RunPatientClassifyPostRequest] runPatientClassifyPostRequest (required):
+  Future<Response> runPatientClassifyPostWithHttpInfo(RunPatientClassifyPostRequest runPatientClassifyPostRequest,) async {
     // ignore: prefer_const_declarations
-    final path = r'/run/patient/leave';
+    final path = r'/run/patient/classify';
 
     // ignore: prefer_final_locals
-    Object? postBody;
+    Object? postBody = runPatientClassifyPostRequest;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-    const contentTypes = <String>[];
+    const contentTypes = <String>['application/json'];
 
 
     return apiClient.invokeAPI(
@@ -603,11 +799,57 @@ class DefaultApi {
     );
   }
 
-  /// Leaves a patient.
+  /// Sets a classification attribute for a specific patient.
   ///
-  /// Closes a patient profile and leaves the patients location.
-  Future<RunPatientLeavePost200Response?> runPatientLeavePost() async {
-    final response = await runPatientLeavePostWithHttpInfo();
+  /// Parameters:
+  ///
+  /// * [RunPatientClassifyPostRequest] runPatientClassifyPostRequest (required):
+  Future<void> runPatientClassifyPost(RunPatientClassifyPostRequest runPatientClassifyPostRequest,) async {
+    final response = await runPatientClassifyPostWithHttpInfo(runPatientClassifyPostRequest,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+  }
+
+  /// Returns a specified patient.
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [RunPatientArrivePostRequest] runPatientArrivePostRequest (required):
+  Future<Response> runPatientRefreshPostWithHttpInfo(RunPatientArrivePostRequest runPatientArrivePostRequest,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/run/patient/refresh';
+
+    // ignore: prefer_final_locals
+    Object? postBody = runPatientArrivePostRequest;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>['application/json'];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Returns a specified patient.
+  ///
+  /// Parameters:
+  ///
+  /// * [RunPatientArrivePostRequest] runPatientArrivePostRequest (required):
+  Future<RunPatientArrivePost200Response?> runPatientRefreshPost(RunPatientArrivePostRequest runPatientArrivePostRequest,) async {
+    final response = await runPatientRefreshPostWithHttpInfo(runPatientArrivePostRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -615,7 +857,51 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientLeavePost200Response',) as RunPatientLeavePost200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPatientArrivePost200Response',) as RunPatientArrivePost200Response;
+    
+    }
+    return null;
+  }
+
+  /// Get Player Inventory
+  ///
+  /// Note: This method returns the HTTP [Response].
+  Future<Response> runPlayerInventoryGetWithHttpInfo() async {
+    // ignore: prefer_const_declarations
+    final path = r'/run/player/inventory';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Get Player Inventory
+  Future<RunPlayerInventoryGet200Response?> runPlayerInventoryGet() async {
+    final response = await runPlayerInventoryGetWithHttpInfo();
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RunPlayerInventoryGet200Response',) as RunPlayerInventoryGet200Response;
     
     }
     return null;

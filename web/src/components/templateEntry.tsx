@@ -25,12 +25,17 @@ export function TemplateEntry({
     name: "", // Initial value for name
   })
 
-  const handleButtonClick = (event: { stopPropagation: () => void }) => {
+  const handleButtonClickAdd = (event: { stopPropagation: () => void }) => {
     if (isAccordionOpen) {
       event.stopPropagation() // Prevents the click event from bubbling up
     }
     setIsAccordionOpen(true)
     setIsVisible(!isVisible)
+  }
+
+  const handleButtonClickScenario = (event: { stopPropagation: () => void }, scenario_id: number) => {
+    event.stopPropagation() // Prevents the click event from bubbling up
+    navigate(`/scenario/${scenario_id}`)
   }
 
   const handleOpenAccordion = () => {
@@ -44,14 +49,14 @@ export function TemplateEntry({
         aria-expanded={isAccordionOpen}
       >
         <div className="d-flex justify-content-between w-100">
-          <div className="d-flex align-items-center">
-            <span>{name}</span>
+          <div className="d-flex align-items-center p-1" onClick={(event: { stopPropagation: () => void }) => handleButtonClickScenario(event, template.id)}>
+            <span className="btn-link">{name}</span>
           </div>
           <div className="me-3">
             <button
               id="add-btn"
               className="btn btn-outline-primary btn-sm"
-              onClick={handleButtonClick}
+              onClick={handleButtonClickAdd}
             >
               +
             </button>
@@ -69,7 +74,7 @@ export function TemplateEntry({
               >
                 <div className="align-self-center">{name}</div>
               </button>
-              <div className="w-25">
+              <div className="d-flex w-25">
                 <button
                   className="btn btn-success me-2 w-100"
                   onClick={() => activateExecution(id, navigate)}
@@ -80,13 +85,21 @@ export function TemplateEntry({
                     width="16"
                     height="16"
                     fill="currentColor"
-                    className="bi bi-play-fill d-none"
+                    className="bi bi-play-fill"
                     viewBox="0 0 16 16"
                   >
                     <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393" />
                   </svg>
-                  <span className="execution-play-text">Aktivieren</span>
                 </button>
+                <CsrfForm method="POST" action="/executions">
+                  <input type="text" name="id" value="delete-execution" hidden />
+                  <input type="text" name="execution_id" value={id} hidden />
+                  <button className="btn btn-outline-danger">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="execution-trash-icon" width="16" height="16" fill="currentColor" className="bi bi-trash3" viewBox="0 0 16 16">
+                      <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                    </svg>
+                  </button>
+                </CsrfForm>
               </div>
             </li>
           ))
@@ -98,6 +111,7 @@ export function TemplateEntry({
           method="post"
           action="/executions"
         >
+          <input type="text" name="id" value="create-execution" hidden />
           <FormBS.Group className="d-none" controlId="formGroupScenarioId">
             <FormBS.Label>Scenario-ID</FormBS.Label>
             <FormBS.Control

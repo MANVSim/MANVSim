@@ -1,26 +1,29 @@
 import 'package:manv_api/api.dart';
+import 'package:manvsim/models/multi_media.dart';
 
 class PatientAction {
   final int id;
   final String name;
-  final int durationInSeconds;
+  final Duration duration;
   final List<String> resourceNamesNeeded;
-  final String? pictureRef;
+  final MultiMediaCollection media;
+  final List<String> results;
 
   PatientAction(
       {required this.id,
       required this.name,
-      required this.durationInSeconds,
+      required this.duration,
       required this.resourceNamesNeeded,
-      this.pictureRef});
+      required this.media,
+      required this.results});
 
   factory PatientAction.fromApi(ActionDTO dto) {
     return PatientAction(
         id: dto.id,
         name: dto.name,
-        durationInSeconds: dto.durationSec,
+        duration: Duration(seconds: dto.durationSec),
         resourceNamesNeeded: dto.resourcesNeeded,
-        pictureRef: dto.pictureRef
-    );
+        results: dto.results,
+        media: MultiMediaCollectionExtension.fromApi(dto.mediaReferences));
   }
 }

@@ -13,14 +13,20 @@ Method | HTTP request | Description
 [**notificationsGet**](DefaultApi.md#notificationsget) | **GET** /notifications | notification polling
 [**playerSetNamePost**](DefaultApi.md#playersetnamepost) | **POST** /player/set-name | Set username for the TAN
 [**runActionAllGet**](DefaultApi.md#runactionallget) | **GET** /run/action/all | Returns a list of actions available to the user.
+[**runActionPerformMovePatientPost**](DefaultApi.md#runactionperformmovepatientpost) | **POST** /run/action/perform/move/patient | Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
 [**runActionPerformPost**](DefaultApi.md#runactionperformpost) | **POST** /run/action/perform | Tries to perform an action. If successful the action is enqueued on the patient until the result is requested.
 [**runActionPerformResultGet**](DefaultApi.md#runactionperformresultget) | **GET** /run/action/perform/result | Gets the result of a performed action and officially finishes/dequeues the action of the patient.
-[**runLocationAllGet**](DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of  top-level accessible locations.
+[**runLocationAllGet**](DefaultApi.md#runlocationallget) | **GET** /run/location/all | Returns a list of top-level accessible locations.
 [**runLocationLeavePost**](DefaultApi.md#runlocationleavepost) | **POST** /run/location/leave | Leaves a location.
-[**runLocationTakeFromPost**](DefaultApi.md#runlocationtakefrompost) | **POST** /run/location/take-from | A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+[**runLocationPersonsGet**](DefaultApi.md#runlocationpersonsget) | **GET** /run/location/persons | Returns a list of all patients and all players at the given locations.
+[**runLocationPutToPost**](DefaultApi.md#runlocationputtopost) | **POST** /run/location/put-to | Put a (sub) location in another location.
+[**runLocationTakeToPost**](DefaultApi.md#runlocationtaketopost) | **POST** /run/location/take-to | Take a (sub) location to another location.
+[**runMapdataGet**](DefaultApi.md#runmapdataget) | **GET** /run/mapdata | gets map data
 [**runPatientAllIdsGet**](DefaultApi.md#runpatientallidsget) | **GET** /run/patient/all-ids | Returns a list of all patient ids.
 [**runPatientArrivePost**](DefaultApi.md#runpatientarrivepost) | **POST** /run/patient/arrive | Returns a specified patient.
-[**runPatientLeavePost**](DefaultApi.md#runpatientleavepost) | **POST** /run/patient/leave | Leaves a patient.
+[**runPatientClassifyPost**](DefaultApi.md#runpatientclassifypost) | **POST** /run/patient/classify | Sets a classification attribute for a specific patient.
+[**runPatientRefreshPost**](DefaultApi.md#runpatientrefreshpost) | **POST** /run/patient/refresh | Returns a specified patient.
+[**runPlayerInventoryGet**](DefaultApi.md#runplayerinventoryget) | **GET** /run/player/inventory | Get Player Inventory
 [**scenarioStartTimeGet**](DefaultApi.md#scenariostarttimeget) | **GET** /scenario/start-time | Get start time and arrival time of scenario.
 
 
@@ -207,6 +213,53 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **runActionPerformMovePatientPost**
+> RunPatientArrivePost200Response runActionPerformMovePatientPost(runActionPerformMovePatientPostRequest)
+
+Moves a patient from the current location to another location. Returns the result of /patient/arrive or the errors of /location/leave
+
+### Example
+```dart
+import 'package:manv_api/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final runActionPerformMovePatientPostRequest = RunActionPerformMovePatientPostRequest(); // RunActionPerformMovePatientPostRequest | 
+
+try {
+    final result = api_instance.runActionPerformMovePatientPost(runActionPerformMovePatientPostRequest);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->runActionPerformMovePatientPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **runActionPerformMovePatientPostRequest** | [**RunActionPerformMovePatientPostRequest**](RunActionPerformMovePatientPostRequest.md)|  | 
+
+### Return type
+
+[**RunPatientArrivePost200Response**](RunPatientArrivePost200Response.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **runActionPerformPost**
 > RunActionPerformPost200Response runActionPerformPost(runActionPerformPostRequest)
 
@@ -306,7 +359,7 @@ Name | Type | Description  | Notes
 # **runLocationAllGet**
 > RunLocationAllGet200Response runLocationAllGet()
 
-Returns a list of  top-level accessible locations.
+Returns a list of top-level accessible locations.
 
 ### Example
 ```dart
@@ -391,10 +444,10 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **runLocationTakeFromPost**
-> RunLocationTakeFromPost200Response runLocationTakeFromPost(runLocationTakeFromPostRequest)
+# **runLocationPersonsGet**
+> RunLocationPersonsGet200Response runLocationPersonsGet(locationId)
 
-A player 'takes' a sublocation, accessible to the players current location. It will be placed into the players inventory.
+Returns a list of all patients and all players at the given locations.
 
 ### Example
 ```dart
@@ -407,13 +460,13 @@ import 'package:manv_api/api.dart';
 //defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
 
 final api_instance = DefaultApi();
-final runLocationTakeFromPostRequest = RunLocationTakeFromPostRequest(); // RunLocationTakeFromPostRequest | 
+final locationId = 56; // int | 
 
 try {
-    final result = api_instance.runLocationTakeFromPost(runLocationTakeFromPostRequest);
+    final result = api_instance.runLocationPersonsGet(locationId);
     print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->runLocationTakeFromPost: $e\n');
+    print('Exception when calling DefaultApi->runLocationPersonsGet: $e\n');
 }
 ```
 
@@ -421,11 +474,59 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **runLocationTakeFromPostRequest** | [**RunLocationTakeFromPostRequest**](RunLocationTakeFromPostRequest.md)|  | 
+ **locationId** | **int**|  | 
 
 ### Return type
 
-[**RunLocationTakeFromPost200Response**](RunLocationTakeFromPost200Response.md)
+[**RunLocationPersonsGet200Response**](RunLocationPersonsGet200Response.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **runLocationPutToPost**
+> runLocationPutToPost(runLocationPutToPostRequest)
+
+Put a (sub) location in another location.
+
+A player puts any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer. The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
+
+### Example
+```dart
+import 'package:manv_api/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final runLocationPutToPostRequest = RunLocationPutToPostRequest(); // RunLocationPutToPostRequest | 
+
+try {
+    api_instance.runLocationPutToPost(runLocationPutToPostRequest);
+} catch (e) {
+    print('Exception when calling DefaultApi->runLocationPutToPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **runLocationPutToPostRequest** | [**RunLocationPutToPostRequest**](RunLocationPutToPostRequest.md)|  | 
+
+### Return type
+
+void (empty response body)
 
 ### Authorization
 
@@ -434,6 +535,91 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **runLocationTakeToPost**
+> runLocationTakeToPost(runLocationTakeToPostRequest)
+
+Take a (sub) location to another location.
+
+A player takes any location which is not a registered top-level location and places it into another selected location. It is designed to create a valuable state among all locations and player inventories. However an invalid use may create an invalid game state. The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory. The list should start with a toplevel location. The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory. If the list is empty, the item is placed as in the root level of the inventory.
+
+### Example
+```dart
+import 'package:manv_api/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final runLocationTakeToPostRequest = RunLocationTakeToPostRequest(); // RunLocationTakeToPostRequest | 
+
+try {
+    api_instance.runLocationTakeToPost(runLocationTakeToPostRequest);
+} catch (e) {
+    print('Exception when calling DefaultApi->runLocationTakeToPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **runLocationTakeToPostRequest** | [**RunLocationTakeToPostRequest**](RunLocationTakeToPostRequest.md)|  | 
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **runMapdataGet**
+> MapDataDTO runMapdataGet()
+
+gets map data
+
+### Example
+```dart
+import 'package:manv_api/api.dart';
+
+final api_instance = DefaultApi();
+
+try {
+    final result = api_instance.runMapdataGet();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->runMapdataGet: $e\n');
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**MapDataDTO**](MapDataDTO.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -528,12 +714,103 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **runPatientLeavePost**
-> RunPatientLeavePost200Response runPatientLeavePost()
+# **runPatientClassifyPost**
+> runPatientClassifyPost(runPatientClassifyPostRequest)
 
-Leaves a patient.
+Sets a classification attribute for a specific patient.
 
-Closes a patient profile and leaves the patients location.
+### Example
+```dart
+import 'package:manv_api/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final runPatientClassifyPostRequest = RunPatientClassifyPostRequest(); // RunPatientClassifyPostRequest | 
+
+try {
+    api_instance.runPatientClassifyPost(runPatientClassifyPostRequest);
+} catch (e) {
+    print('Exception when calling DefaultApi->runPatientClassifyPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **runPatientClassifyPostRequest** | [**RunPatientClassifyPostRequest**](RunPatientClassifyPostRequest.md)|  | 
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **runPatientRefreshPost**
+> RunPatientArrivePost200Response runPatientRefreshPost(runPatientArrivePostRequest)
+
+Returns a specified patient.
+
+### Example
+```dart
+import 'package:manv_api/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final runPatientArrivePostRequest = RunPatientArrivePostRequest(); // RunPatientArrivePostRequest | 
+
+try {
+    final result = api_instance.runPatientRefreshPost(runPatientArrivePostRequest);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->runPatientRefreshPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **runPatientArrivePostRequest** | [**RunPatientArrivePostRequest**](RunPatientArrivePostRequest.md)|  | 
+
+### Return type
+
+[**RunPatientArrivePost200Response**](RunPatientArrivePost200Response.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **runPlayerInventoryGet**
+> RunPlayerInventoryGet200Response runPlayerInventoryGet()
+
+Get Player Inventory
 
 ### Example
 ```dart
@@ -548,10 +825,10 @@ import 'package:manv_api/api.dart';
 final api_instance = DefaultApi();
 
 try {
-    final result = api_instance.runPatientLeavePost();
+    final result = api_instance.runPlayerInventoryGet();
     print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->runPatientLeavePost: $e\n');
+    print('Exception when calling DefaultApi->runPlayerInventoryGet: $e\n');
 }
 ```
 
@@ -560,7 +837,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**RunPatientLeavePost200Response**](RunPatientLeavePost200Response.md)
+[**RunPlayerInventoryGet200Response**](RunPlayerInventoryGet200Response.md)
 
 ### Authorization
 

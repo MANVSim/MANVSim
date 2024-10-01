@@ -34,6 +34,10 @@ class Player:
             self.alerted = False
             self.alerted_timestamp = -1
 
+    def get_location_from_inventory(self, location_id):
+        return next((location for location in self.accessible_locations if
+                     location.id == location_id), None)
+
     def __repr__(self):
         return (
             f"Player(tan={self.tan!r}, \

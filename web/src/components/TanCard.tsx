@@ -4,6 +4,7 @@ import { Button, Card } from "react-bootstrap"
 import QRCode from "react-qr-code"
 
 import "./TanCard.css"
+import { config } from "../config"
 
 export type TanCardProps = {
   player: Player
@@ -13,7 +14,7 @@ export function TanCard({ player }: TanCardProps) {
   const [toggle, setToggle] = useState(true)
 
   return (
-    <Card className="d-flex m-1">
+    <Card className="w-100">
       <Button
         className={`btn-light btn-sm ${toggle ? "" : "d-none"}`}
         onClick={() => setToggle(!toggle)}
@@ -45,7 +46,7 @@ export function TanCard({ player }: TanCardProps) {
         </svg>
       </Button>
       <QRCode
-        value={player.tan}
+        value={`${config.serverURLProd};${player.tan}`}
         className={`text-center align-self-center p-3 w-100 ${toggle ? "d-none" : ""}`}
       />
       <Card.Body>

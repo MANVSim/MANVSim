@@ -4,7 +4,7 @@ import {
   useLoaderData,
   useNavigate,
 } from "react-router"
-import { getActiveExecutions, getTemplates, tryFetchJson } from "../api"
+import {api, getActiveExecutions, getTemplates, tryFetchApi, tryFetchJson} from "../api"
 import { Accordion } from "react-bootstrap"
 import { ExecutionData, Template } from "../types"
 import { ReactElement } from "react"
@@ -21,11 +21,25 @@ export function ExecutionListRoute(): ReactElement {
   const loaderData = useLoaderData() as ExecutionsLoaderData
   const { templates, activeExecutions } = loaderData
   const navigate = useNavigate()
+
+  const handleNewScenario = async () => {
+    try {
+      const response = await fetch(api + "scenario", { method: "POST" })
+      if (response.ok) {
+        const response_json = await response.json()
+        navigate(`/scenario/${response_json.id}`)
+      } else {
+        console.error('Failed to create scenario');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
   return (
-    <div className="mt-3">
+    <div className="mt-3 pb-5">
       <div>
         <h2>Aktive Ausführungen</h2>
-        <p>Die folgenden Ausführungen sind gestartet:</p>
+        <p>Die folgenden Szenario-Ausführungen sind aktiv:</p>
         {activeExecutions.length ? (
           <div className="mb-5">
             {activeExecutions.map((item) => (
@@ -57,7 +71,7 @@ export function ExecutionListRoute(): ReactElement {
           </div>
         ) : (
           <p>
-            <i>Es sind derzeit keine Scenarios aktiv.</i>
+            <i>Es sind derzeit keine Ausführungen aktiv.</i>
           </p>
         )}
       </div>
@@ -65,12 +79,12 @@ export function ExecutionListRoute(): ReactElement {
         <div className="d-flex justify-content-between">
           <div>
             <h2>Vorlagen</h2>
-            <p>Die folgenden Vorlagen sind verfügbar:</p>
+            <p>Die folgenden Ausführungsvorlagen sind verfügbar:</p>
           </div>
           <div className="d-flex">
             <button
               className="btn btn-outline-primary ps-5 pe-5 align-self-end mb-3"
-              onClick={() => alert("Not yet implemented")}
+              onClick={handleNewScenario}
             >
               Neu
             </button>
@@ -105,15 +119,34 @@ ExecutionListRoute.action = async function ({
   request,
 }: ActionFunctionArgs<Request>) {
   const formData = await request.formData()
-  const id_json = await tryFetchJson<ExecutionData>("execution/create", {
-    body: formData,
-    method: "POST",
-  })
-  if (id_json.id) {
-    return redirect(`/execution/${id_json.id}`)
-  } else {
-    alert(`No execution created due to input/db error.`)
-    return redirect("/executions")
+  const id = formData.get("id")
+  formData.delete("id")
+  switch (id) {
+    case "create-execution": {
+      const id_json = await tryFetchJson<ExecutionData>("execution/create", {
+        body: formData,
+        method: "POST",
+      })
+      if (id_json.id) {
+        return redirect(`/execution/${id_json.id}`)
+      } else {
+        alert(`No execution created due to input/db error.`)
+        return redirect("/executions")
+      }
+    }
+
+    case "delete-execution": {
+      const response = await tryFetchApi("execution/delete", {
+        body: formData,
+        method: "POST",
+      })
+      if (response.ok) {
+        return redirect("/executions")
+      } else {
+        alert(`Unable to delete execution`)
+        return ""
+      }
+    }
   }
 }
 

@@ -3,6 +3,7 @@ import {
   Navigate,
   redirect,
   useActionData,
+  useLocation,
 } from "react-router-dom"
 import { Button, Collapse, Form as FormBS } from "react-bootstrap"
 import { tryFetchApi } from "../api"
@@ -14,6 +15,7 @@ import { isLoggedIn } from "../services/auth"
 import "./login.css"
 
 export function LoginRoute(): ReactElement {
+  const { state } = useLocation()
   const error = useActionData() as string
 
   if (isLoggedIn()) {
@@ -51,9 +53,9 @@ export function LoginRoute(): ReactElement {
               Einloggen
             </Button>
           </div>
-          <Collapse in={error !== undefined}>
+          <Collapse in={!!state || !!error}>
             <div className="bg-danger p-3 mb-2 rounded-3 text-white">
-              {error}
+              {state ?? error}
             </div>
           </Collapse>
         </CsrfForm>

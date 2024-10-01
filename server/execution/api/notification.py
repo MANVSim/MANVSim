@@ -23,8 +23,11 @@ def get_notifications():
         if len(execution.notifications) == next_id:
             return "", 204
 
+        all_notifications = [notification["text"] for notification
+                             in execution.notifications]
+
         return {
-            "notifications": execution.notifications[next_id:],
+            "notifications": all_notifications[next_id:],
             "next_id": len(execution.notifications)
         }
 

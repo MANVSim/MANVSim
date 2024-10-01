@@ -1,0 +1,32 @@
+#data-quantity-editor {
+    width: 40em;
+}
+
+#data-quantity-editor input {
+    width: 4em
+}
+
+#data-update-editor {
+    width: 40em;
+}
+
+#data-items {
+    overflow-y: scroll;
+    height: 20em;
+}
+
+#data-block {
+    width: 40em
+}
+
+#label-header .name {
+    margin-left: 35px
+}
+
+#label-header .travel_time {
+    margin-left: 290px
+}
+
+.travel-display {
+    width: 8em;
+}

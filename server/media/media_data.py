@@ -11,10 +11,10 @@ class MediaData:
         VIDEO = "VIDEO"
         TEXT = "TEXT"
 
-    ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
-    ALLOWED_VIDEO_EXTENSIONS = {".mp4", ".mov", ".mkv"}
+    ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif"}
+    ALLOWED_VIDEO_EXTENSIONS = {".mp4"}
     ALLOWED_TEXT_EXTENSIONS = {".txt"}
-    ALLOWED_AUDIO_EXTENSIONS = {".mp3", ".wav", ".ogg", ".flac"}
+    ALLOWED_AUDIO_EXTENSIONS = {".mp3", ".wav"}
 
     def __init__(self, media_type: 'MediaData.Type',
                  title: Optional[str] = None,
@@ -67,8 +67,12 @@ class MediaData:
                 MediaData.ALLOWED_AUDIO_EXTENSIONS)
 
     @classmethod
-    def new_text(cls, text: str, title: Optional[str] = None) -> 'MediaData':
+    def new_text(cls, text: Optional[str], title: Optional[str] = None) -> 'MediaData':
         return cls(media_type=cls.Type.TEXT, text=text, title=title)
+
+    @classmethod
+    def new_text_file(cls, text_reference: str, title: Optional[str] = None) -> 'MediaData':
+        return cls(media_type=cls.Type.TEXT, title=title, media_reference=text_reference)
 
     @classmethod
     def new_image(cls, image_reference: str,
@@ -79,11 +83,11 @@ class MediaData:
     @classmethod
     def new_video(cls, video_reference: str,
                   title: Optional[str] = None) -> 'MediaData':
-        return cls(media_type=cls.Type.IMAGE, media_reference=video_reference,
+        return cls(media_type=cls.Type.VIDEO, media_reference=video_reference,
                    title=title)
 
     @classmethod
     def new_audio(cls, audio_reference: str,
               title: Optional[str] = None) -> 'MediaData':
-        return cls(media_type=cls.Type.IMAGE, media_reference=audio_reference,
+        return cls(media_type=cls.Type.AUDIO, media_reference=audio_reference,
                    title=title)

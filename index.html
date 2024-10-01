@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANV Simulations-App</title>
+    <link rel="icon" type="image/x-icon" href="/webapp/favicon.png">
+    <style>
+      
+      body {
+          margin: 0;
+          font-family: 'Open Sans', Arial, sans-serif;
+          color: #333;
+      }
+
+      a {
+          text-decoration: none;
+          color: inherit;
+      }
+
+      img {
+          max-width: 100%;
+          height: auto;
+      }
+
+      /* Header */
+      header {
+          background-color: #004080;
+      }
+
+      html, body {
+          margin: 0;
+          padding: 0;
+          height: 100%;
+      }
+
+      main {
+          flex: 1;
+      }
+
+      .navbar {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 10px 20px;
+      }
+
+      .logo {
+          color: #fff;
+          font-size: 24px;
+      }
+
+      .hero {
+          max-width: 800px;
+          margin: 0 auto;
+          margin-bottom: 100px;
+          padding: 100px 20px 20px 20px;
+          text-align: center;
+      }
+
+      .hero-content img {
+          max-width: 90%;
+          margin-bottom: 20px;
+      }
+
+      .hero-content p {
+          font-size: 18px;
+          margin-bottom: 50px;
+      }
+
+      .cta-buttons .btn {
+          margin: 10px;
+          padding: 12px 25px;
+          border-radius: 5px;
+          font-size: 16px;
+      }
+
+      .cta-buttons {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+      }
+
+      .primary-btn {
+          background-color: #008000;
+          color: #fff;
+      }
+
+      .secondary-btn {
+          background-color: #fff;
+          color: #008000;
+          border: 2px solid #008000;
+      }
+
+      /* Footer */
+      footer {
+          background-color: #f1f1f1;
+          color: #333;
+          padding: 40px 20px 20px 20px;
+          text-align: center;
+      }
+
+      .footer-content h2 {
+          margin-bottom: 20px;
+      }
+
+      .footer-content p {
+          margin-bottom: 20px;
+      }
+
+      .github-section {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+      }
+
+      .github-link {
+          margin: 10px 0;
+          font-size: 18px;
+          color: #333;
+      }
+
+      .github-link i {
+          margin-right: 8px;
+      }
+
+      .footer-legal a {
+          color: #333;
+          margin: 0 5px;
+      }
+
+      .wrapper {
+          min-height: 100%;
+          display: flex;
+          flex-direction: column;
+      }
+
+      main {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+          .github-link {
+              font-size: 16px;
+          }
+      }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <nav class="navbar">
+                <h1 class="logo">MANV Simulation</h1>
+            </nav>
+        </header>
+        
+        <main>
+            <section class="hero">
+                <div class="hero-content">
+                    <img src="assets/MANV_transparent.png" alt="MANV Simulations-App Logo">
+                    <p>Der Massenanfall von Verletzten (MANV) bezeichnet im Rettungswesen eine Situation, bei der eine große Zahl von Verletzten oder Erkrankten versorgt werden muss.</p>
+                    <div class="cta-buttons">
+                        <a href="/webapp" class="btn primary-btn">Zur App</a>
+                        <a href="/admin" class="btn secondary-btn">Admin-Oberfläche</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer id="contact">
+            <div class="footer-content">
+                <h2>MANVSim Projekt</h2>
+                <p>Besuche unser GitHub-Projekt, um mehr zu erfahren oder Probleme zu melden.</p>
+                <div class="github-section">
+                    <a href="https://github.com/MANVSim/MANVSim" target="_blank" class="github-link">
+                        <i class="fab fa-github"></i> GitHub Projekt
+                    </a>
+                    <a href="https://github.com/MANVSim/MANVSim/issues/new" target="_blank" class="github-link">
+                        <i class="fas fa-exclamation-circle"></i> Issue erstellen
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

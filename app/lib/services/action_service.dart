@@ -1,9 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:manv_api/api.dart';
-import 'package:manvsim/models/patient.dart';
+import 'package:manvsim/models/action_result.dart';
 import 'package:manvsim/models/patient_action.dart';
-import 'package:manvsim/models/types.dart';
 import 'package:manvsim/services/api_service.dart';
+
+import '../models/patient.dart';
 
 /// Provides methods to manage [PatientAction].
 ///
@@ -12,7 +13,7 @@ class ActionService {
   static Future<List<PatientAction>> fetchActions() async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api.runActionAllGet().then((response) =>
-        response?.actions.map((e) => PatientAction.fromApi(e)).toList() ?? []);
+        response?.actions.map(PatientAction.fromApi).toList() ?? []);
   }
 
   static Future<String?> performAction(
@@ -24,13 +25,13 @@ class ActionService {
         .then((response) => response?.performedActionId);
   }
 
-  static Future<ConditionPatient?> fetchActionResult(
-      int patientId, String performedActionId) async {
+  static Future<ActionResult?> fetchActionResult(
+      Patient patient, String performedActionId) async {
     ApiService apiService = GetIt.instance.get<ApiService>();
     return await apiService.api
-        .runActionPerformResultGet(performedActionId, patientId)
-        .then((response) => response?.patient != null
-            ? ((response?.conditions)!, Patient.fromApi((response?.patient)!))
+        .runActionPerformResultGet(performedActionId, patient.id)
+        .then((response) => response != null
+            ? ActionResult.fromPatient(Patient.fromApi(response.patient), performedActionId)
             : null);
   }
 }

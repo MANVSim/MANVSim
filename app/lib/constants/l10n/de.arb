@@ -1,0 +1,309 @@
+{
+  "@@locale": "de",
+
+  "frameHome": "Home",
+  "framePatients": "Patienten",
+  "frameMap": "Karte",
+  "frameLocations": "Locations",
+  "frameNotifications": "Benachrichtigungen",
+
+  "startScreenAppName": "MANVSim",
+
+  "loginScreenName": "Anmeldung",
+  "loginScreenForceAPKDownloadButton": "APK Download Button anzeigen",
+  "loginHideAdvancedSettings": "Erweiterte Einstellungen ausblenden",
+  "loginShowAdvancedSettings": "Erweiterte Einstellungen anzeigen",
+  "loginTANText"     : "Bitte TAN eingeben oder QR Code Scannen",
+  "loginAlreadyLoggedInHeader": "TAN bereits angemeldet",
+  "loginAlreadyLoggedInText": "Diese TAN wurde bereits verwendet. Der Name des Users lautet: {name}",
+    "@loginAlreadyLoggedInText": {
+        "placeholders": {
+        "name": {
+            "type": "String",
+            "example": "John Doe"
+        }
+        }
+    },
+  "loginAlreadyLoggedInButtonContinue": "Trotzdem anmelden",
+  "loginAlreadyLoggedInButtonCancel": "Abbrechen",
+
+
+  "loginServerUrl": "Server URL",
+  "loginSubmit"  : "Anmelden",
+  "loginWarningEmptyFields": "Bitte füllen Sie alle Felder aus",
+  "loginWarningRequestFailed": "Der Anmeldeversuch ist fehlgeschlagen: {error}",
+    "@loginWarningRequestFailed": {
+        "placeholders": {
+        "error": {
+            "type": "String",
+            "example": "Server nicht erreichbar"
+        }
+        }
+    },
+
+  "downloadAndroidApp": "Download Android App",
+
+
+  "unauthorizedBearerAlertBody": "Du bist nicht berechtigt, diese Aktion auszuführen. Bitte logge dich erneut ein.",
+  "unauthorizedBearerAlertHeader": "Login abgelaufen",
+  "logOutAlertOption": "Ausloggen",
+
+  "waitAlreadyLoggedInHeader": "TAN bereits angemeldet",
+  "waitAlreadyLoggedInText": "Für diese TAN wurde bereits ein Name gesetzt. Bitte loggen Sie sich erneut ein.",
+
+  "waitText": "Bitte warten",
+  "waitSkip": "Überspringen",
+  "waitTextWaitForStart": "Warten auf Start der Simulation",
+  "waitTextWaitForStartTime": "Warten auf Start der Simulation (Unbekannte Startzeit)",
+  "waitTextWaitForStartAndArrival": "Warten auf Start der Simulation und Ankunft am Zielort",
+  "waitTextWaitForArrival": "Spieler wurde alarmiert. Warten auf Ankunft am Zielort",
+  "waitTextWaitForTravelTime": "Warten auf Alarmierung",
+  "waitTextInitial": "Ankunftszeiten werden geladen",
+  "waitErrorOccurred": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten: '{error}'",
+    "@waitErrorOccurred": {
+        "placeholders": {
+        "error": {
+            "type": "String",
+            "example": "Server nicht erreichbar"
+        }
+        }
+    },
+  "nameScreenName": "Namen festlegen",
+  "nameName": "Name",
+  "nameSubmit": "Simulation beitreten",
+
+  "patientListScreenName": "Patienten Auswahl",
+  "locationListScreenName": "Location Auswahl",
+
+
+  "select": "Auswählen",
+  "change": "Ändern",
+
+
+  "patientScreenPerformedActionDetails": "Details",
+  "patientScreenPerformedActionTime": "Uhrzeit",
+  "patientScreenPerformedActionResults": "Ergebnisse",
+  "patientScreenPerformedAction": "Ausgeführte Maßnahmen",
+  "patientScreenNoPerformedAction": "Bisher wurden keine Maßnahmen durchgeführt",
+  "patientScreenTabOverview": "Übersicht",
+  "patientScreenTabActions": "Maßnahmen",
+  "patientScreenFilterResourceTitle": "Filter nach Resourcen",
+
+  "patientScreenClassification": "Sichtung",
+  "patientScreenNoClassification": "Es wurde bisher noch keine Sichtung durchgeführt",
+  "patientScreenClassificationTitle": "Sichtungskategorie",
+
+
+
+  "sortByOldest": "Älteste zuerst",
+  "sortByNewest": "Neueste zuerst",
+
+
+
+  "patientScreenName": "Patienten Übersicht",
+  "patientNameFromId": "Patient: {patientId}",
+  "@patientNameFromId": {
+    "placeholders": {
+      "patientId": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+
+  "locationScreenName": "Location Übersicht",
+  "locationNameFromId": "Location {locationId}",
+  "@locationNameFromId": {
+    "placeholders": {
+      "locationId": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+
+  "locationScreenNoPlayers": "An dieser Location werden gerade keine Patienten behandelt",
+  "locationScreenNoPatients": "Es befinden sich keine Patienten an dieser Location",
+  "locationScreenPlayers": "Behandelnde Spieler",
+  "locationScreenPatients": "Patienten",
+  "locationScreenResources": "Resourcen",
+  "locationScreenOverview": "Übersicht",
+  "locationScreenPatientListVisit":"Behandeln",
+
+  "locationScreenInventory": "Inventar",
+  "locationScreenInventoryEmpty": "Im Inventar sind aktuell keine Resourcen verfügbar",
+  "locationScreenNoResources": "An dieser Location sind aktuell keine Resourcen verfügbar",
+  "locationScreenShowInventory": "Inventar \n anzeigen",
+  "locationScreenTake": "Nehmen",
+  "locationScreenPut": "Ablegen",
+  "locationScreenAvailableSubLocations": "An Location verfügbar",
+
+  "locationListScreenTypeName": "Name",
+  "locationListScreenTypeId": "ID",
+  "patientName": "Name: {patientName}",
+  "@patientName": {
+    "placeholders": {
+      "patientName": {
+        "type": "String",
+        "example": "Bob"
+      }
+    }
+  },
+  "patientLocation": "Position: {patientLocation}",
+  "@patientLocation": {
+    "placeholders": {
+      "patientLocation": {
+        "type": "String",
+        "example": "RTW"
+      }
+    }
+  },
+
+  "patientActions": "Maßnahmen: ",
+  "patientNoActions": "Keine Maßnahmen mit den ausgewählten Resourcen verfügbar",
+  "patientMoveSection": "Bewegen: ",
+  "patientMoveSelection": "Patienten bewegen nach",
+
+  "actionScreenTitle": "Maßnahme durchführen",
+
+  "moveScreenTitle": "Bewege Patienten",
+  "moveScreenDialogTitle": "Bewegen Erfolgreich",
+  "moveScreenDialogTitleError": "Bewegen Fehlgeschlagen",
+
+  "moveScreenSuccess": "Der Patient {patientName} wurde erfolgreich von {source} nach {destination} bewegt",
+  "@moveScreenSuccess": {
+    "placeholders": {
+      "patientName": {
+        "type": "String",
+        "example": "Bob"
+      },
+      "source": {
+        "type": "String",
+        "example": "Location"
+      }  ,
+      "destination": {
+        "type": "String",
+        "example": "Location"
+      }
+    }
+  },
+  "moveFailure": "Leider konnte der Patient nicht erfolgreich bewegt werden. Bitte versuche es erneut.",
+
+
+  "resourceDirectorySelectLocation": "Auswählen",
+  "resourceDirectoryUnselectLocation": "Abwählen",
+  "resourceDirectoryEmpty": "Keine Resourcen verfügbar",
+
+  "actionNeededResources": "Benötigte Resourcen: ",
+  "actionNoNeededResources": "Keine Resourcen benötigt.",
+  "actionPerform": "Durchführen",
+  "actionFailure": "Leider konnte diese Maßnahme nicht ausgeführt werden.\nGehe sicher, dass genügend Resourcen verfügbar sind und versuche es erneut.",
+
+
+  "notificationScreenName": "Benachrichtigungen",
+  "notificationScreenNoNotifications": "Keine Benachrichtigungen vorhanden",
+  "homeScreenName": "Home",
+  "homeScreenTypePatient": "Patient",
+  "homeScreenTypeLocation": "Location",
+  "homeScreenTextField": "{type} ID",
+  "homeScreenQrCodeError": "QR Code konnte nicht gelesen werden",
+  "@homeScreenTextField": {
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Patienten"
+      }
+    }
+  },
+  "homeScreenSubmit": "{type} anzeigen",
+  "@homeScreenSubmit": {
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Patienten"
+      }
+    }
+  },
+  "qrCodeScanButton"  : "QR Code scannen",
+
+  "ok": "Ok",
+
+  "transferDialogueCancel": "Abbrechen",
+  "transferDialogueConfirm": "Bestätigen",
+  "transferDialogueTakeTitle": "Nehmen bestätigen",
+  "transferDialoguePutTitle": "Ablegen bestätigen",
+  "transferDialogueFromLocation": "von",
+  "transferDialogueToLocation": "nach",
+  "transferDialogueTransferObject": "Objekt",
+  "transferDialogueTransferTitle": "Objekt wird verschoben",
+  "transferDialogueErrorTitle": "Verschieben fehlgeschlagen",
+  "transferDialogueDefaultError": "Unbekannter Fehler",
+  "transferDialogueErrorText": "Beim Verschieben ist ein Fehler aufgetreten. Bitte später erneut versuchen.",
+
+  "dialogueClose": "Schließen",
+
+  "multiMediaTypeImage": "Bild",
+  "multiMediaTypeVideo": "Video",
+  "multiMediaTypeAudio": "Audio",
+  "multiMediaTypeText": "Text",
+
+  "multiMediaViewMediaTitle": "{mediaType} {number}: {title}",
+  "@multiMediaViewMediaTitle": {
+    "placeholders": {
+        "mediaType": {
+            "type": "String",
+            "example": "Bild"
+        },
+      "number": {
+        "type": "int",
+        "example": "1"
+      },
+        "title": {
+            "type": "String",
+            "example": "Bild"
+        }
+    }
+  },
+
+  "multiMediaViewError": "Die {mediaType} Datei '{path}' konnte nicht geladen werden: {errorMsg}",
+  "@multiMediaViewError": {
+    "placeholders": {
+        "mediaType": {
+            "type": "String",
+            "example": "Video"
+        },
+      "path": {
+        "type": "String",
+        "example": "/media/image1.png"
+      },
+      "errorMsg": {
+        "type": "String",
+        "example": "Fehlermeldung"
+      }
+    }
+  },
+
+  "actionResultScreenTitle": "Maßnahme Erfolgreich",
+  "actionResultScreenResults": "Ergebnis(se)",
+  "actionResultScreenUsedResources": "Verwendete Resourcen",
+  "actionResultScreenDetails": "Details",
+  "actionResultScreenDetailStart": "Start",
+  "actionResultScreenDetailEnd": "Ende",
+  "actionResultScreenDetailDuration": "Dauer",
+  "actionResultScreenDetailPlayer": "Nutzer",
+
+  "defaultError": "Ein Unbekannter Fehler ist aufgetreten.",
+
+  "dateTimeFormat": "dd.MM.yyyy HH:mm:ss",
+
+
+  "mapScreenName": "Karte",
+  "mapPatientTooFar": "Hilfe! Bitte komm näher...",
+  "mapLocationTooFar": "Du bist zu weit entfernt...",
+  "mapLegendPosition": ": Deine Position",
+  "mapLegendPatient": ": Patient",
+  "mapLegendLocation": ": Location",
+  "mapLegendBuilding": ": Hindernis",
+  "mapLegendEdge": ": Rand",
+  "mapLegendShadow": ": Außer Sicht"
+}

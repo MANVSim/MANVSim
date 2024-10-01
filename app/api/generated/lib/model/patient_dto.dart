@@ -13,10 +13,15 @@ part of manv_api;
 class PatientDTO {
   /// Returns a new [PatientDTO] instance.
   PatientDTO({
+    required this.classification,
     required this.id,
     required this.name,
     required this.location,
+    this.mediaReferences = const [],
+    this.performedActions = const [],
   });
+
+  PatientClassification classification;
 
   int id;
 
@@ -24,27 +29,40 @@ class PatientDTO {
 
   LocationDTO location;
 
+  List<MediaReferencesDTOInner> mediaReferences;
+
+  List<PerformedActionDTO> performedActions;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is PatientDTO &&
+    other.classification == classification &&
     other.id == id &&
     other.name == name &&
-    other.location == location;
+    other.location == location &&
+    _deepEquality.equals(other.mediaReferences, mediaReferences) &&
+    _deepEquality.equals(other.performedActions, performedActions);
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
+    (classification.hashCode) +
     (id.hashCode) +
     (name.hashCode) +
-    (location.hashCode);
+    (location.hashCode) +
+    (mediaReferences.hashCode) +
+    (performedActions.hashCode);
 
   @override
-  String toString() => 'PatientDTO[id=$id, name=$name, location=$location]';
+  String toString() => 'PatientDTO[classification=$classification, id=$id, name=$name, location=$location, mediaReferences=$mediaReferences, performedActions=$performedActions]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
+      json[r'classification'] = this.classification;
       json[r'id'] = this.id;
       json[r'name'] = this.name;
       json[r'location'] = this.location;
+      json[r'media_references'] = this.mediaReferences;
+      json[r'performed_actions'] = this.performedActions;
     return json;
   }
 
@@ -67,9 +85,12 @@ class PatientDTO {
       }());
 
       return PatientDTO(
+        classification: PatientClassification.fromJson(json[r'classification'])!,
         id: mapValueOfType<int>(json, r'id')!,
         name: mapValueOfType<String>(json, r'name')!,
         location: LocationDTO.fromJson(json[r'location'])!,
+        mediaReferences: MediaReferencesDTOInner.listFromJson(json[r'media_references']),
+        performedActions: PerformedActionDTO.listFromJson(json[r'performed_actions']),
       );
     }
     return null;
@@ -117,9 +138,11 @@ class PatientDTO {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'classification',
     'id',
     'name',
     'location',
+    'media_references',
   };
 }
 

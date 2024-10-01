@@ -192,18 +192,36 @@ class ApiClient {
           return LoginPost200Response.fromJson(value);
         case 'LoginPostRequest':
           return LoginPostRequest.fromJson(value);
+        case 'MapDataDTO':
+          return MapDataDTO.fromJson(value);
+        case 'MapDataDTOBuildingsInner':
+          return MapDataDTOBuildingsInner.fromJson(value);
+        case 'MapDataDTOLocationPositionsInner':
+          return MapDataDTOLocationPositionsInner.fromJson(value);
+        case 'MapDataDTOPatientPositionsInner':
+          return MapDataDTOPatientPositionsInner.fromJson(value);
+        case 'MediaReferencesDTOInner':
+          return MediaReferencesDTOInner.fromJson(value);
         case 'NotificationsGet200Response':
           return NotificationsGet200Response.fromJson(value);
+        case 'PatientClassification':
+          return PatientClassificationTypeTransformer().decode(value);
         case 'PatientDTO':
           return PatientDTO.fromJson(value);
+        case 'PerformedActionDTO':
+          return PerformedActionDTO.fromJson(value);
         case 'PlayerSetNamePost401Response':
           return PlayerSetNamePost401Response.fromJson(value);
         case 'PlayerSetNamePostRequest':
           return PlayerSetNamePostRequest.fromJson(value);
+        case 'PointDTO':
+          return PointDTO.fromJson(value);
         case 'ResourceDTO':
           return ResourceDTO.fromJson(value);
         case 'RunActionAllGet200Response':
           return RunActionAllGet200Response.fromJson(value);
+        case 'RunActionPerformMovePatientPostRequest':
+          return RunActionPerformMovePatientPostRequest.fromJson(value);
         case 'RunActionPerformPost200Response':
           return RunActionPerformPost200Response.fromJson(value);
         case 'RunActionPerformPostRequest':
@@ -214,18 +232,26 @@ class ApiClient {
           return RunLocationAllGet200Response.fromJson(value);
         case 'RunLocationLeavePost200Response':
           return RunLocationLeavePost200Response.fromJson(value);
-        case 'RunLocationTakeFromPost200Response':
-          return RunLocationTakeFromPost200Response.fromJson(value);
-        case 'RunLocationTakeFromPostRequest':
-          return RunLocationTakeFromPostRequest.fromJson(value);
+        case 'RunLocationPersonsGet200Response':
+          return RunLocationPersonsGet200Response.fromJson(value);
+        case 'RunLocationPersonsGet200ResponsePatientsInner':
+          return RunLocationPersonsGet200ResponsePatientsInner.fromJson(value);
+        case 'RunLocationPersonsGet200ResponsePlayersInner':
+          return RunLocationPersonsGet200ResponsePlayersInner.fromJson(value);
+        case 'RunLocationPutToPostRequest':
+          return RunLocationPutToPostRequest.fromJson(value);
+        case 'RunLocationTakeToPostRequest':
+          return RunLocationTakeToPostRequest.fromJson(value);
         case 'RunPatientAllIdsGet200Response':
           return RunPatientAllIdsGet200Response.fromJson(value);
         case 'RunPatientArrivePost200Response':
           return RunPatientArrivePost200Response.fromJson(value);
         case 'RunPatientArrivePostRequest':
           return RunPatientArrivePostRequest.fromJson(value);
-        case 'RunPatientLeavePost200Response':
-          return RunPatientLeavePost200Response.fromJson(value);
+        case 'RunPatientClassifyPostRequest':
+          return RunPatientClassifyPostRequest.fromJson(value);
+        case 'RunPlayerInventoryGet200Response':
+          return RunPlayerInventoryGet200Response.fromJson(value);
         case 'ScenarioStartTimeGet200Response':
           return ScenarioStartTimeGet200Response.fromJson(value);
         default:

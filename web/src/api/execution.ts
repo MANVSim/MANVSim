@@ -1,13 +1,18 @@
+import { getStorageItem } from "../services/storage";
 import { ExecutionData } from "../types"
 import { api, tryFetchApi, tryFetchJson } from "./utils"
 
 export async function postActivateExecution(id: number): Promise<Response> {
   const formData = new FormData()
   formData.append("id", `${id}`)
-
+  const token = getStorageItem("token");
+  
   return await fetch(api + "execution/activate", {
     method: "POST",
     body: formData,
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
   })
 }
 
@@ -20,7 +25,7 @@ export async function getActiveExecutions(): Promise<ExecutionData[]> {
   throw Error(`Could not load active executions!`)
 }
 
-export async function getExecution(id: string): Promise<ExecutionData> {
+export async function getExecution(id: string | undefined): Promise<ExecutionData> {
   const result = tryFetchJson<ExecutionData>(`execution?id=${id}`)
   return result
 }

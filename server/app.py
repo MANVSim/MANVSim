@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import secrets
 
 from flask import Flask, send_from_directory, redirect, make_response, jsonify
 from flask_cors import CORS
@@ -28,9 +27,10 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     import media.media_api
 
     app = Flask(__name__, static_folder="../web/dist")
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
-    app.config["SECRET_KEY"] = secrets.token_urlsafe(32)
-    app.config["JWT_SECRET_KEY"] = secrets.token_urlsafe(32)
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI", "sqlite:///db.sqlite3")
+    app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', 'default-not-so-secret-secret-key')
+    app.config["JWT_SECRET_KEY"] = os.getenv('SECRET_KEY', 'default-not-so-secret-secret-key')
+    app.config['WTF_CSRF_CHECK_DEFAULT'] = False
 
     db.init_app(app)
     csrf.init_app(app)

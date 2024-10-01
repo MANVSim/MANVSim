@@ -15,51 +15,70 @@ import { AuthProvider } from "./contexts/auth"
 import { ExecutionRoute } from "./routes/execution"
 import StateRoute from "./routes/patient/state"
 import PatientsRoute from "./routes/patients"
+import { BaseDataRoute } from "./routes/base-data"
+import { ScenarioEditor } from "./routes/scenario-editor"
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Root />,
+      errorElement: <ErrorPage />,
+      children: [
+        {
+          index: true,
+          element: <IndexRoute />,
+        },
+        {
+          path: "/executions",
+          element: <ExecutionListRoute />,
+          loader: ExecutionListRoute.loader,
+          action: ExecutionListRoute.action,
+        },
+        {
+          path: "/execution/:executionId",
+          element: <ExecutionRoute />,
+          loader: ExecutionRoute.loader,
+          action: ExecutionRoute.action,
+        },
+        {
+          path: "/patient/:patientId",
+          element: <StateRoute />,
+          loader: StateRoute.loader,
+          action: StateRoute.action,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/patient",
+          element: <PatientsRoute />,
+          loader: PatientsRoute.loader,
+          action: PatientsRoute.action,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/scenario/:scenarioId",
+          element: <ScenarioEditor />,
+          loader: ScenarioEditor.loader,
+          action: ScenarioEditor.action,
+        },
+        {
+          path: "/data/:windowId",
+          element: <BaseDataRoute />,
+          loader: BaseDataRoute.loader,
+          action: BaseDataRoute.action,
+        },
+      ],
+    },
+    {
+      path: "/login",
+      element: <LoginRoute />,
+      action: LoginRoute.action,
+    },
+  ],
   {
-    path: "/",
-    element: <Root />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        index: true,
-        element: <IndexRoute />,
-      },
-      {
-        path: "/executions",
-        element: <ExecutionListRoute />,
-        loader: ExecutionListRoute.loader,
-        action: ExecutionListRoute.action,
-      },
-      {
-        path: "/execution/:executionId",
-        element: <ExecutionRoute />,
-        loader: ExecutionRoute.loader,
-        action: ExecutionRoute.action,
-      },
-      {
-        path: "/patient/:patientId",
-        element: <StateRoute />,
-        loader: StateRoute.loader,
-        action: StateRoute.action,
-        errorElement: <ErrorPage />,
-      },
-      {
-        path: "/patient",
-        element: <PatientsRoute />,
-        loader: PatientsRoute.loader,
-        action: PatientsRoute.action,
-        errorElement: <ErrorPage />,
-      },
-    ],
+    basename: "/admin",
   },
-  {
-    path: "/login",
-    element: <LoginRoute />,
-    action: LoginRoute.action,
-  },
-])
+)
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

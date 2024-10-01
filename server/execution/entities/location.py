@@ -16,7 +16,8 @@ class Location:
 
     def __init__(self, id: int, name: str, media_references: list[MediaData],
                  resources: list[Resource] | None = None,
-                 sub_locations: set['Location'] | None = None):
+                 sub_locations: set['Location'] | None = None,
+                 is_vehicle: bool = False):
         if resources is None:
             resources = []
         if sub_locations is None:
@@ -26,7 +27,12 @@ class Location:
         self.name = name
         self.media_references = media_references
         self.resources = resources
+
+        # type 'set', because inventory can be managed by union and - operations
         self.sub_locations = sub_locations
+
+        self.is_vehicle = is_vehicle
+        self.available = not self.is_vehicle
 
         self.res_lock = TimeoutLock()
         self.loc_lock = TimeoutLock()
@@ -36,7 +42,8 @@ class Location:
             f"Location(id={self.id!r}, name={self.name!r}, \
             media_references={self.media_references!r}, \
             resources={self.resources!r}, \
-            locations={self.sub_locations!r})"
+            locations={self.sub_locations!r}, \
+            is_vehicle={self.is_vehicle!r})"
         )
 
     def get_location_by_id(self, location_id: int):
@@ -216,6 +223,7 @@ class Location:
         result = {
             'id': self.id,
             'name': self.name,
+            'is_vehicle': self.is_vehicle,
             'media_references': [media_ref.to_dict() for media_ref in
                                  self.media_references],
             'resources': [resource.id if shallow else resource.to_dict() for

@@ -13,8 +13,17 @@ def test_get_notifications(client):
     response = client.get("/api/notifications?next_id=0", headers=auth_header)
     assert response.status_code == 204
 
-    execution.notifications.append(messageA)
-    execution.notifications.append(messageB)
+    execution.notifications.append(
+        {
+            "text": messageA,
+            "timestamp": "empty"
+        })
+    execution.notifications.append(
+        {
+            "text": messageB,
+            "timestamp": "empty"
+        }
+    )
 
     response = client.get("/api/notifications")
     assert response.status_code == 401
@@ -34,7 +43,12 @@ def test_get_notifications(client):
     assert messageC not in data["notifications"]
     assert data["next_id"] == 2
 
-    execution.notifications.append(messageC)
+    execution.notifications.append(
+        {
+            "text": messageC,
+            "timestamp": "empty"
+        }
+    )
     response = client.get("/api/notifications?next_id=2", headers=auth_header)
     assert response.status_code == 200
     data = response.json

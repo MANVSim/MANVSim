@@ -128,16 +128,13 @@ def create_test_execution(pending: bool = True):
     patient_3 = Patient(id=3, name="Hoff Nungs Loserfall",
                         activity_diagram=ads[2],
                         location=loc_5)
-    patient_4 = Patient(id=3, name="Hoff Nungs Vollerfall",
+    patient_4 = Patient(id=4, name="Hoff Nungs Vollerfall",
                         activity_diagram=ads[3],
                         location=loc_5)
 
     # Scenario
     location_dict = {
         1: loc_1,
-        2: loc_2,
-        3: loc_3,
-        4: loc_4,
         5: loc_5
     }
     patient_dict = {
@@ -273,12 +270,12 @@ def get_activity_diagrams():
         "12-Kanal-EKG": [MediaData.new_text("STEMI"),
                          MediaData.new_image("media/static/image/no_image.png",
                                              "12-Kanal-Bild")],
-        "Haut": [MediaData.new_text("blass, kalt schweißig")],
+        "Haut": [MediaData.new_text("normal, trocken")],
         "Schmerz": [
             MediaData.new_text(
-                "7(NAS) in der Brust, ausstrahlend in linken Arm")],
+                "0 (NAS)")],
         "Bewusstsein": [MediaData.new_text("wach, orientiert")],
-        "Psychischer Zustand": [MediaData.new_text("aengstlich")],
+        "Psychischer Zustand": [MediaData.new_text("normal")],
         "Verletzungen": [MediaData.new_text("keine")],
         "Temperatur": [MediaData.new_text("36,7°C")],
         "BZ": [MediaData.new_text("80 mg / dl")],

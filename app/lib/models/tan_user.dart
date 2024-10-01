@@ -6,13 +6,12 @@ class TanUserAuth {
   String? url;
 }
 
-
-class TanUser extends ChangeNotifier{
-  static const String PREF_TAN = 'user.tan';
-  static const String PREF_NAME = 'user.name';
-  static const String PREF_ROLE = 'user.role';
-  static const String PREF_AUTH_TOKEN = 'user.auth.token';
-  static const String PREF_AUTH_URL = 'user.auth.url';
+class TanUser extends ChangeNotifier {
+  static const String preferenceTan = 'user.tan';
+  static const String preferenceName = 'user.name';
+  static const String preferenceRole = 'user.role';
+  static const String preferenceAuthToken = 'user.auth.token';
+  static const String preferenceAuthUrl = 'user.auth.url';
 
   String? tan;
   String? name;
@@ -21,10 +20,15 @@ class TanUser extends ChangeNotifier{
   TanUserAuth auth = TanUserAuth();
 
   bool isComplete() {
-    return tan != null && name != null && role != null && auth.token != null && auth.url != null;
+    return tan != null &&
+        name != null &&
+        role != null &&
+        auth.token != null &&
+        auth.url != null;
   }
 
-  _setPref(String key, String? value, SharedPreferences prefs) async {
+  Future<void> _setPref(
+      String key, String? value, SharedPreferences prefs) async {
     if (value != null) {
       await prefs.setString(key, value);
     } else {
@@ -32,26 +36,25 @@ class TanUser extends ChangeNotifier{
     }
   }
 
-  persist() async{
+  Future<void> persist() async {
     final prefs = await SharedPreferences.getInstance();
 
-    await _setPref(PREF_TAN, tan, prefs);
-    await _setPref(PREF_NAME, name, prefs);
-    await _setPref(PREF_ROLE, role, prefs);
-    await _setPref(PREF_AUTH_TOKEN, auth.token, prefs);
-    await _setPref(PREF_AUTH_URL, auth.url, prefs);
+    await _setPref(preferenceTan, tan, prefs);
+    await _setPref(preferenceName, name, prefs);
+    await _setPref(preferenceRole, role, prefs);
+    await _setPref(preferenceAuthToken, auth.token, prefs);
+    await _setPref(preferenceAuthUrl, auth.url, prefs);
   }
 
-  load() async{
+  Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
 
-    tan = prefs.getString(PREF_TAN);
-    name = prefs.getString(PREF_NAME);
-    role = prefs.getString(PREF_ROLE);
-    auth.token = prefs.getString(PREF_AUTH_TOKEN);
-    auth.url = prefs.getString(PREF_AUTH_URL);
+    tan = prefs.getString(preferenceTan);
+    name = prefs.getString(preferenceName);
+    role = prefs.getString(preferenceRole);
+    auth.token = prefs.getString(preferenceAuthToken);
+    auth.url = prefs.getString(preferenceAuthUrl);
 
     notifyListeners();
   }
-
 }

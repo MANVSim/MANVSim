@@ -1,6 +1,6 @@
 {
-    "name": "manvsim",
-    "short_name": "manvsim",
+    "name": "MANVSim",
+    "short_name": "MANVSim",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

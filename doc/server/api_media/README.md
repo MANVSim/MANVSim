@@ -10,9 +10,11 @@ For possible responses and media types see [MANVSim Media API](media_api.yml).
 
 ### Upload Media Files
 
-The administrators of scenarios are able upload additional media files that can be referenced in entities. Therefore, a `POST` containing the file as binary can be send to `http://[server.url]/media/[filename]`. Only authenticated users can access this endpoint. A CSRF-Token may be required.
+The administrators of scenarios are able upload additional media files that can be referenced in entities. Therefore, a `POST` containing the file as binary can be send to `http://[server.url]/media/[filename]`. Only authenticated users can access this endpoint. A CSRF-Token may be required. For a successful request the server responds with an entry of the [Media Reference JSON](#media-reference-json-schema) array.
 
 For additional information on possible responses and allowed file formats see [MANVSim Media API](media_api.yml).
+
+As raw text is only stored in memory, the Media API provides an additional endpoint `http://[server.url]/media/txt` that takes `text` and/or `title` as form parameters and returns an entry of the [Media Reference JSON](#media-reference-json-schema) array.
 
 
 ### Setting Media References
@@ -97,8 +99,6 @@ The media reference attribute of entities has the following structure:
 
 ### Future Work
 
-- Add support for different media formats (currently only images)
-  - add subdirectories accordingly
 - Allow batch requests
-- Organize user-uploaded media in subdirectories (e.g. by scenario) 
+- Organize user-uploaded media in subdirectories (e.g. by scenario)
 - ...

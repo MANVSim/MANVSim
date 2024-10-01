@@ -8,6 +8,7 @@ import 'package:manv_api/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**mediaReferences** | [**List<MediaReferencesDTOInner>**](MediaReferencesDTOInner.md) |  | [optional] [default to const []]
 **id** | **int** |  | 
 **name** | **String** |  | 
 **quantity** | **int** |  | 

@@ -13,10 +13,13 @@ part of manv_api;
 class ResourceDTO {
   /// Returns a new [ResourceDTO] instance.
   ResourceDTO({
+    this.mediaReferences = const [],
     required this.id,
     required this.name,
     required this.quantity,
   });
+
+  List<MediaReferencesDTOInner> mediaReferences;
 
   int id;
 
@@ -26,6 +29,7 @@ class ResourceDTO {
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ResourceDTO &&
+    _deepEquality.equals(other.mediaReferences, mediaReferences) &&
     other.id == id &&
     other.name == name &&
     other.quantity == quantity;
@@ -33,15 +37,17 @@ class ResourceDTO {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
+    (mediaReferences.hashCode) +
     (id.hashCode) +
     (name.hashCode) +
     (quantity.hashCode);
 
   @override
-  String toString() => 'ResourceDTO[id=$id, name=$name, quantity=$quantity]';
+  String toString() => 'ResourceDTO[mediaReferences=$mediaReferences, id=$id, name=$name, quantity=$quantity]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
+      json[r'media_references'] = this.mediaReferences;
       json[r'id'] = this.id;
       json[r'name'] = this.name;
       json[r'quantity'] = this.quantity;
@@ -67,6 +73,7 @@ class ResourceDTO {
       }());
 
       return ResourceDTO(
+        mediaReferences: MediaReferencesDTOInner.listFromJson(json[r'media_references']),
         id: mapValueOfType<int>(json, r'id')!,
         name: mapValueOfType<String>(json, r'name')!,
         quantity: mapValueOfType<int>(json, r'quantity')!,

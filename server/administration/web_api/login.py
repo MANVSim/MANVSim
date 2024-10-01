@@ -26,6 +26,6 @@ def login(username: str, password: str):
 
     login_user(user)
     return {
-        "token": create_access_token(identity="admin"),
+        "token": create_access_token(identity=user.role),
         "username": username
     }, 200

@@ -12,7 +12,8 @@ Name | Type | Description | Notes
 **name** | **String** |  | 
 **durationSec** | **int** |  | 
 **resourcesNeeded** | **List<String>** |  | [default to const []]
-**pictureRef** | **String** |  | [optional] 
+**results** | **List<String>** |  | [default to const []]
+**mediaReferences** | [**List<MediaReferencesDTOInner>**](MediaReferencesDTOInner.md) |  | [optional] [default to const []]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

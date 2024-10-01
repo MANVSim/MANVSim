@@ -1,16 +1,50 @@
-class MultiMedia {
+import 'package:manv_api/api.dart';
 
+enum MediaType {
+  image,
+  video,
+  text,
+  audio;
+
+  static MediaType fromString(String type) {
+    switch (type.toLowerCase()) {
+      case 'image':
+        return MediaType.image;
+      case 'video':
+        return MediaType.video;
+      case 'text':
+        return MediaType.text;
+      case 'audio':
+        return MediaType.audio;
+      default:
+        throw ArgumentError('Unknown media type: $type');
+    }
+  }
+}
+
+class MultiMediaItem {
+  String? reference;
+  MediaType type;
   String? text;
-  String? imageRef;
+  String? title;
 
-  MultiMedia({this.text, this.imageRef});
+  factory MultiMediaItem.fromApi(MediaReferencesDTOInner referenceDto) {
+    return MultiMediaItem(
+      reference: referenceDto.mediaReference,
+      type: MediaType.fromString(referenceDto.mediaType.toString()),
+      text: referenceDto.text,
+      title: referenceDto.title,
+    );
+  }
 
-  factory MultiMedia.fromJson(Map<String, dynamic> json) {
-    MultiMedia mm = MultiMedia();
-    // Easily add new optional properties
-    // Allows for keys to miss or having null value
-    if (json case {"text": String? text}) mm.text = text;
-    if (json case {"image_ref": String? imageRef}) mm.imageRef = imageRef;
-    return mm;
+  MultiMediaItem({this.reference, required this.type, this.text, this.title});
+}
+
+typedef MultiMediaCollection = List<MultiMediaItem>;
+
+extension MultiMediaCollectionExtension on MultiMediaCollection {
+  static MultiMediaCollection fromApi(
+      List<MediaReferencesDTOInner> mediaReferencesDTOList) {
+    return mediaReferencesDTOList.map(MultiMediaItem.fromApi).toList();
   }
 }

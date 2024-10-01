@@ -8,6 +8,7 @@ from flask_api import status
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from werkzeug.exceptions import BadRequest
 
+from models import WebUser
 from vars import DB_CACHE_TTL
 
 
@@ -30,6 +31,7 @@ def required(arg: str, converter: Callable[[str], Any], source_enum: RequiredVal
     :raises BadRequest: Either the parameter is missing or the given argument could not be converted
     :return: The return of the decorated function
     """
+
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
@@ -61,26 +63,40 @@ def required(arg: str, converter: Callable[[str], Any], source_enum: RequiredVal
 
             kwargs[arg] = value
             return f(*args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
-def admin_only(func: Callable):
+def role_required(required_role: WebUser.Role):
     """
-    Decorator for a flask endpoint that only allows access to logged in users with the admin role
+    Decorator for a flask endpoint that only allows access to logged-in users with a specific role.
 
-    :param func: The function to wrap
-    :return: Whatever the decorated function returns
+    NOTE: To work properly this decorator must be invoked below the API path.
+
+    :param required_role: The role required to access the endpoint
+    :return: A decorator that wraps the function
     """
-    @wraps(func)  # https://stackoverflow.com/a/64534085/11370741
-    @jwt_required()
-    def wrapper(*args, **kwargs):
-        identity = get_jwt_identity()
-        if identity != "admin":
-            abort(status.HTTP_401_UNAUTHORIZED)
-        return func(*args, **kwargs)
 
-    return wrapper
+    def decorator(func: Callable):
+        @wraps(func)
+        @jwt_required()
+        def wrapper(*args, **kwargs):
+            user_role = get_jwt_identity()
+            try:
+                user_role = WebUser.Role.from_string(user_role)
+            except ValueError:
+                abort(status.HTTP_401_UNAUTHORIZED)
+
+            if user_role < required_role:
+                abort(status.HTTP_403_FORBIDDEN)
+
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
 
 
 def cache(f: Callable):
@@ -92,9 +108,10 @@ def cache(f: Callable):
     :param f: The function whose result should be cached
     :return: The decorated function
     """
+
     @wraps(f)
     @ttl_cache(maxsize=1, ttl=DB_CACHE_TTL)
     def wrapper(*args, **kwargs):
         return f(*args, **kwargs)
-    return wrapper
 
+    return wrapper

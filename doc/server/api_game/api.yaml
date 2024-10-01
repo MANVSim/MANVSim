@@ -99,11 +99,11 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [ scenario_start_time ]
+                required: [ starting_time ]
                 properties:
-                  scenario_start_time:
+                  starting_time:
                     type: integer
-                    description: Timestamp in ms since unix epoch.
+                    description: Timestamp in seconds since unix epoch.
                     example: 1672531200
                   arrival_time:
                     type: integer
@@ -130,18 +130,49 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [ tans ]
+                required: [ patient_ids, patient_names ]
                 properties:
-                  tans:
+                  patient_ids:
                     type: array
                     items:
                       type: integer
                     example: [ 1, 12, 42 ]
+                  patient_names:
+                    type: array
+                    items:
+                      type: string
+                    example: [ "John Doe", "Jane Doe", "Max Mustermann" ]
 
         '204':
           description: No running execution detected.
         '400':
           description: Invalid execution id or player TAN sent. Unable to resolve running instance/player. Occurs if an invalid JWT was sent.
+      security:
+        - bearerAuth: [ ]
+
+
+  /run/player/inventory:
+    get:
+      summary: Get Player Inventory
+      responses:
+        '200':
+          description: A successful response containing the player's inventory.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessible_locations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LocationDTO'
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
       security:
         - bearerAuth: [ ]
 
@@ -181,38 +212,75 @@ paths:
       security:
         - bearerAuth: [ ]
 
-  /run/patient/leave:
+  /run/patient/refresh:
     post:
-      summary: Leaves a patient.
-      description: Closes a patient profile and leaves the patients location.
+      summary: Returns a specified patient.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ patient_id ]
+              properties:
+                patient_id:
+                  type: integer
+                  example: 1
       responses:
         '200':
-          description: success.
+          description: A patient specified by patientId. Additionally the response contains updated current location of the player.
           content:
             application/json:
               schema:
                 type: object
+                required: [ patient ]
                 properties:
-                  message:
-                    type: string
-                    example: "Patient profile successfully closed."
+                  player_location:
+                    $ref: '#/components/schemas/LocationDTO'
+                  patient:
+                    $ref: '#/components/schemas/PatientDTO'
         '204':
           description: No running execution detected.
         '400':
-          description: Invalid JWT detected.
+          description: Missing or invalid request parameter detected.
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '405':
-          description: Player is not assigned to any location.
-        '409':
-          description: Unable to access runtime object. A timeout-error occurred.
+      security:
+        - bearerAuth: [ ]
+
+  /run/patient/classify:
+    post:
+      summary: Sets a classification attribute for a specific patient.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ patient_id, classification ]
+              properties:
+                patient_id:
+                  type: integer
+                  example: 1
+                classification:
+                  type: string
+                  example: "GREEN"
+      responses:
+        '200':
+          description: Successfully updated patient.
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Missing or invalid request parameter detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
       security:
         - bearerAuth: [ ]
 
 
   /run/location/all:
     get:
-      summary: Returns a list of  top-level accessible locations.
+      summary: Returns a list of top-level accessible locations.
       responses:
         '200':
           description: A JSON array of locations
@@ -235,14 +303,70 @@ paths:
       security:
         - bearerAuth: [ ]
 
+
+  /run/location/persons:
+    get:
+      parameters:
+        - name: location_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      summary: Returns a list of all patients and all players at the given locations.
+      responses:
+        '200':
+          description: A JSON with a list of players and list of patients (in reduced form).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  players:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: "Frank Huch"
+                        role:
+                          type: string
+                          example: "Notarzt"
+                        tan:
+                          type: string
+                          example: "123456"
+                  patients:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 12342345
+                        name:
+                          type: string
+                          example: "Patient I"
+                required: [ players, patients ]
+        '204':
+          description: No running execution detected.
+        '400':
+          description: Invalid JWT detected.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: [ ]
+
+
   /run/location/take-to:
     post:
-      summary: A player takes any location which is not a registered top-level location and places another selected location. 
-               It is designed to create a valuable state among all locations and player inventories. However an invalid use may 
-               create an invalid game state. 
-               Remember - a player can only take from a location if he is assigned to a top-level location (vehicle or patient). 
-               The 'take_location_ids' list starts with the players current location. 
-               The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient)
+      summary: Take a (sub) location to another location.
+      description: A player takes any location which is not a registered top-level location and places it into another selected location.
+        It is designed to create a valuable state among all locations and player inventories. However an invalid use may
+        create an invalid game state.
+        The 'take_location_ids' is an id list (as string) of the location the player wants to take into his inventory.
+        The list should start with a toplevel location.
+        The 'to_location_ids' is an id list (as string) of the new locations parent in the players inventory.
+        If the list is empty, the item is placed as in the root level of the inventory.
       requestBody:
         required: true
         content:
@@ -259,14 +383,7 @@ paths:
                   example: "[1,2,3]"
       responses:
         '200':
-          description: accessible locations (the inventory) are updated.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  player_location:
-                    $ref: '#/components/schemas/LocationDTO'
+          description: Location successfully transferred.
         '204':
           description: No running execution detected.
         '400':
@@ -282,12 +399,12 @@ paths:
 
   /run/location/put-to:
     post:
-      summary: A player puts any location which is not a registered top-level location and places it into another selected location. 
-               It is designed to create a valuable state among all locations and player inventories. However an invalid use may 
-               create an invalid game state. 
-               Remember -
-               The 'put_location_ids' list ALWAYS starts with the currents players location followed by a location out of his inventory.
-               The 'to_location_ids' list ALWAYS starts with a top-level location (vehicle or patient).
+      summary: Put a (sub) location in another location.
+      description: A player puts any location which is not a registered top-level location and places it into another selected location.
+        It is designed to create a valuable state among all locations and player inventories. However an invalid use may
+        create an invalid game state.
+        The 'put_location_ids' is an id list (as string) of location ids that identify a single location selected for transfer.
+        The 'to_location_ids' is an id list (as string) of location ids that identify a single location in that the 'put_location' should be placed in.
       requestBody:
         required: true
         content:
@@ -304,14 +421,7 @@ paths:
                   example: "[1,2,3]"
       responses:
         '200':
-          description: accessible locations (the inventory) are updated.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  player_location:
-                    $ref: '#/components/schemas/LocationDTO'
+          description: Location successfully transferred.
         '204':
           description: No running execution detected.
         '400':
@@ -322,6 +432,8 @@ paths:
           description: (Put-/to-) Location not found. Update your current location-access.
         '409':
           description: Unable to access runtime object. A timeout-error occurred.
+        '418':
+          description: Trying to move a top level location. You ain't that strong.
       security:
         - bearerAuth: [ ]
 
@@ -464,12 +576,8 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [ conditions, patient ]
+                required: [ patient ]
                 properties:
-                  conditions:
-                    type: object
-                    additionalProperties:
-                      type: string
                   patient:
                     $ref: '#/components/schemas/PatientDTO'
         '204':
@@ -499,6 +607,16 @@ paths:
       responses:
         '200':
           description: Returns the current player location and patient location.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ patient ]
+                properties:
+                  player_location:
+                    $ref: '#/components/schemas/LocationDTO'
+                  patient:
+                    $ref: '#/components/schemas/PatientDTO'
         '204':
           description: No running execution detected.
         '400':
@@ -550,6 +668,19 @@ paths:
       security:
         - bearerAuth: [ ]
 
+  /run/mapdata:
+    get:
+      summary: gets map data
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapDataDTO'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
 
 
 components:
@@ -565,13 +696,36 @@ components:
     PatientDTO:
       type: object
       properties:
+        classification:
+          $ref: '#/components/schemas/PatientClassification'
         id:
           type: integer
         name:
           type: string
         location:
           $ref: '#/components/schemas/LocationDTO'
-      required: [ id, name, location ]
+        media_references:
+          $ref: '#/components/schemas/MediaReferencesDTO'
+        performed_actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerformedActionDTO'
+      required: [ id, name, location, media_references, classification ]
+
+    PatientClassification:
+      type: string
+      default: NOT_CLASSIFIED
+      enum:
+        - NOT_CLASSIFIED
+        - PRE_RED
+        - RED
+        - PRE_YELLOW
+        - YELLOW
+        - PRE_GREEN
+        - GREEN
+        - PRE_BLUE
+        - BLUE
+        - BLACK
 
     LocationDTO:
       type: object
@@ -584,6 +738,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ResourceDTO'
+
+        media_references:
+          $ref: '#/components/schemas/MediaReferencesDTO'
         sub_locations:
           type: array
           items:
@@ -593,6 +750,8 @@ components:
     ResourceDTO:
       type: object
       properties:
+        media_references:
+          $ref: '#/components/schemas/MediaReferencesDTO'
         id:
           type: integer
         name:
@@ -614,21 +773,122 @@ components:
           type: array
           items:
             type: string
+        results:
+          type: array
+          items:
+            type: string
         media_references:
+          $ref: '#/components/schemas/MediaReferencesDTO'
+      required: [ id, name, duration_sec, resources_needed, results ]
+
+    PerformedActionDTO:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionDTO'
+        execution_id:
+          type: integer
+        id:
+          type: string
+        player_tan:
+          type: string
+        resources_used:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceDTO'
+        time:
+          type: integer
+        resulting_conditions:
+          $ref: '#/components/schemas/ConditionDTO'
+      required: [ action, execution_id, id, player_tan, resources_used, time ]
+
+    MediaReferencesDTO:
+      type: array
+      items:
+        type: object
+        properties:
+          media_reference:
+            type: string
+            description: The path or URL to the media resource.
+          media_type:
+            type: string
+            enum:
+              - IMAGE
+              - VIDEO
+              - TEXT
+              - AUDIO
+            description: The type of media referenced.
+          text:
+            type:
+              string
+            description: Optional text associated with the media reference.
+          title:
+            type:
+              string
+            description: Optional title associated with the media reference.
+        required:
+          - media_type
+        additionalProperties: false
+
+    ConditionDTO:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/MediaReferencesDTO'
+
+    PointDTO:
+      description: Represents a point in two dimensional cartesian space.
+      type: object
+      properties:
+        x:
+          type: number
+        y:
+          type: number
+      required: [ x,y ]
+
+    MapDataDTO:
+      type: object
+      description: It is assumed that all points have positive values.
+        Positions of patients and last_position must not be inside a building.
+        Buildings shall not be aligned in a way which encapsulates an area making it inaccessible.
+        Patients should be close by to the location they are at. 
+        last_position should be close to the last location/patient the player visited.
+      properties:
+        patient_positions:
           type: array
           items:
             type: object
             properties:
-              media_type:
-                type: string
-              title:
-                type: string
-              text:
-                type: string
-              media_reference:
-                type: string
-            required: [media_type]
-      required: [ id, name, duration_sec, resources_needed ]
+              position:
+                $ref: '#/components/schemas/PointDTO'
+              patient_id:
+                type: integer
+              classification:
+                $ref: '#/components/schemas/PatientClassification'
+            required: [ position,patient_id,classification ]
+        location_positions:
+          type: array
+          items:
+            type: object
+            properties:
+              position:
+                $ref: '#/components/schemas/PointDTO'
+              location_id:
+                type: integer
+            required: [ position,location_id ]
+        buildings:
+          type: array
+          items:
+            type: object
+            properties:
+              top_left:
+                $ref: '#/components/schemas/PointDTO'
+              width:
+                type: number
+              height:
+                type: number
+            required: [ top_left,width,height ]
+        last_position:
+          $ref: '#/components/schemas/PointDTO'
 
     Error:
       type: object

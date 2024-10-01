@@ -19,6 +19,9 @@ pyright = "*"
 python-string-utils = "*"
 cachetools = "*"
 flask-cors = "*"
+python-magic = "*"
+psycopg2-binary = "*"
+pytz = "*"
 
 [dev-packages]
 
