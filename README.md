@@ -11,8 +11,7 @@ playable simulations of configurable MCI scenarios with realistic patient simula
 ### Project Structure
 
 This application consists of a Python [Flask](https://flask.palletsprojects.com) Backend, a [React](https://react.dev/)
-web
-admin frontend and a [Flutter](https://flutter.dev/) app which can be built for Android, iOS or web.
+web admin frontend and a [Flutter](https://flutter.dev/) app which can be built for Android, iOS or web.
 
 ### Directory Structure
 
@@ -68,3 +67,7 @@ docker compose -f docker-compose.yaml -f compose-dev.yaml up
 The docker environment uses the volume `db-manvsim` to persist data.
 
 For specifics or alternatives to run the services see the `README.md` of the subprojects.
+
+## Server
+
+For additional information and documentation of the server component, see [here](server/README.md).

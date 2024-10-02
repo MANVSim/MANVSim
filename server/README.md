@@ -1,8 +1,8 @@
 # MANVSim Server
 
 This document contains the most important information to start or continue developing the MANVSim server. The `server`
-directory includes only Python-related code. Additional information about the individual components is
-located [here](../doc/server/README.md).
+directory includes only Python-related code. Additional information and documentation about the system's architecture
+and individual components can be found [here](../doc/server/README.md).
 
 ## Prerequisites
 
@@ -37,6 +37,8 @@ pipenv run flask --app main --debug run -p 5002
 
 The server is now listening in debug mode for requests on port 5002.
 
+**Note:** For use in a production environments it is highly recommended to use the provided Docker setup!
+
 ### Database: Migrations
 
 To keep your database up to date after applying changes to the [database model](models.py), you need to create a new
@@ -64,7 +66,7 @@ rm -rf instance
 Then run the three database initialization commands from above to return to a consistent
 starting point.
 
-## Directories
+## Directories/Components
 
 | Directory        | Content                                                                                                                                                                                                                                                                                                                                       |
 |------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
