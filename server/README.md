@@ -1,72 +1,117 @@
 # MANVSim Server
-This document contains the most important information to start or continue developing the MANVSim server. Saying 'server'
-this directory includes only python related code. Additional information about the component coupling is located
-[here](../doc/server/README.md).
+
+This document contains the most important information to start or continue developing the MANVSim server. The `server`
+directory includes only Python-related code. Additional information and documentation about the system's architecture
+and individual components can be found [here](../doc/server/README.md).
 
 ## Prerequisites
-In order to run this server on your local system, you need to have Python3 and Pip3 installed and available in your path.
+
+In order to run this server on your local system, you need to have Python 3.12 or newer and `pip` installed and
+available
+in your path.
 
 ## Getting Started
-You can start the server locally using the initial docker setup. However, if you want to start the server without starting the web and app
-make sure you have Flask available in your directory environment, either using your python installation or Pipenv. Further, the server uses SQLAlchemy to integrate a
-database. The docker setup has an integrated volume for a PostgreSQL DB. Local development allows an SQLite database
-which can be migrated using the default project config. You need to perform the following commands:
+
+You can start the server locally using the initial Docker setup. However, if you want to start the server without
+starting the React-frontend or Flutter-app at the same time, e.g., for development, it is recommended to use
+[Pipenv](https://pypi.org/project/pipenv/): `pip install pipenv` In the `server` directory run:
 
 ```bash
-flask --app main db migrate
-flask --app main db upgrade
-python .\dbsetup.py
+pipenv install
 ```
 
-The server can be run using:
+The docker setup has an integrated volume for a PostgreSQL database. For local development a lightweight SQLite database
+is integrated into the application, which can be set up with the following commands:
+
 ```bash
-flask --app main --debug run -p 5002
+pipenv run flask --app main db init
+pipenv run flask --app main db upgrade
+pipenv run python3 ./dbsetup.py
 ```
 
-### Migrations
-To keep your database up to date after applying changes to the [database model](models.py), you need to create a new migration.
-Migrations alter the currently applied database scheme to reflect a desired state. Performing the commands above should
-integrate your perfomred changes. Make sure to modify the [dbsetup](dbsetup.py) to ensure a successful setup.
+After setting up the database successfully, the server can be started using:
 
+```bash
+pipenv run flask --app main --debug run -p 5002
+```
 
-## Working with test-data
+The server is now listening in debug mode for requests on port 5002.
 
-CAUTION: By now (27.09.2024) the [test-data](execution/tests/entities/dummy_entities.py) have been historically changed due to evolving requirements.
-The test-data is used by the implemented [unit and integration tests](execution/tests). However, they may be buggy regarding future implementations.
-We as developer team advise you to recreate a runtime entity scenario. It may cause some tests to crash, but we welcome
-any improvements.
+**Note:** For use in a production environments it is highly recommended to use the provided Docker setup!
 
-CAUTION: Any test working with database entries are currently working on the local database. Therefore, changes in the
-test may change your db setup for the local running server. We advise you to create a separate database for test-runs
-to ensure test isolation.
+### Database: Migrations
 
-Initially no test-data are loaded into the memory. If you want to use sample data required for endpoint testing you can set a
-flag to your environment `LOAD_TEST_DATA` or change the boolean flag [here](vars.py).
-Additionally, the specific test-data can be modified. That means a patient containing a time-limited state-graph.
-The timelimit of the state can also be configured [here](vars.py).
-Loading test data creates two execution in memory containing the same content except the players' IDs. The details
-are as follows:
+To keep your database up to date after applying changes to the [database model](models.py), you need to create a new
+migration. Migrations alter the currently applied database scheme to reflect a new desired state. Performing the
+following commands should integrate your performed changes:
 
-| status  | ID | player IDs            |
-|---------|----|-----------------------|
-| Pending | 1  | - 123ABC<br/>- 456DEF |
-| Running | 2  | - 987ZYX<br/>- 654WVU |
+```bash
+pipenv run flask --app main db migrate
+pipenv run flask --app main db upgrade
+```
 
-## Directories
+**Note:** Make sure to modify the [dbsetup](dbsetup.py) script if needed after changing the models to ensure a
+successful setup.
 
-| Directory           | Content                                                                                                                                                                                                                                                                    |
-|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ``./administation`` | This directory contains all python files related to user and security management. It only provides endpoint to the web-api.                                                                                                                                                |
-| ``./execution``     | This directory contains all python files related to the simulation game. That means the simulation game is managed along with the corresponding REST-API for the app communication. Additionally the component contains an wep-api interface to allow live administration. |
-| ``./media``         | This directory contains all python files related to persisting and retrieving media files.                                                                                                                                                                                 |
-| ``./scenario``      | This directory contains all python files related to editing a scenario using the web-api. This includes any other base-data used along the application.                                                                                                                    |
+### Database: Reset
+
+If you run into an inconsistent or broken database state and want to reset the servers state, delete the
+`server/instance`
+directory and all contents of it:
+
+```bash
+rm -rf instance
+```
+
+Then run the three database initialization commands from above to return to a consistent
+starting point.
+
+## Directories/Components
+
+| Directory        | Content                                                                                                                                                                                                                                                                                                                                       |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `administation/` | Contains all python files related to user and security management. It currently only provides endpoints to the web-api.                                                                                                                                                                                                                       |
+| `execution/`     | Contains all python files related to the simulation state. The simulation is loaded and managed here along with the definition of the corresponding entities. Additionally, the REST-API for the app communication is implemented here. Further, this component contains an wep-api interface to allow live administration of the simulation. |
+| `media/`         | Contains all files related to persisting and retrieving media files including the media data itself.                                                                                                                                                                                                                                          |
+| `scenario/`      | Contains all python files related to editing a scenario using the web-api. This includes any other base-data used along the application.                                                                                                                                                                                                      |
 
 ## Files
-| File              | Content                                                                                               |
-|-------------------|-------------------------------------------------------------------------------------------------------|
-| ``./app.py``      | Contains a method to create the flask app along with flask configurations.                            |
-| ``./app_config``  | Contains further configuration variables/classes.                                                     |
-| ``./conftest.py`` | Defines the global test setup. Provides authentication methods required for passing the apps security |
-| ``./dbsetup.py``  | Contains a script to set up the database with individual data.                                        |
-| ``./models.py``   | Defines the database model, used in the db migration.                                                 |
-| ``./vars.py``     | Contains global variables for the server.                                                             |
+
+| File          | Content                                                                                               |
+|---------------|-------------------------------------------------------------------------------------------------------|
+| `app.py`      | Contains a method to create the flask app along with flask configurations.                            |
+| `app_config`  | Contains further configuration variables/classes.                                                     |
+| `conftest.py` | Defines the global test setup. Provides authentication methods required for passing the apps security |
+| `dbsetup.py`  | Contains a script to set up the database with individual data.                                        |
+| `models.py`   | Defines the database model, used in the db migration.                                                 |
+| `vars.py`     | Contains global variables for the server.                                                             |
+| `Pipfile`     | Specifies all dependencies and version numbers.                                                       |
+
+## Working with Test Data
+
+**CAUTION:** By now (27.09.2024) the [test data](execution/tests/entities/dummy_entities.py) has been historically changed
+due to evolving requirements.
+The test data is used by the implemented [unit and integration tests](execution/tests). However, they may be buggy
+regarding future implementations.
+We advise you to create a new runtime entity scenario if you plan to extend the simulation runtime logic. It may cause
+some tests to break, as they are specifically designed for the current (outdated/simplistic) test scenario.
+
+**CAUTION:** Any test working with database entries are currently working on the local database. Therefore, changes in the
+test may change your database data for the local running server. We advise you to create a separate database for test
+runs
+to ensure test isolation.
+
+By default, no test data is loaded into the memory. If you want to use sample data required for endpoint testing you can
+set a flag to your environment `LOAD_TEST_DATA` or change the boolean flag [here](vars.py).
+Additionally, specific test data can be configured further. This means, for a patient containing a time-limited
+state-graph,
+the time limit of the state can be set [here](vars.py) for the current run.
+
+Loading test data creates two executions in memory, containing the same content except the player IDs (TANs). The
+details
+are as follows:
+
+| Status  | ID | Player TANs        |
+|---------|----|--------------------|
+| Pending | 1  | `123ABC`, `456DEF` |
+| Running | 2  | `987ZYX`, `654WVU` |
