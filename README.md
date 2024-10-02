@@ -1,18 +1,20 @@
 # MANVSim
 
-MANVSim: **Sim**ulation eines [**M**assen**an**falls von **V**erletzten](https://de.wikipedia.org/wiki/Massenanfall_von_Verletzten) (Simulation of a [mass casualty incident](https://en.wikipedia.org/wiki/Mass_casualty_incident))
+MANVSim: **Sim**ulation eines [**M**assen**an**falls von **V**erletzten](https://de.wikipedia.org/wiki/Massenanfall_von_Verletzten) (Simulation of
+a [mass casualty incident](https://en.wikipedia.org/wiki/Mass_casualty_incident))
 
-This project is the result of a Bachelor's and Master's project at [CAU Kiel](https://www.uni-kiel.de).
+This project is the result of a joint Bachelor's and Master's project at [CAU Kiel](https://www.uni-kiel.de).
 
-The aim of this project is to aid and enhance german paramedic training for mass casualty incidents (MCIs) by providing 
+The aim of this project is to aid and enhance german paramedic training for mass casualty incidents (MCIs) by providing
 playable simulations of configurable MCI scenarios with realistic patient simulations and interactions via a mobile app.
 
 ### Project Structure
 
-This application consists of a Python [Flask](https://flask.palletsprojects.com) Backend, a [React](https://react.dev/) web
-admin frontend and a [Flutter](https://flutter.dev/) app which can be built for Android, iOS or web.  
+This application consists of a Python [Flask](https://flask.palletsprojects.com) Backend, a [React](https://react.dev/)
+web
+admin frontend and a [Flutter](https://flutter.dev/) app which can be built for Android, iOS or web.
 
-### Directory structure:
+### Directory Structure
 
 ```
 MANVSim         # Project root
@@ -57,7 +59,8 @@ This will start the server and admin web frontend on
 and the web version of the app (with the android app apk downloadable) on  
 **<http://localhost:5001>**
 
-To skip the android app build use:  
+To skip the android app build use:
+
 ```bash
 docker compose -f docker-compose.yaml -f compose-dev.yaml up
 ```
