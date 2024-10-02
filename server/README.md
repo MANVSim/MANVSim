@@ -87,14 +87,14 @@ starting point.
 
 ## Working with Test Data
 
-CAUTION: By now (27.09.2024) the [test data](execution/tests/entities/dummy_entities.py) has been historically changed
+**CAUTION:** By now (27.09.2024) the [test data](execution/tests/entities/dummy_entities.py) has been historically changed
 due to evolving requirements.
 The test data is used by the implemented [unit and integration tests](execution/tests). However, they may be buggy
 regarding future implementations.
 We advise you to create a new runtime entity scenario if you plan to extend the simulation runtime logic. It may cause
 some tests to break, as they are specifically designed for the current (outdated/simplistic) test scenario.
 
-CAUTION: Any test working with database entries are currently working on the local database. Therefore, changes in the
+**CAUTION:** Any test working with database entries are currently working on the local database. Therefore, changes in the
 test may change your database data for the local running server. We advise you to create a separate database for test
 runs
 to ensure test isolation.

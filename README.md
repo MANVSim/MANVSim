@@ -1,14 +1,18 @@
 # MANVSim
 
-MANVSim: **Sim**ulation eines [**Ma**ssen**an**falls **v**on **V**erletzten](https://de.wikipedia.org/wiki/Massenanfall_von_Verletzten).
+MANVSim: **Sim**ulation eines [**M**assen**an**falls von **V**erletzten](https://de.wikipedia.org/wiki/Massenanfall_von_Verletzten) (Simulation of a [mass casualty incident](https://en.wikipedia.org/wiki/Mass_casualty_incident))
 
-Dieses Projekt ist das Ergebnis eines Bachelor- und Masterprojektes an der [CAU](https://www.uni-kiel.de).
+This project is the result of a Bachelor's and Master's project at [CAU Kiel](https://www.uni-kiel.de).
+
+The aim of this project is to aid and enhance german paramedic training for mass casualty incidents (MCIs) by providing 
+playable simulations of configurable MCI scenarios with realistic patient simulations and interactions via a mobile app.
 
 ### Project Structure
 
-This application consists of a [Flask](https://flask.palletsprojects.com) Backend, a [React](https://react.dev/) web
+This application consists of a Python [Flask](https://flask.palletsprojects.com) Backend, a [React](https://react.dev/) web
 admin frontend and a [Flutter](https://flutter.dev/) app which can be built for Android, iOS or web.  
-Directory structure:
+
+### Directory structure:
 
 ```
 MANVSim         # Project root
