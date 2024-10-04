@@ -1,6 +1,5 @@
 import models
 from app_config import db
-from conftest import flask_app
 from execution import run
 from execution.entities.execution import Execution
 from execution.entities.location import Location
@@ -136,12 +135,12 @@ def _check_actions(scenario: Scenario):
             else db_action.results is None
 
 
-def test_load_execution():
+def test_load_execution(db_app):
     # Clear state before actual test
     run.active_executions = {}
     run.registered_players = {}
 
-    with flask_app.app_context():
+    with db_app.app_context():
         # Load Executions from DB
         db_execs = db.session.query(models.Execution).all()
         for ex in db_execs:

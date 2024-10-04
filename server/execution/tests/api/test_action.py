@@ -9,15 +9,15 @@ from conftest import generate_token
 player_ids = run.registered_players.keys()
 
 
-def test_get_actions(client):
-    auth_header = generate_token(client.application, pending=False, plid="987ZYX")
-    response = client.get("/api/run/action/all", headers=auth_header)
+def test_get_actions(api_client):
+    auth_header = generate_token(api_client.application, pending=False, plid="987ZYX")
+    response = api_client.get("/api/run/action/all", headers=auth_header)
     assert response.status_code == HTTPStatus.OK
     actions = response.json["actions"]
     assert False not in [action["required_role"] <= 200 for action in actions]
 
 
-def test_perform_action(client):
+def test_perform_action(fully_setup_client):
     """
     INTEGRATION TEST
 
@@ -28,21 +28,21 @@ def test_perform_action(client):
     on their own.
     """
     # Player 1
-    headers = generate_token(client.application)
+    headers = generate_token(fully_setup_client.application)
     headers["Content-Type"] = "application/json"
     # Player 2
-    headers_p2 = generate_token(client.application)
+    headers_p2 = generate_token(fully_setup_client.application)
     headers_p2["Content-Type"] = "application/json"
 
     # Player 1: leave location
-    response = client.post("/api/run/location/leave", headers=headers)
+    response = fully_setup_client.post("/api/run/location/leave", headers=headers)
     assert response.status_code == HTTPStatus.OK
 
     # Player 1: arrive at patient
     form = {
         "patient_id": 1,
     }
-    response = client.post("/api/run/patient/arrive", headers=headers, data=json.dumps(form))
+    response = fully_setup_client.post("/api/run/patient/arrive", headers=headers, data=json.dumps(form))
     assert response.status_code == HTTPStatus.OK
 
     # Player 1: perform action
@@ -51,19 +51,19 @@ def test_perform_action(client):
         "patient_id": 1,
         "resources": [1]
     }
-    response = client.post("/api/run/action/perform", headers=headers, data=json.dumps(form))
+    response = fully_setup_client.post("/api/run/action/perform", headers=headers, data=json.dumps(form))
     assert response.status_code == HTTPStatus.OK
     id = response.json["performed_action_id"]
 
     # Player 2: leave location
-    response = client.post("/api/run/location/leave", headers=headers_p2)
+    response = fully_setup_client.post("/api/run/location/leave", headers=headers_p2)
     assert response.status_code == HTTPStatus.OK
 
     # Player 2: arrive at patient
     form = {
         "patient_id": 1,
     }
-    response = client.post("/api/run/patient/arrive", headers=headers_p2, data=json.dumps(form))
+    response = fully_setup_client.post("/api/run/patient/arrive", headers=headers_p2, data=json.dumps(form))
     assert response.status_code == HTTPStatus.OK
 
     # Player 2: perform action
@@ -72,12 +72,12 @@ def test_perform_action(client):
         "patient_id": 1,
         "resources": [1]
     }
-    response = client.post("/api/run/action/perform", headers=headers_p2, data=json.dumps(form))
+    response = fully_setup_client.post("/api/run/action/perform", headers=headers_p2, data=json.dumps(form))
     assert response.status_code == HTTPStatus.CONFLICT
     assert response.text == "Resource is not available"
 
     # Player 1: check for result
-    response = client.get(f"/api/run/action/perform/result?performed_action_id={id}&patient_id=1", headers=headers)
+    response = fully_setup_client.get(f"/api/run/action/perform/result?performed_action_id={id}&patient_id=1", headers=headers)
     assert response.status_code == HTTPStatus.OK
     response_json = response.json
     assert "EKG" in str(response_json["patient"]["performed_actions"])
@@ -94,19 +94,19 @@ def test_perform_action(client):
         "patient_id": 1,
         "resources": [1]
     }
-    response = client.post("/api/run/action/perform", headers=headers_p2, data=json.dumps(form))
+    response = fully_setup_client.post("/api/run/action/perform", headers=headers_p2, data=json.dumps(form))
     assert response.status_code == HTTPStatus.OK
     id = response.json["performed_action_id"]
 
     # Player 2: check for result
-    response = client.get(f"/api/run/action/perform/result?performed_action_id={id}&patient_id=1", headers=headers_p2)
+    response = fully_setup_client.get(f"/api/run/action/perform/result?performed_action_id={id}&patient_id=1", headers=headers_p2)
     assert response.status_code == HTTPStatus.OK
     patient = response.json["patient"]
     performed_action = list(patient["performed_actions"])
     assert len(performed_action) > 2
 
 
-def test_perform_action_but_blocked_to_leaving(client):
+def test_perform_action_but_blocked_to_leaving(fully_setup_client):
     """
     INTEGRATION TEST
 
@@ -124,20 +124,20 @@ def test_perform_action_but_blocked_to_leaving(client):
     form = {
         "TAN": list(player_ids)[-1]
     }
-    headers = generate_token(client.application)
+    headers = generate_token(fully_setup_client.application)
     headers["Content-Type"] = "application/json"
-    response = client.post(f"/api/login", data=json.dumps(form), headers=headers)
+    response = fully_setup_client.post(f"/api/login", data=json.dumps(form), headers=headers)
     assert response.status_code == HTTPStatus.OK
 
     # leave location
-    response = client.post("/api/run/location/leave", headers=headers)
+    response = fully_setup_client.post("/api/run/location/leave", headers=headers)
     assert response.status_code == HTTPStatus.OK
 
     # arrive patient
     form = {
         "patient_id": 1,
     }
-    response = client.post("/api/run/patient/arrive", headers=headers, data=json.dumps(form))
+    response = fully_setup_client.post("/api/run/patient/arrive", headers=headers, data=json.dumps(form))
     assert response.status_code == HTTPStatus.OK
 
     # simulate leaving on the location
@@ -148,13 +148,13 @@ def test_perform_action_but_blocked_to_leaving(client):
         "patient_id": 1,
         "resources": [1]
     }
-    response = client.post("/api/run/action/perform", headers=headers, data=json.dumps(form))
+    response = fully_setup_client.post("/api/run/action/perform", headers=headers, data=json.dumps(form))
     assert response.status_code == HTTPStatus.CONFLICT
     location.res_lock.release()
 
 
-def test_move_patient(client):
-    auth_token = generate_token(client.application)
+def test_move_patient(fully_setup_client):
+    auth_token = generate_token(fully_setup_client.application)
     auth_token["Content-Type"] = "application/json"
     patient_id = 1
     new_location_id = 1
@@ -171,15 +171,15 @@ def test_move_patient(client):
     assert patient.location.id in execution.scenario.locations.keys()
 
     # -- Fail Request: move patient out of reachability of player
-    response = client.post("/api/run/action/perform/move/patient",
+    response = fully_setup_client.post("/api/run/action/perform/move/patient",
                            headers=auth_token, data=json.dumps(form))
     assert response.status_code == 418
     assert patient.location.id != new_location_id
 
     # -- Prevent fail request
-    response = client.post("/api/run/location/leave", headers=auth_token)
+    response = fully_setup_client.post("/api/run/location/leave", headers=auth_token)
     assert response.status_code == HTTPStatus.OK
-    response = client.post("/api/run/patient/arrive", headers=auth_token, data=json.dumps(form))
+    response = fully_setup_client.post("/api/run/patient/arrive", headers=auth_token, data=json.dumps(form))
     assert response.status_code == HTTPStatus.OK
 
     # -- Fail Request: try move with invalid data
@@ -187,7 +187,7 @@ def test_move_patient(client):
         "patient_id": -1,
         "new_location_id": new_location_id
     }
-    response = client.post("/api/run/action/perform/move/patient",
+    response = fully_setup_client.post("/api/run/action/perform/move/patient",
                            headers=auth_token, data=json.dumps(invalid_form))
     assert response.status_code == 400
     assert patient.location.id != new_location_id
@@ -196,14 +196,14 @@ def test_move_patient(client):
         "patient_id": patient_id,
         "new_location_id": -1
     }
-    response = client.post("/api/run/action/perform/move/patient",
+    response = fully_setup_client.post("/api/run/action/perform/move/patient",
                            headers=auth_token, data=json.dumps(invalid_form))
     assert response.status_code == 400
     assert patient.location.id != new_location_id
 
     # Successful request
     old_location = patient.location
-    response = client.post("/api/run/action/perform/move/patient",
+    response = fully_setup_client.post("/api/run/action/perform/move/patient",
                            headers=auth_token, data=json.dumps(form))
     assert response.status_code == 200
     assert patient.location.id == new_location_id

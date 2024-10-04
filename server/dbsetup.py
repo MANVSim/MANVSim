@@ -1,6 +1,9 @@
+import logging
 import uuid
 
 from bcrypt import gensalt, hashpw
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 from app import create_app
 from app_config import db, csrf
@@ -610,30 +613,40 @@ def __create_activity_diagrams():
     return acd1, acd2, acd3, acd4, acd5
 
 
-with create_app(csrf=csrf, db=db).app_context():
-    __create_scenarios()
-    __create_executions()
-    __create_roles()
-    __create_patients()
-    __create_locations()
-    __create_players()
-    __create_resources()
-    __create_actions()
-    __resource_needed()
-    __patient_in_scenario()
+def db_setup(app: Flask = None, database: SQLAlchemy = None):
+    if not app:
+        app = create_app(csrf=csrf, db=database)
+    if not database:
+        logging.error("Empty database object provided. Unable to setup database.")
+        return
 
-    insert(WebUser(username="wadmin",
-                   password=hashpw(b"pw1234", gensalt()).decode(),
-                   role=WebUser.Role.WEB_ADMIN.name))
+    with app.app_context():
+        __create_scenarios()
+        __create_executions()
+        __create_roles()
+        __create_patients()
+        __create_locations()
+        __create_players()
+        __create_resources()
+        __create_actions()
+        __resource_needed()
+        __patient_in_scenario()
 
-    insert(WebUser(username="sadmin",
-                   password=hashpw(b"pw1234", gensalt()).decode(),
-                   role=WebUser.Role.SCENARIO_ADMIN.name))
+        insert(WebUser(username="wadmin",
+                       password=hashpw(b"pw1234", gensalt()).decode(),
+                       role=WebUser.Role.WEB_ADMIN.name))
 
-    insert(WebUser(username="gmaster",
-                   password=hashpw(b"pw1234", gensalt()).decode(),
-                   role=WebUser.Role.GAME_MASTER.name))
+        insert(WebUser(username="sadmin",
+                       password=hashpw(b"pw1234", gensalt()).decode(),
+                       role=WebUser.Role.SCENARIO_ADMIN.name))
 
-    insert(WebUser(username="read",
-                   password=hashpw(b"pw1234", gensalt()).decode(),
-                   role=WebUser.Role.READ_ONLY.name))
+        insert(WebUser(username="gmaster",
+                       password=hashpw(b"pw1234", gensalt()).decode(),
+                       role=WebUser.Role.GAME_MASTER.name))
+
+        insert(WebUser(username="read",
+                       password=hashpw(b"pw1234", gensalt()).decode(),
+                       role=WebUser.Role.READ_ONLY.name))
+
+if __name__ == "__main__":
+    db_setup(database=db)

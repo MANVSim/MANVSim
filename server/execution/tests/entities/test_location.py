@@ -15,7 +15,7 @@ def test_timeout():
     l.loc_lock.release()
 
 
-def test_leave_location(client):
+def test_leave_location(api_client):
     # Setup
     execution = run.active_executions[2]
     locations = list(execution.scenario.locations.values())
