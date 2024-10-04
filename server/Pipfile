@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
+flask = "3.0.3"
 flask-api = "*"
-werkzeug = "2.3.8"
+werkzeug = "3.0.4"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
 pylint = "*"
