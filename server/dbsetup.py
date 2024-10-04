@@ -613,7 +613,7 @@ def __create_activity_diagrams():
     return acd1, acd2, acd3, acd4, acd5
 
 
-def db_setup(app: Flask = None, database: SQLAlchemy| None = None):
+def db_setup(app: Flask| None = None, database: SQLAlchemy| None = None):
     if not app:
         app = create_app(csrf=csrf, db=database)
     if not database:
