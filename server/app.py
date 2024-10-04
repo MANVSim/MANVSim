@@ -53,7 +53,8 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy, db_uri="sqlite:///db.sqlite3")
         if not app.static_folder:
             app.static_folder = ""
 
-        if path != "" and os.path.exists(app.static_folder + "/" + path):
+        fullpath = os.path.normpath(os.path.join(app.static_folder, path))
+        if path != "" and fullpath.startswith(os.path.abspath(app.static_folder)) and os.path.exists(fullpath):
             return send_from_directory(app.static_folder, path)
         elif path == "/" or path == "":
             return send_from_directory(app.static_folder, "index.html")
