@@ -3,10 +3,9 @@ from functools import wraps
 from typing import Any, Callable
 
 from cachetools.func import ttl_cache
-from flask import abort, request
-from flask_api import status
+from flask import request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, Unauthorized, Forbidden
 
 from models import WebUser
 from vars import DB_CACHE_TTL
@@ -87,10 +86,10 @@ def role_required(required_role: WebUser.Role):
             try:
                 user_role = WebUser.Role.from_string(user_role)
             except ValueError:
-                abort(status.HTTP_401_UNAUTHORIZED)
+                raise Unauthorized("Provided user role not matchable to system roles.")
 
             if user_role < required_role:
-                abort(status.HTTP_403_FORBIDDEN)
+                raise Forbidden("Unsatisfied role for requested action detected.")
 
             return func(*args, **kwargs)
 

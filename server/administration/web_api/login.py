@@ -1,5 +1,4 @@
 from flask import Blueprint
-from flask_api import status
 from flask_jwt_extended import create_access_token
 from flask_login import login_user
 
@@ -18,11 +17,11 @@ def login(username: str, password: str):
     if user is None:
         return {
             "error": f"User with user name '{username}' does not exist"
-        }, status.HTTP_401_UNAUTHORIZED
+        }, 401
 
     # Check password
     if not user.check_password(password):
-        return {"error": "Incorrect password"}, status.HTTP_401_UNAUTHORIZED
+        return {"error": "Incorrect password"}, 401
 
     login_user(user)
     return {

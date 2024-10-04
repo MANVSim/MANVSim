@@ -2,8 +2,7 @@ import datetime
 
 from flask_jwt_extended import create_access_token, jwt_required
 from flask_wtf.csrf import generate_csrf
-from flask import request, Response
-from flask_api import status
+from flask import request
 from flask import Blueprint
 
 from app_config import csrf
@@ -82,7 +81,7 @@ def get_current_exec_status():
         execution, player = util.get_execution_and_player()
 
         if execution.status == execution.Status.PENDING:
-            return Response(response="The execution has not been started yet", status=status.HTTP_204_NO_CONTENT)
+            return "The execution has not been started yet", 204
         elif execution.status == execution.Status.RUNNING and not player.alerted:
             return {
                 "starting_time": execution.starting_time,
