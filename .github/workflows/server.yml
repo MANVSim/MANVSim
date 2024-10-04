@@ -1,4 +1,4 @@
-name: Server Lint & Code Quality & Test
+name: Server - Code Quality & Tests
 on:
   push:
     branches:
