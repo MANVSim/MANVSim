@@ -614,11 +614,11 @@ def __create_activity_diagrams():
 
 
 def db_setup(app: Flask| None = None, database: SQLAlchemy| None = None):
-    if not app:
-        app = create_app(csrf=csrf, db=database)
     if not database:
         logging.error("Empty database object provided. Unable to setup database.")
         return
+    if not app:
+        app = create_app(csrf=csrf, db=database)
 
     with app.app_context():
         __create_scenarios()
