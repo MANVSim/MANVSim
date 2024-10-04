@@ -68,6 +68,19 @@ The docker environment uses the volume `db-manvsim` to persist data.
 
 For specifics or alternatives to run the services see the `README.md` of the subprojects.
 
-## Server
+## Software Components
 
-For additional information and documentation of the server component, see [here](server/README.md).
+MANVSim comprises three software components: A Flutter/Dart frontend application called 'app', a Flask/Python server, 
+and a React/TypeScript web frontend for the sever referenced as 'web'.
+
+### App
+
+TODO
+
+### Server
+
+For additional information on how to start and develop the server component or detailed documentation look [here](server/README.md).
+
+### Web
+
+TODO
