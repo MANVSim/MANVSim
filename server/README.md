@@ -2,7 +2,9 @@
 
 This document contains the most important information to start or continue developing the MANVSim server. The `server`
 directory includes only Python-related code. Additional information and documentation about the system's architecture
-and individual components can be found [here](../doc/server/README.md).
+and design decisions for individual components is located [here](../doc/server/README.md).
+
+The documentation for starting and developing the servers React web frontend can be found in a separate document [here](../web/README.md).
 
 ## Prerequisites
 
@@ -14,7 +16,9 @@ in your path.
 
 You can start the server locally using the initial Docker setup. However, if you want to start the server without
 starting the React-frontend or Flutter-app at the same time, e.g., for development, it is recommended to use
-[Pipenv](https://pypi.org/project/pipenv/): `pip install pipenv` In the `server` directory run:
+[Pipenv](https://pypi.org/project/pipenv/): `pip install pipenv`
+
+In the `server` directory run:
 
 ```bash
 pipenv install
@@ -26,7 +30,7 @@ is integrated into the application, which can be set up with the following comma
 ```bash
 pipenv run flask --app main db init
 pipenv run flask --app main db upgrade
-pipenv run python3 ./dbsetup.py
+pipenv run python3 dbsetup.py
 ```
 
 After setting up the database successfully, the server can be started using:
@@ -36,6 +40,8 @@ pipenv run flask --app main --debug run -p 5002
 ```
 
 The server is now listening in debug mode for requests on port 5002.
+
+If you additionally want to start the servers React web frontend, look at the [web components documentation](../web/README.md).
 
 **Note:** For use in a production environments it is highly recommended to use the provided Docker setup!
 
