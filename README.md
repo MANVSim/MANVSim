@@ -1,7 +1,7 @@
 # MANVSim
 
 MANVSim: **Sim**ulation eines [**M**assen**an**falls von **V**erletzten](https://de.wikipedia.org/wiki/Massenanfall_von_Verletzten) (Simulation of
-a [mass casualty incident](https://en.wikipedia.org/wiki/Mass_casualty_incident))
+a [Mass Casualty Incident](https://en.wikipedia.org/wiki/Mass_casualty_incident))
 
 This project is the result of a joint Bachelor's and Master's project at [CAU Kiel](https://www.uni-kiel.de).
 
@@ -10,8 +10,8 @@ playable simulations of configurable MCI scenarios with realistic patient simula
 
 ### Project Structure
 
-This application consists of a Python [Flask](https://flask.palletsprojects.com) Backend, a [React](https://react.dev/)
-web admin frontend and a [Flutter](https://flutter.dev/) app which can be built for Android, iOS or web.
+This application consists of a Python [Flask](https://flask.palletsprojects.com) backend called 'server', a [React](https://react.dev/)
+web admin frontend for the server referenced as 'web' and a [Flutter](https://flutter.dev/) app which can be built for Android, iOS or web.
 
 ### Directory Structure
 
@@ -68,6 +68,18 @@ The docker environment uses the volume `db-manvsim` to persist data.
 
 For specifics or alternatives to run the services see the `README.md` of the subprojects.
 
-## Server
+## Software Components
 
-For additional information and documentation of the server component, see [here](server/README.md).
+Additional information on the individual MANVSim components is linked here:
+
+### App
+
+TODO
+
+### Server
+
+For additional information on how to start and develop the server component or detailed documentation look [here](server/README.md).
+
+### Web
+
+TODO
