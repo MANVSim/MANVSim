@@ -22,7 +22,6 @@ flask-cors = "*"
 python-magic = "*"
 psycopg2-binary = "*"
 pytz = "*"
-python-magic-bin = "*"
 
 [dev-packages]
 
