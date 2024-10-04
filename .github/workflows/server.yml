@@ -9,10 +9,12 @@ on:
       - bug/server/**
 
 jobs:
-  test:
+  setup:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
+    outputs:
+      working-directory: ${{ steps.set-working-directory.outputs.working-directory }}
+    
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -33,28 +35,28 @@ jobs:
         run: |
           pipenv install
 
+  lint:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Run linter
         working-directory: server
         run: |
           pipenv run lint
 
+  typecheck:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Run Type Checker
         working-directory: server
         run: |
           pipenv run typecheck
 
-      - name: Initialize database
-        working-directory: server
-        run: |
-          pipenv run flask --app main db init 2>/dev/null | true
-          pipenv run flask --app main db upgrade
-
-      - name: Load test data to database
-        working-directory: server
-        run: |
-          pipenv run python dbsetup.py
-
-      # Test server component
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Run pytest
         working-directory: server
         run: |
