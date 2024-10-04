@@ -102,11 +102,6 @@ regarding future implementations.
 We advise you to create a new runtime entity scenario if you plan to extend the simulation runtime logic. It may cause
 some tests to break, as they are specifically designed for the current (outdated/simplistic) test scenario.
 
-**CAUTION:** Any test working with database entries are currently working on the local database. Therefore, changes in the
-test may change your database data for the local running server. We advise you to create a separate database for test
-runs
-to ensure test isolation.
-
 By default, no test data is loaded into the memory. If you want to use sample data required for endpoint testing you can
 set a flag to your environment `LOAD_TEST_DATA` or change the boolean flag [here](vars.py).
 Additionally, specific test data can be configured further. This means, for a patient containing a time-limited
