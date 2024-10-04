@@ -6,7 +6,7 @@ from execution.entities.resource import Resource
 from utils import time as utime
 
 
-def test_decrease(client):
+def test_decrease():
     resource = Resource(id=1, name="test", quantity=10000, media_references=[])
 
     # test infinite
@@ -38,7 +38,7 @@ def test_decrease(client):
     assert resource.locked_until > current_secs
 
 
-def test_increase_decrease(client):
+def test_increase_decrease():
     quantity = 50
     resource = Resource(1, "test", quantity, [])
     resource.consumable = False

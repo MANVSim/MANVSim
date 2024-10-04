@@ -8,8 +8,8 @@ Tests are deactivated, because they are designed for Debugging Cases in IDE.
 They are not appliable for pipeline.
 """
 
-def ttest_get_scenario(client):
-    response = client.get("/web/scenario?scenario_id=2")
+def ttest_get_scenario(web_client):
+    response = web_client.get("/web/scenario?scenario_id=2")
     response_data = response.get_json()
     assert response.status_code
     assert response_data["id"] == 2
@@ -18,9 +18,9 @@ def ttest_get_scenario(client):
     assert "vehicles" in response_data.keys()
 
 
-def ttest_add_vehicle_to_scenario(client):
+def ttest_add_vehicle_to_scenario(web_client):
 
-    response = client.get("/web/csrf")
+    response = web_client.get("/web/csrf")
     csrf_token = response.json["csrf_token"]
     csrf_header = {
         "X-CSRFToken": csrf_token
@@ -42,16 +42,16 @@ def ttest_add_vehicle_to_scenario(client):
         "vehicles_del": [],
     }
 
-    response = client.patch("/web/scenario", data=json.dumps(form),
+    response = web_client.patch("/web/scenario", data=json.dumps(form),
                             headers=csrf_header,
                             content_type='application/json')
 
     assert response.status_code == 200
 
 
-def ttest_create_scenario(client):
+def ttest_create_scenario(web_client):
 
-    response = client.get("/web/csrf")
+    response = web_client.get("/web/csrf")
     csrf_token = response.json["csrf_token"]
     csrf_header = {
         "X-CSRFToken": csrf_token
@@ -76,7 +76,7 @@ def ttest_create_scenario(client):
             },
         ],
     }
-    response = client.patch("/web/scenario", data=json.dumps(form),
+    response = web_client.patch("/web/scenario", data=json.dumps(form),
                             headers=csrf_header,
                             content_type='application/json')
     assert response.status_code == 200
