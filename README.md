@@ -1,7 +1,7 @@
 # MANVSim
 
 MANVSim: **Sim**ulation eines [**M**assen**an**falls von **V**erletzten](https://de.wikipedia.org/wiki/Massenanfall_von_Verletzten) (Simulation of
-a [mass casualty incident](https://en.wikipedia.org/wiki/Mass_casualty_incident))
+a [Mass Casualty Incident](https://en.wikipedia.org/wiki/Mass_casualty_incident))
 
 This project is the result of a joint Bachelor's and Master's project at [CAU Kiel](https://www.uni-kiel.de).
 
@@ -10,8 +10,8 @@ playable simulations of configurable MCI scenarios with realistic patient simula
 
 ### Project Structure
 
-This application consists of a Python [Flask](https://flask.palletsprojects.com) Backend, a [React](https://react.dev/)
-web admin frontend and a [Flutter](https://flutter.dev/) app which can be built for Android, iOS or web.
+This application consists of a Python [Flask](https://flask.palletsprojects.com) backend called 'server', a [React](https://react.dev/)
+web admin frontend for the server referenced as 'web' and a [Flutter](https://flutter.dev/) app which can be built for Android, iOS or web.
 
 ### Directory Structure
 
@@ -70,8 +70,7 @@ For specifics or alternatives to run the services see the `README.md` of the sub
 
 ## Software Components
 
-MANVSim comprises three software components: A Flutter/Dart frontend application called 'app', a Flask/Python server, 
-and a React/TypeScript web frontend for the sever referenced as 'web'.
+Additional information on the individual MANVSim components is linked here:
 
 ### App
 
