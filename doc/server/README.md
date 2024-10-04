@@ -7,7 +7,7 @@ This directory contains documentation about server architecture and software pro
 - [Game-API](api_game/README.md)
 - [Media-API](api_media/README.md)
 - [Database](database/MANV_scheme.svg)
-- [Webinterface](web/README.md)
+- [Webinterface](../web/README.md)
 - [Architecure and general Documentation](README.md)
 
 ## Workflow
