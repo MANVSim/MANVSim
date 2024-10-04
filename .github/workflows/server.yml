@@ -38,26 +38,26 @@ jobs:
   lint:
     needs: setup
     runs-on: ubuntu-latest
+    working-directory: server
     steps:
       - name: Run linter
-        working-directory: server
         run: |
           pipenv run lint
 
   typecheck:
     needs: setup
     runs-on: ubuntu-latest
+    working-directory: server
     steps:
       - name: Run Type Checker
-        working-directory: server
         run: |
           pipenv run typecheck
 
   test:
     needs: setup
     runs-on: ubuntu-latest
+    working-directory: server
     steps:
       - name: Run pytest
-        working-directory: server
         run: |
           pipenv run pytest
