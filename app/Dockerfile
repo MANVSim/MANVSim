@@ -16,6 +16,7 @@ RUN flutter doctor -v && \
 
 # Build web
 COPY ./app /app/
+COPY ./config/app/config.json /app/assets/config/config.json
 WORKDIR /app/
 
 

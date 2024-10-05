@@ -1,0 +1,15 @@
+
+flowchart TB
+    nginx["nginx"] -- depends on --> app["app"] & web["web"] & server["server"]
+    app -- depends on --> server
+    web -- depends on --> server
+    server -- depends on --> postgres["postgres"]
+
+     nginx:::Sky
+     app:::Sky
+     web:::Sky
+     server:::Sky
+     postgres:::Sky
+    classDef Sky stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
+
+
