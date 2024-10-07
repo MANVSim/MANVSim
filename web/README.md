@@ -37,7 +37,7 @@ See [here](https://vitejs.dev/guide/env-and-mode) for more information.
 In practice the URL will be `http://localhost:5002/web/` if you are running the
 MANVSim server locally as shown [here](/server/Readme.md).
 
-> [Note]
+> [!NOTE]
 > On MacOS you might have to use 127.0.0.1 instead of localhost.
 
 A development instance of the website can be started with:
