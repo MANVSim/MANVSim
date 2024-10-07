@@ -19,7 +19,7 @@ def get_all_patients():
     ]
 
 
-@web_api.delete("<int:patient_id>")
+@web_api.delete("/patient/<int:patient_id>")
 def delete_patient(patient_id: int):
     """
     Deletes a patient by ID
@@ -29,7 +29,7 @@ def delete_patient(patient_id: int):
     return Response(status=200)
 
 
-@web_api.get("<int:patient_id>")
+@web_api.get("/patient/<int:patient_id>")
 def get_patient(patient_id: int):
     """
     Returns a patient by ID

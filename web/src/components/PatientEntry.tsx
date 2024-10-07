@@ -4,6 +4,7 @@ import Stack from "react-bootstrap/Stack"
 import { PatientResponse } from "../types"
 import { ReactElement } from "react"
 import { CsrfForm } from "./CsrfForm"
+import { LinkContainer } from "react-router-bootstrap"
 
 interface PatientEntryProps {
   patient: PatientResponse
@@ -16,9 +17,9 @@ export default function PatientEntry({
     <ListGroup.Item>
       <Stack direction="horizontal" gap={1}>
         <div className="me-auto">{patient.name}</div>
-        <Button role="link" href={`/patient/${patient.id}`}>
-          Bearbeiten
-        </Button>
+        <LinkContainer to={`${patient.id}`}>
+          <Button>Bearbeiten</Button>
+        </LinkContainer>
         <CsrfForm method="POST">
           <Button variant="danger" type="submit" name="id" value={patient.id}>
             Löschen
