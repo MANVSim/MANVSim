@@ -8,22 +8,22 @@ Tests are deactivated, because they are designed for Debugging Cases in IDE.
 They are not appliable for pipeline.
 """
 
-def ttest_create_execution(client):
-    auth_header = generate_webtoken(client.application)
+def ttest_create_execution(web_client):
+    auth_header = generate_webtoken(web_client.application)
     form_data = {
         "scenario_id": 1,
         "name": "test"
     }
-    with client.application.app_context():
+    with web_client.application.app_context():
         patient_to_vehicle = models.PlayersToVehicleInExecution.query.all()
         assert patient_to_vehicle
-    response = client.post("/web/execution/create", headers=auth_header, data=form_data)
+    response = web_client.post("/web/execution/create", headers=auth_header, data=form_data)
     assert response
 
 
-def ttest_execution_state_change(client):
+def ttest_execution_state_change(web_client):
     """ Tests the execution state changes of the lobby patch method. """
-    auth_header = generate_webtoken(client.application)
+    auth_header = generate_webtoken(web_client.application)
 
     # PER DEFAULT
     # id=1 PENDING
@@ -37,7 +37,7 @@ def ttest_execution_state_change(client):
             else:
                 status_before = Execution.Status.UNKNOWN
             # test illegal state changes
-            response = client.patch(f"/web/execution?id={exec_id}",
+            response = web_client.patch(f"/web/execution?id={exec_id}",
                                     headers=auth_header,
                                     data={"new_status": unwanted_status})
 
@@ -50,7 +50,7 @@ def ttest_execution_state_change(client):
 
     def _test_legal_state_changes(exec_id, wanted_status_list):
         for wanted_status in wanted_status_list:
-            response = client.patch(f"/web/execution?id={exec_id}",
+            response = web_client.patch(f"/web/execution?id={exec_id}",
                                     headers=auth_header,
                                     data={"new_status": wanted_status})
             assert response.status_code == 200

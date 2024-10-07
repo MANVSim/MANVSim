@@ -1,14 +1,19 @@
 # MANVSim
 
-MANVSim: **Sim**ulation eines [**Ma**ssen**an**falls **v**on **V**erletzten](https://de.wikipedia.org/wiki/Massenanfall_von_Verletzten).
+MANVSim: **Sim**ulation eines [**M**assen**an**falls von **V**erletzten](https://de.wikipedia.org/wiki/Massenanfall_von_Verletzten) (Simulation of
+a [Mass Casualty Incident](https://en.wikipedia.org/wiki/Mass_casualty_incident))
 
-Dieses Projekt ist das Ergebnis eines Bachelor- und Masterprojektes an der [CAU](https://www.uni-kiel.de).
+This project is the result of a joint Bachelor's and Master's project at [CAU Kiel](https://www.uni-kiel.de).
+
+The aim of this project is to aid and enhance german paramedic training for mass casualty incidents (MCIs) by providing
+playable simulations of configurable MCI scenarios with realistic patient simulations and interactions via a mobile app.
 
 ### Project Structure
 
-This application consists of a [Flask](https://flask.palletsprojects.com) Backend, a [React](https://react.dev/) web
-admin frontend and a [Flutter](https://flutter.dev/) app which can be built for Android, iOS or web.  
-Directory structure:
+This application consists of a Python [Flask](https://flask.palletsprojects.com) backend called 'server', a [React](https://react.dev/)
+web admin frontend for the server referenced as 'web' and a [Flutter](https://flutter.dev/) app which can be built for Android, iOS or web.
+
+### Directory Structure
 
 ```
 MANVSim         # Project root
@@ -53,7 +58,8 @@ This will start the server and admin web frontend on
 and the web version of the app (with the android app apk downloadable) on  
 **<http://localhost:5001>**
 
-To skip the android app build use:  
+To skip the android app build use:
+
 ```bash
 docker compose -f docker-compose.yaml -f compose-dev.yaml up
 ```
@@ -61,3 +67,19 @@ docker compose -f docker-compose.yaml -f compose-dev.yaml up
 The docker environment uses the volume `db-manvsim` to persist data.
 
 For specifics or alternatives to run the services see the `README.md` of the subprojects.
+
+## Software Components
+
+Additional information on the individual MANVSim components is linked here:
+
+### App
+
+TODO
+
+### Server
+
+For additional information on how to start and develop the server component or detailed documentation look [here](server/README.md).
+
+### Web
+
+TODO

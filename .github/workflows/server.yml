@@ -1,4 +1,4 @@
-name: Server Lint & Code Quality & Test
+name: Server - Code Quality & Tests
 on:
   push:
     branches:
@@ -9,17 +9,15 @@ on:
       - bug/server/**
 
 jobs:
-  test:
+  
+  typecheck:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      # Setup Python (faster than using Python container)
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
@@ -43,18 +41,27 @@ jobs:
         run: |
           pipenv run typecheck
 
-      - name: Initialize database
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pipenv
         working-directory: server
         run: |
-          pipenv run flask --app main db init 2>/dev/null | true
-          pipenv run flask --app main db upgrade
+          python -m pip install --upgrade pipenv
 
-      - name: Load test data to database
+      - name: Install dependencies
         working-directory: server
         run: |
-          pipenv run python dbsetup.py
+          pipenv install
 
-      # Test server component
       - name: Run pytest
         working-directory: server
         run: |

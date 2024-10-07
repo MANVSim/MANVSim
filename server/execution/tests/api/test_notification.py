@@ -2,15 +2,15 @@ from execution import run
 from conftest import generate_token
 
 
-def test_get_notifications(client):
-    auth_header = generate_token(client.application)
+def test_get_notifications(api_client):
+    auth_header = generate_token(api_client.application)
     execution = run.active_executions[2]
 
     messageA = "I am the first test-message."
     messageB = "I am the second test-message."
     messageC = "Why do we count test-messages. I am different."
 
-    response = client.get("/api/notifications?next_id=0", headers=auth_header)
+    response = api_client.get("/api/notifications?next_id=0", headers=auth_header)
     assert response.status_code == 204
 
     execution.notifications.append(
@@ -25,16 +25,16 @@ def test_get_notifications(client):
         }
     )
 
-    response = client.get("/api/notifications")
+    response = api_client.get("/api/notifications")
     assert response.status_code == 401
 
-    response = client.get("/api/notifications", headers=auth_header)
+    response = api_client.get("/api/notifications", headers=auth_header)
     assert response.status_code == 400
 
-    response = client.get("/api/notifications?next_id=200", headers=auth_header)
+    response = api_client.get("/api/notifications?next_id=200", headers=auth_header)
     assert response.status_code == 418
 
-    response = client.get("/api/notifications?next_id=0", headers=auth_header)
+    response = api_client.get("/api/notifications?next_id=0", headers=auth_header)
     assert response.status_code == 200
     data = response.json
     assert len(data["notifications"]) == 2
@@ -49,7 +49,7 @@ def test_get_notifications(client):
             "timestamp": "empty"
         }
     )
-    response = client.get("/api/notifications?next_id=2", headers=auth_header)
+    response = api_client.get("/api/notifications?next_id=2", headers=auth_header)
     assert response.status_code == 200
     data = response.json
     assert len(data["notifications"]) == 1
