@@ -14,6 +14,9 @@ It is used by the participants of the MANV Simulation to take part in the simula
     * [Server Environment](#server-environment)
     * [General Remarks](#general-remarks)
   * [Structure](#structure)
+    * [App Directory](#app-directory)
+    * [Lib Directory](#lib-directory)
+    * [Widgets Directory](#widgets-directory)
   * [Screen flow](#screen-flow)
   * [l10n](#l10n)
     * [Example](#example)
@@ -72,47 +75,75 @@ instance can be found in the [deployment documentation](../deployment/README.md#
 
 ## Structure
 
-The app is structured in the following way:
+A general overview of the app structure is the following:
 
 ```
-app
-├── api         # API library
-├── assets      # Images and config
-├── lib         # Source code
-├── ios         # iOS specific files
-├── android     # Android specific files
-├── web         # Web specific files
+app/
+├── api             # API library
+├── assets          # Images and configuration files
+├── lib             # Source code
+│   ├── main.dart           # Main entry point of the app
+│   ├── appframe.dart       # Main frame of the app
+│   ├── start_screen.dart   # Start screen of the app, waits 
+│   ├── constants/          # Contains constants, icons, and localization files (l10n)
+│   ├── models/             # Data models of the app
+│   ├── services/           # Services used by the app
+│   ├── utils/              # Utility functions
+│   └── widgets/            # Widgets and screens of the app
+│       ├── action/             # Widgets and screens for performing actions on patients    
+│       ├── base/               # Base widgets and screens used in multiple places
+│       ├── location/           # Widgets and screens for location interaction
+│       ├── map/                # Map screens and widgets
+│       ├── media/              # Media widgets and screens for multimedia data types
+│       ├── patient/            # Widgets and screens for patient interaction
+│       ├── player/             # Widgets and screens for login flow
+│       └── util/               # Utility widgets and screens
+├── ios             # iOS-specific files
+├── android         # Android-specific files
+└── web             # Web-specific files
 
 ```
-The lib folder contains the main source code of the app. The app is structured in the following way:
 
-```
-lib
-├── main.dart           # Main entry point of the app
-├── appframe.dart       # Main frame of the app
-├── start_screen.dart   # Start screen of the app
-├── constants           # constants directory that contains often used icons and l10n
-├── models              # models directory that contains the data models of the app
-├── services            # services directory that contains the services of the app
-├── utils               # utils directory that contains utility functions
-├── widgets             # widgets directory that contains the widgets and screens of the app
 
-```
+More details on the directories can be found in the following tables.
 
-The widgets directory is structured in the following way:
+### App Directory
 
-```
-widgets
-├── action            # widgets and screens required to perform actions on patients    
-├── base              # base widgets and screens that are used in multiple places
-├── location          # widgets and screens required for location interaction
-├── map               # map screens and widgets
-├── media             # media widgets and screens for multimedia data type
-├── patient           # widgets and screens required for patient interaction
-├── player            # widgets and screns for login flow
-├── util              # utility widgets and screens
+| Path          | Description                                                                                    |
+|---------------|------------------------------------------------------------------------------------------------|
+| `app/api`     | API library. Automatically generated from openAPI Spec. For more details see [API](#api)       |
+| `app/assets`  | assets directory. Contains images and config. More details see [Configuration](#configuration) |
+| `app/lib`     | Source code directory. More details in next section [Lib directory](#lib-directory)            |
+| `app/ios`     | iOS-specific files                                                                             |
+| `app/android` | Android-specific files                                                                         |
+| `app/web`     | Web-specific files                                                                             |
 
-```
+### Lib Directory
+
+| Path                        | Description                                                                                                                                                                                                                               |
+|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `app/lib/main.dart`         | Main entry point of the app                                                                                                                                                                                                               |
+| `app/lib/appframe.dart`     | Main frame of the app. Visible after login flow is completed.                                                                                                                                                                             |
+| `app/lib/start_screen.dart` | Start screen of the app. Only used for forwarding to the correct screen on refresh or first login. If the user is already logged in, the appframe is shown. Otherwise  the app begins with the login flow.                                |
+| `app/lib/constants`         | Contains constants, icons, and localization files (l10n). Frequently used icons should be placed in [manv_icons.dart](../../app/lib/constants/manv_icons.dart). For more details on localization see [l10n](#l10n)                        |
+| `app/lib/models`            | Data models of the app. Contains function to convert from DTO Objects generated by the API library. May need to be adjusted if the API changes. The [tan_user.dart](../../app/lib/models/tan_user.dart) stores and reloads the user data. |
+| `app/lib/services`          | Services used by screens and widgets. The name indicates the corresponding screen or widget.                                                                                                                                              |
+| `app/lib/utils`             | Utility functions                                                                                                                                                                                                                         |
+| `app/lib/widgets`           | Widgets and screens of the app. More details in the next section [Widgets Directory](#widgets-directory)                                                                                                                                  |
+
+### Widgets Directory
+
+| Path                       | Description                                                      |
+|----------------------------|------------------------------------------------------------------|
+| `app/lib/widgets/action`   | Widgets and screens to perform actions on patients               |
+| `app/lib/widgets/base`     | Base widgets and screens used in multiple places                 |
+| `app/lib/widgets/location` | Widgets and screens for location interaction                     |
+| `app/lib/widgets/map`      | Map screens and widgets                                          |
+| `app/lib/widgets/media`    | Media widgets and screens for multimedia data types              |
+| `app/lib/widgets/patient`  | Widgets and screens for patient interaction                      |
+| `app/lib/widgets/player`   | Widgets and screens for login flow                               |
+| `app/lib/widgets/util`     | Utility widgets and screens                                      |
+
 
 ## Screen flow
 
@@ -166,4 +197,4 @@ The following diagram shows the flow of API calls from the app to the server:
 
 ## Map
 
-For more notes on the map see [here](map.md).
+For more notes on the map see [Map Notes](map.md).

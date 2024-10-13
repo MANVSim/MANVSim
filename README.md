@@ -42,7 +42,7 @@ Additional information on the individual MANVSim components is linked here:
 
 ### App
 
-For additional information on how to start and develop the app component or detailed documentation look [here](app/README.md).
+For additional information on how to start and develop the app component or detailed documentation look [here](doc/app/README.md).
 
 ### Server
 
