@@ -57,14 +57,14 @@ The following frameworks are used in the website:
 - [React Router](https://reactrouter.com/en/main)
 
 ## Directories
+The main source code is contained in the ``./src/`` directory. The source directory is structured as follows:
 
-| Directory    | Content                                                                     |
-|--------------|-----------------------------------------------------------------------------|
-| src/         | The main folder for all source code                                         |
-| api/         | Contains code that interacts with the API                                   |
-| components/  | React elements that can be used in multiple places                          |
-| contexts/    | Contains code for [React Contexts](https://react.dev/learn/passing-data-deeply-with-context) |
-| hooks/       | Access to the React Hooks                                                   |
-| routes/      | Routes that React Router uses                                               |
-| services/    | Miscellaneous services like authentication and access to the local storage  |
+| Directory        | Content                                                                     |
+|------------------|-----------------------------------------------------------------------------|
+| ``api/``         | Contains code that interacts with the API                                   |
+| ``components/``  | React elements that can be used in multiple places                          |
+| ``contexts/``    | Contains code for [React Contexts](https://react.dev/learn/passing-data-deeply-with-context) |
+| ``hooks/``       | Access to the React Hooks                                                   |
+| ``routes/``      | Routes that React Router uses                                               |
+| ``services/``    | Miscellaneous services like authentication and access to the local storage  |
 
