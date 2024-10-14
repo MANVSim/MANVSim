@@ -50,4 +50,4 @@ For additional information on how to start and develop the server component or d
 
 ### Web
 
-TODO
+For additional information on how to start and develop the server component ord detailed documenttation look [here](web/README.md)
