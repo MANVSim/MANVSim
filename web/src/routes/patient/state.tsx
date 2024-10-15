@@ -59,6 +59,11 @@ function StateEntry({
         </Stack>
       )}
       <div>Behandlungen:</div>
+      {Object.entries(state.treatments).map(([treatmentId, afterState]) => (
+        <div key={treatmentId}>
+          {treatmentId} : {afterState}
+        </div>
+      ))}
       <div>Parameter:</div>
     </ListGroup.Item>
   )
