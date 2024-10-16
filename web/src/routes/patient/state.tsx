@@ -2,7 +2,7 @@ import { ChangeEvent, ReactElement } from "react"
 import { LoaderFunctionArgs, useLoaderData } from "react-router"
 import { getActions, getPatient } from "../../api"
 import { Action, ActivityDiagram, Patient, State } from "../../types"
-import { Button, ListGroup, Stack } from "react-bootstrap"
+import { Button, Col, Container, ListGroup, Row } from "react-bootstrap"
 import { Updater, useImmer } from "use-immer"
 import { Form } from "react-router-dom"
 import { WritableDraft } from "immer"
@@ -29,48 +29,71 @@ function StateEntry({
   return (
     <ListGroup.Item>
       <div>{uuid}</div>
-      <Stack direction="horizontal" className="gap-1">
-        <div>Folgezustand nach Zeitlimit:</div>
-        <FormBS.Select
-          value={state.after_time_state_uuid}
-          onChange={(event: ChangeEvent<HTMLSelectElement>): void => {
-            updateActivityDiagram(
-              (draft: WritableDraft<ActivityDiagram>): void => {
-                console.log(event.target.value)
+      <Container>
+        <Row>
+          <Col>Folgezustand nach Zeitlimit:</Col>
+          <Col>
+            <FormBS.Select
+              value={state.after_time_state_uuid}
+              onChange={(event: ChangeEvent<HTMLSelectElement>): void => {
+                updateActivityDiagram(
+                  (draft: WritableDraft<ActivityDiagram>): void => {
+                    draft.states[uuid].after_time_state_uuid =
+                      event.target.value
+                  },
+                )
+              }}
+            >
+              <option value="">-</option>
+              {Object.values(activityDiagram.states).map((s: State) => (
+                <option key={s.uuid}>{s.uuid}</option>
+              ))}
+            </FormBS.Select>
+          </Col>
+        </Row>
+        {state.after_time_state_uuid && (
+          <Row>
+            <Col>Zeitlimit:</Col>
+            <Col>
+              <input
+                type="number"
+                value={state.timelimit}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  updateActivityDiagram(
+                    (draft: WritableDraft<ActivityDiagram>): void => {
+                      draft.states[uuid].timelimit = parseInt(
+                        event.target.value,
+                      )
+                    },
+                  )
+                }}
+              />
+            </Col>
+          </Row>
+        )}
+        <Row>
+          <Col>Behandlungen:</Col>
+        </Row>
+        <Row>
+          <Col>
+            <Container>
+              {Object.entries(state.treatments).map(
+                ([actionId, afterState]) => (
+                  <Row key={actionId}>
+                    <Col>{actionIdToName(actionId)}</Col>
+                    <Col>
+                      <FormBS.Select>
+                        <option>{afterState}</option>
+                      </FormBS.Select>
+                    </Col>
+                  </Row>
+                ),
+              )}
+            </Container>
+          </Col>
+        </Row>
+      </Container>
 
-                draft.states[uuid].after_time_state_uuid = event.target.value
-              },
-            )
-          }}
-        >
-          <option value="">-</option>
-          {Object.values(activityDiagram.states).map((s: State) => (
-            <option key={s.uuid}>{s.uuid}</option>
-          ))}
-        </FormBS.Select>
-      </Stack>
-      {state.after_time_state_uuid && (
-        <Stack direction="horizontal" className="gap-1">
-          <div>Zeitlimit:</div>
-          <input
-            type="number"
-            value={state.timelimit}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              updateActivityDiagram(
-                (draft: WritableDraft<ActivityDiagram>): void => {
-                  draft.states[uuid].timelimit = parseInt(event.target.value)
-                },
-              )
-            }}
-          />
-        </Stack>
-      )}
-      <div>Behandlungen:</div>
-      {Object.entries(state.treatments).map(([actionId, afterState]) => (
-        <div key={actionId}>
-          {actionIdToName(actionId)} : {afterState}
-        </div>
-      ))}
       <div>Parameter:</div>
     </ListGroup.Item>
   )
