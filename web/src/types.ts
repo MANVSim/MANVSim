@@ -267,3 +267,11 @@ const resourceData = z.object({
 })
 
 export type ResourceData = z.infer<typeof resourceData>
+
+const action = z.object({
+  id: z.number(),
+  name: z.string(),
+})
+
+export type Action = z.infer<typeof action>
+export const isAction = isTypeFactory<Action>(action)

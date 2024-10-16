@@ -1,7 +1,7 @@
 import { ChangeEvent, ReactElement } from "react"
 import { LoaderFunctionArgs, useLoaderData } from "react-router"
-import { getPatient } from "../../api"
-import { ActivityDiagram, Patient, State } from "../../types"
+import { getActions, getPatient } from "../../api"
+import { Action, ActivityDiagram, Patient, State } from "../../types"
 import { Button, ListGroup, Stack } from "react-bootstrap"
 import { Updater, useImmer } from "use-immer"
 import { Form } from "react-router-dom"
@@ -11,14 +11,24 @@ interface StateEntryProps {
   uuid: string
   activityDiagram: ActivityDiagram
   updateActivityDiagram: Updater<ActivityDiagram>
+  actions: Map<string, Action>
 }
 
 function StateEntry({
   uuid,
   activityDiagram,
   updateActivityDiagram,
+  actions,
 }: StateEntryProps): ReactElement {
   const state = activityDiagram.states[uuid]
+  function actionIdToName(id: string): string {
+    console.log(id)
+    console.log(actions)
+    console.log(actions.get(id))
+
+    return actions.get(id)?.name || `Unbekannt (${id})`
+  }
+
   return (
     <ListGroup.Item>
       <div>{uuid}</div>
@@ -59,9 +69,9 @@ function StateEntry({
         </Stack>
       )}
       <div>Behandlungen:</div>
-      {Object.entries(state.treatments).map(([treatmentId, afterState]) => (
-        <div key={treatmentId}>
-          {treatmentId} : {afterState}
+      {Object.entries(state.treatments).map(([actionId, afterState]) => (
+        <div key={actionId}>
+          {actionIdToName(actionId)} : {afterState}
         </div>
       ))}
       <div>Parameter:</div>
@@ -69,11 +79,18 @@ function StateEntry({
   )
 }
 
+interface LoaderData {
+  patient: Patient
+  actions: Map<string, Action>
+}
+
 export default function StateRoute(): ReactElement {
-  const patient = useLoaderData() as Patient
+  const { patient, actions } = useLoaderData() as LoaderData
+
   const [activityDiagram, updateActivityDiagram] = useImmer(
     patient.activity_diagram,
   )
+
   return (
     <div>
       <h1>Zustände</h1>
@@ -87,6 +104,7 @@ export default function StateRoute(): ReactElement {
               uuid={state.uuid}
               activityDiagram={activityDiagram}
               updateActivityDiagram={updateActivityDiagram}
+              actions={actions}
             />
           ))}
         </ListGroup>
@@ -98,16 +116,26 @@ export default function StateRoute(): ReactElement {
 
 StateRoute.loader = async function ({
   params,
-}: LoaderFunctionArgs): Promise<Patient> {
+}: LoaderFunctionArgs): Promise<LoaderData> {
   const id = params.patientId
   if (id === undefined) {
     throw new Error("No patient ID provided")
   }
   const patient = await getPatient(id)
 
+  const apiActions = await getActions()
+
+  const actions = new Map()
+  for (const a of apiActions) {
+    actions.set(a.id.toString(), a)
+  }
+
   return {
-    ...patient,
-    activity_diagram: JSON.parse(patient.activity_diagram || "{}"),
+    patient: {
+      ...patient,
+      activity_diagram: JSON.parse(patient.activity_diagram || "{}"),
+    },
+    actions: actions,
   }
 }
 
