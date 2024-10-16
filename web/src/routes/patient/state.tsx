@@ -6,6 +6,7 @@ import { Button, ListGroup, Stack } from "react-bootstrap"
 import { Updater, useImmer } from "use-immer"
 import { Form } from "react-router-dom"
 import { WritableDraft } from "immer"
+import { default as FormBS } from "react-bootstrap/Form"
 
 interface StateEntryProps {
   uuid: string
@@ -22,10 +23,6 @@ function StateEntry({
 }: StateEntryProps): ReactElement {
   const state = activityDiagram.states[uuid]
   function actionIdToName(id: string): string {
-    console.log(id)
-    console.log(actions)
-    console.log(actions.get(id))
-
     return actions.get(id)?.name || `Unbekannt (${id})`
   }
 
@@ -34,7 +31,7 @@ function StateEntry({
       <div>{uuid}</div>
       <Stack direction="horizontal" className="gap-1">
         <div>Folgezustand nach Zeitlimit:</div>
-        <select
+        <FormBS.Select
           value={state.after_time_state_uuid}
           onChange={(event: ChangeEvent<HTMLSelectElement>): void => {
             updateActivityDiagram(
@@ -50,7 +47,7 @@ function StateEntry({
           {Object.values(activityDiagram.states).map((s: State) => (
             <option key={s.uuid}>{s.uuid}</option>
           ))}
-        </select>
+        </FormBS.Select>
       </Stack>
       {state.after_time_state_uuid && (
         <Stack direction="horizontal" className="gap-1">
