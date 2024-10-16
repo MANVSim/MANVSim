@@ -1,9 +1,10 @@
-import { Navigate, useRouteError } from "react-router-dom"
-import { logout } from "../services/auth"
+import { useRouteError } from "react-router-dom"
+import { ReactElement } from "react"
 
-export function ErrorPage() {
+export function ErrorPage(): ReactElement {
   const error = useRouteError()
   console.error(error)
+  return <div>Ein Fehler ist aufgetreten</div>
   // logout()
   // return (
   //   <Navigate
