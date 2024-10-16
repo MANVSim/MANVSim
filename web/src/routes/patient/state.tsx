@@ -7,6 +7,7 @@ import { Updater, useImmer } from "use-immer"
 import { Form } from "react-router-dom"
 import { WritableDraft } from "immer"
 import { default as FormBS } from "react-bootstrap/Form"
+import { StateSelector } from "../../components/StateSelector"
 
 interface StateEntryProps {
   uuid: string
@@ -82,9 +83,10 @@ function StateEntry({
                   <Row key={actionId}>
                     <Col>{actionIdToName(actionId)}</Col>
                     <Col>
-                      <FormBS.Select>
-                        <option>{afterState}</option>
-                      </FormBS.Select>
+                      <StateSelector
+                        current={afterState}
+                        states={activityDiagram.states}
+                      />
                     </Col>
                   </Row>
                 ),
