@@ -45,22 +45,6 @@ function StateEntry({
               }}
               states={activityDiagram.states}
             />
-            {/* <FormBS.Select */}
-            {/*   value={state.after_time_state_uuid} */}
-            {/*   onChange={(event: ChangeEvent<HTMLSelectElement>): void => { */}
-            {/*     updateActivityDiagram( */}
-            {/*       (draft: WritableDraft<ActivityDiagram>): void => { */}
-            {/*         draft.states[uuid].after_time_state_uuid = */}
-            {/*           event.target.value */}
-            {/*       }, */}
-            {/*     ) */}
-            {/*   }} */}
-            {/* > */}
-            {/*   <option value="">-</option> */}
-            {/*   {Object.values(activityDiagram.states).map((s: State) => ( */}
-            {/*     <option key={s.uuid}>{s.uuid}</option> */}
-            {/*   ))} */}
-            {/* </FormBS.Select> */}
           </Col>
         </Row>
         {state.after_time_state_uuid && (
