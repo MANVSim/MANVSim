@@ -34,22 +34,34 @@ function StateEntry({
         <Row>
           <Col>Folgezustand nach Zeitlimit:</Col>
           <Col>
-            <FormBS.Select
-              value={state.after_time_state_uuid}
-              onChange={(event: ChangeEvent<HTMLSelectElement>): void => {
+            <StateSelector
+              current={state.after_time_state_uuid}
+              update={(new_value: string): void => {
                 updateActivityDiagram(
                   (draft: WritableDraft<ActivityDiagram>): void => {
                     draft.states[uuid].after_time_state_uuid =
-                      event.target.value
+                      uuid !== new_value ? new_value : ""
                   },
                 )
               }}
-            >
-              <option value="">-</option>
-              {Object.values(activityDiagram.states).map((s: State) => (
-                <option key={s.uuid}>{s.uuid}</option>
-              ))}
-            </FormBS.Select>
+              states={activityDiagram.states}
+            />
+            {/* <FormBS.Select */}
+            {/*   value={state.after_time_state_uuid} */}
+            {/*   onChange={(event: ChangeEvent<HTMLSelectElement>): void => { */}
+            {/*     updateActivityDiagram( */}
+            {/*       (draft: WritableDraft<ActivityDiagram>): void => { */}
+            {/*         draft.states[uuid].after_time_state_uuid = */}
+            {/*           event.target.value */}
+            {/*       }, */}
+            {/*     ) */}
+            {/*   }} */}
+            {/* > */}
+            {/*   <option value="">-</option> */}
+            {/*   {Object.values(activityDiagram.states).map((s: State) => ( */}
+            {/*     <option key={s.uuid}>{s.uuid}</option> */}
+            {/*   ))} */}
+            {/* </FormBS.Select> */}
           </Col>
         </Row>
         {state.after_time_state_uuid && (
@@ -79,13 +91,21 @@ function StateEntry({
           <Col>
             <Container>
               {Object.entries(state.treatments).map(
-                ([actionId, afterState]) => (
+                ([actionId, afterState]: [string, string]): ReactElement => (
                   <Row key={actionId}>
                     <Col>{actionIdToName(actionId)}</Col>
                     <Col>
                       <StateSelector
                         current={afterState}
                         states={activityDiagram.states}
+                        update={(new_value: string): void => {
+                          updateActivityDiagram(
+                            (draft: WritableDraft<ActivityDiagram>): void => {
+                              draft.states[uuid].treatments[actionId] =
+                                new_value
+                            },
+                          )
+                        }}
                       />
                     </Col>
                   </Row>
