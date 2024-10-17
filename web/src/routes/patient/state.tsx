@@ -91,6 +91,20 @@ function StateEntry({
                         }}
                       />
                     </Col>
+                    <Col>
+                      <Button
+                        variant="danger"
+                        onClick={() => {
+                          updateActivityDiagram(
+                            (draft: WritableDraft<ActivityDiagram>) => {
+                              delete draft.states[uuid].treatments[actionId]
+                            },
+                          )
+                        }}
+                      >
+                        Löschen
+                      </Button>
+                    </Col>
                   </Row>
                 ),
               )}
