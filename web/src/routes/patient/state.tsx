@@ -7,6 +7,7 @@ import { Updater, useImmer } from "use-immer"
 import { Form } from "react-router-dom"
 import { WritableDraft } from "immer"
 import { StateSelector } from "../../components/StateSelector"
+import { default as FormBS } from "react-bootstrap/Form"
 
 interface StateEntryProps {
   uuid: string
@@ -72,7 +73,7 @@ function StateEntry({
         </Row>
         <Row>
           <Col>
-            <Container>
+            <Container className="d-grid gap-2">
               {Object.entries(state.treatments).map(
                 ([actionId, afterState]: [string, string]): ReactElement => (
                   <Row key={actionId}>
@@ -108,6 +109,25 @@ function StateEntry({
                   </Row>
                 ),
               )}
+              <Row>
+                <Col>
+                  <FormBS.Select>
+                    {Array.from(actions).map(([id, value]) => {
+                      return <option key={id}>{value.name}</option>
+                    })}
+                  </FormBS.Select>
+                </Col>
+                <Col>
+                  <StateSelector
+                    current=""
+                    update={() => {}}
+                    states={activityDiagram.states}
+                  />
+                </Col>
+                <Col>
+                  <Button size="sm">+</Button>
+                </Col>
+              </Row>
             </Container>
           </Col>
         </Row>
