@@ -6,7 +6,6 @@ import { Button, Col, Container, ListGroup, Row } from "react-bootstrap"
 import { Updater, useImmer } from "use-immer"
 import { Form } from "react-router-dom"
 import { WritableDraft } from "immer"
-import { default as FormBS } from "react-bootstrap/Form"
 import { StateSelector } from "../../components/StateSelector"
 
 interface StateEntryProps {
