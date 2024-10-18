@@ -17,7 +17,7 @@
     "@types/react-router": "^5.1.20",
     "@types/react-router-bootstrap": "^0.26.6",
     "@types/react-router-dom": "^5.3.3",
-    "@uiw/react-codemirror": "^4.23.0",
+    "@uiw/react-codemirror": "^4.23.5",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "immer": "^10.1.1",
@@ -30,6 +30,7 @@
     "react-router-bootstrap": "^0.26.3",
     "react-router-dom": "^6.23.1",
     "use-immer": "^0.10.0",
+    "yaml": "^2.6.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

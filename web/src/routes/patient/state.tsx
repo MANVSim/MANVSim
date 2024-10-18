@@ -8,6 +8,9 @@ import { Form } from "react-router-dom"
 import { WritableDraft } from "immer"
 import { StateSelector } from "../../components/StateSelector"
 import { default as FormBS } from "react-bootstrap/Form"
+import ReactCodeMirror from "@uiw/react-codemirror"
+import { yaml } from "@codemirror/lang-yaml"
+import { stringify } from "yaml"
 
 interface StateEntryProps {
   uuid: string
@@ -24,6 +27,9 @@ function StateEntry({
 }: StateEntryProps): ReactElement {
   const state = activityDiagram.states[uuid]
   const [newTreatment, setNewTreatment] = useState({ id: -1, afterState: "" })
+  const [testValue, setTestValue] = useState(
+    "key: value\nkey2: value2\nkey3: value3\n",
+  )
   return (
     <ListGroup.Item>
       <div>{uuid}</div>
@@ -208,6 +214,10 @@ function StateEntry({
       </Container>
 
       <div>Parameter:</div>
+      <ReactCodeMirror
+        value={stringify(state.conditions)}
+        extensions={[yaml()]}
+      />
     </ListGroup.Item>
   )
 }
