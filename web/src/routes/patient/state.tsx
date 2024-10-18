@@ -27,9 +27,6 @@ function StateEntry({
 }: StateEntryProps): ReactElement {
   const state = activityDiagram.states[uuid]
   const [newTreatment, setNewTreatment] = useState({ id: -1, afterState: "" })
-  const [testValue, setTestValue] = useState(
-    "key: value\nkey2: value2\nkey3: value3\n",
-  )
   return (
     <ListGroup.Item>
       <div>{uuid}</div>
