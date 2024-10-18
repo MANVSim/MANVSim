@@ -89,7 +89,11 @@ function StateEntry({
                         }}
                       >
                         {Array.from(actions).map(([id, value]) => {
-                          return <option key={id}>{value.name}</option>
+                          return (
+                            <option value={id} key={id}>
+                              {value.name}
+                            </option>
+                          )
                         })}
                       </FormBS.Select>
                     </Col>
