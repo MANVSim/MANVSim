@@ -8,15 +8,18 @@ import { Form } from "react-router-dom"
 import { WritableDraft } from "immer"
 import { StateSelector } from "../../components/StateSelector"
 import { default as FormBS } from "react-bootstrap/Form"
-import ReactCodeMirror from "@uiw/react-codemirror"
-import { yaml } from "@codemirror/lang-yaml"
-import { stringify } from "yaml"
 
 interface StateEntryProps {
   uuid: string
   activityDiagram: ActivityDiagram
   updateActivityDiagram: Updater<ActivityDiagram>
   actions: Map<string, Action>
+}
+
+enum MediaType {
+  TEXT = "TEXT",
+  IMAGE = "IMAGE",
+  VIDEO = "VIDEO",
 }
 
 function StateEntry({
@@ -27,6 +30,7 @@ function StateEntry({
 }: StateEntryProps): ReactElement {
   const state = activityDiagram.states[uuid]
   const [newTreatment, setNewTreatment] = useState({ id: -1, afterState: "" })
+
   return (
     <ListGroup.Item>
       <div>{uuid}</div>
@@ -208,13 +212,59 @@ function StateEntry({
             </Container>
           </Col>
         </Row>
+        <Row>
+          <Col>Parameter</Col>
+        </Row>
+        <Row>
+          <Col>
+            <Container>
+              {Object.entries(state.conditions).map(([name, conditions]) => {
+                return (
+                  <Row key={name}>
+                    <Col>{name}</Col>
+                    <Col>
+                      {conditions.map((condition, i) => {
+                        return (
+                          <div key={i}>
+                            <Row>
+                              <Col>Medientyp:</Col>
+                              <Col>
+                                <FormBS.Select value={condition.media_type}>
+                                  {Object.values(MediaType).map((mediaType) => {
+                                    return (
+                                      <option key={mediaType} value={mediaType}>
+                                        {mediaType}
+                                      </option>
+                                    )
+                                  })}
+                                </FormBS.Select>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col>Titel:</Col>
+                              <Col>{condition.title || <i>n.a.</i>}</Col>
+                            </Row>
+                            <Row>
+                              <Col>Text:</Col>
+                              <Col>{condition.text}</Col>
+                            </Row>
+                            <Row>
+                              <Col>Medienreferenz:</Col>
+                              <Col>
+                                {condition.media_reference || <i>n.a.</i>}
+                              </Col>
+                            </Row>
+                          </div>
+                        )
+                      })}
+                    </Col>
+                  </Row>
+                )
+              })}
+            </Container>
+          </Col>
+        </Row>
       </Container>
-
-      <div>Parameter:</div>
-      <ReactCodeMirror
-        value={stringify(state.conditions)}
-        extensions={[yaml()]}
-      />
     </ListGroup.Item>
   )
 }
