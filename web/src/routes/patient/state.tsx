@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactElement } from "react"
+import { ChangeEvent, ReactElement, useState } from "react"
 import { LoaderFunctionArgs, useLoaderData } from "react-router"
 import { getActions, getPatient } from "../../api"
 import { Action, ActivityDiagram, Patient, State } from "../../types"
@@ -23,6 +23,7 @@ function StateEntry({
   actions,
 }: StateEntryProps): ReactElement {
   const state = activityDiagram.states[uuid]
+  const [newTreatment, setNewTreatment] = useState({ id: -1, afterState: "" })
   return (
     <ListGroup.Item>
       <div>{uuid}</div>
@@ -123,6 +124,80 @@ function StateEntry({
                   </Row>
                 ),
               )}
+              <Row>
+                <Col>
+                  {
+                    <FormBS.Select
+                      value={newTreatment.id}
+                      onChange={(event) => {
+                        setNewTreatment({
+                          ...newTreatment,
+                          id: parseInt(event.target.value),
+                        })
+                      }}
+                    >
+                      <option value={-1} disabled>
+                        Behandlung auswählen
+                      </option>
+                      {Array.from(actions).map(([id, value]) => {
+                        return (
+                          <option key={id} value={id}>
+                            {value.name}
+                          </option>
+                        )
+                      })}
+                    </FormBS.Select>
+                  }
+                </Col>
+                <Col>
+                  <FormBS.Select
+                    value={newTreatment.afterState}
+                    onChange={(event) => {
+                      setNewTreatment({
+                        ...newTreatment,
+                        afterState: event.target.value,
+                      })
+                    }}
+                  >
+                    <option value={""} disabled>
+                      Folgezustand wählen
+                    </option>
+                    {Object.values(activityDiagram.states).map(
+                      (state: State) => {
+                        return (
+                          <option key={state.uuid} value={state.uuid}>
+                            {state.uuid}
+                          </option>
+                        )
+                      },
+                    )}
+                  </FormBS.Select>
+                </Col>
+                <Col>
+                  <Button
+                    onClick={() => {
+                      updateActivityDiagram(
+                        (draft: WritableDraft<ActivityDiagram>) => {
+                          console.log(newTreatment)
+                          // Do not do anything when the user tries to add a treatment with no action or no after state
+                          if (
+                            newTreatment.id === -1 ||
+                            newTreatment.afterState === ""
+                          ) {
+                            return
+                          }
+
+                          draft.states[uuid].treatments[newTreatment.id] =
+                            newTreatment.afterState
+                          setNewTreatment({ id: -1, afterState: "" })
+                        },
+                      )
+                    }}
+                  >
+                    +
+                  </Button>
+                </Col>
+              </Row>
             </Container>
           </Col>
         </Row>
