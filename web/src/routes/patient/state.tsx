@@ -23,10 +23,6 @@ function StateEntry({
   actions,
 }: StateEntryProps): ReactElement {
   const state = activityDiagram.states[uuid]
-  function actionIdToName(id: string): string {
-    return actions.get(id)?.name || `Unbekannt (${id})`
-  }
-
   return (
     <ListGroup.Item>
       <div>{uuid}</div>
@@ -77,7 +73,25 @@ function StateEntry({
               {Object.entries(state.treatments).map(
                 ([actionId, afterState]: [string, string]): ReactElement => (
                   <Row key={actionId}>
-                    <Col>{actionIdToName(actionId)}</Col>
+                    <Col>
+                      <FormBS.Select
+                        value={actionId}
+                        onChange={(event) => {
+                          updateActivityDiagram(
+                            (draft: WritableDraft<ActivityDiagram>): void => {
+                              delete draft.states[uuid].treatments[actionId]
+                              draft.states[uuid].treatments[
+                                event.target.value
+                              ] = afterState
+                            },
+                          )
+                        }}
+                      >
+                        {Array.from(actions).map(([id, value]) => {
+                          return <option key={id}>{value.name}</option>
+                        })}
+                      </FormBS.Select>
+                    </Col>
                     <Col>
                       <StateSelector
                         current={afterState}
@@ -109,25 +123,6 @@ function StateEntry({
                   </Row>
                 ),
               )}
-              <Row>
-                <Col>
-                  <FormBS.Select>
-                    {Array.from(actions).map(([id, value]) => {
-                      return <option key={id}>{value.name}</option>
-                    })}
-                  </FormBS.Select>
-                </Col>
-                <Col>
-                  <StateSelector
-                    current=""
-                    update={() => {}}
-                    states={activityDiagram.states}
-                  />
-                </Col>
-                <Col>
-                  <Button size="sm">+</Button>
-                </Col>
-              </Row>
             </Container>
           </Col>
         </Row>
