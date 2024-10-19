@@ -357,7 +357,7 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
           </Col>
           <Col>
             <Button
-              disabled={newParameter === "" || !!state.conditions[newParameter]}
+              disabled={newParameter === "" || newParameter in state.conditions}
               onClick={() => {
                 setNewParameter("")
                 updateActivityDiagram(
