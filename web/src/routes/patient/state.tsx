@@ -9,7 +9,14 @@ import {
 import { LoaderFunctionArgs, useLoaderData } from "react-router"
 import { getActions, getPatient } from "../../api"
 import { Action, ActivityDiagram, Patient, State } from "../../types"
-import { Button, Col, Container, ListGroup, Row } from "react-bootstrap"
+import {
+  Accordion,
+  Button,
+  Col,
+  Container,
+  ListGroup,
+  Row,
+} from "react-bootstrap"
 import { Updater, useImmer } from "use-immer"
 import { Form } from "react-router-dom"
 import { WritableDraft } from "immer"
@@ -39,14 +46,10 @@ type SectionProps = PropsWithChildren<{
 }>
 function Section({ title, children }: SectionProps): ReactElement {
   return (
-    <div>
-      <Row>
-        <h5>{title}</h5>
-      </Row>
-      <Row>
-        <Container className="d-grid gap-1">{children}</Container>
-      </Row>
-    </div>
+    <Accordion.Item eventKey={title}>
+      <Accordion.Header>{title}</Accordion.Header>
+      <Accordion.Body>{children}</Accordion.Body>
+    </Accordion.Item>
   )
 }
 
@@ -341,11 +344,11 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
   return (
     <ListGroup.Item>
       <h3>{uuid}</h3> {/* TODO: Replace with name */}
-      <Container>
+      <Accordion flush>
         <TimelimitSection uuid={uuid} />
         <TreatmentSection uuid={uuid} />
         <ParameterSection uuid={uuid} />
-      </Container>
+      </Accordion>
     </ListGroup.Item>
   )
 }
