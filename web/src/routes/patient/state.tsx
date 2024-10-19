@@ -359,6 +359,7 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
             <Button
               disabled={newParameter === "" || !!state.conditions[newParameter]}
               onClick={() => {
+                setNewParameter("")
                 updateActivityDiagram(
                   (draft: WritableDraft<ActivityDiagram>) => {
                     const conditions = draft.states[uuid].conditions
