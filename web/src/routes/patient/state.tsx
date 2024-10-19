@@ -31,7 +31,7 @@ function StateEntry({
 }: StateEntryProps): ReactElement {
   const state = activityDiagram.states[uuid]
   useEffect(() => {
-    console.log(state)
+    console.log(state.conditions)
   }, [state])
   const [newTreatment, setNewTreatment] = useState({ id: -1, afterState: "" })
 
@@ -266,11 +266,41 @@ function StateEntry({
                               </Row>
                               <Row>
                                 <Col>Titel:</Col>
-                                <Col>{condition.title || <NotAvailable />}</Col>
+                                <Col>
+                                  <input
+                                    value={condition.title || ""}
+                                    onChange={(event) => {
+                                      updateActivityDiagram(
+                                        (
+                                          draft: WritableDraft<ActivityDiagram>,
+                                        ) => {
+                                          draft.states[uuid].conditions[name][
+                                            i
+                                          ].title = event.target.value
+                                        },
+                                      )
+                                    }}
+                                  />
+                                </Col>
                               </Row>
                               <Row>
                                 <Col>Text:</Col>
-                                <Col>{condition.text || <NotAvailable />}</Col>
+                                <Col>
+                                  <input
+                                    value={condition.text || ""}
+                                    onChange={(event) => {
+                                      updateActivityDiagram(
+                                        (
+                                          draft: WritableDraft<ActivityDiagram>,
+                                        ) => {
+                                          draft.states[uuid].conditions[name][
+                                            i
+                                          ].text = event.target.value
+                                        },
+                                      )
+                                    }}
+                                  />
+                                </Col>
                               </Row>
                               <Row>
                                 <Col>Medienreferenz:</Col>
