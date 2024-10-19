@@ -344,7 +344,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
   return (
     <ListGroup.Item>
       <h3>{uuid}</h3> {/* TODO: Replace with name */}
-      <Accordion flush>
+      <Accordion flush alwaysOpen>
         <TimelimitSection uuid={uuid} />
         <TreatmentSection uuid={uuid} />
         <ParameterSection uuid={uuid} />
