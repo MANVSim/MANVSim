@@ -216,7 +216,7 @@ export const isPatientRepsonse = isTypeFactory<PatientResponse>(patientResponse)
 const condition = z.object({
   media_type: z.string(),
   title: z.string().or(z.null()),
-  text: z.string(),
+  text: z.string().or(z.null()),
   media_reference: z.string().or(z.null()),
 })
 
