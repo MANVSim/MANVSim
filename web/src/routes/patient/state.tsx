@@ -1,5 +1,6 @@
 import {
   ChangeEvent,
+  PropsWithChildren,
   ReactElement,
   createContext,
   useContext,
@@ -22,6 +23,33 @@ enum MediaType {
   VIDEO = "VIDEO",
 }
 
+type AttributeProps = PropsWithChildren<{ name: string }>
+
+function Attribute({ name, children }: AttributeProps): ReactElement {
+  return (
+    <Row>
+      <Col>{name}:</Col>
+      <Col>{children}</Col>
+    </Row>
+  )
+}
+
+type SectionProps = PropsWithChildren<{
+  title: string
+}>
+function Section({ title, children }: SectionProps): ReactElement {
+  return (
+    <div>
+      <Row>
+        <h5>{title}</h5>
+      </Row>
+      <Row>
+        <Container>{children}</Container>
+      </Row>
+    </div>
+  )
+}
+
 interface TimelimitSectionProps {
   uuid: string
 }
@@ -30,43 +58,37 @@ function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
   const { activityDiagram, updateActivityDiagram } = useLoaderDataContext()
   const state = activityDiagram.states[uuid]
   return (
-    <div>
-      <Row>
-        <Col>Folgezustand nach Zeitlimit:</Col>
-        <Col>
-          <StateSelector
-            current={state.after_time_state_uuid}
-            update={(new_value: string): void => {
+    <Section title="Zeitlimit">
+      <Attribute name="Folgezustand">
+        <StateSelector
+          current={state.after_time_state_uuid}
+          update={(new_value: string): void => {
+            updateActivityDiagram(
+              (draft: WritableDraft<ActivityDiagram>): void => {
+                draft.states[uuid].after_time_state_uuid =
+                  uuid !== new_value ? new_value : ""
+              },
+            )
+          }}
+          states={activityDiagram.states}
+        />
+      </Attribute>
+      {state.after_time_state_uuid && (
+        <Attribute name="Zeitlimit">
+          <input
+            type="number"
+            value={state.timelimit}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
               updateActivityDiagram(
                 (draft: WritableDraft<ActivityDiagram>): void => {
-                  draft.states[uuid].after_time_state_uuid =
-                    uuid !== new_value ? new_value : ""
+                  draft.states[uuid].timelimit = parseInt(event.target.value)
                 },
               )
             }}
-            states={activityDiagram.states}
           />
-        </Col>
-      </Row>
-      {state.after_time_state_uuid && (
-        <Row>
-          <Col>Zeitlimit:</Col>
-          <Col>
-            <input
-              type="number"
-              value={state.timelimit}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                updateActivityDiagram(
-                  (draft: WritableDraft<ActivityDiagram>): void => {
-                    draft.states[uuid].timelimit = parseInt(event.target.value)
-                  },
-                )
-              }}
-            />
-          </Col>
-        </Row>
+        </Attribute>
       )}
-    </div>
+    </Section>
   )
 }
 
