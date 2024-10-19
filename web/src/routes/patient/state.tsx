@@ -225,7 +225,6 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
               onClick={() => {
                 updateActivityDiagram(
                   (draft: WritableDraft<ActivityDiagram>) => {
-                    console.log(newTreatment)
                     // Do not do anything when the user tries to add a treatment with no action or no after state
                     if (
                       newTreatment.id === -1 ||
