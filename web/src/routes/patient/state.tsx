@@ -244,105 +244,92 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
   const { activityDiagram, updateActivityDiagram } = useLoaderDataContext()
   const state = activityDiagram.states[uuid]
   return (
-    <div>
-      <Row>
-        <Col>Parameter</Col>
-      </Row>
-      <Row>
-        <Col>
-          <Container className="d-grid gap-3">
-            {Object.entries(state.conditions)
-              .sort()
-              .map(([name, conditions]) => {
-                return (
-                  <Row key={name}>
-                    <Col>{name}</Col>
-                    <Col>
-                      {conditions.map((condition, i) => {
-                        return (
-                          <div key={i} className="d-grid gap-1">
-                            <Row>
-                              <Col>Medientyp:</Col>
-                              <Col>
-                                <FormBS.Select
-                                  value={condition.media_type}
-                                  onChange={(event) => {
-                                    updateActivityDiagram(
-                                      (
-                                        draft: WritableDraft<ActivityDiagram>,
-                                      ) => {
-                                        draft.states[uuid].conditions[name][
-                                          i
-                                        ].media_type = event.target.value
-                                      },
-                                    )
-                                  }}
-                                >
-                                  {Object.values(MediaType).map((mediaType) => {
-                                    return (
-                                      <option key={mediaType} value={mediaType}>
-                                        {mediaType}
-                                      </option>
-                                    )
-                                  })}
-                                </FormBS.Select>
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col>Titel:</Col>
-                              <Col>
-                                <input
-                                  value={condition.title || ""}
-                                  onChange={(event) => {
-                                    updateActivityDiagram(
-                                      (
-                                        draft: WritableDraft<ActivityDiagram>,
-                                      ) => {
-                                        draft.states[uuid].conditions[name][
-                                          i
-                                        ].title = event.target.value
-                                      },
-                                    )
-                                  }}
-                                />
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col>Text:</Col>
-                              <Col>
-                                <input
-                                  value={condition.text || ""}
-                                  onChange={(event) => {
-                                    updateActivityDiagram(
-                                      (
-                                        draft: WritableDraft<ActivityDiagram>,
-                                      ) => {
-                                        draft.states[uuid].conditions[name][
-                                          i
-                                        ].text = event.target.value
-                                      },
-                                    )
-                                  }}
-                                />
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col>Medienreferenz:</Col>
-                              <Col>
-                                {condition.media_reference || <NotAvailable />}
-                              </Col>
-                            </Row>
-                          </div>
-                        )
-                      })}
-                    </Col>
-                  </Row>
-                )
-              })}
-          </Container>
-        </Col>
-      </Row>
-    </div>
+    <Section title="Parameter">
+      <Container className="d-grid gap-3">
+        {Object.entries(state.conditions)
+          .sort()
+          .map(([name, conditions]) => {
+            return (
+              <Row key={name}>
+                <Col>{name}</Col>
+                <Col>
+                  {conditions.map((condition, i) => {
+                    return (
+                      <div key={i} className="d-grid gap-1">
+                        <Row>
+                          <Col>Medientyp:</Col>
+                          <Col>
+                            <FormBS.Select
+                              value={condition.media_type}
+                              onChange={(event) => {
+                                updateActivityDiagram(
+                                  (draft: WritableDraft<ActivityDiagram>) => {
+                                    draft.states[uuid].conditions[name][
+                                      i
+                                    ].media_type = event.target.value
+                                  },
+                                )
+                              }}
+                            >
+                              {Object.values(MediaType).map((mediaType) => {
+                                return (
+                                  <option key={mediaType} value={mediaType}>
+                                    {mediaType}
+                                  </option>
+                                )
+                              })}
+                            </FormBS.Select>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>Titel:</Col>
+                          <Col>
+                            <input
+                              value={condition.title || ""}
+                              onChange={(event) => {
+                                updateActivityDiagram(
+                                  (draft: WritableDraft<ActivityDiagram>) => {
+                                    draft.states[uuid].conditions[name][
+                                      i
+                                    ].title = event.target.value
+                                  },
+                                )
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>Text:</Col>
+                          <Col>
+                            <input
+                              value={condition.text || ""}
+                              onChange={(event) => {
+                                updateActivityDiagram(
+                                  (draft: WritableDraft<ActivityDiagram>) => {
+                                    draft.states[uuid].conditions[name][
+                                      i
+                                    ].text = event.target.value
+                                  },
+                                )
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>Medienreferenz:</Col>
+                          <Col>
+                            {condition.media_reference || <NotAvailable />}
+                          </Col>
+                        </Row>
+                      </div>
+                    )
+                  })}
+                </Col>
+              </Row>
+            )
+          })}
+      </Container>
+    </Section>
   )
 }
 
