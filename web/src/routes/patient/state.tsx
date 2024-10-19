@@ -8,7 +8,14 @@ import {
 } from "react"
 import { LoaderFunctionArgs, useLoaderData } from "react-router"
 import { getActions, getPatient } from "../../api"
-import { Action, ActivityDiagram, Patient, State } from "../../types"
+import {
+  Action,
+  ActivityDiagram,
+  MediaTypeEnum,
+  Patient,
+  State,
+  mediaTypes,
+} from "../../types"
 import {
   Accordion,
   Button,
@@ -24,12 +31,6 @@ import { StateSelector } from "../../components/StateSelector"
 import { default as FormBS } from "react-bootstrap/Form"
 import NotAvailable from "../../components/NotAvailable"
 import { v4 as uuidv4 } from "uuid"
-
-enum MediaType {
-  TEXT = "TEXT",
-  IMAGE = "IMAGE",
-  VIDEO = "VIDEO",
-}
 
 type AttributeProps = PropsWithChildren<{ name: string }>
 
@@ -256,6 +257,7 @@ interface ParameterSectionProps {
 function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
   const { activityDiagram, updateActivityDiagram } = useLoaderDataContext()
   const state = activityDiagram.states[uuid]
+  const [newParameter, setNewParameter] = useState<string>("")
   return (
     <Section title="Parameter">
       <Container className="d-grid gap-3">
@@ -279,18 +281,21 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
                                   (draft: WritableDraft<ActivityDiagram>) => {
                                     draft.states[uuid].conditions[name][
                                       i
-                                    ].media_type = event.target.value
+                                    ].media_type = event.target
+                                      .value as MediaTypeEnum
                                   },
                                 )
                               }}
                             >
-                              {Object.values(MediaType).map((mediaType) => {
-                                return (
-                                  <option key={mediaType} value={mediaType}>
-                                    {mediaType}
-                                  </option>
-                                )
-                              })}
+                              {Object.values(mediaTypes.enum).map(
+                                (mediaType) => {
+                                  return (
+                                    <option key={mediaType} value={mediaType}>
+                                      {mediaType}
+                                    </option>
+                                  )
+                                },
+                              )}
                             </FormBS.Select>
                           </Col>
                         </Row>
@@ -341,6 +346,39 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
               </Row>
             )
           })}
+
+        <Row>
+          <Col className="d-grid">
+            <input
+              value={newParameter}
+              onChange={(event) => setNewParameter(event.target.value)}
+              placeholder="Parametername"
+            />
+          </Col>
+          <Col>
+            <Button
+              disabled={newParameter === "" || !!state.conditions[newParameter]}
+              onClick={() => {
+                updateActivityDiagram(
+                  (draft: WritableDraft<ActivityDiagram>) => {
+                    const conditions = draft.states[uuid].conditions
+                    if (!conditions[newParameter]) {
+                      conditions[newParameter] = []
+                    }
+                    conditions[newParameter].push({
+                      media_type: mediaTypes.enum.TEXT,
+                      title: "",
+                      text: "",
+                      media_reference: "",
+                    })
+                  },
+                )
+              }}
+            >
+              + Neuer Parameter
+            </Button>
+          </Col>
+        </Row>
       </Container>
     </Section>
   )
@@ -354,7 +392,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
   return (
     <ListGroup.Item>
       <h3>{uuid}</h3> {/* TODO: Replace with name */}
-      <Accordion flush alwaysOpen>
+      <Accordion flush alwaysOpen defaultActiveKey="Parameter">
         <TimelimitSection uuid={uuid} />
         <TreatmentSection uuid={uuid} />
         <ParameterSection uuid={uuid} />
