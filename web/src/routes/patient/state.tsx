@@ -28,7 +28,7 @@ interface TimelimitSectionProps {
 }
 
 function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
-  const { activityDiagram, updateActivityDiagram } = useActivityDiagramContext()
+  const { activityDiagram, updateActivityDiagram } = useLoaderDataContext()
   const state = activityDiagram.states[uuid]
   return (
     <div>
@@ -71,6 +71,157 @@ function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
   )
 }
 
+interface TreatmentSectionProps {
+  uuid: string
+}
+
+function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
+  const { actions, activityDiagram, updateActivityDiagram } =
+    useLoaderDataContext()
+  const state = activityDiagram.states[uuid]
+  const [newTreatment, setNewTreatment] = useState({ id: -1, afterState: "" })
+  return (
+    <div>
+      <Row>
+        <Col>Behandlungen:</Col>
+      </Row>
+      <Row>
+        <Col>
+          <Container className="d-grid gap-2">
+            {Object.entries(state.treatments).map(
+              ([actionId, afterState]: [string, string]): ReactElement => (
+                <Row key={actionId}>
+                  <Col>
+                    <FormBS.Select
+                      value={actionId}
+                      onChange={(event) => {
+                        updateActivityDiagram(
+                          (draft: WritableDraft<ActivityDiagram>): void => {
+                            delete draft.states[uuid].treatments[actionId]
+                            draft.states[uuid].treatments[event.target.value] =
+                              afterState
+                          },
+                        )
+                      }}
+                    >
+                      {Array.from(actions).map(([id, value]) => {
+                        return (
+                          <option value={id} key={id}>
+                            {value.name}
+                          </option>
+                        )
+                      })}
+                    </FormBS.Select>
+                  </Col>
+                  <Col>
+                    <StateSelector
+                      current={afterState}
+                      states={activityDiagram.states}
+                      update={(new_value: string): void => {
+                        updateActivityDiagram(
+                          (draft: WritableDraft<ActivityDiagram>): void => {
+                            draft.states[uuid].treatments[actionId] = new_value
+                          },
+                        )
+                      }}
+                    />
+                  </Col>
+                  <Col>
+                    <Button
+                      variant="danger"
+                      onClick={() => {
+                        updateActivityDiagram(
+                          (draft: WritableDraft<ActivityDiagram>) => {
+                            delete draft.states[uuid].treatments[actionId]
+                          },
+                        )
+                      }}
+                    >
+                      Löschen
+                    </Button>
+                  </Col>
+                </Row>
+              ),
+            )}
+            <Row>
+              <Col>
+                {
+                  <FormBS.Select
+                    value={newTreatment.id}
+                    onChange={(event) => {
+                      setNewTreatment({
+                        ...newTreatment,
+                        id: parseInt(event.target.value),
+                      })
+                    }}
+                  >
+                    <option value={-1} disabled>
+                      Behandlung auswählen
+                    </option>
+                    {Array.from(actions).map(([id, value]) => {
+                      return (
+                        <option key={id} value={id}>
+                          {value.name}
+                        </option>
+                      )
+                    })}
+                  </FormBS.Select>
+                }
+              </Col>
+              <Col>
+                <FormBS.Select
+                  value={newTreatment.afterState}
+                  onChange={(event) => {
+                    setNewTreatment({
+                      ...newTreatment,
+                      afterState: event.target.value,
+                    })
+                  }}
+                >
+                  <option value={""} disabled>
+                    Folgezustand wählen
+                  </option>
+                  {Object.values(activityDiagram.states).map((state: State) => {
+                    return (
+                      <option key={state.uuid} value={state.uuid}>
+                        {state.uuid}
+                      </option>
+                    )
+                  })}
+                </FormBS.Select>
+              </Col>
+              <Col>
+                <Button
+                  onClick={() => {
+                    updateActivityDiagram(
+                      (draft: WritableDraft<ActivityDiagram>) => {
+                        console.log(newTreatment)
+                        // Do not do anything when the user tries to add a treatment with no action or no after state
+                        if (
+                          newTreatment.id === -1 ||
+                          newTreatment.afterState === ""
+                        ) {
+                          return
+                        }
+
+                        draft.states[uuid].treatments[newTreatment.id] =
+                          newTreatment.afterState
+                        setNewTreatment({ id: -1, afterState: "" })
+                      },
+                    )
+                  }}
+                >
+                  +
+                </Button>
+              </Col>
+            </Row>
+          </Container>
+        </Col>
+      </Row>
+    </div>
+  )
+}
+
 interface StateEntryProps {
   uuid: string
   activityDiagram: ActivityDiagram
@@ -82,159 +233,18 @@ function StateEntry({
   uuid,
   activityDiagram,
   updateActivityDiagram,
-  actions,
 }: StateEntryProps): ReactElement {
   const state = activityDiagram.states[uuid]
   useEffect(() => {
     console.log(state.conditions)
   }, [state])
-  const [newTreatment, setNewTreatment] = useState({ id: -1, afterState: "" })
 
   return (
     <ListGroup.Item>
       <h3>{uuid}</h3> {/* TODO: Replace with name */}
       <Container>
         <TimelimitSection uuid={uuid} />
-        <Row>
-          <Col>Behandlungen:</Col>
-        </Row>
-        <Row>
-          <Col>
-            <Container className="d-grid gap-2">
-              {Object.entries(state.treatments).map(
-                ([actionId, afterState]: [string, string]): ReactElement => (
-                  <Row key={actionId}>
-                    <Col>
-                      <FormBS.Select
-                        value={actionId}
-                        onChange={(event) => {
-                          updateActivityDiagram(
-                            (draft: WritableDraft<ActivityDiagram>): void => {
-                              delete draft.states[uuid].treatments[actionId]
-                              draft.states[uuid].treatments[
-                                event.target.value
-                              ] = afterState
-                            },
-                          )
-                        }}
-                      >
-                        {Array.from(actions).map(([id, value]) => {
-                          return (
-                            <option value={id} key={id}>
-                              {value.name}
-                            </option>
-                          )
-                        })}
-                      </FormBS.Select>
-                    </Col>
-                    <Col>
-                      <StateSelector
-                        current={afterState}
-                        states={activityDiagram.states}
-                        update={(new_value: string): void => {
-                          updateActivityDiagram(
-                            (draft: WritableDraft<ActivityDiagram>): void => {
-                              draft.states[uuid].treatments[actionId] =
-                                new_value
-                            },
-                          )
-                        }}
-                      />
-                    </Col>
-                    <Col>
-                      <Button
-                        variant="danger"
-                        onClick={() => {
-                          updateActivityDiagram(
-                            (draft: WritableDraft<ActivityDiagram>) => {
-                              delete draft.states[uuid].treatments[actionId]
-                            },
-                          )
-                        }}
-                      >
-                        Löschen
-                      </Button>
-                    </Col>
-                  </Row>
-                ),
-              )}
-              <Row>
-                <Col>
-                  {
-                    <FormBS.Select
-                      value={newTreatment.id}
-                      onChange={(event) => {
-                        setNewTreatment({
-                          ...newTreatment,
-                          id: parseInt(event.target.value),
-                        })
-                      }}
-                    >
-                      <option value={-1} disabled>
-                        Behandlung auswählen
-                      </option>
-                      {Array.from(actions).map(([id, value]) => {
-                        return (
-                          <option key={id} value={id}>
-                            {value.name}
-                          </option>
-                        )
-                      })}
-                    </FormBS.Select>
-                  }
-                </Col>
-                <Col>
-                  <FormBS.Select
-                    value={newTreatment.afterState}
-                    onChange={(event) => {
-                      setNewTreatment({
-                        ...newTreatment,
-                        afterState: event.target.value,
-                      })
-                    }}
-                  >
-                    <option value={""} disabled>
-                      Folgezustand wählen
-                    </option>
-                    {Object.values(activityDiagram.states).map(
-                      (state: State) => {
-                        return (
-                          <option key={state.uuid} value={state.uuid}>
-                            {state.uuid}
-                          </option>
-                        )
-                      },
-                    )}
-                  </FormBS.Select>
-                </Col>
-                <Col>
-                  <Button
-                    onClick={() => {
-                      updateActivityDiagram(
-                        (draft: WritableDraft<ActivityDiagram>) => {
-                          console.log(newTreatment)
-                          // Do not do anything when the user tries to add a treatment with no action or no after state
-                          if (
-                            newTreatment.id === -1 ||
-                            newTreatment.afterState === ""
-                          ) {
-                            return
-                          }
-
-                          draft.states[uuid].treatments[newTreatment.id] =
-                            newTreatment.afterState
-                          setNewTreatment({ id: -1, afterState: "" })
-                        },
-                      )
-                    }}
-                  >
-                    +
-                  </Button>
-                </Col>
-              </Row>
-            </Container>
-          </Col>
-        </Row>
+        <TreatmentSection uuid={uuid} />
         <Row>
           <Col>Parameter</Col>
         </Row>
@@ -344,19 +354,18 @@ function StateEntry({
   )
 }
 
-interface IActivityDiagramContext {
+interface ILoaderDataContext {
   activityDiagram: ActivityDiagram
   updateActivityDiagram: Updater<ActivityDiagram>
+  actions: Map<string, Action>
 }
 
-const ActivityDiagramContext = createContext<IActivityDiagramContext | null>(
-  null,
-)
+const LoaderDataContext = createContext<ILoaderDataContext | null>(null)
 
-function useActivityDiagramContext() {
-  const context = useContext(ActivityDiagramContext)
+function useLoaderDataContext() {
+  const context = useContext(LoaderDataContext)
   if (context === null) {
-    throw new Error("No ActivityDiagramContext provided")
+    throw new Error("No LoaderDataContext provided")
   }
   return context
 }
@@ -374,10 +383,11 @@ export default function StateRoute(): ReactElement {
   )
 
   return (
-    <ActivityDiagramContext.Provider
+    <LoaderDataContext.Provider
       value={{
         activityDiagram: activityDiagram,
         updateActivityDiagram: updateActivityDiagram,
+        actions: actions,
       }}
     >
       <h1>Zustände</h1>
@@ -397,7 +407,7 @@ export default function StateRoute(): ReactElement {
         </ListGroup>
         <Button type="submit">Speichern</Button>
       </Form>
-    </ActivityDiagramContext.Provider>
+    </LoaderDataContext.Provider>
   )
 }
 
