@@ -37,7 +37,7 @@ function StateEntry({
 
   return (
     <ListGroup.Item>
-      <div>{uuid}</div>
+      <h3>{uuid}</h3> {/* TODO: Replace with name */}
       <Container>
         <Row>
           <Col>Folgezustand nach Zeitlimit:</Col>
