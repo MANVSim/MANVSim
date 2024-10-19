@@ -48,7 +48,7 @@ function Section({ title, children }: SectionProps): ReactElement {
   return (
     <Accordion.Item eventKey={title}>
       <Accordion.Header>{title}</Accordion.Header>
-      <Accordion.Body>{children}</Accordion.Body>
+      <Accordion.Body className="d-grid gap-1">{children}</Accordion.Body>
     </Accordion.Item>
   )
 }
