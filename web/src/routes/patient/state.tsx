@@ -23,6 +23,7 @@ import { WritableDraft } from "immer"
 import { StateSelector } from "../../components/StateSelector"
 import { default as FormBS } from "react-bootstrap/Form"
 import NotAvailable from "../../components/NotAvailable"
+import { v4 as uuidv4 } from "uuid"
 
 enum MediaType {
   TEXT = "TEXT",
@@ -396,6 +397,26 @@ export default function StateRoute(): ReactElement {
           {Object.values(activityDiagram.states).map((state: State) => (
             <StateEntry key={state.uuid} uuid={state.uuid} />
           ))}
+          <ListGroup.Item className="d-grid">
+            <Button
+              onClick={() => {
+                updateActivityDiagram((draft) => {
+                  const uuid = uuidv4()
+                  draft.states[uuid] = {
+                    start_time: 0,
+                    pause_time: 0,
+                    uuid: uuid,
+                    after_time_state_uuid: "",
+                    timelimit: -1,
+                    treatments: {},
+                    conditions: {},
+                  }
+                })
+              }}
+            >
+              Neuer Zustand
+            </Button>
+          </ListGroup.Item>
         </ListGroup>
         <Button type="submit">Speichern</Button>
       </Form>

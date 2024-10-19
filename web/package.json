@@ -30,6 +30,7 @@
     "react-router-bootstrap": "^0.26.3",
     "react-router-dom": "^6.23.1",
     "use-immer": "^0.10.0",
+    "uuid": "^10.0.0",
     "yaml": "^2.6.0",
     "zod": "^3.23.8"
   },
@@ -37,6 +38,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
