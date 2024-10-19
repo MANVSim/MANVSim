@@ -1,4 +1,11 @@
-import { ChangeEvent, ReactElement, useEffect, useState } from "react"
+import {
+  ChangeEvent,
+  ReactElement,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 import { LoaderFunctionArgs, useLoaderData } from "react-router"
 import { getActions, getPatient } from "../../api"
 import { Action, ActivityDiagram, Patient, State } from "../../types"
@@ -10,17 +17,65 @@ import { StateSelector } from "../../components/StateSelector"
 import { default as FormBS } from "react-bootstrap/Form"
 import NotAvailable from "../../components/NotAvailable"
 
+enum MediaType {
+  TEXT = "TEXT",
+  IMAGE = "IMAGE",
+  VIDEO = "VIDEO",
+}
+
+interface TimelimitSectionProps {
+  uuid: string
+}
+
+function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
+  const { activityDiagram, updateActivityDiagram } = useActivityDiagramContext()
+  const state = activityDiagram.states[uuid]
+  return (
+    <div>
+      <Row>
+        <Col>Folgezustand nach Zeitlimit:</Col>
+        <Col>
+          <StateSelector
+            current={state.after_time_state_uuid}
+            update={(new_value: string): void => {
+              updateActivityDiagram(
+                (draft: WritableDraft<ActivityDiagram>): void => {
+                  draft.states[uuid].after_time_state_uuid =
+                    uuid !== new_value ? new_value : ""
+                },
+              )
+            }}
+            states={activityDiagram.states}
+          />
+        </Col>
+      </Row>
+      {state.after_time_state_uuid && (
+        <Row>
+          <Col>Zeitlimit:</Col>
+          <Col>
+            <input
+              type="number"
+              value={state.timelimit}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                updateActivityDiagram(
+                  (draft: WritableDraft<ActivityDiagram>): void => {
+                    draft.states[uuid].timelimit = parseInt(event.target.value)
+                  },
+                )
+              }}
+            />
+          </Col>
+        </Row>
+      )}
+    </div>
+  )
+}
+
 interface StateEntryProps {
   uuid: string
   activityDiagram: ActivityDiagram
   updateActivityDiagram: Updater<ActivityDiagram>
   actions: Map<string, Action>
-}
-
-enum MediaType {
-  TEXT = "TEXT",
-  IMAGE = "IMAGE",
-  VIDEO = "VIDEO",
 }
 
 function StateEntry({
@@ -39,43 +94,7 @@ function StateEntry({
     <ListGroup.Item>
       <h3>{uuid}</h3> {/* TODO: Replace with name */}
       <Container>
-        <Row>
-          <Col>Folgezustand nach Zeitlimit:</Col>
-          <Col>
-            <StateSelector
-              current={state.after_time_state_uuid}
-              update={(new_value: string): void => {
-                updateActivityDiagram(
-                  (draft: WritableDraft<ActivityDiagram>): void => {
-                    draft.states[uuid].after_time_state_uuid =
-                      uuid !== new_value ? new_value : ""
-                  },
-                )
-              }}
-              states={activityDiagram.states}
-            />
-          </Col>
-        </Row>
-        {state.after_time_state_uuid && (
-          <Row>
-            <Col>Zeitlimit:</Col>
-            <Col>
-              <input
-                type="number"
-                value={state.timelimit}
-                onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                  updateActivityDiagram(
-                    (draft: WritableDraft<ActivityDiagram>): void => {
-                      draft.states[uuid].timelimit = parseInt(
-                        event.target.value,
-                      )
-                    },
-                  )
-                }}
-              />
-            </Col>
-          </Row>
-        )}
+        <TimelimitSection uuid={uuid} />
         <Row>
           <Col>Behandlungen:</Col>
         </Row>
@@ -325,6 +344,23 @@ function StateEntry({
   )
 }
 
+interface IActivityDiagramContext {
+  activityDiagram: ActivityDiagram
+  updateActivityDiagram: Updater<ActivityDiagram>
+}
+
+const ActivityDiagramContext = createContext<IActivityDiagramContext | null>(
+  null,
+)
+
+function useActivityDiagramContext() {
+  const context = useContext(ActivityDiagramContext)
+  if (context === null) {
+    throw new Error("No ActivityDiagramContext provided")
+  }
+  return context
+}
+
 interface LoaderData {
   patient: Patient
   actions: Map<string, Action>
@@ -338,7 +374,12 @@ export default function StateRoute(): ReactElement {
   )
 
   return (
-    <div>
+    <ActivityDiagramContext.Provider
+      value={{
+        activityDiagram: activityDiagram,
+        updateActivityDiagram: updateActivityDiagram,
+      }}
+    >
       <h1>Zustände</h1>
       <div>Patient: {patient.name}</div>
       <hr />
@@ -356,7 +397,7 @@ export default function StateRoute(): ReactElement {
         </ListGroup>
         <Button type="submit">Speichern</Button>
       </Form>
-    </div>
+    </ActivityDiagramContext.Provider>
   )
 }
 
