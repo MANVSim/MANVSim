@@ -76,21 +76,20 @@ function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
           states={activityDiagram.states}
         />
       </Attribute>
-      {state.after_time_state_uuid && (
-        <Attribute name="Zeitlimit">
-          <input
-            type="number"
-            value={state.timelimit}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              updateActivityDiagram(
-                (draft: WritableDraft<ActivityDiagram>): void => {
-                  draft.states[uuid].timelimit = parseInt(event.target.value)
-                },
-              )
-            }}
-          />
-        </Attribute>
-      )}
+      <Attribute name="Zeitlimit">
+        <input
+          disabled={state.after_time_state_uuid === ""}
+          type="number"
+          value={state.timelimit}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            updateActivityDiagram(
+              (draft: WritableDraft<ActivityDiagram>): void => {
+                draft.states[uuid].timelimit = parseInt(event.target.value)
+              },
+            )
+          }}
+        />
+      </Attribute>
     </Section>
   )
 }
