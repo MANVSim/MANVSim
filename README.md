@@ -38,11 +38,11 @@ To quickly deploy the MANVSim project, follow the instructions in the
 
 ## Software Components
 
-Additional information on the individual MANVSim components is linked here:
+For more details on starting and developing each component, as well as access to their respective documentation, follow the links below:
 
 ### App
 
-For additional information on how to start and develop the app component or detailed documentation look [here](doc/app/README.md).
+Instructions for building and developing the Flutter app can be found [here](doc/app/README.md).
 
 ### Server
 
@@ -50,4 +50,4 @@ For additional information on how to start and develop the server component or d
 
 ### Web
 
-For additional information on how to start and develop the web component or detailed documentation look [here](web/README.md).
+Details on launching and developing the React admin frontend are located [here](web/README.md).
