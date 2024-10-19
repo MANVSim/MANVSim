@@ -221,7 +221,7 @@ function StateEntry({
         </Row>
         <Row>
           <Col>
-            <Container>
+            <Container className="d-grid gap-3">
               {Object.entries(state.conditions)
                 .sort()
                 .map(([name, conditions]) => {
