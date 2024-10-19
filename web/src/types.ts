@@ -213,12 +213,17 @@ const patientResponse = z.object({
 export type PatientResponse = z.infer<typeof patientResponse>
 export const isPatientRepsonse = isTypeFactory<PatientResponse>(patientResponse)
 
+export const mediaTypes = z.enum(["IMAGE", "VIDEO", "TEXT", "AUDIO"])
+export type MediaTypeEnum = z.infer<typeof mediaTypes>
+
 const condition = z.object({
-  media_type: z.string(),
+  media_type: mediaTypes,
   title: z.string().or(z.null()),
   text: z.string().or(z.null()),
   media_reference: z.string().or(z.null()),
 })
+
+export type Condition = z.infer<typeof condition>
 
 const state = z.object({
   pause_time: z.number(),
