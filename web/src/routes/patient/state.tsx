@@ -44,7 +44,7 @@ function Section({ title, children }: SectionProps): ReactElement {
         <h5>{title}</h5>
       </Row>
       <Row>
-        <Container>{children}</Container>
+        <Container className="d-grid gap-1">{children}</Container>
       </Row>
     </div>
   )
