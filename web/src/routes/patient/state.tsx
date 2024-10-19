@@ -45,6 +45,7 @@ function Attribute({ name, children }: AttributeProps): ReactElement {
 type SectionProps = PropsWithChildren<{
   title: string
 }>
+
 function Section({ title, children }: SectionProps): ReactElement {
   return (
     <Accordion.Item eventKey={title}>
@@ -64,9 +65,10 @@ function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
   return (
     <Section title="Zeitlimit">
       <Attribute name="Folgezustand">
-        <StateSelector
-          current={state.after_time_state_uuid}
-          update={(new_value: string): void => {
+        <FormBS.Select
+          value={state.after_time_state_uuid}
+          onChange={(event): void => {
+            const new_value = event.target.value
             updateActivityDiagram(
               (draft: WritableDraft<ActivityDiagram>): void => {
                 draft.states[uuid].after_time_state_uuid =
@@ -74,8 +76,17 @@ function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
               },
             )
           }}
-          states={activityDiagram.states}
-        />
+        >
+          <option value={state.uuid}>Kein Folgezustand</option>
+          {Object.values(activityDiagram.states).map((s: State) => {
+            // List all states except the current one
+            return s === state ? null : (
+              <option key={s.uuid} value={s.uuid}>
+                {s.uuid}
+              </option>
+            )
+          })}
+        </FormBS.Select>
       </Attribute>
       <Attribute name="Zeitlimit">
         <input
