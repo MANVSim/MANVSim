@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactElement, useState } from "react"
+import { ChangeEvent, ReactElement, useEffect, useState } from "react"
 import { LoaderFunctionArgs, useLoaderData } from "react-router"
 import { getActions, getPatient } from "../../api"
 import { Action, ActivityDiagram, Patient, State } from "../../types"
@@ -8,6 +8,7 @@ import { Form } from "react-router-dom"
 import { WritableDraft } from "immer"
 import { StateSelector } from "../../components/StateSelector"
 import { default as FormBS } from "react-bootstrap/Form"
+import NotAvailable from "../../components/NotAvailable"
 
 interface StateEntryProps {
   uuid: string
@@ -29,6 +30,9 @@ function StateEntry({
   actions,
 }: StateEntryProps): ReactElement {
   const state = activityDiagram.states[uuid]
+  useEffect(() => {
+    console.log(state)
+  }, [state])
   const [newTreatment, setNewTreatment] = useState({ id: -1, afterState: "" })
 
   return (
@@ -218,49 +222,71 @@ function StateEntry({
         <Row>
           <Col>
             <Container>
-              {Object.entries(state.conditions).map(([name, conditions]) => {
-                return (
-                  <Row key={name}>
-                    <Col>{name}</Col>
-                    <Col>
-                      {conditions.map((condition, i) => {
-                        return (
-                          <div key={i}>
-                            <Row>
-                              <Col>Medientyp:</Col>
-                              <Col>
-                                <FormBS.Select value={condition.media_type}>
-                                  {Object.values(MediaType).map((mediaType) => {
-                                    return (
-                                      <option key={mediaType} value={mediaType}>
-                                        {mediaType}
-                                      </option>
-                                    )
-                                  })}
-                                </FormBS.Select>
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col>Titel:</Col>
-                              <Col>{condition.title || <i>n.a.</i>}</Col>
-                            </Row>
-                            <Row>
-                              <Col>Text:</Col>
-                              <Col>{condition.text}</Col>
-                            </Row>
-                            <Row>
-                              <Col>Medienreferenz:</Col>
-                              <Col>
-                                {condition.media_reference || <i>n.a.</i>}
-                              </Col>
-                            </Row>
-                          </div>
-                        )
-                      })}
-                    </Col>
-                  </Row>
-                )
-              })}
+              {Object.entries(state.conditions)
+                .sort()
+                .map(([name, conditions]) => {
+                  return (
+                    <Row key={name}>
+                      <Col>{name}</Col>
+                      <Col>
+                        {conditions.map((condition, i) => {
+                          return (
+                            <div key={i}>
+                              <Row>
+                                <Col>Medientyp:</Col>
+                                <Col>
+                                  <FormBS.Select
+                                    value={condition.media_type}
+                                    onChange={(event) => {
+                                      updateActivityDiagram(
+                                        (
+                                          draft: WritableDraft<ActivityDiagram>,
+                                        ) => {
+                                          draft.states[uuid].conditions[name][
+                                            i
+                                          ].media_type = event.target.value
+                                        },
+                                      )
+                                    }}
+                                  >
+                                    {Object.values(MediaType).map(
+                                      (mediaType) => {
+                                        return (
+                                          <option
+                                            key={mediaType}
+                                            value={mediaType}
+                                          >
+                                            {mediaType}
+                                          </option>
+                                        )
+                                      },
+                                    )}
+                                  </FormBS.Select>
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col>Titel:</Col>
+                                <Col>{condition.title || <NotAvailable />}</Col>
+                              </Row>
+                              <Row>
+                                <Col>Text:</Col>
+                                <Col>{condition.text || <NotAvailable />}</Col>
+                              </Row>
+                              <Row>
+                                <Col>Medienreferenz:</Col>
+                                <Col>
+                                  {condition.media_reference || (
+                                    <NotAvailable />
+                                  )}
+                                </Col>
+                              </Row>
+                            </div>
+                          )
+                        })}
+                      </Col>
+                    </Row>
+                  )
+                })}
             </Container>
           </Col>
         </Row>
