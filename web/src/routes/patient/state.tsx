@@ -231,7 +231,7 @@ function StateEntry({
                       <Col>
                         {conditions.map((condition, i) => {
                           return (
-                            <div key={i}>
+                            <div key={i} className="d-grid gap-1">
                               <Row>
                                 <Col>Medientyp:</Col>
                                 <Col>
