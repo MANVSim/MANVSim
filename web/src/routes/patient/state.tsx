@@ -449,13 +449,13 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
         name="start-state"
         type="radio"
         label="Startzustand"
-        checked={activityDiagram.current.uuid === uuid}
+        checked={activityDiagram.current === uuid}
         onChange={(event) => {
           if (!event.target.checked) {
             return
           }
           updateActivityDiagram((draft: WritableDraft<ActivityDiagram>) => {
-            draft.current = activityDiagram.states[uuid]
+            draft.current = uuid
           })
         }}
       />

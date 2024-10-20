@@ -245,7 +245,7 @@ const state = z.object({
 export type State = z.infer<typeof state>
 
 const activityDiagram = z.object({
-  current: state,
+  current: z.string(),
   states: z.record(z.string(), state),
 })
 
