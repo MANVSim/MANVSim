@@ -1,4 +1,5 @@
-from flask import Blueprint, Response
+import json
+from flask import Blueprint, Response, request
 
 import models
 from utils.decorator import role_required
@@ -38,5 +39,19 @@ def get_patient(patient_id: int):
     return {
         "id": patient.id,
         "name": patient.template_name,
-        "activity_diagram": patient.activity_diagram,
+        "activity_diagram": json.loads(patient.activity_diagram)
     }
+
+
+@web_api.put("/patient/<int:patient_id>")
+def update_patient(patient_id: int):
+    """
+    Updates a patient by ID
+    """
+    content = request.json
+    if content is None:
+        return {"error": "No JSON body provided"}, 400
+    patient: models.Patient = models.Patient.query.get_or_404(patient_id)
+    patient.activity_diagram = json.dumps(content["activity_diagram"])
+    models.db.session.commit()
+    return Response(status=200)

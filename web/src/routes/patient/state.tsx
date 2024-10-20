@@ -6,8 +6,12 @@ import {
   useContext,
   useState,
 } from "react"
-import { LoaderFunctionArgs, useLoaderData } from "react-router"
-import { getActions, getPatient } from "../../api"
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  useLoaderData,
+} from "react-router"
+import { getActions, getPatient, putPatient } from "../../api"
 import {
   Action,
   ActivityDiagram,
@@ -25,7 +29,7 @@ import {
   Row,
 } from "react-bootstrap"
 import { Updater, useImmer } from "use-immer"
-import { Form } from "react-router-dom"
+import { useSubmit } from "react-router-dom"
 import { WritableDraft } from "immer"
 import { StateSelector } from "../../components/StateSelector"
 import { default as FormBS } from "react-bootstrap/Form"
@@ -412,7 +416,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
   return (
     <ListGroup.Item>
       <h3>{uuid}</h3> {/* TODO: Replace with name */}
-      <Accordion flush alwaysOpen defaultActiveKey="Zeitlimit">
+      <Accordion flush alwaysOpen>
         <TimelimitSection uuid={uuid} />
         <TreatmentSection uuid={uuid} />
         <ParameterSection uuid={uuid} />
@@ -448,6 +452,7 @@ export default function StateRoute(): ReactElement {
   const [activityDiagram, updateActivityDiagram] = useImmer(
     patient.activity_diagram,
   )
+  const submit = useSubmit()
 
   return (
     <LoaderDataContext.Provider
@@ -459,37 +464,45 @@ export default function StateRoute(): ReactElement {
     >
       <h1>Zustände</h1>
       <div>Patient: {patient.name}</div>
-      <Button type="submit">
+      <Button
+        onClick={() => {
+          submit(
+            { ...patient, activity_diagram: activityDiagram },
+            {
+              method: "PUT",
+              encType: "application/json",
+            },
+          )
+        }}
+      >
         <FontAwesomeIcon icon={faSave} />
       </Button>
       <hr />
-      <Form method="PUT" className="d-grid gap-2">
-        <ListGroup>
-          {Object.values(activityDiagram.states).map((state: State) => (
-            <StateEntry key={state.uuid} uuid={state.uuid} />
-          ))}
-          <ListGroup.Item className="d-grid">
-            <Button
-              onClick={() => {
-                updateActivityDiagram((draft) => {
-                  const uuid = uuidv4()
-                  draft.states[uuid] = {
-                    start_time: 0,
-                    pause_time: 0,
-                    uuid: uuid,
-                    after_time_state_uuid: "",
-                    timelimit: -1,
-                    treatments: {},
-                    conditions: {},
-                  }
-                })
-              }}
-            >
-              <FontAwesomeIcon icon={faPlus} /> Neuer Zustand
-            </Button>
-          </ListGroup.Item>
-        </ListGroup>
-      </Form>
+      <ListGroup>
+        {Object.values(activityDiagram.states).map((state: State) => (
+          <StateEntry key={state.uuid} uuid={state.uuid} />
+        ))}
+        <ListGroup.Item className="d-grid">
+          <Button
+            onClick={() => {
+              updateActivityDiagram((draft) => {
+                const uuid = uuidv4()
+                draft.states[uuid] = {
+                  start_time: 0,
+                  pause_time: 0,
+                  uuid: uuid,
+                  after_time_state_uuid: "",
+                  timelimit: -1,
+                  treatments: {},
+                  conditions: {},
+                }
+              })
+            }}
+          >
+            <FontAwesomeIcon icon={faPlus} /> Neuer Zustand
+          </Button>
+        </ListGroup.Item>
+      </ListGroup>
     </LoaderDataContext.Provider>
   )
 }
@@ -511,14 +524,21 @@ StateRoute.loader = async function ({
   }
 
   return {
-    patient: {
-      ...patient,
-      activity_diagram: JSON.parse(patient.activity_diagram || "{}"),
-    },
+    patient: patient,
     actions: actions,
   }
 }
 
-StateRoute.action = async function () {
+StateRoute.action = async function ({
+  request,
+  params: { patientId },
+}: ActionFunctionArgs) {
+  if (patientId === undefined) {
+    throw new Error("No patient ID provided")
+  }
+  const patient: Patient = await request.json()
+
+  putPatient(patientId, patient)
+
   return null
 }

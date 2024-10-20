@@ -12,7 +12,13 @@ import { Dispatch, SetStateAction } from "react"
 function isTypeFactory<T>(
   zobj: ReturnType<typeof z.object>,
 ): (x: unknown) => x is T {
-  return (x: unknown): x is T => zobj.safeParse(x).success
+  return (x: unknown): x is T => {
+    const parsed = zobj.safeParse(x)
+    if (!parsed.success) {
+      console.error(`Invalid object: ${parsed.error.issues}`)
+    }
+    return parsed.success
+  }
 }
 
 // CsrfToken
