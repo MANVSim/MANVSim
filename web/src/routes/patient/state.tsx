@@ -32,7 +32,7 @@ import { default as FormBS } from "react-bootstrap/Form"
 import NotAvailable from "../../components/NotAvailable"
 import { v4 as uuidv4 } from "uuid"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faPlus, faTrash, faSave } from "@fortawesome/free-solid-svg-icons"
 
 type AttributeProps = PropsWithChildren<{ name: string }>
 
@@ -456,6 +456,9 @@ export default function StateRoute(): ReactElement {
     >
       <h1>Zustände</h1>
       <div>Patient: {patient.name}</div>
+      <Button type="submit">
+        <FontAwesomeIcon icon={faSave} />
+      </Button>
       <hr />
       <Form method="PUT" className="d-grid gap-2">
         <ListGroup>
@@ -483,7 +486,6 @@ export default function StateRoute(): ReactElement {
             </Button>
           </ListGroup.Item>
         </ListGroup>
-        <Button type="submit">Speichern</Button>
       </Form>
     </LoaderDataContext.Provider>
   )
