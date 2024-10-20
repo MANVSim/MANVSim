@@ -36,7 +36,13 @@ import Form from "react-bootstrap/Form"
 import NotAvailable from "../../components/NotAvailable"
 import { v4 as uuidv4 } from "uuid"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPlus, faTrash, faSave } from "@fortawesome/free-solid-svg-icons"
+import {
+  faPlus,
+  faTrash,
+  faSave,
+  faEdit,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons"
 
 type AttributeProps = PropsWithChildren<{ name: string }>
 
@@ -415,9 +421,30 @@ interface StateEntryProps {
 function StateEntry({ uuid }: StateEntryProps): ReactElement {
   const { activityDiagram, updateActivityDiagram } = useLoaderDataContext()
   const state = activityDiagram.states[uuid]
+  const [editing, setEditing] = useState(false)
   return (
     <ListGroup.Item>
-      <h3>{state.name}</h3> {/* TODO: Replace with name */}
+      <h3 className="hstack gap-1">
+        {editing ? (
+          <input
+            value={state.name}
+            onChange={(event) => {
+              updateActivityDiagram((draft: WritableDraft<ActivityDiagram>) => {
+                draft.states[uuid].name = event.target.value
+              })
+            }}
+          />
+        ) : (
+          state.name
+        )}
+        <Button
+          size="sm"
+          title="Zustandsnamen ändern"
+          onClick={() => setEditing(!editing)}
+        >
+          <FontAwesomeIcon size="sm" icon={editing ? faCheck : faEdit} />
+        </Button>
+      </h3>
       <Form.Check
         name="start-state"
         type="radio"
