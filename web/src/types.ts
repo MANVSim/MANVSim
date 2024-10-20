@@ -15,7 +15,7 @@ function isTypeFactory<T>(
   return (x: unknown): x is T => {
     const parsed = zobj.safeParse(x)
     if (!parsed.success) {
-      console.error(`Invalid object: ${parsed.error.issues}`)
+      console.error("Invalid object:", parsed.error.issues)
     }
     return parsed.success
   }
@@ -232,6 +232,7 @@ const condition = z.object({
 export type Condition = z.infer<typeof condition>
 
 const state = z.object({
+  name: z.string(),
   pause_time: z.number(),
   uuid: z.string(),
   start_time: z.number(),

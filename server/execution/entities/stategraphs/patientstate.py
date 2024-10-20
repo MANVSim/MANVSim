@@ -14,7 +14,8 @@ class PatientState:
                  start_time: int = -1, timelimit: int = -1,
                  after_time_state_uuid: str = "",
                  conditions: Optional[dict[str, list[MediaData]]] = None,
-                 pause_time: int = -1):
+                 pause_time: int = -1,
+                 name: str = ""):
         if not treatments:
             treatments = {}
         if not conditions:
@@ -29,6 +30,7 @@ class PatientState:
         self.after_time_state_uuid = after_time_state_uuid
         self.treatments = treatments
         self.conditions = conditions
+        self.name = name
 
     def __repr__(self):
         return f"PatientState(uuid: {self.uuid})"
@@ -71,7 +73,8 @@ class PatientState:
         conditions = {}
         for key in keys:
             if key in self.conditions.keys():
-                conditions[key] = [val.to_dict() for val in self.conditions[key]]
+                conditions[key] = [val.to_dict()
+                                   for val in self.conditions[key]]
             else:
                 conditions[key] = []
         return conditions
@@ -136,8 +139,9 @@ class PatientState:
         conditions: dict = cls.__conditions_from_dict(
             data.get("conditions", {}))
         pause_time: int = data.get("pause_time", -1)
+        name: str = data.get("name", "")
         return cls(state_uuid, treatments, start_time, timelimit,
-                   after_time_state_uuid, conditions, pause_time)
+                   after_time_state_uuid, conditions, pause_time, name)
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict())

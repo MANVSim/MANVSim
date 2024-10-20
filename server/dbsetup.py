@@ -189,8 +189,10 @@ def __create_actions():
 
 
 def __create_roles():
-    insert(Role(id=0, name="Rettungssanitäter:in", short_name="RettSan", power=100))
-    insert(Role(id=1, name="Rettungsassistent:in", short_name="RettAss", power=200))
+    insert(Role(id=0, name="Rettungssanitäter:in",
+           short_name="RettSan", power=100))
+    insert(Role(id=1, name="Rettungsassistent:in",
+           short_name="RettAss", power=200))
     insert(Role(id=3, name="Notfallsanitäter:in", short_name="NotSan", power=250))
     insert(Role(id=2, name="Notarzt:in", short_name="NotAss", power=300))
 
@@ -269,21 +271,31 @@ def __create_patients():
 
 def __patient_in_scenario():
     # Schock
-    insert(PatientInScenario(scenario_id=0, patient_id=0, name="Thomas Meier", location_id=7))
-    insert(PatientInScenario(scenario_id=0, patient_id=0, name="Hans Schmidt", location_id=8))
+    insert(PatientInScenario(scenario_id=0, patient_id=0,
+           name="Thomas Meier", location_id=7))
+    insert(PatientInScenario(scenario_id=0, patient_id=0,
+           name="Hans Schmidt", location_id=8))
     # Allergie
-    insert(PatientInScenario(scenario_id=0, patient_id=1, name="Andreas Fischer", location_id=7))
+    insert(PatientInScenario(scenario_id=0, patient_id=1,
+           name="Andreas Fischer", location_id=7))
     # Schnittwunde
-    insert(PatientInScenario(scenario_id=0, patient_id=2, name="Maria Müller", location_id=7))
-    insert(PatientInScenario(scenario_id=0, patient_id=2, name="Lisa Wagner", location_id=8))
+    insert(PatientInScenario(scenario_id=0, patient_id=2,
+           name="Maria Müller", location_id=7))
+    insert(PatientInScenario(scenario_id=0, patient_id=2,
+           name="Lisa Wagner", location_id=8))
     # Infiziert
-    insert(PatientInScenario(scenario_id=0, patient_id=3, name="Stefan Becker", location_id=9))
+    insert(PatientInScenario(scenario_id=0, patient_id=3,
+           name="Stefan Becker", location_id=9))
 
     # Dead (Zombies)
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Waltraud Wiedergänger", location_id=9))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Gertrud Gierig", location_id=9))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Herbert Fleischmann", location_id=9))
-    insert(PatientInScenario(scenario_id=0, patient_id=4, name="Heinz Hirntot", location_id=10))
+    insert(PatientInScenario(scenario_id=0, patient_id=4,
+           name="Waltraud Wiedergänger", location_id=9))
+    insert(PatientInScenario(scenario_id=0, patient_id=4,
+           name="Gertrud Gierig", location_id=9))
+    insert(PatientInScenario(scenario_id=0, patient_id=4,
+           name="Herbert Fleischmann", location_id=9))
+    insert(PatientInScenario(scenario_id=0, patient_id=4,
+           name="Heinz Hirntot", location_id=10))
 
 
 def __create_scenarios():
@@ -570,36 +582,36 @@ def __create_activity_diagrams():
     # States s1-s11
     # Patient - 0
     s1 = PatientState(state_uuid=uuid_s1, treatments=treatment_s1,
-                      conditions=s1_conditions)
+                      conditions=s1_conditions, name="Status 1")
     s2 = PatientState(state_uuid=uuid_s2, treatments={},
-                      conditions=s2_conditions)
+                      conditions=s2_conditions, name="Status 2")
     # Patient - 1
     s3 = PatientState(state_uuid=uuid_s3, treatments=treatment_s3,
-                      conditions=s3_conditions)
+                      conditions=s3_conditions, name="Status 3")
     s4 = PatientState(state_uuid=uuid_s4, treatments=treatment_s4,
-                      conditions=s4_conditions)
+                      conditions=s4_conditions, name="Status 4")
 
     # Patient - 2
     s5 = PatientState(state_uuid=uuid_s5, treatments=treatment_s5,
-                      conditions=s5_conditions)
+                      conditions=s5_conditions, name="Status 5")
     s6 = PatientState(state_uuid=uuid_s6, treatments=treatment_s6,
-                      conditions=s6_conditions)
+                      conditions=s6_conditions, name="Status 6")
     s7 = PatientState(state_uuid=uuid_s7, treatments=treatment_s7,
-                      conditions=s7_conditions)
+                      conditions=s7_conditions, name="Status 7")
 
     # Patient - 3
     s8 = PatientState(state_uuid=uuid_s8, treatments=treatment_s8,
                       conditions=s8_conditions,
-                      timelimit=600, after_time_state_uuid=uuid_s11)
+                      timelimit=600, after_time_state_uuid=uuid_s11, name="600s Zeit")
     s9 = PatientState(state_uuid=uuid_s9, treatments=treatment_s9,
                       conditions=s9_conditions,
-                      timelimit=1200, after_time_state_uuid=uuid_s11)
+                      timelimit=1200, after_time_state_uuid=uuid_s11, name="1200s Zeit")
 
     # Other
     s10 = PatientState(state_uuid=uuid_s10, treatments={},
-                       conditions=healthy_conditions)
+                       conditions=healthy_conditions, name="Gesund")
     s11 = PatientState(state_uuid=uuid_s11, treatments={},
-                       conditions=dead)
+                       conditions=dead, name="Tot")
 
     # ActivityDiagram a0-a5
     acd1 = ActivityDiagram(root=s1, states=[s1, s2])  # Patient - 0
@@ -613,9 +625,10 @@ def __create_activity_diagrams():
     return acd1, acd2, acd3, acd4, acd5
 
 
-def db_setup(app: Flask| None = None, database: SQLAlchemy| None = None):
+def db_setup(app: Flask | None = None, database: SQLAlchemy | None = None):
     if not database:
-        logging.error("Empty database object provided. Unable to setup database.")
+        logging.error(
+            "Empty database object provided. Unable to setup database.")
         return
     if not app:
         app = create_app(csrf=csrf, db=database)
@@ -647,6 +660,7 @@ def db_setup(app: Flask| None = None, database: SQLAlchemy| None = None):
         insert(WebUser(username="read",
                        password=hashpw(b"pw1234", gensalt()).decode(),
                        role=WebUser.Role.READ_ONLY.name))
+
 
 if __name__ == "__main__":
     db_setup(database=db)

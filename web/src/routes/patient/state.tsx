@@ -414,9 +414,10 @@ interface StateEntryProps {
 
 function StateEntry({ uuid }: StateEntryProps): ReactElement {
   const { activityDiagram, updateActivityDiagram } = useLoaderDataContext()
+  const state = activityDiagram.states[uuid]
   return (
     <ListGroup.Item>
-      <h3>{uuid}</h3> {/* TODO: Replace with name */}
+      <h3>{state.name}</h3> {/* TODO: Replace with name */}
       <Form.Check
         name="start-state"
         type="radio"
@@ -503,6 +504,7 @@ export default function StateRoute(): ReactElement {
               updateActivityDiagram((draft) => {
                 const uuid = uuidv4()
                 draft.states[uuid] = {
+                  name: "",
                   start_time: 0,
                   pause_time: 0,
                   uuid: uuid,
