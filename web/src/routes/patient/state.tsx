@@ -355,6 +355,7 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
                         },
                       )
                     }}
+                    title="Parameter löschen"
                   >
                     <FontAwesomeIcon icon={faTrash} />
                   </Button>
