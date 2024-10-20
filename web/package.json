@@ -13,6 +13,8 @@
   "dependencies": {
     "@codemirror/lang-yaml": "^6.1.1",
     "@codemirror/language": "^6.10.2",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@types/lodash": "^4.17.5",
     "@types/react-router": "^5.1.20",
     "@types/react-router-bootstrap": "^0.26.6",
