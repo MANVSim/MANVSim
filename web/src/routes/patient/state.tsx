@@ -32,7 +32,7 @@ import { default as FormBS } from "react-bootstrap/Form"
 import NotAvailable from "../../components/NotAvailable"
 import { v4 as uuidv4 } from "uuid"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 type AttributeProps = PropsWithChildren<{ name: string }>
 
@@ -170,7 +170,7 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
                     )
                   }}
                 >
-                  Löschen
+                  <FontAwesomeIcon icon={faTrash} />
                 </Button>
               </Col>
             </Row>
@@ -243,7 +243,7 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
                 )
               }}
             >
-              +
+              <FontAwesomeIcon icon={faPlus} />
             </Button>
           </Col>
         </Row>
@@ -392,7 +392,7 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
                 )
               }}
             >
-              + Neuer Parameter
+              <FontAwesomeIcon icon={faPlus} /> Neuer Parameter
             </Button>
           </Col>
         </Row>
@@ -479,7 +479,7 @@ export default function StateRoute(): ReactElement {
                 })
               }}
             >
-              Neuer Zustand
+              <FontAwesomeIcon icon={faPlus} /> Neuer Zustand
             </Button>
           </ListGroup.Item>
         </ListGroup>
