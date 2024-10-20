@@ -95,7 +95,7 @@ function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
             // List all states except the current one
             return s === state ? null : (
               <option key={s.uuid} value={s.uuid}>
-                {s.uuid}
+                {s.name}
               </option>
             )
           })}
@@ -229,7 +229,7 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
               {Object.values(activityDiagram.states).map((state: State) => {
                 return (
                   <option key={state.uuid} value={state.uuid}>
-                    {state.uuid}
+                    {state.name}
                   </option>
                 )
               })}

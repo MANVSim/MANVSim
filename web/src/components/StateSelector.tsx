@@ -2,7 +2,7 @@ import { ChangeEvent, ReactElement } from "react"
 import { Form } from "react-bootstrap"
 import { State } from "../types"
 
-type PartialState = Pick<State, "uuid">
+type PartialState = Pick<State, "uuid" | "name">
 
 interface StateSelectorProps {
   states: Record<string, PartialState>
@@ -23,7 +23,7 @@ export function StateSelector({
       }}
     >
       {Object.values(states).map((state: PartialState): ReactElement => {
-        return <option key={state.uuid}>{state.uuid}</option>
+        return <option key={state.uuid}>{state.name}</option>
       })}
     </Form.Select>
   )
