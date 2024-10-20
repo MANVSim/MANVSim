@@ -32,7 +32,7 @@ import { Updater, useImmer } from "use-immer"
 import { useSubmit } from "react-router-dom"
 import { WritableDraft } from "immer"
 import { StateSelector } from "../../components/StateSelector"
-import { default as FormBS } from "react-bootstrap/Form"
+import Form from "react-bootstrap/Form"
 import NotAvailable from "../../components/NotAvailable"
 import { v4 as uuidv4 } from "uuid"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -72,7 +72,7 @@ function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
   return (
     <Section title="Zeitlimit">
       <Attribute name="Folgezustand">
-        <FormBS.Select
+        <Form.Select
           value={state.after_time_state_uuid}
           onChange={(event): void => {
             const new_value = event.target.value
@@ -93,7 +93,7 @@ function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
               </option>
             )
           })}
-        </FormBS.Select>
+        </Form.Select>
       </Attribute>
       <Attribute name="Zeitlimit">
         <input
@@ -131,7 +131,7 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
           ([actionId, afterState]: [string, string]): ReactElement => (
             <Row key={actionId}>
               <Col>
-                <FormBS.Select
+                <Form.Select
                   value={actionId}
                   onChange={(event) => {
                     updateActivityDiagram(
@@ -150,7 +150,7 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
                       </option>
                     )
                   })}
-                </FormBS.Select>
+                </Form.Select>
               </Col>
               <Col>
                 <StateSelector
@@ -185,7 +185,7 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
         <Row>
           <Col>
             {
-              <FormBS.Select
+              <Form.Select
                 value={newTreatment.id}
                 onChange={(event) => {
                   setNewTreatment({
@@ -204,11 +204,11 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
                     </option>
                   )
                 })}
-              </FormBS.Select>
+              </Form.Select>
             }
           </Col>
           <Col>
-            <FormBS.Select
+            <Form.Select
               value={newTreatment.afterState}
               onChange={(event) => {
                 setNewTreatment({
@@ -227,7 +227,7 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
                   </option>
                 )
               })}
-            </FormBS.Select>
+            </Form.Select>
           </Col>
           <Col>
             <Button
@@ -282,7 +282,7 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
                         <Row>
                           <Col>Medientyp:</Col>
                           <Col>
-                            <FormBS.Select
+                            <Form.Select
                               value={condition.media_type}
                               onChange={(event) => {
                                 updateActivityDiagram(
@@ -304,7 +304,7 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
                                   )
                                 },
                               )}
-                            </FormBS.Select>
+                            </Form.Select>
                           </Col>
                         </Row>
                         <Row>
@@ -413,9 +413,24 @@ interface StateEntryProps {
 }
 
 function StateEntry({ uuid }: StateEntryProps): ReactElement {
+  const { activityDiagram, updateActivityDiagram } = useLoaderDataContext()
   return (
     <ListGroup.Item>
       <h3>{uuid}</h3> {/* TODO: Replace with name */}
+      <Form.Check
+        name="start-state"
+        type="radio"
+        label="Startzustand"
+        checked={activityDiagram.current.uuid === uuid}
+        onChange={(event) => {
+          if (!event.target.checked) {
+            return
+          }
+          updateActivityDiagram((draft: WritableDraft<ActivityDiagram>) => {
+            draft.current = activityDiagram.states[uuid]
+          })
+        }}
+      />
       <Accordion flush alwaysOpen>
         <TimelimitSection uuid={uuid} />
         <TreatmentSection uuid={uuid} />
