@@ -95,11 +95,13 @@ function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
         <input
           disabled={state.after_time_state_uuid === ""}
           type="number"
-          value={state.timelimit}
+          value={state.timelimit < 0 ? "" : state.timelimit}
           onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            const value =
+              event.target.value === "" ? -1 : parseInt(event.target.value)
             updateActivityDiagram(
               (draft: WritableDraft<ActivityDiagram>): void => {
-                draft.states[uuid].timelimit = parseInt(event.target.value)
+                draft.states[uuid].timelimit = value
               },
             )
           }}
@@ -410,7 +412,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
   return (
     <ListGroup.Item>
       <h3>{uuid}</h3> {/* TODO: Replace with name */}
-      <Accordion flush alwaysOpen defaultActiveKey="Parameter">
+      <Accordion flush alwaysOpen defaultActiveKey="Zeitlimit">
         <TimelimitSection uuid={uuid} />
         <TreatmentSection uuid={uuid} />
         <ParameterSection uuid={uuid} />
