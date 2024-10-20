@@ -31,6 +31,8 @@ import { StateSelector } from "../../components/StateSelector"
 import { default as FormBS } from "react-bootstrap/Form"
 import NotAvailable from "../../components/NotAvailable"
 import { v4 as uuidv4 } from "uuid"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faTrash } from "@fortawesome/free-solid-svg-icons"
 
 type AttributeProps = PropsWithChildren<{ name: string }>
 
@@ -342,6 +344,20 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
                       </div>
                     )
                   })}
+                </Col>
+                <Col md="auto">
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      updateActivityDiagram(
+                        (draft: WritableDraft<ActivityDiagram>) => {
+                          delete draft.states[uuid].conditions[name]
+                        },
+                      )
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </Button>
                 </Col>
               </Row>
             )
