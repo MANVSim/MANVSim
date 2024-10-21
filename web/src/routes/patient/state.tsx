@@ -46,7 +46,6 @@ import {
   faEdit,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons"
-import { ClipLoader } from "react-spinners"
 
 type AttributeProps = PropsWithChildren<{ name: string }>
 
