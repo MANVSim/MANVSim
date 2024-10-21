@@ -38,7 +38,11 @@ def get_patient(patient_id: int):
     patient: models.Patient = models.Patient.query.get_or_404(patient_id)
     activity_diagram = json.loads(patient.activity_diagram)
     # Only use the UUID of the current state
-    activity_diagram["current"] = activity_diagram["current"]["uuid"]
+    try:
+        activity_diagram["current"] = activity_diagram["current"]["uuid"]
+    except KeyError:
+        activity_diagram["current"] = ""
+
     return {
         "id": patient.id,
         "name": patient.template_name,
@@ -57,8 +61,16 @@ def update_patient(patient_id: int):
     patient: models.Patient = models.Patient.query.get_or_404(patient_id)
     # Convert the UUID of the current state to the full state as it is required
     # by the format
-    activity_diagram = content["activity_diagram"]
-    activity_diagram["current"] = activity_diagram["states"][activity_diagram["current"]]
+    try:
+        activity_diagram = content["activity_diagram"]
+    except KeyError:
+        return {"error": "Invalid JSON body. Missing activity_diagram."}, 400
+
+    try:
+        activity_diagram["current"] = activity_diagram["states"][activity_diagram["current"]]
+    except KeyError:
+        activity_diagram["current"] = None
+
     patient.activity_diagram = json.dumps(content["activity_diagram"])
     patient.template_name = content["name"]
     models.db.session.commit()
