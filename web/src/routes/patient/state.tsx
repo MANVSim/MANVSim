@@ -530,7 +530,7 @@ export default function StateRoute(): ReactElement {
         {state === "idle" ? (
           <FontAwesomeIcon icon={faSave} />
         ) : (
-          <Spinner size="sm" />
+          <Spinner role="status" size="sm" />
         )}
       </Button>
       <hr />
