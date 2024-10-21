@@ -143,14 +143,14 @@ def __create_actions():
                   duration_secs=10,
                   required_power=100,
                   results=f"Verletzungen{RESULT_DELIMITER}Haut{RESULT_DELIMITER}"
-                          f"Abdomen{RESULT_DELIMITER}Rekapzeit"))
+                  f"Abdomen{RESULT_DELIMITER}Rekapzeit"))
     insert(Action(id=1, name="Patient ansprechen",
                   media_refs=MediaData.list_to_json([
                       MediaData.new_image("media/static/image/no_image.png")]),
                   duration_secs=10,
                   required_power=100,
                   results=f"Bewusstsein{RESULT_DELIMITER}Schmerz"
-                          f"{RESULT_DELIMITER}Psychischer Zustand"))
+                  f"{RESULT_DELIMITER}Psychischer Zustand"))
     insert(Action(id=2, name="EKG messen",
                   media_refs=MediaData.list_to_json([
                       MediaData.new_video("media/static/video/test.mp4"),
@@ -267,6 +267,10 @@ def __create_patients():
                    media_refs=MediaData.list_to_json(
                        [MediaData.new_image(
                            "media/static/image/zombie.png")])))
+    insert(Patient(id=5, template_name="Leerer Patient",
+           activity_diagram=acds[5].to_json()))
+    insert(Patient(id=6, template_name="Editordemo",
+           activity_diagram=acds[6].to_json()))
 
 
 def __patient_in_scenario():
@@ -579,6 +583,10 @@ def __create_activity_diagrams():
         "Abdomen": [MediaData.new_text("weich")],
     }
 
+    edito_demo = {
+        "Wehwehchen": [MediaData.new_text("Aua")],
+    }
+
     # States s1-s11
     # Patient - 0
     s1 = PatientState(state_uuid=uuid_s1, treatments=treatment_s1,
@@ -612,6 +620,8 @@ def __create_activity_diagrams():
                        conditions=healthy_conditions, name="Gesund")
     s11 = PatientState(state_uuid=uuid_s11, treatments={},
                        conditions=dead, name="Tot")
+    s12 = PatientState(state_uuid=str(uuid.uuid4()), treatments={
+    }, conditions=edito_demo, name="Demozustand")
 
     # ActivityDiagram a0-a5
     acd1 = ActivityDiagram(root=s1, states=[s1, s2])  # Patient - 0
@@ -622,7 +632,11 @@ def __create_activity_diagrams():
 
     acd5 = ActivityDiagram(root=s11, states=[s11])  # dead patient
 
-    return acd1, acd2, acd3, acd4, acd5
+    acd6 = ActivityDiagram(root=None, states=None)  # empty patient
+
+    acd7 = ActivityDiagram(root=s12, states=[s12])
+
+    return acd1, acd2, acd3, acd4, acd5, acd6, acd7
 
 
 def db_setup(app: Flask | None = None, database: SQLAlchemy | None = None):
