@@ -4,12 +4,14 @@ import {
   ReactElement,
   createContext,
   useContext,
+  useEffect,
   useState,
 } from "react"
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
   useLoaderData,
+  useNavigation,
 } from "react-router"
 import { getActions, getPatient, putPatient } from "../../api"
 import {
@@ -27,6 +29,7 @@ import {
   Container,
   ListGroup,
   Row,
+  Spinner,
 } from "react-bootstrap"
 import { Updater, useImmer } from "use-immer"
 import { useSubmit } from "react-router-dom"
@@ -43,6 +46,7 @@ import {
   faEdit,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons"
+import { ClipLoader } from "react-spinners"
 
 type AttributeProps = PropsWithChildren<{ name: string }>
 
@@ -497,6 +501,11 @@ export default function StateRoute(): ReactElement {
   )
   const submit = useSubmit()
 
+  const { state } = useNavigation()
+  useEffect(() => {
+    console.log(state)
+  }, [state])
+
   return (
     <LoaderDataContext.Provider
       value={{
@@ -508,6 +517,7 @@ export default function StateRoute(): ReactElement {
       <h1>Zustände</h1>
       <div>Patient: {patient.name}</div>
       <Button
+        disabled={state !== "idle"}
         onClick={() => {
           submit(
             { ...patient, activity_diagram: activityDiagram },
@@ -518,7 +528,11 @@ export default function StateRoute(): ReactElement {
           )
         }}
       >
-        <FontAwesomeIcon icon={faSave} />
+        {state === "idle" ? (
+          <FontAwesomeIcon icon={faSave} />
+        ) : (
+          <Spinner size="sm" />
+        )}
       </Button>
       <hr />
       <ListGroup>
