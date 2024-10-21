@@ -30,7 +30,7 @@ import {
   Row,
   Spinner,
 } from "react-bootstrap"
-import { Updater, useImmer } from "use-immer"
+import { DraftFunction, useImmer } from "use-immer"
 import { useSubmit } from "react-router-dom"
 import { WritableDraft } from "immer"
 import { StateSelector } from "../../components/StateSelector"
@@ -473,7 +473,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
 
 interface ILoaderDataContext {
   activityDiagram: ActivityDiagram
-  updateActivityDiagram: Updater<ActivityDiagram>
+  updateActivityDiagram: (fnc: DraftFunction<ActivityDiagram>) => void
   actions: Map<string, Action>
 }
 
@@ -493,11 +493,19 @@ interface LoaderData {
 }
 
 export default function StateRoute(): ReactElement {
-  const { patient, actions } = useLoaderData() as LoaderData
+  const { patient: loaderPatient, actions } = useLoaderData() as LoaderData
 
-  const [activityDiagram, updateActivityDiagram] = useImmer(
-    patient.activity_diagram,
-  )
+  const [patient, updatePatient] = useImmer<Patient>(loaderPatient)
+  const activityDiagram = patient.activity_diagram
+
+  function updateActivityDiagram(
+    updateFnc: DraftFunction<ActivityDiagram>,
+  ): void {
+    updatePatient((draft: WritableDraft<Patient>): void => {
+      updateFnc(draft.activity_diagram)
+    })
+  }
+
   const submit = useSubmit()
 
   const { state } = useNavigation()
