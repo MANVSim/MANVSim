@@ -60,5 +60,6 @@ def update_patient(patient_id: int):
     activity_diagram = content["activity_diagram"]
     activity_diagram["current"] = activity_diagram["states"][activity_diagram["current"]]
     patient.activity_diagram = json.dumps(content["activity_diagram"])
+    patient.template_name = content["name"]
     models.db.session.commit()
     return Response(status=200)

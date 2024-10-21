@@ -518,19 +518,26 @@ export default function StateRoute(): ReactElement {
         actions: actions,
       }}
     >
-      <h1>Zustände</h1>
-      <div className="my-1">Patient: {patient.name}</div>
+      <h1>Patient</h1>
+      <div className="my-1">
+        Name:{" "}
+        <input
+          value={patient.name}
+          onChange={(event) => {
+            updatePatient((draft) => {
+              draft.name = event.target.value
+            })
+          }}
+        />
+      </div>
       <Button
         className="my-1"
         disabled={state !== "idle"}
         onClick={() => {
-          submit(
-            { ...patient, activity_diagram: activityDiagram },
-            {
-              method: "PUT",
-              encType: "application/json",
-            },
-          )
+          submit(patient, {
+            method: "PUT",
+            encType: "application/json",
+          })
         }}
       >
         {state === "idle" ? (
