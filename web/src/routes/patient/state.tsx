@@ -46,6 +46,7 @@ import {
   faEdit,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons"
+import { toast } from "react-toastify"
 
 type AttributeProps = PropsWithChildren<{ name: string }>
 
@@ -514,8 +515,9 @@ export default function StateRoute(): ReactElement {
       }}
     >
       <h1>Zustände</h1>
-      <div>Patient: {patient.name}</div>
+      <div className="my-1">Patient: {patient.name}</div>
       <Button
+        className="my-1"
         disabled={state !== "idle"}
         onClick={() => {
           submit(
@@ -595,7 +597,10 @@ StateRoute.action = async function ({
   }
   const patient: Patient = await request.json()
 
-  putPatient(patientId, patient)
+  const response = await putPatient(patientId, patient)
+  if (!response.ok) {
+    toast.error("Patient konnte nicht gespeichert werden")
+  }
 
   return null
 }

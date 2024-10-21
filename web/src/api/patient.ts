@@ -25,7 +25,7 @@ export async function getPatient(id: string): Promise<Patient> {
 }
 
 export async function putPatient(id: string, patient: Patient) {
-  tryFetchApi(patientApi + `${id}`, {
+  return tryFetchApi(patientApi + `${id}`, {
     method: "PUT",
     body: JSON.stringify(patient),
     headers: {

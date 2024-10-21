@@ -17,6 +17,9 @@ import StateRoute from "./routes/patient/state"
 import PatientsRoute from "./routes/patients"
 import { BaseDataRoute } from "./routes/base-data"
 import { ScenarioEditor } from "./routes/scenario-editor"
+import { toast, ToastContainer } from "react-toastify"
+import { Button } from "react-bootstrap"
+import "react-toastify/dist/ReactToastify.css"
 
 const router = createBrowserRouter(
   [
@@ -85,6 +88,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <CsrfProvider>
       <AuthProvider>
         <RouterProvider router={router} />
+        <ToastContainer position="bottom-right" autoClose={5000} />
       </AuthProvider>
     </CsrfProvider>
   </React.StrictMode>,

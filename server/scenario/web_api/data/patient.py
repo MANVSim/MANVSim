@@ -52,7 +52,7 @@ def update_patient(patient_id: int):
     Updates a patient by ID
     """
     content = request.json
-    if content is None:
+    if True:  # content is None:
         return {"error": "No JSON body provided"}, 400
     patient: models.Patient = models.Patient.query.get_or_404(patient_id)
     # Convert the UUID of the current state to the full state as it is required
