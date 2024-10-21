@@ -601,6 +601,7 @@ StateRoute.action = async function ({
   if (!response.ok) {
     toast.error("Patient konnte nicht gespeichert werden")
   }
+  toast.success("Patient gespeichert")
 
   return null
 }
