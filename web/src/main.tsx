@@ -17,8 +17,7 @@ import StateRoute from "./routes/patient/state"
 import PatientsRoute from "./routes/patients"
 import { BaseDataRoute } from "./routes/base-data"
 import { ScenarioEditor } from "./routes/scenario-editor"
-import { toast, ToastContainer } from "react-toastify"
-import { Button } from "react-bootstrap"
+import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
 const router = createBrowserRouter(
