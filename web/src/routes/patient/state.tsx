@@ -4,7 +4,6 @@ import {
   ReactElement,
   createContext,
   useContext,
-  useEffect,
   useState,
 } from "react"
 import {
@@ -502,9 +501,6 @@ export default function StateRoute(): ReactElement {
   const submit = useSubmit()
 
   const { state } = useNavigation()
-  useEffect(() => {
-    console.log(state)
-  }, [state])
 
   return (
     <LoaderDataContext.Provider
