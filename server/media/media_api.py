@@ -130,11 +130,10 @@ def get_all_media():
 
     folders = ["static", "instance"]
     types = ["image", "video", "audio", "text"]
-    result = {}
+    result: list[str] = []
     for f in folders:
-        result[f] = {}
         for t in types:
-            result[f][t] = [str(f.relative_to("media"))
-                            for f in __get_files(f"media/{f}/{t}")]
+            for file in __get_files(f"media/{f}/{t}"):
+                result.append(f"/media/{f}/{t}/{file.name}")
 
     return result
