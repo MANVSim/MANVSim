@@ -1,5 +1,13 @@
 import { PropsWithChildren, ReactElement, useEffect, useState } from "react"
-import { Image, ListGroup, Tab, Table, Tabs } from "react-bootstrap"
+import {
+  Button,
+  Image,
+  ListGroup,
+  ListGroupItemProps,
+  Tab,
+  Table,
+  Tabs,
+} from "react-bootstrap"
 import { tryFetchJson } from "../api"
 import { Condition } from "../types"
 
@@ -17,10 +25,18 @@ function getFileType(file: string): string {
   return type
 }
 
-function Media({ file }: { file: string }): ReactElement {
+interface MediaProps extends ListGroupItemProps {
+  file: string
+}
+
+function Media({ file, ...props }: MediaProps): ReactElement {
   const server = import.meta.env.VITE_SERVER_URL
   return (
-    <ListGroup.Item>
+    <ListGroup.Item
+      {...props}
+      as="button"
+      className="text-start d-flex gap-1 align-items-center"
+    >
       <Image style={{ height: "50px" }} src={`${server}/${file}`} />
       <div>{file}</div>
     </ListGroup.Item>
@@ -76,10 +92,19 @@ function MediaData({ data }: MediaDataProps): ReactElement {
                   <Tab title="Video" eventKey="video"></Tab>
                   <Tab title="Audio" eventKey="audio"></Tab>
                 </Tabs>
-                <ListGroup style={{ maxHeight: "20em", overflow: "auto" }}>
+                <ListGroup
+                  style={{ maxHeight: "20em", overflow: "auto" }}
+                  activeKey={data.media_reference ?? ""}
+                >
                   {availableMedia &&
                     (availableMedia.get(tab) ?? []).map((f: string) => {
-                      return <Media key={f} file={f} />
+                      return (
+                        <Media
+                          key={f}
+                          file={f}
+                          active={f.endsWith(data.media_reference ?? "")}
+                        />
+                      )
                     })}
                 </ListGroup>
               </div>
