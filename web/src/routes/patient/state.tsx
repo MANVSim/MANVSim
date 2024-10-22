@@ -46,6 +46,7 @@ import {
   faCheck,
 } from "@fortawesome/free-solid-svg-icons"
 import { toast } from "react-toastify"
+import MediaEditor from "../../components/MediaEditor"
 
 type AttributeProps = PropsWithChildren<{ name: string }>
 
@@ -573,6 +574,7 @@ export default function StateRoute(): ReactElement {
           </Button>
         </ListGroup.Item>
       </ListGroup>
+      <MediaEditor />
     </LoaderDataContext.Provider>
   )
 }
