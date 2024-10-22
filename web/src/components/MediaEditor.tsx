@@ -1,17 +1,7 @@
-import { faSave } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { PropsWithChildren, ReactElement, useEffect, useState } from "react"
-import {
-  Button,
-  CloseButton,
-  Image,
-  ListGroup,
-  Modal,
-  Tab,
-  Table,
-  Tabs,
-} from "react-bootstrap"
+import { Image, ListGroup, Tab, Table, Tabs } from "react-bootstrap"
 import { tryFetchJson } from "../api"
+import { Condition } from "../types"
 
 function Attribute({ name, children }: PropsWithChildren<{ name: string }>) {
   return (
@@ -37,18 +27,25 @@ function Media({ file }: { file: string }): ReactElement {
   )
 }
 
-function MediaData() {
+interface MediaDataProps {
+  data: Condition
+}
+
+function MediaData({ data }: MediaDataProps): ReactElement {
   const [tab, setTab] = useState("")
 
   // Get all available data paths from server
-  const [data, setData] = useState<Map<string, Array<string>> | null>(null)
+  const [availableMedia, setAvailableMedia] = useState<Map<
+    string,
+    Array<string>
+  > | null>(null)
   useEffect(() => {
     tryFetchJson<string[]>("media/all").then((data) => {
       const d = new Map<string, string[]>()
       for (const f of data) {
         const type = getFileType(f)
         d.set(type, (d.get(type) ?? []).concat(f))
-        setData(d)
+        setAvailableMedia(d)
       }
     })
   }, [])
@@ -58,10 +55,10 @@ function MediaData() {
       <Table borderless>
         <tbody>
           <Attribute name="Titel">
-            <input />
+            <input value={data.title ?? ""} />
           </Attribute>
           <Attribute name="Text">
-            <input />
+            <input value={data.text ?? ""} />
           </Attribute>
           <tr>
             <td colSpan={2}>
@@ -79,9 +76,9 @@ function MediaData() {
                   <Tab title="Video" eventKey="video"></Tab>
                   <Tab title="Audio" eventKey="audio"></Tab>
                 </Tabs>
-                <ListGroup style={{ maxHeight: "50vh", overflow: "auto" }}>
-                  {data &&
-                    (data.get(tab) ?? []).map((f: string) => {
+                <ListGroup style={{ maxHeight: "20em", overflow: "auto" }}>
+                  {availableMedia &&
+                    (availableMedia.get(tab) ?? []).map((f: string) => {
                       return <Media key={f} file={f} />
                     })}
                 </ListGroup>
@@ -94,25 +91,20 @@ function MediaData() {
   )
 }
 
-export default function MediaEditor() {
-  const [show, setShow] = useState(true)
-  function close() {
-    setShow(false)
-  }
+interface MediaEditorProps {
+  mediaArray: Condition[]
+  setMediaArray: (mediaArray: Condition[]) => void
+}
+
+export default function MediaEditor({
+  mediaArray,
+  // setMediaArray,
+}: MediaEditorProps): ReactElement {
   return (
-    <Modal show={show} centered size="lg">
-      <Modal.Header>
-        <h4>Mediaeditor</h4>
-        <CloseButton onClick={close} />
-      </Modal.Header>
-      <Modal.Body>
-        <MediaData />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button>
-          <FontAwesomeIcon icon={faSave} />
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <div>
+      {mediaArray.map((media: Condition, i: number) => {
+        return <MediaData key={i} data={media} />
+      })}
+    </div>
   )
 }
