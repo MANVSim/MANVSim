@@ -585,6 +585,7 @@ def __create_activity_diagrams():
 
     edito_demo = {
         "Wehwehchen": [MediaData.new_text("Aua")],
+        "Parameter mit Bild": [MediaData.new_image("media/static/image/zombie.png")]
     }
 
     # States s1-s11
