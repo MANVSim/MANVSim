@@ -16,7 +16,6 @@ import { getActions, getPatient, putPatient } from "../../api"
 import {
   Action,
   ActivityDiagram,
-  MediaTypeEnum,
   Patient,
   State,
   mediaTypes,
@@ -29,13 +28,14 @@ import {
   ListGroup,
   Row,
   Spinner,
+  Stack,
+  Table,
 } from "react-bootstrap"
 import { DraftFunction, useImmer } from "use-immer"
 import { useSubmit } from "react-router-dom"
 import { WritableDraft } from "immer"
 import { StateSelector } from "../../components/StateSelector"
 import Form from "react-bootstrap/Form"
-import NotAvailable from "../../components/NotAvailable"
 import { v4 as uuidv4 } from "uuid"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -278,142 +278,77 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
   const [newParameter, setNewParameter] = useState<string>("")
   return (
     <Section title="Parameter">
-      <Container className="d-grid gap-3">
-        {Object.entries(state.conditions)
-          .sort()
-          .map(([name, conditions]) => {
-            return (
-              <Row key={name}>
-                <Col>{name}</Col>
-                <Col>
-                  {conditions.map((condition, i) => {
-                    return (
-                      <div key={i} className="d-grid gap-1">
-                        <Row>
-                          <Col>Medientyp:</Col>
-                          <Col>
-                            <Form.Select
-                              value={condition.media_type}
-                              onChange={(event) => {
-                                updateActivityDiagram(
-                                  (draft: WritableDraft<ActivityDiagram>) => {
-                                    draft.states[uuid].conditions[name][
-                                      i
-                                    ].media_type = event.target
-                                      .value as MediaTypeEnum
-                                  },
-                                )
-                              }}
-                            >
-                              {Object.values(mediaTypes.enum).map(
-                                (mediaType) => {
-                                  return (
-                                    <option key={mediaType} value={mediaType}>
-                                      {mediaType}
-                                    </option>
-                                  )
-                                },
-                              )}
-                            </Form.Select>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>Titel:</Col>
-                          <Col>
-                            <input
-                              value={condition.title || ""}
-                              onChange={(event) => {
-                                updateActivityDiagram(
-                                  (draft: WritableDraft<ActivityDiagram>) => {
-                                    draft.states[uuid].conditions[name][
-                                      i
-                                    ].title = event.target.value
-                                  },
-                                )
-                              }}
-                            />
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>Text:</Col>
-                          <Col>
-                            <input
-                              value={condition.text || ""}
-                              onChange={(event) => {
-                                updateActivityDiagram(
-                                  (draft: WritableDraft<ActivityDiagram>) => {
-                                    draft.states[uuid].conditions[name][
-                                      i
-                                    ].text = event.target.value
-                                  },
-                                )
-                              }}
-                            />
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>Medienreferenz:</Col>
-                          <Col>
-                            {condition.media_reference || <NotAvailable />}
-                          </Col>
-                        </Row>
-                      </div>
-                    )
-                  })}
-                </Col>
-                <Col md="auto">
-                  <Button
-                    variant="danger"
-                    onClick={() => {
-                      updateActivityDiagram(
-                        (draft: WritableDraft<ActivityDiagram>) => {
-                          delete draft.states[uuid].conditions[name]
-                        },
-                      )
-                    }}
-                    title="Parameter löschen"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
-                </Col>
-              </Row>
-            )
-          })}
+      {/* <Container className="d-grid gap-3"> */}
+      <Table bordered>
+        <tbody>
+          {Object.entries(state.conditions)
+            .sort()
+            .map(([name, conditions]) => {
+              return (
+                <tr key={name}>
+                  <td style={{ width: "1%" }}>{name}</td>
+                  <td>
+                    <MediaEditor
+                      mediaArray={conditions}
+                      setMediaArray={() => {}}
+                    />
+                  </td>
+                  <td style={{ width: "1%" }}>
+                    <Button
+                      variant="danger"
+                      onClick={() => {
+                        updateActivityDiagram(
+                          (draft: WritableDraft<ActivityDiagram>) => {
+                            delete draft.states[uuid].conditions[name]
+                          },
+                        )
+                      }}
+                      title="Parameter löschen"
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                  </td>
+                </tr>
+              )
+            })}
 
-        <Row>
-          <Col className="d-grid">
-            <input
-              value={newParameter}
-              onChange={(event) => setNewParameter(event.target.value)}
-              placeholder="Parametername"
-            />
-          </Col>
-          <Col>
-            <Button
-              disabled={newParameter === "" || newParameter in state.conditions}
-              onClick={() => {
-                setNewParameter("")
-                updateActivityDiagram(
-                  (draft: WritableDraft<ActivityDiagram>) => {
-                    const conditions = draft.states[uuid].conditions
-                    if (!conditions[newParameter]) {
-                      conditions[newParameter] = []
-                    }
-                    conditions[newParameter].push({
-                      media_type: mediaTypes.enum.TEXT,
-                      title: "",
-                      text: "",
-                      media_reference: "",
-                    })
-                  },
-                )
-              }}
-            >
-              <FontAwesomeIcon icon={faPlus} /> Neuer Parameter
-            </Button>
-          </Col>
-        </Row>
-      </Container>
+          <tr>
+            <td colSpan={3}>
+              <Stack direction="horizontal" gap={1}>
+                <input
+                  value={newParameter}
+                  onChange={(event) => setNewParameter(event.target.value)}
+                  placeholder="Parametername"
+                />
+                <Button
+                  disabled={
+                    newParameter === "" || newParameter in state.conditions
+                  }
+                  onClick={() => {
+                    setNewParameter("")
+                    updateActivityDiagram(
+                      (draft: WritableDraft<ActivityDiagram>) => {
+                        const conditions = draft.states[uuid].conditions
+                        if (!conditions[newParameter]) {
+                          conditions[newParameter] = []
+                        }
+                        conditions[newParameter].push({
+                          media_type: mediaTypes.enum.TEXT,
+                          title: "",
+                          text: "",
+                          media_reference: "",
+                        })
+                      },
+                    )
+                  }}
+                >
+                  <FontAwesomeIcon icon={faPlus} /> Neuer Parameter
+                </Button>
+              </Stack>
+            </td>
+          </tr>
+        </tbody>
+      </Table>
     </Section>
   )
 }
@@ -463,7 +398,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
           })
         }}
       />
-      <Accordion flush alwaysOpen>
+      <Accordion flush alwaysOpen defaultActiveKey="Parameter">
         <TimelimitSection uuid={uuid} />
         <TreatmentSection uuid={uuid} />
         <ParameterSection uuid={uuid} />
@@ -574,7 +509,6 @@ export default function StateRoute(): ReactElement {
           </Button>
         </ListGroup.Item>
       </ListGroup>
-      <MediaEditor />
     </LoaderDataContext.Provider>
   )
 }
