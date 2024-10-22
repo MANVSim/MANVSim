@@ -5,6 +5,7 @@ import {
   Button,
   CloseButton,
   Image,
+  ListGroup,
   Modal,
   Tab,
   Table,
@@ -29,10 +30,10 @@ function getFileType(file: string): string {
 function Media({ file }: { file: string }): ReactElement {
   const server = import.meta.env.VITE_SERVER_URL
   return (
-    <div>
+    <ListGroup.Item>
       <Image style={{ height: "50px" }} src={`${server}/${file}`} />
       <div>{file}</div>
-    </div>
+    </ListGroup.Item>
   )
 }
 
@@ -77,12 +78,12 @@ function MediaData() {
                   <Tab title="Video" eventKey="video"></Tab>
                   <Tab title="Audio" eventKey="audio"></Tab>
                 </Tabs>
-                <div style={{ maxHeight: "50vh", overflow: "auto" }}>
+                <ListGroup style={{ maxHeight: "50vh", overflow: "auto" }}>
                   {data &&
                     (data.get(tab) ?? []).map((f: string) => {
                       return <Media key={f} file={f} />
                     })}
-                </div>
+                </ListGroup>
               </div>
             </td>
           </tr>
