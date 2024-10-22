@@ -38,7 +38,7 @@ function Media({ file }: { file: string }): ReactElement {
 }
 
 function MediaData() {
-  const [tab, setTab] = useState("text")
+  const [tab, setTab] = useState("")
 
   // Get all available data paths from server
   const [data, setData] = useState<Map<string, Array<string>> | null>(null)
@@ -71,8 +71,9 @@ function MediaData() {
                   activeKey={tab}
                   fill
                   justify
-                  onSelect={(k) => setTab(k ?? "text")}
+                  onSelect={(k) => setTab(k ?? "")}
                 >
+                  <Tab title="Keine" eventKey=""></Tab>
                   <Tab title="Text" eventKey="text"></Tab>
                   <Tab title="Bild" eventKey="image"></Tab>
                   <Tab title="Video" eventKey="video"></Tab>
