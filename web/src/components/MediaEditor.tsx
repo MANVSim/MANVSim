@@ -1,7 +1,15 @@
 import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { PropsWithChildren, useEffect, useState } from "react"
-import { Button, CloseButton, Modal, Tab, Table, Tabs } from "react-bootstrap"
+import { PropsWithChildren, ReactElement, useEffect, useState } from "react"
+import {
+  Button,
+  CloseButton,
+  Image,
+  Modal,
+  Tab,
+  Table,
+  Tabs,
+} from "react-bootstrap"
 import { tryFetchJson } from "../api"
 
 function Attribute({ name, children }: PropsWithChildren<{ name: string }>) {
@@ -13,14 +21,34 @@ function Attribute({ name, children }: PropsWithChildren<{ name: string }>) {
   )
 }
 
+function getFileType(file: string): string {
+  const [, , , type] = file.split("/")
+  return type
+}
+
+function Media({ file }: { file: string }): ReactElement {
+  const server = import.meta.env.VITE_SERVER_URL
+  return (
+    <div>
+      <Image style={{ height: "50px" }} src={`${server}/${file}`} />
+      <div>{file}</div>
+    </div>
+  )
+}
+
 function MediaData() {
   const [tab, setTab] = useState("text")
 
   // Get all available data paths from server
-  const [data, setData] = useState<string[] | null>(null)
+  const [data, setData] = useState<Map<string, Array<string>> | null>(null)
   useEffect(() => {
     tryFetchJson<string[]>("media/all").then((data) => {
-      setData(data)
+      const d = new Map<string, string[]>()
+      for (const f of data) {
+        const type = getFileType(f)
+        d.set(type, (d.get(type) ?? []).concat(f))
+        setData(d)
+      }
     })
   }, [])
 
@@ -49,10 +77,10 @@ function MediaData() {
                   <Tab title="Video" eventKey="video"></Tab>
                   <Tab title="Audio" eventKey="audio"></Tab>
                 </Tabs>
-                <div>
+                <div style={{ maxHeight: "50vh", overflow: "auto" }}>
                   {data &&
-                    data.map((f: string) => {
-                      return <div>{f}</div>
+                    (data.get(tab) ?? []).map((f: string) => {
+                      return <Media key={f} file={f} />
                     })}
                 </div>
               </div>
