@@ -12,7 +12,7 @@ import { tryFetchJson } from "../api"
 import { Condition } from "../types"
 import { last } from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faFileLines } from "@fortawesome/free-solid-svg-icons"
+import { faFileLines, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 function Attribute({ name, children }: PropsWithChildren<{ name: string }>) {
   return (
@@ -192,6 +192,18 @@ export default function MediaEditor({
                 })
               }}
             />
+            <div className="d-flex justify-content-end">
+              <Button
+                variant="danger"
+                onClick={() => {
+                  updateMediaArray((draft) => {
+                    draft.splice(i, 1)
+                  })
+                }}
+              >
+                <FontAwesomeIcon icon={faTrash} /> Medieneintrag löschen
+              </Button>
+            </div>
           </ListGroup.Item>
         )
       })}
