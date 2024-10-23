@@ -1,5 +1,6 @@
 import { PropsWithChildren, ReactElement, useEffect, useState } from "react"
 import {
+  Button,
   Image,
   ListGroup,
   ListGroupItemProps,
@@ -178,20 +179,36 @@ export default function MediaEditor({
   updateMediaArray,
 }: MediaEditorProps): ReactElement {
   return (
-    <div>
+    <ListGroup variant="flush">
       {mediaArray.map((media: Condition, i: number) => {
         return (
-          <MediaData
-            key={i}
-            data={media}
-            updateData={(updateFnc) => {
-              updateMediaArray((draft) => {
-                updateFnc(draft[i])
-              })
-            }}
-          />
+          <ListGroup.Item>
+            <MediaData
+              key={i}
+              data={media}
+              updateData={(updateFnc) => {
+                updateMediaArray((draft) => {
+                  updateFnc(draft[i])
+                })
+              }}
+            />
+          </ListGroup.Item>
         )
       })}
-    </div>
+      <Button
+        onClick={() => {
+          updateMediaArray((draft) => {
+            draft.push({
+              title: "",
+              text: "",
+              media_reference: null,
+              media_type: "TEXT",
+            })
+          })
+        }}
+      >
+        Neu
+      </Button>
+    </ListGroup>
   )
 }
