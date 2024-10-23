@@ -10,6 +10,8 @@ import {
 import { tryFetchJson } from "../api"
 import { Condition } from "../types"
 import { last } from "lodash"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faFileLines } from "@fortawesome/free-solid-svg-icons"
 
 function Attribute({ name, children }: PropsWithChildren<{ name: string }>) {
   return (
@@ -31,13 +33,36 @@ interface MediaProps extends ListGroupItemProps {
 
 function Media({ file, ...props }: MediaProps): ReactElement {
   const server = import.meta.env.VITE_SERVER_URL
+  const fileType = getFileType(file)
+  let render: ReactElement
+  const renderProps = {
+    src: `${server}/${file}`,
+    style: { maxHeight: "5em" },
+  }
+  switch (fileType) {
+    case "image":
+      render = <Image {...renderProps} />
+      break
+    case "video":
+      render = <video controls {...renderProps} />
+      break
+    case "audio":
+      render = <audio controls {...renderProps} />
+      break
+    case "text":
+      render = <FontAwesomeIcon icon={faFileLines} />
+      break
+    default:
+      render = <div>{fileType}</div>
+  }
+
   return (
     <ListGroup.Item
       {...props}
       as="button"
       className="text-start d-flex gap-1 align-items-center"
     >
-      <Image style={{ height: "50px" }} src={`${server}/${file}`} />
+      {render}
       <div>{last(file.split("/"))}</div>
     </ListGroup.Item>
   )
