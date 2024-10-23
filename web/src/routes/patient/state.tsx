@@ -26,6 +26,7 @@ import {
   Accordion,
   Button,
   Col,
+  Collapse,
   Container,
   ListGroup,
   Row,
@@ -46,6 +47,8 @@ import {
   faSave,
   faEdit,
   faCheck,
+  faCaretDown,
+  faCaretUp,
 } from "@fortawesome/free-solid-svg-icons"
 import { toast } from "react-toastify"
 import MediaEditor from "../../components/MediaEditor"
@@ -282,18 +285,38 @@ function ParameterSectionCondition({
   uuid,
 }: ParameterSectionConditionProps): ReactElement {
   const { updateActivityDiagram } = useLoaderDataContext()
+  const [open, setOpen] = useState(false)
   return (
     <tr>
       <td style={{ width: "1%" }}>{name}</td>
       <td>
-        <MediaEditor
-          mediaArray={conditions}
-          updateMediaArray={(updateFnc) => {
-            updateActivityDiagram((draft) => {
-              updateFnc(draft.states[uuid].conditions[name])
-            })
-          }}
-        />
+        <div className="d-grid">
+          <Button
+            variant="outline-primary"
+            size="lg"
+            onClick={() => {
+              setOpen(!open)
+            }}
+          >
+            {open ? (
+              <FontAwesomeIcon icon={faCaretUp} />
+            ) : (
+              <FontAwesomeIcon icon={faCaretDown} />
+            )}
+          </Button>
+        </div>
+        <Collapse in={open}>
+          <div>
+            <MediaEditor
+              mediaArray={conditions}
+              updateMediaArray={(updateFnc) => {
+                updateActivityDiagram((draft) => {
+                  updateFnc(draft.states[uuid].conditions[name])
+                })
+              }}
+            />
+          </div>
+        </Collapse>
       </td>
       <td style={{ width: "1%" }}>
         <Button
