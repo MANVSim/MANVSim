@@ -4,6 +4,7 @@ import {
   ReactElement,
   createContext,
   useContext,
+  useEffect,
   useState,
 } from "react"
 import {
@@ -16,6 +17,7 @@ import { getActions, getPatient, putPatient } from "../../api"
 import {
   Action,
   ActivityDiagram,
+  Condition,
   Patient,
   State,
   mediaTypes,
@@ -268,6 +270,48 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
   )
 }
 
+interface ParameterSectionConditionProps {
+  name: string
+  conditions: Condition[]
+  uuid: string
+}
+
+function ParameterSectionCondition({
+  name,
+  conditions,
+  uuid,
+}: ParameterSectionConditionProps): ReactElement {
+  const { updateActivityDiagram } = useLoaderDataContext()
+  return (
+    <tr>
+      <td style={{ width: "1%" }}>{name}</td>
+      <td>
+        <MediaEditor
+          mediaArray={conditions}
+          updateMediaArray={(updateFnc) => {
+            updateActivityDiagram((draft) => {
+              updateFnc(draft.states[uuid].conditions[name])
+            })
+          }}
+        />
+      </td>
+      <td style={{ width: "1%" }}>
+        <Button
+          variant="danger"
+          onClick={() => {
+            updateActivityDiagram((draft: WritableDraft<ActivityDiagram>) => {
+              delete draft.states[uuid].conditions[name]
+            })
+          }}
+          title="Parameter löschen"
+        >
+          <FontAwesomeIcon icon={faTrash} />
+        </Button>
+      </td>
+    </tr>
+  )
+}
+
 interface ParameterSectionProps {
   uuid: string
 }
@@ -285,30 +329,12 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
             .sort()
             .map(([name, conditions]) => {
               return (
-                <tr key={name}>
-                  <td style={{ width: "1%" }}>{name}</td>
-                  <td>
-                    <MediaEditor
-                      mediaArray={conditions}
-                      setMediaArray={() => {}}
-                    />
-                  </td>
-                  <td style={{ width: "1%" }}>
-                    <Button
-                      variant="danger"
-                      onClick={() => {
-                        updateActivityDiagram(
-                          (draft: WritableDraft<ActivityDiagram>) => {
-                            delete draft.states[uuid].conditions[name]
-                          },
-                        )
-                      }}
-                      title="Parameter löschen"
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </Button>
-                  </td>
-                </tr>
+                <ParameterSectionCondition
+                  key={name}
+                  name={name}
+                  conditions={conditions}
+                  uuid={uuid}
+                />
               )
             })}
 
@@ -432,6 +458,9 @@ export default function StateRoute(): ReactElement {
   const { patient: loaderPatient, actions } = useLoaderData() as LoaderData
 
   const [patient, updatePatient] = useImmer<Patient>(loaderPatient)
+  useEffect(() => {
+    console.log(patient)
+  }, [patient])
   const activityDiagram = patient.activity_diagram
 
   function updateActivityDiagram(

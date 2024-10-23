@@ -1,6 +1,5 @@
 import { PropsWithChildren, ReactElement, useEffect, useState } from "react"
 import {
-  Button,
   Image,
   ListGroup,
   ListGroupItemProps,
@@ -45,9 +44,10 @@ function Media({ file, ...props }: MediaProps): ReactElement {
 
 interface MediaDataProps {
   data: Condition
+  updateData: (updateFnc: (draft: Condition) => void) => void
 }
 
-function MediaData({ data }: MediaDataProps): ReactElement {
+function MediaData({ data, updateData }: MediaDataProps): ReactElement {
   const [tab, setTab] = useState("")
 
   // Get all available data paths from server
@@ -103,6 +103,11 @@ function MediaData({ data }: MediaDataProps): ReactElement {
                           key={f}
                           file={f}
                           active={f.endsWith(data.media_reference ?? "")}
+                          onClick={() => {
+                            updateData((draft) => {
+                              draft.media_reference = f
+                            })
+                          }}
                         />
                       )
                     })}
@@ -118,17 +123,27 @@ function MediaData({ data }: MediaDataProps): ReactElement {
 
 interface MediaEditorProps {
   mediaArray: Condition[]
-  setMediaArray: (mediaArray: Condition[]) => void
+  updateMediaArray: (updateFnc: (draft: Condition[]) => void) => void
 }
 
 export default function MediaEditor({
   mediaArray,
-  // setMediaArray,
+  updateMediaArray,
 }: MediaEditorProps): ReactElement {
   return (
     <div>
       {mediaArray.map((media: Condition, i: number) => {
-        return <MediaData key={i} data={media} />
+        return (
+          <MediaData
+            key={i}
+            data={media}
+            updateData={(updateFnc) => {
+              updateMediaArray((draft) => {
+                updateFnc(draft[i])
+              })
+            }}
+          />
+        )
       })}
     </div>
   )
