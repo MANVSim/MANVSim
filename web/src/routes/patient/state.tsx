@@ -287,7 +287,9 @@ function ParameterSectionCondition({
   const [open, setOpen] = useState(false)
   return (
     <tr>
-      <td style={{ width: "1%" }}>{name}</td>
+      <td style={{ width: "1%" }} className="align-top">
+        {name}
+      </td>
       <td>
         <div className="d-grid">
           <Button
@@ -317,7 +319,7 @@ function ParameterSectionCondition({
           </div>
         </Collapse>
       </td>
-      <td style={{ width: "1%" }}>
+      <td style={{ width: "1%" }} className="align-top">
         <Button
           variant="danger"
           onClick={() => {
