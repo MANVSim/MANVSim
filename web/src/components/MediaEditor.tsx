@@ -9,6 +9,7 @@ import {
 } from "react-bootstrap"
 import { tryFetchJson } from "../api"
 import { Condition } from "../types"
+import { last } from "lodash"
 
 function Attribute({ name, children }: PropsWithChildren<{ name: string }>) {
   return (
@@ -48,7 +49,7 @@ interface MediaDataProps {
 }
 
 function MediaData({ data, updateData }: MediaDataProps): ReactElement {
-  const [tab, setTab] = useState("")
+  const [tab, setTab] = useState(getFileType(data.media_reference ?? ""))
 
   // Get all available data paths from server
   const [availableMedia, setAvailableMedia] = useState<Map<
@@ -98,7 +99,12 @@ function MediaData({ data, updateData }: MediaDataProps): ReactElement {
                   activeKey={tab}
                   fill
                   justify
-                  onSelect={(k) => setTab(k ?? "")}
+                  onSelect={(k) => {
+                    updateData((draft) => {
+                      draft.media_reference = null
+                    })
+                    setTab(k ?? "")
+                  }}
                 >
                   <Tab title="Keine" eventKey=""></Tab>
                   <Tab title="Text" eventKey="text"></Tab>
@@ -116,7 +122,7 @@ function MediaData({ data, updateData }: MediaDataProps): ReactElement {
                         <Media
                           key={f}
                           file={f}
-                          active={f.endsWith(data.media_reference ?? "")}
+                          active={f === data.media_reference?.substring(0)}
                           onClick={() => {
                             updateData((draft) => {
                               draft.media_reference = f
