@@ -100,9 +100,11 @@ function MediaData({ data, updateData }: MediaDataProps): ReactElement {
                   fill
                   justify
                   onSelect={(k) => {
-                    updateData((draft) => {
-                      draft.media_reference = null
-                    })
+                    if (k === "") {
+                      updateData((draft) => {
+                        draft.media_reference = null
+                      })
+                    }
                     setTab(k ?? "")
                   }}
                 >
