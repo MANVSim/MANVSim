@@ -14,7 +14,6 @@ import { CsrfProvider } from "./contexts/csrf"
 import { AuthProvider } from "./contexts/auth"
 import { ExecutionRoute } from "./routes/execution"
 import StateRoute from "./routes/patient/state"
-import PatientsRoute from "./routes/patients"
 import { BaseDataRoute } from "./routes/base-data"
 import { ScenarioEditor } from "./routes/scenario-editor"
 import { ToastContainer } from "react-toastify"
@@ -44,17 +43,10 @@ const router = createBrowserRouter(
           action: ExecutionRoute.action,
         },
         {
-          path: "/patient/:patientId",
+          path: "/data/patient/:patientId",
           element: <StateRoute />,
           loader: StateRoute.loader,
           action: StateRoute.action,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: "/patient",
-          element: <PatientsRoute />,
-          loader: PatientsRoute.loader,
-          action: PatientsRoute.action,
           errorElement: <ErrorPage />,
         },
         {
