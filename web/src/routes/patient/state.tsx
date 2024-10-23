@@ -4,7 +4,6 @@ import {
   ReactElement,
   createContext,
   useContext,
-  useEffect,
   useState,
 } from "react"
 import {
@@ -481,9 +480,6 @@ export default function StateRoute(): ReactElement {
   const { patient: loaderPatient, actions } = useLoaderData() as LoaderData
 
   const [patient, updatePatient] = useImmer<Patient>(loaderPatient)
-  useEffect(() => {
-    console.log(patient)
-  }, [patient])
   const activityDiagram = patient.activity_diagram
 
   function updateActivityDiagram(
