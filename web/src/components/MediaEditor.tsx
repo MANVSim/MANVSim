@@ -38,7 +38,7 @@ function Media({ file, ...props }: MediaProps): ReactElement {
       className="text-start d-flex gap-1 align-items-center"
     >
       <Image style={{ height: "50px" }} src={`${server}/${file}`} />
-      <div>{file}</div>
+      <div>{last(file.split("/"))}</div>
     </ListGroup.Item>
   )
 }
