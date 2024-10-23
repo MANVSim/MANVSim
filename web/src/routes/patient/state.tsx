@@ -304,7 +304,7 @@ function ParameterSectionCondition({
             )}
           </Button>
         </div>
-        <Collapse in={open}>
+        <Collapse in={open} mountOnEnter>
           <div>
             <MediaEditor
               mediaArray={conditions}
