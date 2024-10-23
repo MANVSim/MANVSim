@@ -182,7 +182,7 @@ export default function MediaEditor({
     <ListGroup variant="flush">
       {mediaArray.map((media: Condition, i: number) => {
         return (
-          <ListGroup.Item>
+          <ListGroup.Item key={i}>
             <MediaData
               key={i}
               data={media}
