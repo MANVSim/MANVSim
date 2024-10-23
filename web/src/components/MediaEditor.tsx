@@ -71,10 +71,24 @@ function MediaData({ data, updateData }: MediaDataProps): ReactElement {
       <Table borderless>
         <tbody>
           <Attribute name="Titel">
-            <input value={data.title ?? ""} />
+            <input
+              value={data.title ?? ""}
+              onChange={(event) => {
+                updateData((draft) => {
+                  draft.title = event.target.value
+                })
+              }}
+            />
           </Attribute>
           <Attribute name="Text">
-            <input value={data.text ?? ""} />
+            <input
+              value={data.text ?? ""}
+              onChange={(event) => {
+                updateData((draft) => {
+                  draft.text = event.target.value
+                })
+              }}
+            />
           </Attribute>
           <tr>
             <td colSpan={2}>
