@@ -48,6 +48,7 @@ import {
   faCheck,
   faCaretDown,
   faCaretUp,
+  faClone,
 } from "@fortawesome/free-solid-svg-icons"
 import { toast } from "react-toastify"
 import MediaEditor from "../../components/MediaEditor"
@@ -414,7 +415,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
   const [editing, setEditing] = useState(false)
   return (
     <ListGroup.Item>
-      <h3 className="hstack gap-1">
+      <h3 className="hstack gap-1 d-flex">
         {editing ? (
           <input
             value={state.name}
@@ -434,6 +435,36 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
         >
           <FontAwesomeIcon size="sm" icon={editing ? faCheck : faEdit} />
         </Button>
+        <div className="ms-auto gap-1 d-flex">
+          <Button
+            title="Duplizieren"
+            size="sm"
+            onClick={() => {
+              const new_uuid = uuidv4()
+              updateActivityDiagram((draft: WritableDraft<ActivityDiagram>) => {
+                draft.states[new_uuid] = {
+                  ...state,
+                  name: `${state.name} (Kopie)`,
+                  uuid: new_uuid,
+                }
+              })
+            }}
+          >
+            <FontAwesomeIcon icon={faClone} size="sm" />
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            title="Löschen"
+            onClick={() => {
+              updateActivityDiagram((draft: WritableDraft<ActivityDiagram>) => {
+                delete draft.states[uuid]
+              })
+            }}
+          >
+            <FontAwesomeIcon icon={faTrash} size="sm" />
+          </Button>
+        </div>
       </h3>
       <Form.Check
         name="start-state"
