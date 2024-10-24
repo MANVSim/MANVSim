@@ -124,6 +124,7 @@ function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
             )
           }}
         />
+        <span>&nbsp;s</span>
       </Attribute>
     </Section>
   )
@@ -448,7 +449,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
           })
         }}
       />
-      <Accordion flush alwaysOpen defaultActiveKey="Parameter">
+      <Accordion flush alwaysOpen>
         <TimelimitSection uuid={uuid} />
         <TreatmentSection uuid={uuid} />
         <ParameterSection uuid={uuid} />
