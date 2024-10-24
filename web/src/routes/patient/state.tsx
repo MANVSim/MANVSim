@@ -24,6 +24,7 @@ import {
 import {
   Accordion,
   Button,
+  ButtonProps,
   Col,
   Collapse,
   Container,
@@ -49,6 +50,7 @@ import {
   faCaretDown,
   faCaretUp,
   faClone,
+  IconDefinition,
 } from "@fortawesome/free-solid-svg-icons"
 import { toast } from "react-toastify"
 import MediaEditor from "../../components/MediaEditor"
@@ -405,6 +407,21 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
   )
 }
 
+interface SmallIconButtonProps extends ButtonProps {
+  icon: IconDefinition
+}
+
+function SmallIconButton({
+  icon,
+  ...props
+}: SmallIconButtonProps): ReactElement {
+  return (
+    <Button size="sm" {...props}>
+      {<FontAwesomeIcon icon={icon} />}
+    </Button>
+  )
+}
+
 interface StateEntryProps {
   uuid: string
 }
@@ -428,17 +445,15 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
         ) : (
           state.name
         )}
-        <Button
-          size="sm"
+        <SmallIconButton
           title="Zustandsnamen ändern"
+          icon={editing ? faCheck : faEdit}
           onClick={() => setEditing(!editing)}
-        >
-          <FontAwesomeIcon size="sm" icon={editing ? faCheck : faEdit} />
-        </Button>
+        />
         <div className="ms-auto gap-1 d-flex">
-          <Button
+          <SmallIconButton
             title="Duplizieren"
-            size="sm"
+            icon={faClone}
             onClick={() => {
               const new_uuid = uuidv4()
               updateActivityDiagram((draft: WritableDraft<ActivityDiagram>) => {
@@ -449,11 +464,9 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
                 }
               })
             }}
-          >
-            <FontAwesomeIcon icon={faClone} size="sm" />
-          </Button>
-          <Button
-            size="sm"
+          />
+          <SmallIconButton
+            icon={faTrash}
             variant="danger"
             title="Löschen"
             onClick={() => {
@@ -461,9 +474,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
                 delete draft.states[uuid]
               })
             }}
-          >
-            <FontAwesomeIcon icon={faTrash} size="sm" />
-          </Button>
+          />
         </div>
       </h3>
       <Form.Check
