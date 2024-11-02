@@ -433,7 +433,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
   const statesCount = Object.keys(activityDiagram.states).length
   return (
     <ListGroup.Item>
-      <h3 className="hstack gap-1 d-flex">
+      <h3 className="hstack d-flex">
         {editing ? (
           <input
             value={state.name}
@@ -448,6 +448,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
         )}
         <SmallIconButton
           title="Zustandsnamen ändern"
+          variant="link"
           icon={editing ? faCheck : faEdit}
           onClick={() => setEditing(!editing)}
         />
