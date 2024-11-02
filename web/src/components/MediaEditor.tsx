@@ -37,7 +37,7 @@ function Media({ file, ...props }: MediaProps): ReactElement {
   const fileType = getFileType(file)
   let render: ReactElement
   const renderProps = {
-    src: `${server}/${file}`,
+    src: `${server}${file}`,
     style: { maxHeight: "5em" },
   }
   switch (fileType) {
