@@ -430,6 +430,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
   const { activityDiagram, updateActivityDiagram } = useLoaderDataContext()
   const state = activityDiagram.states[uuid]
   const [editing, setEditing] = useState(false)
+  const statesCount = Object.keys(activityDiagram.states).length
   return (
     <ListGroup.Item>
       <h3 className="hstack gap-1 d-flex">
@@ -466,6 +467,7 @@ function StateEntry({ uuid }: StateEntryProps): ReactElement {
             }}
           />
           <SmallIconButton
+            disabled={statesCount <= 1 || activityDiagram.current === uuid}
             icon={faTrash}
             variant="danger"
             title="Löschen"
