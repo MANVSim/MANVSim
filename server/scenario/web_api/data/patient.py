@@ -10,13 +10,14 @@ web_api = Blueprint("web_api-patient", __name__)
 @web_api.get("/patient/all")
 # @role_required(models.WebUser.Role.READ_ONLY)
 def get_all_patients():
-    """ Returns a json of all locations stored. """
+    """Returns a json of all locations stored."""
     patient_list = models.Patient.query.all()
     return [
         {
             "id": patient.id,
             "name": patient.template_name,
-        } for patient in patient_list
+        }
+        for patient in patient_list
     ]
 
 
@@ -67,7 +68,9 @@ def update_patient(patient_id: int):
         return {"error": "Invalid JSON body. Missing activity_diagram."}, 400
 
     try:
-        activity_diagram["current"] = activity_diagram["states"][activity_diagram["current"]]
+        activity_diagram["current"] = activity_diagram["states"][
+            activity_diagram["current"]
+        ]
     except KeyError:
         activity_diagram["current"] = None
 
