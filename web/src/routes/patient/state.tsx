@@ -28,6 +28,7 @@ import {
   Col,
   Collapse,
   Container,
+  FormSelectProps,
   ListGroup,
   Row,
   Spinner,
@@ -133,13 +134,40 @@ function TimelimitSection({ uuid }: TimelimitSectionProps): ReactElement {
   )
 }
 
+interface ActionSelectorProps extends FormSelectProps {
+  state: State
+}
+
+function ActionSelector({
+  state,
+  ...props
+}: ActionSelectorProps): ReactElement {
+  const { actions } = useLoaderDataContext()
+  return (
+    <Form.Select {...props}>
+      <option value={-1} disabled>
+        Behandlung auswählen
+      </option>
+      {Array.from(actions).map(([id, value]) => {
+        if (id in state.treatments && id !== props.value) {
+          return null
+        }
+        return (
+          <option key={id} value={id}>
+            {value.name}
+          </option>
+        )
+      })}
+    </Form.Select>
+  )
+}
+
 interface TreatmentSectionProps {
   uuid: string
 }
 
 function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
-  const { actions, activityDiagram, updateActivityDiagram } =
-    useLoaderDataContext()
+  const { activityDiagram, updateActivityDiagram } = useLoaderDataContext()
   const state = activityDiagram.states[uuid]
   const [newTreatment, setNewTreatment] = useState({ id: -1, afterState: "" })
   return (
@@ -149,7 +177,8 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
           ([actionId, afterState]: [string, string]): ReactElement => (
             <Row key={actionId}>
               <Col>
-                <Form.Select
+                <ActionSelector
+                  state={state}
                   value={actionId}
                   onChange={(event) => {
                     updateActivityDiagram(
@@ -160,15 +189,7 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
                       },
                     )
                   }}
-                >
-                  {Array.from(actions).map(([id, value]) => {
-                    return (
-                      <option value={id} key={id}>
-                        {value.name}
-                      </option>
-                    )
-                  })}
-                </Form.Select>
+                />
               </Col>
               <Col>
                 <StateSelector
@@ -202,28 +223,16 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
         )}
         <Row>
           <Col>
-            {
-              <Form.Select
-                value={newTreatment.id}
-                onChange={(event) => {
-                  setNewTreatment({
-                    ...newTreatment,
-                    id: parseInt(event.target.value),
-                  })
-                }}
-              >
-                <option value={-1} disabled>
-                  Behandlung auswählen
-                </option>
-                {Array.from(actions).map(([id, value]) => {
-                  return (
-                    <option key={id} value={id}>
-                      {value.name}
-                    </option>
-                  )
-                })}
-              </Form.Select>
-            }
+            <ActionSelector
+              state={state}
+              value={newTreatment.id}
+              onChange={(event) => {
+                setNewTreatment({
+                  ...newTreatment,
+                  id: parseInt(event.target.value),
+                })
+              }}
+            />
           </Col>
           <Col>
             <Form.Select
