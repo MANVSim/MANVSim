@@ -170,6 +170,8 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
   const { activityDiagram, updateActivityDiagram } = useLoaderDataContext()
   const state = activityDiagram.states[uuid]
   const [newTreatment, setNewTreatment] = useState({ id: -1, afterState: "" })
+  const canCreateNewTreatment =
+    newTreatment.id !== -1 && newTreatment.afterState !== ""
   return (
     <Section title="Behandlungen">
       <Container className="d-grid gap-2">
@@ -262,10 +264,7 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
                 updateActivityDiagram(
                   (draft: WritableDraft<ActivityDiagram>) => {
                     // Do not do anything when the user tries to add a treatment with no action or no after state
-                    if (
-                      newTreatment.id === -1 ||
-                      newTreatment.afterState === ""
-                    ) {
+                    if (!canCreateNewTreatment) {
                       return
                     }
 
@@ -275,6 +274,7 @@ function TreatmentSection({ uuid }: TreatmentSectionProps): ReactElement {
                   },
                 )
               }}
+              disabled={!canCreateNewTreatment}
             >
               <FontAwesomeIcon icon={faPlus} />
             </Button>
