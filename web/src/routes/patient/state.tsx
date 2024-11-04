@@ -362,6 +362,10 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
       {/* <Container className="d-grid gap-3"> */}
       <Table bordered>
         <tbody>
+          <tr>
+            <th>Name</th>
+            <th>Medien</th>
+          </tr>
           {Object.entries(state.conditions)
             .sort()
             .map(([name, conditions]) => {
