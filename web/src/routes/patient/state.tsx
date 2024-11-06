@@ -365,6 +365,7 @@ function ParameterSection({ uuid }: ParameterSectionProps): ReactElement {
           <tr>
             <th>Name</th>
             <th>Medien</th>
+            <th>{/* Empty column for the delete button */}</th>
           </tr>
           {Object.entries(state.conditions)
             .sort()
