@@ -1,3 +1,4 @@
+from pathlib import Path
 import mimetypes
 import os
 
@@ -110,9 +111,29 @@ def __handle_raw_text():
 
 def __check_file_content(file: FileStorage) -> bool:
     """ Checks if the file content matches the extension. """
-    extension_type, _ = mimetypes.guess_type(str(file.filename))  # Get MIME type based on file extension
+    extension_type, _ = mimetypes.guess_type(
+        str(file.filename))  # Get MIME type based on file extension
 
     file_content = file.read()
-    content_type = magic.from_buffer(file_content, mime=True)  # Get MIME type of file content
+    # Get MIME type of file content
+    content_type = magic.from_buffer(file_content, mime=True)
 
     return extension_type == content_type
+
+
+def __get_files(path: str):
+    return [f for f in Path(path).iterdir() if f.is_file]
+
+
+@web_api.get("/all")
+def get_all_media():
+
+    folders = ["static", "instance"]
+    types = ["image", "video", "audio", "text"]
+    result: list[str] = []
+    for f in folders:
+        for t in types:
+            for file in __get_files(f"media/{f}/{t}"):
+                result.append(f"/media/{f}/{t}/{file.name}")
+
+    return result

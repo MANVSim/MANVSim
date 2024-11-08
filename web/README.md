@@ -16,26 +16,32 @@ While in the web directory, run the following command to install all dependencie
 npm install
 ```
 
-You need to specify the URL of the MANVSim API. This can be done in two ways:
+You need to specify the URL of the MANVSim server and API. This can be done in
+two ways:
 
-Option 1: Create a `.env.local` file in the web directory and add the following line:
+Option 1: Create a `.env.local` file in the web directory and add the following
+lines:
 
 ```env
-VITE_API_URL=*URL*
+VITE_SERVER_URL=*URL*
+VITE_API_URL=$VITE_API_URL/*URL*
+
 # e.g.
-# VITE_API_URL=http://localhost:5002/web/
+VITE_SERVER_URL=http://127.0.0.1:5002
+VITE_API_URL=$VITE_SERVER_URL/web/
 ```
 
-Option 2: Set the environment variable `VITE_API_URL` in the terminal:
+Option 2: Set environment variables in the terminal:
 
 ```bash
-VITE_API_URL=*URL* npm run dev
+VITE_SERVER_URL=*URL* VITE_API_URL=*URL* npm run dev
 ```
 
 See [here](https://vitejs.dev/guide/env-and-mode) for more information.
 
-In practice the URL will be `http://localhost:5002/web/` if you are running the
-MANVSim server locally as shown [here](/server/Readme.md).
+In practice the server URL will be `http://localhost:5002` and the API URL
+`http://localhost:5002/web/` if you are running the MANVSim server locally as
+shown [here](/server/README.md).
 
 > [!NOTE]
 > On MacOS you might have to use 127.0.0.1 instead of localhost.
@@ -55,8 +61,10 @@ The following frameworks are used in the website:
 - [React](https://react.dev)
 - [React Bootstrap](https://react-bootstrap.netlify.app)
 - [React Router](https://reactrouter.com/en/main)
+- [Immer](https://immerjs.github.io/immer)
 
 ## Directories
+
 The main source code is contained in the ``./src/`` directory. The source directory is structured as follows:
 
 | Directory        | Content                                                                     |

@@ -12,7 +12,13 @@ import { Dispatch, SetStateAction } from "react"
 function isTypeFactory<T>(
   zobj: ReturnType<typeof z.object>,
 ): (x: unknown) => x is T {
-  return (x: unknown): x is T => zobj.safeParse(x).success
+  return (x: unknown): x is T => {
+    const parsed = zobj.safeParse(x)
+    if (!parsed.success) {
+      console.error("Invalid object:", parsed.error.issues)
+    }
+    return parsed.success
+  }
 }
 
 // CsrfToken
@@ -24,10 +30,10 @@ export type CsrfToken = z.infer<typeof csrfToken>
 
 /**
  * Checks if a variable matches the CsrfToken interface
-*
-* @param {unknown} x - Variable to check
-* @returns {obj is CsrfToken} true when variable is a CSRF token
-*/
+ *
+ * @param {unknown} x - Variable to check
+ * @returns {obj is CsrfToken} true when variable is a CSRF token
+ */
 export const isCsrfToken = isTypeFactory<CsrfToken>(csrfToken)
 
 // StartResponse
@@ -39,10 +45,10 @@ export type StartResponse = z.infer<typeof startResponse>
 
 /**
  * Checks if a variable matches the StartResponse interface
-*
-* @param {unknown} x - Variable to check
-* @returns {obj is StartResponse} true when variable is a response from the start API call
-*/
+ *
+ * @param {unknown} x - Variable to check
+ * @returns {obj is StartResponse} true when variable is a response from the start API call
+ */
 export const isStartResponse = isTypeFactory<StartResponse>(startResponse)
 
 // LoginResponse
@@ -71,19 +77,19 @@ export type ErrorResponse = z.infer<typeof errorResponse>
 
 /**
  * Checks if a variable matches the ErrorResponse interface
-*
-* @param {unknown} x - Variable to check
-* @returns {x is ErrorResponse} true when variable is an ErrorResponse
-* @function
-*/
+ *
+ * @param {unknown} x - Variable to check
+ * @returns {x is ErrorResponse} true when variable is an ErrorResponse
+ * @function
+ */
 export const isErrorResponse = isTypeFactory<ErrorResponse>(errorResponse)
 
 /**
  * Checks if a variable matches the LoginResponse interface
-*
-* @param {unknown} x - Variable to check
-* @returns {obj is LoginResponse} true when variable is a response from the login API call
-*/
+ *
+ * @param {unknown} x - Variable to check
+ * @returns {obj is LoginResponse} true when variable is a response from the login API call
+ */
 export const isLoginResponse = isTypeFactory<LoginResponse>(loginResponse)
 
 // MANVSim Data
@@ -91,7 +97,7 @@ const media = z.object({
   media_type: z.string(),
   title: z.string().or(z.null()),
   text: z.string().or(z.null()),
-  media_reference: z.string().or(z.null())
+  media_reference: z.string().or(z.null()),
 })
 
 export type Media = z.infer<typeof media>
@@ -151,7 +157,7 @@ const scenario = z.object({
   id: z.number(),
   name: z.string(),
   patients: z.array(baseDataStripped),
-  vehicles: z.array(baseDataStripped)
+  vehicles: z.array(baseDataStripped),
 })
 
 export type Scenario = z.infer<typeof scenario>
@@ -179,7 +185,7 @@ const executionData = z.object({
   roles: z.array(baseDataStripped),
   locations: z.array(baseDataStripped),
   notifications: z.array(notifications),
-  patients: z.array(baseDataStripped)
+  patients: z.array(baseDataStripped),
 })
 
 export type ExecutionData = z.infer<typeof executionData>
@@ -192,8 +198,6 @@ export type ExecutionData = z.infer<typeof executionData>
  */
 export const isExecutionData = isTypeFactory<ExecutionData>(executionData)
 
-
-
 const actionData = z.object({
   id: z.number(),
   name: z.string().or(z.null()),
@@ -201,18 +205,68 @@ const actionData = z.object({
   duration_secs: z.number(),
   media_refs: z.array(media),
   results: z.array(z.string()),
-  resources: z.array(baseDataStripped)
+  resources: z.array(baseDataStripped),
 })
 
 export type ActionData = z.infer<typeof actionData>
 
+const patientResponse = z.object({
+  id: z.number(),
+  name: z.string(),
+  activity_diagram: z.string().optional(),
+})
+
+export type PatientResponse = z.infer<typeof patientResponse>
+export const isPatientRepsonse = isTypeFactory<PatientResponse>(patientResponse)
+
+export const mediaTypes = z.enum(["IMAGE", "VIDEO", "TEXT", "AUDIO"])
+export type MediaTypeEnum = z.infer<typeof mediaTypes>
+
+const condition = z.object({
+  media_type: mediaTypes,
+  title: z.string().or(z.null()),
+  text: z.string().or(z.null()),
+  media_reference: z.string().or(z.null()),
+})
+
+export type Condition = z.infer<typeof condition>
+
+const state = z.object({
+  name: z.string(),
+  pause_time: z.number(),
+  uuid: z.string(),
+  start_time: z.number(),
+  timelimit: z.number(),
+  after_time_state_uuid: z.string(),
+  treatments: z.record(z.string(), z.string()),
+  conditions: z.record(z.string(), z.array(condition)),
+})
+
+export type State = z.infer<typeof state>
+
+const activityDiagram = z.object({
+  current: z.string(),
+  states: z.record(z.string(), state),
+})
+
+export type ActivityDiagram = z.infer<typeof activityDiagram>
+
+const patient = patientResponse.extend({
+  activity_diagram: activityDiagram,
+  id: z.number(),
+  name: z.string(),
+})
+
+export type Patient = z.infer<typeof patient>
+export const isPatient = isTypeFactory<Patient>(patient)
+
 const locationData = z.object({
-    id: z.number(),
-    name: z.string(),
-    is_vehicle: z.boolean(),
-    media_refs: z.array(media),
-    child_locations: z.array(baseDataStripped),
-    resources: z.array(baseDataStripped)
+  id: z.number(),
+  name: z.string(),
+  is_vehicle: z.boolean(),
+  media_refs: z.array(media),
+  child_locations: z.array(baseDataStripped),
+  resources: z.array(baseDataStripped),
 })
 
 export type LocationData = z.infer<typeof locationData>
@@ -221,7 +275,15 @@ const resourceData = z.object({
   id: z.number(),
   name: z.string().or(z.null()),
   media_refs: z.array(media),
-  consumable: z.boolean()
+  consumable: z.boolean(),
 })
 
 export type ResourceData = z.infer<typeof resourceData>
+
+const action = z.object({
+  id: z.number(),
+  name: z.string(),
+})
+
+export type Action = z.infer<typeof action>
+export const isAction = isTypeFactory<Action>(action)

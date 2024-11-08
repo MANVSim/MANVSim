@@ -1,15 +1,16 @@
-import { Navigate, useRouteError } from "react-router-dom"
-import { logout } from "../services/auth"
+import { useRouteError } from "react-router-dom"
+import { ReactElement } from "react"
 
-export function ErrorPage() {
+export function ErrorPage(): ReactElement {
   const error = useRouteError()
   console.error(error)
-  logout()
-  return (
-    <Navigate
-      replace
-      to="/login"
-      state={`Login ist ausgelaufen! Bitte erneut anmelden!`}
-    />
-  )
+  return <div>Ein Fehler ist aufgetreten</div>
+  // logout()
+  // return (
+  //   <Navigate
+  //     replace
+  //     to="/login"
+  //     state={`Login ist ausgelaufen! Bitte erneut anmelden!`}
+  //   />
+  // )
 }
