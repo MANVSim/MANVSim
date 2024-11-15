@@ -7,12 +7,12 @@ RUN apt-get update && \
     apt-get clean
 
 # Install flutter
-RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter
+RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter \
+    && cd /usr/local/flutter \
+    && git checkout 3.24.1
 ENV PATH="${PATH}:/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin"
 
-RUN flutter doctor -v && \
-    flutter channel master && \
-    flutter upgrade
+RUN flutter doctor -v
 
 # Build web
 COPY ./app /app/
